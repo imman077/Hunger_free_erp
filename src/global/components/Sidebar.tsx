@@ -46,7 +46,7 @@ const SidebarIcons: React.FC = () => {
       <div className="flex items-center justify-center py-3">
         <img
           alt="Hunger Free"
-          src={expanded ? "public/HungerFree.svg" : "public/Icon2.svg"}
+          src={expanded ? "/HungerFree.svg" : "/Icon2.svg"}
           className={`h-16 transition-all duration-300 ${
             expanded ? "w-40" : "w-16"
           }`}

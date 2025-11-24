@@ -416,7 +416,7 @@ const Header: React.FC = () => {
           <div className="flex items-start justify-start py-3">
             <img
               alt="Hunger Free"
-              src="public/Icon2.svg"
+              src="/Icon2.svg"
               className="h-16 w-20 transition-all duration-300"
             />
           </div>

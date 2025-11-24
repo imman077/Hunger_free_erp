@@ -21,8 +21,6 @@ const AdminLayoutContent: React.FC = () => {
           " ml-0"
         }
       >
-        {/* your content here */}
-        <p className="text-black">Hello!</p>
         {/* This is where Dashboard, Users, Donations pages will appear */}
         <Outlet />
       </main>
