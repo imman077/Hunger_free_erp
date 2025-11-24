@@ -1,11 +1,18 @@
 import "./App.css";
-import Header from "./global/components/Header";
+import { Routes, Route } from "react-router-dom";
+import AdminLayout from "./global/layouts/AdminLayout";
+import AdminDashboard from "./modules/admin/pages/Dashboard";
 
 function App() {
   return (
     <>
       <div>
-        <Header />
+        <Routes>
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="dashboard" element={<AdminDashboard />} />
+          </Route>
+        </Routes>
       </div>
     </>
   );

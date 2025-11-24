@@ -14,8 +14,11 @@
     "@emotion/styled": "^11.14.1",
     "@headlessui/react": "^2.2.9",
     "@heroicons/react": "^2.2.0",
+    "@heroui/react": "^2.8.5",
     "@mui/material": "^7.3.5",
     "@tailwindcss/vite": "^4.1.17",
+    "date-fns": "^4.1.0",
+    "lucide-react": "^0.554.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.9.6"
