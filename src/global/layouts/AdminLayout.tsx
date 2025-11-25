@@ -16,13 +16,14 @@ const AdminLayoutContent: React.FC = () => {
 
       <main
         className={
-          "pt-20 px-6 transition-all duration-300 " +
-          (expanded ? "md:ml-56" : "md:ml-20") +
-          " ml-0"
+          "fixed top-17 bottom-0 right-0 bg-white transition-all duration-300 overflow-auto " +
+          (expanded ? "md:left-50" : "md:left-20") +
+          " left-0"
         }
       >
-        {/* This is where Dashboard, Users, Donations pages will appear */}
-        <Outlet />
+        <section className="space-y-2 p-6">
+          <Outlet />
+        </section>
       </main>
     </>
   );

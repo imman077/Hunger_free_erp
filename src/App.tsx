@@ -1,5 +1,5 @@
 import "./App.css";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import AdminLayout from "./global/layouts/AdminLayout";
 import AdminDashboard from "./modules/admin/pages/Dashboard";
 
@@ -8,6 +8,9 @@ function App() {
     <>
       <div>
         <Routes>
+          {/* Redirect root to /admin */}
+          <Route path="/" element={<Navigate to="/admin" />} />
+
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
             <Route path="dashboard" element={<AdminDashboard />} />

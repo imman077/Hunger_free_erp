@@ -21,7 +21,7 @@ type SidebarItemProps = {
 
 const SidebarItem: React.FC<SidebarItemProps> = ({ icon, label, expanded }) => {
   return (
-    <div className="flex items-center gap-4 px-4 py-2 cursor-pointer text-gray-900 hover:text-green-600">
+    <div className="flex items-center gap-4 px-4 py-1 cursor-pointer text-gray-900 hover:text-green-600">
       <span className="flex items-center justify-center h-10 w-10">{icon}</span>
       {expanded && <span className="text-base font-medium">{label}</span>}
     </div>

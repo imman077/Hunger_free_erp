@@ -143,9 +143,8 @@ const Header: React.FC = () => {
   };
 
   const handleNotificationClick = () => {
-    console.log("Bell icon clicked!"); // Add this for debugging
+    console.log("Bell icon clicked!");
     setNotificationDrawerOpen(true);
-    // Mark all notifications as read when opening
     setNotifications((prev) =>
       prev.map((notification) => ({ ...notification, isRead: true }))
     );
@@ -182,23 +181,29 @@ const Header: React.FC = () => {
     <>
       <header
         className={
-          "fixed top-0 right-0 h-20 bg-white shadow z-40 flex items-center justify-between px-6 transition-all duration-300 left-0 " +
-          (expanded ? "md:left-50" : "md:left-20")
+          "fixed top-0 right-0 h-20 bg-white shadow z-40 flex items-center justify-between px-6 transition-all duration-300 " +
+          (expanded ? "md:left-50" : "md:left-20") +
+          " left-0 right-0"
         }
       >
-        {/* MOBILE HAMBURGER (visible only < md) */}
-        <div className="md:hidden">
-          <IconButton onClick={() => setMobileDrawerOpen(true)}>
-            <MenuIcon color="black" />
-          </IconButton>
+        {/* Left section - Mobile menu and title */}
+        <div className="flex items-center">
+          {/* MOBILE HAMBURGER (visible only < md) */}
+          <div className="md:hidden mr-4">
+            <IconButton onClick={() => setMobileDrawerOpen(true)}>
+              <MenuIcon color="black" />
+            </IconButton>
+          </div>
+
+          {/* Title - Visible on all screens */}
+          <p className="text-black text-2xl font-semibold">
+            Welcome Back, Admin
+          </p>
         </div>
 
-        <p className="text-black text-2xl font-semibold hidden md:block">
-          Admin Dashboard
-        </p>
-
+        {/* Right section - Notifications and avatar */}
         <div className="flex flex-row gap-8 items-center">
-          {/* Bell Notification - FIXED CLICK HANDLER */}
+          {/* Bell Notification */}
           <IconButton
             onClick={handleNotificationClick}
             sx={{
