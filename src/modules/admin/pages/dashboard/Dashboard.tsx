@@ -1,7 +1,5 @@
 import { Button } from "@heroui/react";
 import { Users, Shield, HandHeart, UserPlus, Handshake } from "lucide-react";
-import LineChart from "../../../global/charts/LineChart";
-import BarChart from "../../../global/charts/BarChart";
 import {
   CheckCircle,
   User,
@@ -9,6 +7,8 @@ import {
   Database,
   GraduationCap,
 } from "lucide-react";
+import LineChart from "../../../../global/charts/LineChart";
+import BarChart from "../../../../global/charts/BarChart";
 
 const AdminDashboard = () => {
   const stats = [
@@ -86,25 +86,11 @@ const AdminDashboard = () => {
   ];
 
   return (
-    <div className="w-full space-y-6">
+    <div className="w-full space-y-6 p-6">
       {/* Admin Panel */}
-      <div className="flex justify-between">
-        <div className="flex flex-col items-start">
-          <h1 className="text-2xl font-bold text-black">Admin Panel</h1>
-          <p className="text-gray-600">
-            Comprehensive overview and management of the HungerFree ERP
-            platform.
-          </p>
-        </div>
-        <div className="flex items-center">
-          <Button
-            color="success"
-            className="flex items-center justify-center bg-green-500 text-sm"
-          >
-            Quick Actions
-          </Button>
-        </div>
-      </div>
+      <h1 className="text-2xl font-semibold text-black text-start">
+        Quick Stats
+      </h1>
 
       {/* Four Boxes */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -132,6 +118,11 @@ const AdminDashboard = () => {
         ))}
       </div>
 
+      {/* Activity Charts */}
+      <h1 className="text-2xl font-semibold text-black text-start">
+        Activity Charts
+      </h1>
+
       {/* Charts */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-white rounded-md p-5 border border-gray-100">
@@ -157,17 +148,12 @@ const AdminDashboard = () => {
       </div>
 
       {/* Recent Activities */}
-      <div className="bg-white rounded-md border border-gray-100 p-5">
-        {/* Header */}
-        <div className="flex flex-col items-start">
-          <h2 className="text-xl font-semibold text-black">
-            Recent System Activities
-          </h2>
-          <p className="text-sm text-gray-500 mb-6">
-            Latest updates and events across the platform.
-          </p>
-        </div>
+      <h1 className="text-2xl font-semibold text-black text-start">
+        Recent Activities & Alerts
+      </h1>
 
+      {/* Recent Activities */}
+      <div className="bg-white rounded-md border border-gray-100 p-5">
         {/* Activity List */}
         <div className="">
           {activities.map((activity, index) => (

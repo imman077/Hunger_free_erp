@@ -182,7 +182,7 @@ const Header: React.FC = () => {
       <header
         className={
           "fixed top-0 right-0 h-20 bg-white shadow z-40 flex items-center justify-between px-6 transition-all duration-300 " +
-          (expanded ? "md:left-50" : "md:left-20") +
+          (expanded ? "md:left-64" : "md:left-20") + // Changed from left-50 to left-64
           " left-0 right-0"
         }
       >

@@ -16,12 +16,12 @@ const AdminLayoutContent: React.FC = () => {
 
       <main
         className={
-          "fixed top-17 bottom-0 right-0 bg-white transition-all duration-300 overflow-auto " +
-          (expanded ? "md:left-50" : "md:left-20") +
+          "fixed top-17 bottom-0 right-0 bg-white no-scrollbar transition-all duration-300 overflow-auto " +
+          (expanded ? "md:left-64" : "md:left-20") + // Changed from left-50 to left-64
           " left-0"
         }
       >
-        <section className="space-y-2 p-6">
+        <section className="">
           <Outlet />
         </section>
       </main>
