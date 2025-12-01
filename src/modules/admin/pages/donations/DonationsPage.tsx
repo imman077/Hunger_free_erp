@@ -6,6 +6,12 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import DatePicker from "../../../../global/common_functions/datepicker";
+import {
+  faDownload,
+  faRotateRight,
+  faUserPlus,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const DonationOverview = () => {
   const [activeTab, setActiveTab] = useState("All");
@@ -106,7 +112,14 @@ const DonationOverview = () => {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
+      {/* Header */}
+      <div className="mb-4">
+        <h2 className="text-lg font-semibold text-gray-800 text-left">
+          Donation Overview
+        </h2>
+      </div>
       {/* Header Tabs */}
+
       <div className="flex gap-3 mb-6">
         {tabs.map((tab) => (
           <button
@@ -132,188 +145,214 @@ const DonationOverview = () => {
       </div>
 
       {/* Filters */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        {/* Food Type */}
-        <FormControl size="small" fullWidth>
-          <Select
-            labelId="food-type-select-label"
-            id="food-type-select"
-            value={foodType}
-            onChange={(e: SelectChangeEvent) => setFoodType(e.target.value)}
-            displayEmpty
-            sx={{
-              height: "40px",
-              fontSize: "14px",
-              backgroundColor: "white",
-              borderRadius: "8px",
-              border: "1px solid #e5e7eb",
-              boxShadow: "none",
-              "& .MuiOutlinedInput-notchedOutline": {
-                border: "none",
-              },
-              "&:hover": {
-                borderColor: "#22c55e",
-              },
-              "&.Mui-focused": {
-                borderColor: "#22c55e",
-              },
-            }}
-            MenuProps={{
-              PaperProps: {
-                sx: {
-                  boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
-                  border: "1px solid #e5e7eb",
-                  marginTop: "4px",
-                  borderRadius: "8px",
-                },
-              },
-            }}
-          >
-            <MenuItem
-              value="select food type"
-              sx={{ fontSize: "14px", color: "#9ca3af" }}
-            >
-              Select Food Type
-            </MenuItem>
-            <MenuItem value="Prepared Meals" sx={{ fontSize: "14px" }}>
-              Prepared Meals
-            </MenuItem>
-            <MenuItem value="Raw Ingredients" sx={{ fontSize: "14px" }}>
-              Raw Ingredients
-            </MenuItem>
-            <MenuItem value="Baked Goods" sx={{ fontSize: "14px" }}>
-              Baked Goods
-            </MenuItem>
-            <MenuItem value="Produce" sx={{ fontSize: "14px" }}>
-              Produce
-            </MenuItem>
-          </Select>
-        </FormControl>
+      <div className="mb-6">
+        <h3 className="text-xl font-semibold text-left text-gray-800 mb-4">
+          Filters
+        </h3>
 
-        {/* Quantity */}
-        <FormControl size="small" fullWidth>
-          <Select
-            labelId="quantity-select-label"
-            id="quantity-select"
-            value={quantity}
-            onChange={(e: SelectChangeEvent) => setQuantity(e.target.value)}
-            displayEmpty
-            sx={{
-              height: "40px",
-              fontSize: "14px",
-              backgroundColor: "white",
-              borderRadius: "8px",
-              border: "1px solid #e5e7eb",
-              boxShadow: "none",
-              "& .MuiOutlinedInput-notchedOutline": {
-                border: "none",
-              },
-              "&:hover": {
-                borderColor: "#22c55e",
-              },
-              "&.Mui-focused": {
-                borderColor: "#22c55e",
-              },
-            }}
-            MenuProps={{
-              PaperProps: {
-                sx: {
-                  boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
-                  border: "1px solid #e5e7eb",
-                  marginTop: "4px",
-                  borderRadius: "8px",
-                },
-              },
-            }}
-          >
-            <MenuItem
-              value="select quantity"
-              sx={{ fontSize: "14px", color: "#9ca3af" }}
-            >
-              Select Quantity
-            </MenuItem>
-            <MenuItem value="0-25" sx={{ fontSize: "14px" }}>
-              0-25
-            </MenuItem>
-            <MenuItem value="25-50" sx={{ fontSize: "14px" }}>
-              25-50
-            </MenuItem>
-            <MenuItem value="50-100" sx={{ fontSize: "14px" }}>
-              50-100
-            </MenuItem>
-            <MenuItem value="100+" sx={{ fontSize: "14px" }}>
-              100+
-            </MenuItem>
-          </Select>
-        </FormControl>
+        {/* Filter Labels */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-2">
+          <label className="text-sm font-medium text-gray-700 text-left">
+            Food Type
+          </label>
+          <label className="text-sm font-medium text-gray-700 text-left">
+            Quantity
+          </label>
+          <label className="text-sm font-medium text-gray-700 text-left">
+            Location
+          </label>
+          <label className="text-sm font-medium text-gray-700 text-left">
+            Time Range
+          </label>
+        </div>
 
-        {/* Location */}
-        <FormControl size="small" fullWidth>
-          <Select
-            labelId="location-select-label"
-            id="location-select"
-            value={location}
-            onChange={(e: SelectChangeEvent) => setLocation(e.target.value)}
-            displayEmpty
-            sx={{
-              height: "40px",
-              fontSize: "14px",
-              backgroundColor: "white",
-              borderRadius: "8px",
-              border: "1px solid #e5e7eb",
-              boxShadow: "none",
-              "& .MuiOutlinedInput-notchedOutline": {
-                border: "none",
-              },
-              "&:hover": {
-                borderColor: "#22c55e",
-              },
-              "&.Mui-focused": {
-                borderColor: "#22c55e",
-              },
-            }}
-            MenuProps={{
-              PaperProps: {
-                sx: {
-                  boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
-                  border: "1px solid #e5e7eb",
-                  marginTop: "4px",
-                  borderRadius: "8px",
+        {/* Filter Controls */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          {/* Food Type */}
+          <FormControl size="small">
+            <Select
+              labelId="food-type-select-label"
+              id="food-type-select"
+              value={foodType}
+              onChange={(e: SelectChangeEvent) => setFoodType(e.target.value)}
+              displayEmpty
+              sx={{
+                height: "40px",
+                fontSize: "14px",
+                backgroundColor: "white",
+                borderRadius: "8px",
+                border: "1px solid #e5e7eb",
+                boxShadow: "none",
+                textAlign: "left",
+                "& .MuiOutlinedInput-notchedOutline": {
+                  border: "none",
                 },
-              },
-            }}
-          >
-            <MenuItem
-              value="select location"
-              sx={{ fontSize: "14px", color: "#9ca3af" }}
+                "&:hover": {
+                  borderColor: "#22c55e",
+                },
+                "&.Mui-focused": {
+                  borderColor: "#22c55e",
+                },
+              }}
+              MenuProps={{
+                PaperProps: {
+                  sx: {
+                    boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                    border: "1px solid #e5e7eb",
+                    marginTop: "4px",
+                    borderRadius: "8px",
+                  },
+                },
+              }}
             >
-              Select Location
-            </MenuItem>
-            <MenuItem value="Location 1" sx={{ fontSize: "14px" }}>
-              Location 1
-            </MenuItem>
-            <MenuItem value="Location 2" sx={{ fontSize: "14px" }}>
-              Location 2
-            </MenuItem>
-            <MenuItem value="Location 3" sx={{ fontSize: "14px" }}>
-              Location 3
-            </MenuItem>
-          </Select>
-        </FormControl>
+              <MenuItem
+                value="select food type"
+                sx={{ fontSize: "14px", color: "#9ca3af" }}
+              >
+                Select Food Type
+              </MenuItem>
+              <MenuItem value="Prepared Meals" sx={{ fontSize: "14px" }}>
+                Prepared Meals
+              </MenuItem>
+              <MenuItem value="Raw Ingredients" sx={{ fontSize: "14px" }}>
+                Raw Ingredients
+              </MenuItem>
+              <MenuItem value="Baked Goods" sx={{ fontSize: "14px" }}>
+                Baked Goods
+              </MenuItem>
+              <MenuItem value="Produce" sx={{ fontSize: "14px" }}>
+                Produce
+              </MenuItem>
+            </Select>
+          </FormControl>
 
-        {/* Date Picker */}
-        <div className="w-full">
-          <DatePicker
-            value={date}
-            onChange={handleDateChange}
-            placeholder="Pick a date"
-          />
+          {/* Quantity */}
+          <FormControl size="small">
+            <Select
+              labelId="quantity-select-label"
+              id="quantity-select"
+              value={quantity}
+              onChange={(e: SelectChangeEvent) => setQuantity(e.target.value)}
+              displayEmpty
+              sx={{
+                height: "40px",
+                fontSize: "14px",
+                backgroundColor: "white",
+                borderRadius: "8px",
+                border: "1px solid #e5e7eb",
+                boxShadow: "none",
+                textAlign: "left",
+                "& .MuiOutlinedInput-notchedOutline": {
+                  border: "none",
+                },
+                "&:hover": {
+                  borderColor: "#22c55e",
+                },
+                "&.Mui-focused": {
+                  borderColor: "#22c55e",
+                },
+              }}
+              MenuProps={{
+                PaperProps: {
+                  sx: {
+                    boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                    border: "1px solid #e5e7eb",
+                    marginTop: "4px",
+                    borderRadius: "8px",
+                  },
+                },
+              }}
+            >
+              <MenuItem
+                value="select quantity"
+                sx={{ fontSize: "14px", color: "#9ca3af" }}
+              >
+                Select Quantity
+              </MenuItem>
+              <MenuItem value="0-25" sx={{ fontSize: "14px" }}>
+                0-25
+              </MenuItem>
+              <MenuItem value="25-50" sx={{ fontSize: "14px" }}>
+                25-50
+              </MenuItem>
+              <MenuItem value="50-100" sx={{ fontSize: "14px" }}>
+                50-100
+              </MenuItem>
+              <MenuItem value="100+" sx={{ fontSize: "14px" }}>
+                100+
+              </MenuItem>
+            </Select>
+          </FormControl>
+
+          {/* Location */}
+          <FormControl size="small">
+            <Select
+              labelId="location-select-label"
+              id="location-select"
+              value={location}
+              onChange={(e: SelectChangeEvent) => setLocation(e.target.value)}
+              displayEmpty
+              sx={{
+                height: "40px",
+                fontSize: "14px",
+                backgroundColor: "white",
+                borderRadius: "8px",
+                border: "1px solid #e5e7eb",
+                boxShadow: "none",
+                textAlign: "left",
+                "& .MuiOutlinedInput-notchedOutline": {
+                  border: "none",
+                },
+                "&:hover": {
+                  borderColor: "#22c55e",
+                },
+                "&.Mui-focused": {
+                  borderColor: "#22c55e",
+                },
+              }}
+              MenuProps={{
+                PaperProps: {
+                  sx: {
+                    boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                    border: "1px solid #e5e7eb",
+                    marginTop: "4px",
+                    borderRadius: "8px",
+                  },
+                },
+              }}
+            >
+              <MenuItem
+                value="select location"
+                sx={{ fontSize: "14px", color: "#9ca3af" }}
+              >
+                Select Location
+              </MenuItem>
+              <MenuItem value="Location 1" sx={{ fontSize: "14px" }}>
+                Location 1
+              </MenuItem>
+              <MenuItem value="Location 2" sx={{ fontSize: "14px" }}>
+                Location 2
+              </MenuItem>
+              <MenuItem value="Location 3" sx={{ fontSize: "14px" }}>
+                Location 3
+              </MenuItem>
+            </Select>
+          </FormControl>
+
+          {/* Date Picker */}
+          <div className="w-full">
+            <DatePicker
+              value={date}
+              onChange={handleDateChange}
+              placeholder="Pick a date"
+            />
+          </div>
         </div>
       </div>
 
       {/* Donations Count */}
       <div className="mb-4">
-        <h2 className="text-lg font-semibold text-gray-800">
+        <h2 className="text-lg font-semibold text-gray-800 text-left">
           All Donations ({filteredDonations.length})
         </h2>
       </div>
@@ -338,7 +377,7 @@ const DonationOverview = () => {
               <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Pickup Time
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Status
               </th>
             </tr>
@@ -377,15 +416,29 @@ const DonationOverview = () => {
       </div>
 
       {/* Action Buttons */}
-      <div className="mt-6 flex space-x-4">
-        <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
-          Assign Volunteer
+      <div className="flex gap-3 justify-end p-3">
+        <button
+          type="button"
+          className="inline-flex items-center gap-2 rounded-md bg-green-500 px-4 py-2 text-sm font-medium text-white hover:bg-green-600 active:bg-green-700 focus:outline-none"
+        >
+          <i className="fa-solid fa-user-plus text-xs" />
+          <span>Assign Volunteer</span>
         </button>
-        <button className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors">
-          Update Status
+
+        <button
+          type="button"
+          className="inline-flex items-center gap-2 rounded-md bg-green-500 px-4 py-2 text-sm font-medium text-white hover:bg-green-600 active:bg-green-700 focus:outline-none"
+        >
+          <i className="fa-solid fa-rotate-right text-xs" />
+          <span>Update Status</span>
         </button>
-        <button className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors">
-          Export
+
+        <button
+          type="button"
+          className="inline-flex items-center gap-2 rounded-md bg-green-500 px-4 py-2 text-sm font-medium text-white hover:bg-green-600 active:bg-green-700 focus:outline-none"
+        >
+          <i className="fa-solid fa-download text-xs" />
+          <span>Export</span>
         </button>
       </div>
     </div>
