@@ -1,7 +1,3 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 @import "tailwindcss";
 
 /* Ensure consistent MUI component sizing on mobile */
@@ -65,36 +61,7 @@ button:focus,
   box-shadow: none !important;
 }
 
-button {
-  all: unset;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  border: 1px solid #e5e7eb; /* light gray border */
-  background-color: white; /* default bg */
-  color: #111827; /* dark text */
-  font-size: 1rem;
-  line-height: 1.25rem;
-  user-select: none;
-  transition: background-color 0.15s ease, border-color 0.15s ease,
-    box-shadow 0.15s ease;
-}
-
-button:hover {
-  background-color: #f9fafb; /* subtle hover */
-}
-
-button:active {
-  background-color: #f3f4f6;
-}
-
-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+/* Global button styles removed - causing conflicts with HeroUI components */
 /* Optional: Add a subtle custom focus style for accessibility */
 /* button:focus-visible {
   box-shadow: 0 0 0 2px #22c55e;
@@ -144,7 +111,35 @@ input[type="checkbox"]:hover {
   box-shadow: none !important;
 }
 
-[data-hover="true"] {
-  border: none !important;
-  background: transparent !important;
+/* Removed the global [data-hover="true"] rule that was hiding borders on all hover states */
+/* Pagination button styles - force white background */
+.pagination-btn,
+button[data-variant="flat"] {
+  background-color: white !important;
+  color: #4b5563 !important;
+}
+
+.pagination-btn:hover,
+button[data-variant="flat"]:hover {
+  background-color: #f3f4f6 !important;
+}
+
+/* Pagination arrow hover effects */
+[data-slot="prev"]:hover,
+[data-slot="next"]:hover {
+  background-color: #f3f4f6 !important;
+}
+
+/* Preserve green color for primary/green buttons */
+button.bg-green-600,
+button[style*="background-color: rgb(34, 197, 94)"] {
+  background-color: #22c55e !important;
+  color: white !important;
+  border-color: #22c55e !important;
+}
+
+button.bg-green-600:hover,
+button[style*="background-color: rgb(34, 197, 94)"]:hover {
+  background-color: #22c55e !important;
+  border-color: #22c55e !important;
 }

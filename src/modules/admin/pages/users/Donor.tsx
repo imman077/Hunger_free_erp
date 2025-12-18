@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Tabs, { type Tab } from "../../../../global/components/resuable-components/tabs";
 
 interface DonationHistory {
   event: string;
@@ -100,7 +101,13 @@ const DonorPage = () => {
     },
   ]);
 
-  const tabs = ["All", "Restaurant", "Hotel", "Household", "Event"];
+  const tabs: Tab[] = [
+    { label: "All", value: "All", count: donors.length, showCount: true },
+    { label: "Restaurant", value: "Restaurant" },
+    { label: "Hotel", value: "Hotel" },
+    { label: "Household", value: "Household" },
+    { label: "Event", value: "Event" },
+  ];
 
   const getStatusColor = (status: string): string => {
     switch (status) {
@@ -291,29 +298,12 @@ const DonorPage = () => {
           {/* Tabs and Table */}
           <div className="bg-white shadow-sm rounded-xl mt-6 p-5">
             {/* Custom Tabs */}
-            <div className="flex gap-3 mb-6">
-              {tabs.map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`
-                  px-6 py-2.5 rounded-md text-sm font-medium transition-all duration-200
-                  ${
-                    activeTab === tab
-                      ? "bg-[#22c55e] text-white shadow-sm hover:bg-[#22c55e]"
-                      : "bg-white text-gray-600 border border-gray-200 hover:bg-green-50 hover:border-[#22c55e] hover:text-[#22c55e]"
-                  }
-                `}
-                >
-                  {tab}
-                  {tab === "All" && (
-                    <span className="ml-2 text-xs opacity-90">
-                      {donors.length}
-                    </span>
-                  )}
-                </button>
-              ))}
-            </div>
+           <Tabs
+        tabs={tabs}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        className="mb-6"
+      />
 
             {/* Table */}
             <div className="overflow-x-auto">

@@ -4,11 +4,14 @@ import "./index.css";
 import App from "./App.tsx";
 import "../src/styles/globals.css";
 import { BrowserRouter } from "react-router-dom";
+import { HeroUIProvider } from "@heroui/react";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
-      <App />
+      <HeroUIProvider>
+        <App />
+      </HeroUIProvider>
     </BrowserRouter>
   </StrictMode>
 );

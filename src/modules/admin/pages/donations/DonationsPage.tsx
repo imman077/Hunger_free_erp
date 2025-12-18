@@ -6,12 +6,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import DatePicker from "../../../../global/common_functions/datepicker";
-import {
-  faDownload,
-  faRotateRight,
-  faUserPlus,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Tabs, { type Tab } from "../../../../global/components/resuable-components/tabs";
 
 const DonationOverview = () => {
   const [activeTab, setActiveTab] = useState("All");
@@ -82,7 +77,13 @@ const DonationOverview = () => {
     },
   ]);
 
-  const tabs = ["All", "Pending", "Assigned", "In Progress", "Completed"];
+  const tabs: Tab[] = [
+    { label: "All", value: "All", count: donations.length, showCount: true },
+    { label: "Pending", value: "Pending" },
+    { label: "Assigned", value: "Assigned" },
+    { label: "In Progress", value: "In Progress" },
+    { label: "Completed", value: "Completed" },
+  ];
 
   const getStatusColor = (status: any) => {
     switch (status) {
@@ -119,30 +120,12 @@ const DonationOverview = () => {
         </h2>
       </div>
       {/* Header Tabs */}
-
-      <div className="flex gap-3 mb-6">
-        {tabs.map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`
-                  px-6 py-2.5 rounded-md text-sm font-medium transition-all duration-200
-                  ${
-                    activeTab === tab
-                      ? "bg-[#22c55e] text-white shadow-sm hover:bg-[#22c55e]"
-                      : "bg-white text-gray-600 border border-gray-200 hover:bg-green-50 hover:border-[#22c55e] hover:text-[#22c55e]"
-                  }
-                `}
-          >
-            {tab}
-            {tab === "All" && (
-              <span className="ml-2 text-xs opacity-90">
-                {donations.length}
-              </span>
-            )}
-          </button>
-        ))}
-      </div>
+      <Tabs
+        tabs={tabs}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        className="mb-6"
+      />
 
       {/* Filters */}
       <div className="mb-6">
