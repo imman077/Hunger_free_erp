@@ -2,7 +2,6 @@ import { useState } from "react";
 import {
   Drawer,
   DrawerContent,
-  DrawerHeader,
   DrawerBody,
   useDisclosure,
 } from "@heroui/react";
@@ -149,7 +148,7 @@ const VolunteersPage: React.FC = () => {
 
   const getStatusBadge = (status: VolunteerStatus): React.ReactElement => {
     const statusClasses: Record<VolunteerStatus, string> = {
-      available: "bg-green-100 text-green-800 border border-green-300",
+      available: "bg-emerald-50 text-hf-green border border-emerald-100",
       "on-leave": "bg-red-100 text-red-800 border border-red-300",
       busy: "bg-amber-100 text-amber-800 border border-amber-300",
     };
@@ -410,7 +409,7 @@ const VolunteersPage: React.FC = () => {
         }}
       >
         <DrawerContent className="bg-white no-scrollbar">
-          {(onClose) => (
+          {() => (
             <>
               {/* <DrawerHeader></DrawerHeader> */}
               <DrawerBody className="px-6 py-4 space-y-6 overflow-y-auto no-scrollbar">

@@ -72,9 +72,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
       `}
       onClick={handleClick}
     >
-      <span className="flex items-center justify-center h-10 w-10">
-        {icon}
-      </span>
+      <span className="flex items-center justify-center h-10 w-10">{icon}</span>
       {expanded && (
         <div className="flex items-center justify-between flex-1">
           <span className="text-base font-medium">{label}</span>
@@ -96,11 +94,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
 
   return (
     <div className="w-full">
-      {to && !subItems ? (
-        <Link to={to}>{content}</Link>
-      ) : (
-        content
-      )}
+      {to && !subItems ? <Link to={to}>{content}</Link> : content}
 
       {/* Modern Submenu */}
       {subItems && expanded && (

@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+@theme {
+  --color-hf-green: #22c55e;
+  --color-hf-dark: #0f172a;
+}
+
 /* Ensure consistent MUI component sizing on mobile */
 @media (max-width: 600px) {
   .MuiMenu-paper {
@@ -33,12 +38,50 @@
 }
 
 body {
-  background-color: #ffffff;
+  background-color: #f1f5f9;
+  font-family: "Inter", sans-serif;
+  color: #1e293b;
 }
 
 html,
 body {
   overflow-x: hidden !important;
+}
+
+.heading-font {
+  font-family: "Outfit", sans-serif;
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.stagger-1 {
+  animation-delay: 0.1s;
+}
+.stagger-2 {
+  animation-delay: 0.2s;
+}
+.stagger-3 {
+  animation-delay: 0.3s;
+}
+.stagger-4 {
+  animation-delay: 0.4s;
+}
+
+.sidebar-item {
+  transition: all 0.2s ease;
+}
+
+.erp-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.erp-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 }
 
 /* Remove black focus outline from all buttons and interactive elements */

@@ -18,6 +18,7 @@ import {
   CheckCircleIcon,
   AlertCircleIcon,
   InfoIcon,
+  TrashIcon,
 } from "lucide-react";
 import { useSidebar } from "../contexts/SidebarContext";
 import MenuItem from "@mui/material/MenuItem";
@@ -145,9 +146,6 @@ const Header: React.FC = () => {
   const handleNotificationClick = () => {
     console.log("Bell icon clicked!");
     setNotificationDrawerOpen(true);
-    setNotifications((prev) =>
-      prev.map((notification) => ({ ...notification, isRead: true }))
-    );
   };
 
   const getNotificationIcon = (iconType: string) => {
@@ -304,106 +302,192 @@ const Header: React.FC = () => {
       </header>
 
       {/* ---------------- NOTIFICATION DRAWER ---------------- */}
-      <Drawer
-        anchor="right"
-        open={notificationDrawerOpen}
-        onClose={() => setNotificationDrawerOpen(false)}
-        sx={{
-          "& .MuiDrawer-paper": {
-            width: "100%",
-            maxWidth: "420px",
-            "@media (max-width: 640px)": {
-              width: "100%",
-              maxWidth: "100%",
-            },
-          },
-        }}
+      <div
+        className={`fixed top-0 right-0 h-full w-full max-w-[340px] bg-white shadow-[-20px_0_60px_rgba(0,0,0,0.05)] z-[100] transform transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col ${
+          notificationDrawerOpen ? "translate-x-0" : "translate-x-full"
+        }`}
       >
-        <div className="flex flex-col h-full">
-          {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b">
-            <div>
-              <h2 className="text-xl font-semibold text-gray-900">
+        {/* HEADER SECTION */}
+        <div className="p-5 pb-0 flex flex-col gap-4 flex-shrink-0">
+          <div className="flex items-center justify-between">
+            <div className="flex flex-col">
+              <h3 className="text-[14px] font-extrabold text-slate-900 tracking-tight leading-none mb-1.5">
                 Notifications
-              </h2>
-              <p className="text-sm text-gray-500">
-                {getUnreadCount()} unread messages
-              </p>
+              </h3>
+              <div className="flex items-center gap-1.5">
+                {getUnreadCount() > 0 ? (
+                  <>
+                    <div
+                      className="w-1.5 h-1.5 rounded-full bg-hf-green animate-pulse"
+                      style={{ backgroundColor: "#22c55e" }}
+                    />
+                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                      {getUnreadCount()} Active
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                    No New Messages
+                  </span>
+                )}
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              {notifications.length > 0 && (
-                <button
-                  onClick={clearAllNotifications}
-                  className="text-sm text-gray-500 hover:text-gray-700 px-3 py-1 rounded-md bg-gray-100"
-                >
-                  Clear All
-                </button>
-              )}
-            </div>
+            <button
+              onClick={() => setNotificationDrawerOpen(false)}
+              className="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-all border border-slate-100"
+            >
+              <XIcon className="w-4.5 h-4.5" />
+            </button>
           </div>
 
-          {/* Notifications List */}
-          <div className="flex-1 overflow-y-auto no-scrollbar">
-            {notifications.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full text-center p-8">
-                <BellIcon className="h-16 w-16 text-gray-300 mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  No notifications
-                </h3>
-                <p className="text-gray-500">
-                  You're all caught up! Check back later for updates.
-                </p>
-              </div>
-            ) : (
-              <div className="p-4 space-y-4">
-                {notifications.map((notification) => (
-                  <div
-                    key={notification.id}
-                    className={`p-4 rounded-lg border transition-all duration-200 ${
-                      notification.isRead
-                        ? "bg-white border-gray-200"
-                        : "bg-blue-50 border-blue-200"
-                    }`}
-                  >
-                    <div className="flex gap-3">
-                      <div className="flex-shrink-0 mt-1">
-                        {getNotificationIcon(notification.icon)}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between">
-                          <h4
-                            className={`text-sm font-medium ${
-                              notification.isRead
-                                ? "text-gray-900"
-                                : "text-gray-900"
-                            }`}
-                          >
-                            {notification.title}
-                          </h4>
-                          <button
-                            onClick={() => deleteNotification(notification.id)}
-                            className="text-gray-400 hover:text-gray-600 bg-gray-100 transition-colors"
-                          >
-                            <XIcon className="h-4 w-4" />
-                          </button>
-                        </div>
-                        <p className="text-sm text-gray-600 mt-1">
-                          {notification.message}
-                        </p>
-                        <p className="text-xs text-gray-400 mt-2">
-                          {formatDistanceToNow(notification.time, {
-                            addSuffix: true,
-                          })}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+          {/* UTILITY ACTION BAR */}
+          <div className="flex items-center justify-between py-1">
+            <div className="flex gap-1.5">
+              <button
+                onClick={() => {
+                  setNotifications((prev) =>
+                    prev.map((n) => ({ ...n, isRead: true }))
+                  );
+                }}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-emerald-50 border border-slate-200/60 rounded-lg text-[9px] font-black text-slate-600 hover:text-hf-green uppercase tracking-wider transition-all"
+              >
+                <CheckCircleIcon
+                  className="w-3 h-3 text-hf-green"
+                  style={{ color: "#22c55e" }}
+                />
+                Mark Read
+              </button>
+              <button
+                onClick={clearAllNotifications}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-rose-50 border border-slate-200/60 rounded-lg text-[9px] font-black text-slate-600 hover:text-rose-500 uppercase tracking-wider transition-all"
+              >
+                <TrashIcon className="w-3 h-3" />
+                Clear
+              </button>
+            </div>
+            <button className="w-8 h-8 rounded-lg border border-slate-100 flex items-center justify-center bg-white shadow-sm text-slate-300 hover:text-slate-600">
+              <SettingsIcon className="w-3.5 h-3.5" />
+            </button>
           </div>
         </div>
-      </Drawer>
+
+        <div className="h-3 bg-gradient-to-b from-white to-transparent shrink-0 z-10" />
+
+        {/* NOTIFICATION FEED */}
+        <div className="flex-1 overflow-y-auto no-scrollbar px-5 pb-5 space-y-2.5">
+          {notifications.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-full text-center p-8">
+              <BellIcon className="h-12 w-12 text-slate-200 mb-4" />
+              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                No notifications
+              </p>
+            </div>
+          ) : (
+            notifications.map((n) => (
+              <div
+                key={n.id}
+                className={`group relative flex gap-3.5 p-3 bg-white rounded-2xl border transition-all duration-300 cursor-pointer overflow-hidden
+                  ${
+                    !n.isRead
+                      ? "border-slate-200 shadow-sm"
+                      : "border-slate-100 opacity-60 grayscale-[0.3]"
+                  }`}
+              >
+                {/* Type/Priority Vertical Pillar */}
+                <div
+                  className={`w-0.5 rounded-full shrink-0 ${
+                    n.type === "success"
+                      ? "bg-hf-green"
+                      : n.type === "warning"
+                      ? "bg-amber-500"
+                      : "bg-blue-500"
+                  }`}
+                  style={
+                    n.type === "success" ? { backgroundColor: "#22c55e" } : {}
+                  }
+                />
+
+                <div className="flex-1 min-w-0">
+                  <div className="flex justify-between items-start mb-1">
+                    <span
+                      className={`text-[7px] font-black uppercase tracking-[0.1em] px-1.5 py-0.5 rounded-md ${
+                        n.type === "success"
+                          ? "bg-hf-green text-white"
+                          : n.type === "warning"
+                          ? "bg-amber-500 text-white"
+                          : "bg-blue-500 text-white"
+                      }`}
+                      style={
+                        n.type === "success"
+                          ? { backgroundColor: "#22c55e" }
+                          : {}
+                      }
+                    >
+                      {n.type === "success" ? "SYSTEM" : n.type.toUpperCase()}
+                    </span>
+                    <span className="text-[9px] text-slate-300 font-bold tabular-nums">
+                      {formatDistanceToNow(n.time, { addSuffix: false })}
+                    </span>
+                  </div>
+
+                  <h4
+                    className="text-[12px] font-bold text-slate-900 mb-0.5 group-hover:text-hf-green transition-colors leading-snug truncate"
+                    style={
+                      { "--hover-color": "#22c55e" } as React.CSSProperties
+                    }
+                  >
+                    {n.title}
+                  </h4>
+                  <p className="text-[10px] text-slate-500 font-medium leading-tight">
+                    {n.message}
+                  </p>
+
+                  <div className="mt-2.5 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all translate-y-1 group-hover:translate-y-0">
+                    <button className="flex items-center gap-1.5 px-2 py-1 bg-slate-900 text-white rounded-md text-[8px] font-black uppercase tracking-widest hover:bg-black transition-all">
+                      Review
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteNotification(n.id);
+                      }}
+                      className="p-1 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-md transition-all"
+                    >
+                      <TrashIcon className="w-3 h-3" />
+                    </button>
+                  </div>
+                </div>
+
+                {!n.isRead && (
+                  <div className="absolute top-3 right-3">
+                    <div
+                      className="w-1.5 h-1.5 rounded-full bg-hf-green shadow-sm shadow-hf-green/50"
+                      style={{ backgroundColor: "#22c55e" }}
+                    />
+                  </div>
+                )}
+              </div>
+            ))
+          )}
+
+          {notifications.length > 0 && (
+            <div className="py-6 text-center">
+              <div className="w-8 h-[2px] bg-slate-100 mx-auto rounded-full mb-3" />
+              <p className="text-[9px] font-black text-slate-300 uppercase tracking-[0.2em]">
+                End of registry
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Backdrop for closing */}
+        {notificationDrawerOpen && (
+          <div
+            className="fixed inset-0 bg-black/5 z-[-1] cursor-default"
+            onClick={() => setNotificationDrawerOpen(false)}
+          />
+        )}
+      </div>
 
       {/* ---------------- MOBILE LEFT DRAWER ---------------- */}
       <Drawer

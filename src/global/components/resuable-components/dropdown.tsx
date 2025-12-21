@@ -1,10 +1,5 @@
-import React from "react";
-import {
-  FormControl,
-  Select,
-  MenuItem,
-  type SelectChangeEvent,
-} from "@mui/material";
+import React, { useState, useRef, useEffect } from "react";
+import { Icon } from "./Icon";
 
 // --- Types ---
 export interface DropdownOption {
@@ -13,85 +8,104 @@ export interface DropdownOption {
 }
 
 export interface ResuableDropdownProps {
+  label?: string;
   value: string;
   onChange: (value: string) => void;
   options: DropdownOption[];
   placeholder?: string;
-  minWidth?: number;
+  className?: string;
   disabled?: boolean;
+  minWidth?: number | string;
 }
 
 // --- ResuableDropdown Component ---
 const ResuableDropdown: React.FC<ResuableDropdownProps> = ({
+  label,
   value,
   onChange,
   options,
-  placeholder = "Select",
-  minWidth = 140,
+  placeholder = "Select Option",
+  className = "",
   disabled = false,
+  minWidth,
 }) => {
-  const handleChange = (event: SelectChangeEvent) => {
-    onChange(event.target.value);
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const selectedOption = options.find((opt) => opt.value === value);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleSelect = (optionValue: string) => {
+    onChange(optionValue);
+    setIsOpen(false);
   };
 
   return (
-    <FormControl size="small">
-      <Select
-        value={value}
-        onChange={handleChange}
-        displayEmpty
+    <div
+      className={`space-y-1.5 relative text-center ${className}`}
+      ref={dropdownRef}
+    >
+      {label && (
+        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+          {label}
+        </label>
+      )}
+      <button
+        type="button"
         disabled={disabled}
-        sx={{
-          minWidth: minWidth,
-          height: "38px",
-          fontSize: "14px",
-          backgroundColor: "white",
-          borderRadius: "4px",
-          border: "1px solid #e5e7eb",
-          boxShadow: "none",
-          "& .MuiOutlinedInput-notchedOutline": {
-            border: "none",
-            boxShadow: "none",
-          },
-          "&:hover .MuiOutlinedInput-notchedOutline": {
-            border: "none",
-            boxShadow: "none",
-          },
-          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-            border: "none",
-            boxShadow: "none",
-          },
-          "& .MuiSelect-icon": {
-            boxShadow: "none",
-          },
-        }}
-        MenuProps={{
-          PaperProps: {
-            sx: {
-              boxShadow: "none",
-              border: "1px solid #e5e7eb",
-              marginTop: "4px",
-              borderRadius: "4px",
-            },
-          },
-        }}
+        onClick={() => setIsOpen(!isOpen)}
+        style={{ minWidth }}
+        className={`w-full flex items-center justify-between bg-slate-50 border px-3 py-2.5 rounded-sm text-xs font-semibold transition-all text-center ${
+          isOpen
+            ? "border-[#22c55e] ring-1 ring-[#22c55e] text-slate-900 shadow-sm"
+            : "border-slate-200 text-slate-800"
+        } ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
       >
-        {placeholder && (
-          <MenuItem value="" sx={{ fontSize: "14px" }}>
-            {placeholder}
-          </MenuItem>
-        )}
-        {options.map((option) => (
-          <MenuItem
-            key={option.value}
-            value={option.value}
-            sx={{ fontSize: "14px" }}
-          >
-            {option.label}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+        <span className="flex-1 truncate">
+          {selectedOption ? selectedOption.label : placeholder}
+        </span>
+        <Icon
+          name="chevron-down"
+          className={`w-4 h-4 text-slate-400 transition-transform ${
+            isOpen ? "rotate-180 text-[#22c55e]" : ""
+          }`}
+        />
+      </button>
+
+      {isOpen && (
+        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-sm shadow-2xl z-[100] max-h-60 overflow-y-auto no-scrollbar animate-in fade-in zoom-in-95 duration-200">
+          {options.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => handleSelect(opt.value)}
+              className={`w-full text-center px-4 py-3 text-xs font-semibold transition-all border-b border-slate-50 last:border-none flex items-center justify-center gap-3 group ${
+                value === opt.value
+                  ? "bg-[#22c55e] text-white"
+                  : "text-slate-600 hover:bg-emerald-50 hover:text-[#22c55e]"
+              }`}
+            >
+              <span>{opt.label}</span>
+              {value === opt.value && (
+                <Icon name="check-circle" className="w-3.5 h-3.5 text-white" />
+              )}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
   );
 };
 

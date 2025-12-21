@@ -116,7 +116,7 @@ const DonorPage = () => {
   const getStatusColor = (status: string): string => {
     switch (status) {
       case "Active":
-        return "bg-green-100 text-green-800";
+        return "bg-emerald-50 text-hf-green border border-emerald-100";
       case "Pending":
         return "bg-yellow-100 text-yellow-800";
       case "Inactive":
@@ -132,14 +132,6 @@ const DonorPage = () => {
       currency: "USD",
       minimumFractionDigits: 0,
     }).format(amount);
-  };
-
-  const formatDate = (dateString: string): string => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
   };
 
   const handleViewProfile = (donor: Donor): void => {
@@ -204,9 +196,9 @@ const DonorPage = () => {
             <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                  <div className="w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center border border-emerald-100">
                     <svg
-                      className="w-4 h-4 text-green-600"
+                      className="w-4 h-4 text-hf-green"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -271,9 +263,9 @@ const DonorPage = () => {
             <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                  <div className="w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center border border-emerald-100">
                     <svg
-                      className="w-4 h-4 text-green-600"
+                      className="w-4 h-4 text-hf-green"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -406,145 +398,50 @@ const DonorPage = () => {
       {/* Profile Modal */}
       <ResuableModal
         isOpen={!!selectedDonor}
-        onOpenChange={(open: boolean) => !open && closeModal()}
-        size="4xl"
-        title={
-          selectedDonor && (
-            <div className="flex flex-col">
-              <h2 className="text-2xl font-bold text-gray-900">
-                {selectedDonor.businessName}
-              </h2>
-              <p className="text-sm text-gray-500 font-normal">
-                {selectedDonor.type}
-              </p>
-            </div>
-          )
+        onOpenChange={(open) => !open && closeModal()}
+        showTrendingLayout={true}
+        backdrop="blur"
+        data={
+          selectedDonor
+            ? {
+                partner: selectedDonor.businessName,
+                id: `DON-${selectedDonor.id.toString().padStart(5, "0")}`,
+                date: new Date().toLocaleDateString(),
+                email: selectedDonor.email,
+                phone: selectedDonor.contactPerson,
+                activeLedgers: 7, // Sample count for donor
+                logEvents: [
+                  { title: "Partner Verified", date: "Jan 2025" },
+                  { title: "Donation Cycle Started", date: "Feb 2025" },
+                  { title: "Active Status Confirmed", date: "Present" },
+                ],
+                history: [
+                  {
+                    id: "DON-1001",
+                    date: "Oct 20, 2024",
+                    amount: formatCurrency(12400),
+                    type: "Food Bulk",
+                    status: "Verified",
+                  },
+                  {
+                    id: "DON-1002",
+                    date: "Sep 12, 2024",
+                    amount: formatCurrency(8200),
+                    type: "Groceries",
+                    status: "Verified",
+                  },
+                  {
+                    id: "DON-1003",
+                    date: "Aug 05, 2024",
+                    amount: formatCurrency(15000),
+                    type: "Dry Goods",
+                    status: "Verified",
+                  },
+                ],
+              }
+            : undefined
         }
-        footer={
-          <div className="flex justify-end gap-3 w-full">
-            <ResuableButton variant="success" onClick={() => {}}>
-              Share Profile
-            </ResuableButton>
-          </div>
-        }
-      >
-        {selectedDonor && (
-          <div className="space-y-8">
-            {/* Header Stats */}
-            <div className="flex items-center gap-6 pb-6 border-b border-gray-100">
-              <span
-                className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-                  selectedDonor.status === "Active"
-                    ? "bg-green-100 text-green-800"
-                    : selectedDonor.status === "Pending"
-                    ? "bg-yellow-100 text-yellow-800"
-                    : "bg-gray-100 text-gray-800"
-                }`}
-              >
-                {selectedDonor.status}
-              </span>
-              <div className="text-gray-600">
-                <span className="font-semibold text-gray-900">
-                  {formatCurrency(selectedDonor.totalDonations)}
-                </span>{" "}
-                total donations
-              </div>
-              <div className="text-gray-600">
-                <span className="font-semibold text-gray-900">
-                  {selectedDonor.points.toLocaleString()}
-                </span>{" "}
-                points
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Profile Information */}
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                  <svg
-                    className="w-5 h-5 text-gray-600 mr-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                    />
-                  </svg>
-                  Profile Information
-                </h3>
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">
-                      Contact Person
-                    </label>
-                    <p className="text-gray-900 font-medium">
-                      {selectedDonor.contactPerson}
-                    </p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">
-                      Email
-                    </label>
-                    <p className="text-gray-900">{selectedDonor.email}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">
-                      Address
-                    </label>
-                    <p className="text-gray-900">{selectedDonor.address}</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Donation History */}
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                  <svg
-                    className="w-5 h-5 text-gray-600 mr-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                    />
-                  </svg>
-                  Donation History
-                </h3>
-                <div className="space-y-3">
-                  {selectedDonor.donationHistory?.map((donation, index) => (
-                    <div
-                      key={index}
-                      className="flex justify-between items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-150"
-                    >
-                      <div>
-                        <p className="font-medium text-gray-900">
-                          {donation.event}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          on {formatDate(donation.date)}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-semibold text-green-600">
-                          {formatCurrency(donation.amount)}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </ResuableModal>
+      />
     </>
   );
 };

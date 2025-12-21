@@ -54,7 +54,7 @@ const StatCard: React.FC<StatCardProps> = ({
     switch (changeType) {
       case "positive":
         return {
-          textColor: "text-green-600",
+          textColor: "text-hf-green",
           icon: <ArrowUpIcon />,
         };
       case "negative":

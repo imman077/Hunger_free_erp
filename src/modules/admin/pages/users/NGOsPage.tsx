@@ -4,7 +4,6 @@ import {
   DrawerContent,
   DrawerHeader,
   DrawerBody,
-  Button,
   useDisclosure,
 } from "@heroui/react";
 import ResuableDropdown from "../../../../global/components/resuable-components/dropdown";
@@ -101,7 +100,7 @@ const NgoPage = () => {
 
   const getStatusBadge = (status: NgoStatus): React.ReactElement => {
     const statusClasses: Record<NgoStatus, string> = {
-      Active: "bg-green-100 text-green-800 border border-green-300",
+      Active: "bg-emerald-50 text-hf-green border border-emerald-100",
       Pending: "bg-yellow-100 text-yellow-800 border border-yellow-300",
       Deactivated: "bg-red-100 text-red-800 border border-red-300",
     };
@@ -243,8 +242,8 @@ const NgoPage = () => {
                     Avg. Response Time
                   </div>
                 </div>
-                <div className="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center">
-                  <span className="text-green-600 text-lg">⏱️</span>
+                <div className="w-12 h-12 bg-emerald-50 rounded-lg flex items-center justify-center">
+                  <span className="text-hf-green text-lg">⏱️</span>
                 </div>
               </div>
             </div>
@@ -415,8 +414,8 @@ const NgoPage = () => {
                         </div>
 
                         <div className="flex items-start space-x-2">
-                          <div className="w-6 h-6 bg-green-100 rounded flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <span className="text-green-600 text-xs">📞</span>
+                          <div className="w-6 h-6 bg-emerald-50 rounded flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <span className="text-hf-green text-xs">📞</span>
                           </div>
                           <div className="min-w-0 flex-1">
                             <div className="text-xs font-medium text-gray-500 uppercase">
@@ -453,7 +452,7 @@ const NgoPage = () => {
                         {selectedNgo.serviceAreas.map((area, index) => (
                           <span
                             key={index}
-                            className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-50 text-green-800 border border-green-200"
+                            className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-emerald-50 text-hf-green border border-emerald-100"
                           >
                             {area}
                           </span>

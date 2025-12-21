@@ -1,15 +1,13 @@
-import {
-  FormControl,
-  MenuItem,
-  Select,
-  type SelectChangeEvent,
-} from "@mui/material";
 import { useState } from "react";
-import DatePicker from "../../../../global/common_functions/datepicker";
 import Tabs, {
   type Tab,
 } from "../../../../global/components/resuable-components/tabs";
 import ResuableButton from "../../../../global/components/resuable-components/button";
+import ResuableDropdown from "../../../../global/components/resuable-components/dropdown";
+import ResuableDatePicker from "../../../../global/components/resuable-components/datepicker";
+import ResuableTable, {
+  type ColumnDef,
+} from "../../../../global/components/resuable-components/table";
 
 const DonationOverview = () => {
   const [activeTab, setActiveTab] = useState("All");
@@ -88,6 +86,45 @@ const DonationOverview = () => {
     { label: "Completed", value: "Completed" },
   ];
 
+  const filteredDonations =
+    activeTab === "All"
+      ? donations
+      : donations.filter((donation) => donation.status === activeTab);
+
+  const [foodType, setFoodType] = useState("select food type");
+  const [quantity, setQuantity] = useState("select quantity");
+  const [location, setLocation] = useState("select location");
+  const [date, setDate] = useState<string | null>(null);
+
+  const foodTypeOptions = [
+    { value: "Prepared Meals", label: "Prepared Meals" },
+    { value: "Raw Ingredients", label: "Raw Ingredients" },
+    { value: "Baked Goods", label: "Baked Goods" },
+    { value: "Produce", label: "Produce" },
+  ];
+
+  const quantityOptions = [
+    { value: "0-25", label: "0-25" },
+    { value: "25-50", label: "25-50" },
+    { value: "50-100", label: "50-100" },
+    { value: "100+", label: "100+" },
+  ];
+
+  const locationOptions = [
+    { value: "Location 1", label: "Location 1" },
+    { value: "Location 2", label: "Location 2" },
+    { value: "Location 3", label: "Location 3" },
+  ];
+
+  const columns: ColumnDef[] = [
+    { uid: "id", name: "#", sortable: true },
+    { uid: "donor", name: "Donor", sortable: true },
+    { uid: "foodType", name: "Food Type", sortable: true },
+    { uid: "quantity", name: "Qty", sortable: true },
+    { uid: "pickupTime", name: "Pickup Time", sortable: true },
+    { uid: "status", name: "Status", sortable: true },
+  ];
+
   const getStatusColor = (status: any) => {
     switch (status) {
       case "Pending":
@@ -97,22 +134,24 @@ const DonationOverview = () => {
       case "In Progress":
         return "text-orange-600";
       case "Completed":
-        return "text-green-600";
+        return "text-hf-green";
       default:
         return "text-gray-600";
     }
   };
 
-  const filteredDonations =
-    activeTab === "All"
-      ? donations
-      : donations.filter((donation) => donation.status === activeTab);
+  const renderCell = (item: any, columnKey: React.Key) => {
+    const cellValue = item[columnKey as string];
 
-  const [foodType, setFoodType] = useState("select food type");
-  const [quantity, setQuantity] = useState("select quantity");
-  const [location, setLocation] = useState("select location");
-  const [date, setDate] = useState(null);
-  const handleDateChange = (value: any) => setDate(value);
+    if (columnKey === "status") {
+      return (
+        <span className={`text-sm font-medium ${getStatusColor(cellValue)}`}>
+          {cellValue}
+        </span>
+      );
+    }
+    return <span className="text-sm text-gray-900">{cellValue}</span>;
+  };
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -122,6 +161,7 @@ const DonationOverview = () => {
           Donation Overview
         </h2>
       </div>
+
       {/* Header Tabs */}
       <Tabs
         tabs={tabs}
@@ -154,185 +194,28 @@ const DonationOverview = () => {
 
         {/* Filter Controls */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {/* Food Type */}
-          <FormControl size="small">
-            <Select
-              labelId="food-type-select-label"
-              id="food-type-select"
-              value={foodType}
-              onChange={(e: SelectChangeEvent) => setFoodType(e.target.value)}
-              displayEmpty
-              sx={{
-                height: "40px",
-                fontSize: "14px",
-                backgroundColor: "white",
-                borderRadius: "8px",
-                border: "1px solid #e5e7eb",
-                boxShadow: "none",
-                textAlign: "left",
-                "& .MuiOutlinedInput-notchedOutline": {
-                  border: "none",
-                },
-                "&:hover": {
-                  borderColor: "#22c55e",
-                },
-                "&.Mui-focused": {
-                  borderColor: "#22c55e",
-                },
-              }}
-              MenuProps={{
-                PaperProps: {
-                  sx: {
-                    boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
-                    border: "1px solid #e5e7eb",
-                    marginTop: "4px",
-                    borderRadius: "8px",
-                  },
-                },
-              }}
-            >
-              <MenuItem
-                value="select food type"
-                sx={{ fontSize: "14px", color: "#9ca3af" }}
-              >
-                Select Food Type
-              </MenuItem>
-              <MenuItem value="Prepared Meals" sx={{ fontSize: "14px" }}>
-                Prepared Meals
-              </MenuItem>
-              <MenuItem value="Raw Ingredients" sx={{ fontSize: "14px" }}>
-                Raw Ingredients
-              </MenuItem>
-              <MenuItem value="Baked Goods" sx={{ fontSize: "14px" }}>
-                Baked Goods
-              </MenuItem>
-              <MenuItem value="Produce" sx={{ fontSize: "14px" }}>
-                Produce
-              </MenuItem>
-            </Select>
-          </FormControl>
+          <ResuableDropdown
+            options={foodTypeOptions}
+            value={foodType === "select food type" ? "" : foodType}
+            placeholder="Select Food Type"
+            onChange={setFoodType}
+          />
 
-          {/* Quantity */}
-          <FormControl size="small">
-            <Select
-              labelId="quantity-select-label"
-              id="quantity-select"
-              value={quantity}
-              onChange={(e: SelectChangeEvent) => setQuantity(e.target.value)}
-              displayEmpty
-              sx={{
-                height: "40px",
-                fontSize: "14px",
-                backgroundColor: "white",
-                borderRadius: "8px",
-                border: "1px solid #e5e7eb",
-                boxShadow: "none",
-                textAlign: "left",
-                "& .MuiOutlinedInput-notchedOutline": {
-                  border: "none",
-                },
-                "&:hover": {
-                  borderColor: "#22c55e",
-                },
-                "&.Mui-focused": {
-                  borderColor: "#22c55e",
-                },
-              }}
-              MenuProps={{
-                PaperProps: {
-                  sx: {
-                    boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
-                    border: "1px solid #e5e7eb",
-                    marginTop: "4px",
-                    borderRadius: "8px",
-                  },
-                },
-              }}
-            >
-              <MenuItem
-                value="select quantity"
-                sx={{ fontSize: "14px", color: "#9ca3af" }}
-              >
-                Select Quantity
-              </MenuItem>
-              <MenuItem value="0-25" sx={{ fontSize: "14px" }}>
-                0-25
-              </MenuItem>
-              <MenuItem value="25-50" sx={{ fontSize: "14px" }}>
-                25-50
-              </MenuItem>
-              <MenuItem value="50-100" sx={{ fontSize: "14px" }}>
-                50-100
-              </MenuItem>
-              <MenuItem value="100+" sx={{ fontSize: "14px" }}>
-                100+
-              </MenuItem>
-            </Select>
-          </FormControl>
+          <ResuableDropdown
+            options={quantityOptions}
+            value={quantity === "select quantity" ? "" : quantity}
+            placeholder="Select Quantity"
+            onChange={setQuantity}
+          />
 
-          {/* Location */}
-          <FormControl size="small">
-            <Select
-              labelId="location-select-label"
-              id="location-select"
-              value={location}
-              onChange={(e: SelectChangeEvent) => setLocation(e.target.value)}
-              displayEmpty
-              sx={{
-                height: "40px",
-                fontSize: "14px",
-                backgroundColor: "white",
-                borderRadius: "8px",
-                border: "1px solid #e5e7eb",
-                boxShadow: "none",
-                textAlign: "left",
-                "& .MuiOutlinedInput-notchedOutline": {
-                  border: "none",
-                },
-                "&:hover": {
-                  borderColor: "#22c55e",
-                },
-                "&.Mui-focused": {
-                  borderColor: "#22c55e",
-                },
-              }}
-              MenuProps={{
-                PaperProps: {
-                  sx: {
-                    boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
-                    border: "1px solid #e5e7eb",
-                    marginTop: "4px",
-                    borderRadius: "8px",
-                  },
-                },
-              }}
-            >
-              <MenuItem
-                value="select location"
-                sx={{ fontSize: "14px", color: "#9ca3af" }}
-              >
-                Select Location
-              </MenuItem>
-              <MenuItem value="Location 1" sx={{ fontSize: "14px" }}>
-                Location 1
-              </MenuItem>
-              <MenuItem value="Location 2" sx={{ fontSize: "14px" }}>
-                Location 2
-              </MenuItem>
-              <MenuItem value="Location 3" sx={{ fontSize: "14px" }}>
-                Location 3
-              </MenuItem>
-            </Select>
-          </FormControl>
+          <ResuableDropdown
+            options={locationOptions}
+            value={location === "select location" ? "" : location}
+            placeholder="Select Location"
+            onChange={setLocation}
+          />
 
-          {/* Date Picker */}
-          <div className="w-full">
-            <DatePicker
-              value={date}
-              onChange={handleDateChange}
-              placeholder="Pick a date"
-            />
-          </div>
+          <ResuableDatePicker value={date} onChange={setDate} />
         </div>
       </div>
 
@@ -344,62 +227,13 @@ const DonationOverview = () => {
       </div>
 
       {/* Donations Table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-center   text-xs font-medium text-gray-500 uppercase tracking-wider">
-                #
-              </th>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Donor
-              </th>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Food Type
-              </th>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Qty
-              </th>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Pickup Time
-              </th>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Status
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {filteredDonations.map((donation) => (
-              <tr key={donation.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {donation.id}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {donation.donor}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {donation.foodType}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {donation.quantity}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {donation.pickupTime}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span
-                    className={`text-sm font-medium ${getStatusColor(
-                      donation.status
-                    )}`}
-                  >
-                    {donation.status}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <ResuableTable
+        data={filteredDonations}
+        columns={columns}
+        renderCell={renderCell}
+        enableSearch={false}
+        enablePagination={true}
+      />
 
       {/* Action Buttons */}
       <div className="flex gap-3 justify-end p-3">
