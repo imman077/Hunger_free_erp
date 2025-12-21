@@ -45,7 +45,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
 
   const content = (
     <div
-      className={`group relative w-full flex items-center px-4 py-2 transition-all duration-300 cursor-pointer mb-0.5
+      className={`group relative w-full flex items-center px-4 py-2 border border-slate-100 transition-all duration-300 cursor-pointer mb-0.5
         ${
           isActive || isSubItemActive
             ? "text-emerald-700 bg-emerald-50/40"
@@ -70,14 +70,14 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         `}
         style={{ backgroundColor: "#22c55e" }}
       />
-      <div className="w-6 h-6 flex items-center justify-center shrink-0">
+      <div className="w-8 h-8 flex items-center justify-center shrink-0">
         <Icon
           name={
             typeof icon === "string"
               ? icon
               : (icon as any).props.name || label.toLowerCase()
           }
-          className={`w-5 h-5 transition-colors duration-300 ${
+          className={`w-6 h-6 transition-colors duration-300 ${
             isActive || isSubItemActive
               ? "text-emerald-500"
               : "opacity-70 group-hover:opacity-100"
@@ -254,6 +254,10 @@ const SidebarIcons: React.FC = () => {
       </div>
 
       <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Subtle separator */}
+        {/* <div className="px-6 pb-2">
+          <div className="h-[2px] bg-slate-50 w-full" />
+        </div> */}
         <nav className="flex-1 overflow-y-auto no-scrollbar px-0 py-2 space-y-0.5">
           <div className="space-y-1">
             {/* {expanded && (
@@ -316,7 +320,7 @@ const SidebarIcons: React.FC = () => {
 
         <div className="p-4 border-t border-slate-50 bg-slate-50/20 flex flex-col items-center gap-3 transition-all duration-500">
           {expanded && (
-            <div className="w-full p-2.5 rounded-2xl bg-white border border-slate-100 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_24px_-8px_rgba(0,0,0,0.08)] transition-all duration-500 group/profile cursor-pointer">
+            <div className="w-full p-2.5 rounded-2xl bg-white border border-slate-100 transition-all duration-500 group/profile cursor-pointer">
               <div className="flex items-center gap-3">
                 <div className="relative shrink-0">
                   <img

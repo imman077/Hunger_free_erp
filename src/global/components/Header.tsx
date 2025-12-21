@@ -180,10 +180,10 @@ const Header: React.FC = () => {
 
           {/* Image - Visible on all screens */}
           <img
-              src="/HungerFree.svg"
-              className="h-14 w-auto object-contain animate-in fade-in slide-in-from-left-4 duration-500 filter drop-shadow-sm"
-              alt="HungerFree Logo"
-            />
+            src="/HungerFree.svg"
+            className="h-14 w-auto object-contain animate-in fade-in slide-in-from-left-4 duration-500 filter drop-shadow-sm"
+            alt="HungerFree Logo"
+          />
         </div>
 
         {/* Right section - Notifications and avatar */}
@@ -292,7 +292,7 @@ const Header: React.FC = () => {
 
       {/* ---------------- NOTIFICATION DRAWER ---------------- */}
       <div
-        className={`fixed top-0 right-0 h-full w-full max-w-[420px] bg-white shadow-[-20px_0_60px_rgba(0,0,0,0.05)] z-[100] transform transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col ${
+        className={`fixed top-0 right-0 h-full w-full max-w-[380px] bg-white shadow-[-20px_0_60px_rgba(0,0,0,0.05)] z-[100] transform transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col ${
           notificationDrawerOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -300,7 +300,7 @@ const Header: React.FC = () => {
         <div className="p-5 pb-0 flex flex-col gap-4 flex-shrink-0">
           <div className="flex items-center justify-between">
             <div className="flex flex-col">
-              <h3 className="text-lg font-extrabold text-slate-900 tracking-tight leading-none mb-1.5">
+              <h3 className="text-base font-extrabold text-slate-900 tracking-tight leading-none mb-1">
                 Notifications
               </h3>
               <div className="flex items-center gap-1.5">
@@ -310,7 +310,7 @@ const Header: React.FC = () => {
                       className="w-1.5 h-1.5 rounded-full bg-hf-green animate-pulse"
                       style={{ backgroundColor: "#22c55e" }}
                     />
-                    <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
                       {getUnreadCount()} Active
                     </span>
                   </>
@@ -338,25 +338,22 @@ const Header: React.FC = () => {
                     prev.map((n) => ({ ...n, isRead: true }))
                   );
                 }}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-emerald-50 border border-slate-200/60 rounded-lg text-xs font-black text-slate-600 hover:text-hf-green uppercase tracking-wider transition-all"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-emerald-50 border border-slate-200/60 rounded-lg text-xs font-black text-slate-600 hover:text-hf-green tracking-wider transition-all"
               >
                 <CheckCircleIcon
                   className="w-3 h-3 text-hf-green"
                   style={{ color: "#22c55e" }}
                 />
-                Mark Read
+                Mark as Read
               </button>
               <button
                 onClick={clearAllNotifications}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-rose-50 border border-slate-200/60 rounded-lg text-xs font-black text-slate-600 hover:text-rose-500 uppercase tracking-wider transition-all"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-rose-50 border border-slate-200/60 rounded-lg text-xs font-black text-slate-600 hover:text-rose-500 tracking-wider transition-all"
               >
                 <TrashIcon className="w-3 h-3" />
                 Clear
               </button>
             </div>
-            <button className="w-8 h-8 rounded-lg border border-slate-100 flex items-center justify-center bg-white shadow-sm text-slate-300 hover:text-slate-600">
-              <SettingsIcon className="w-3.5 h-3.5" />
-            </button>
           </div>
         </div>
 
@@ -414,36 +411,38 @@ const Header: React.FC = () => {
                     >
                       {n.type === "success" ? "SYSTEM" : n.type.toUpperCase()}
                     </span>
-                    <span className="text-xs text-slate-300 font-bold tabular-nums">
-                      {formatDistanceToNow(n.time, { addSuffix: false })}
-                    </span>
                   </div>
 
                   <h4
-                    className="text-base font-bold text-slate-900 mb-0.5 group-hover:text-hf-green transition-colors leading-snug truncate"
+                    className="text-[13px] font-bold text-slate-900 mb-0.5 group-hover:text-hf-green transition-colors leading-snug truncate"
                     style={
                       { "--hover-color": "#22c55e" } as React.CSSProperties
                     }
                   >
                     {n.title}
                   </h4>
-                  <p className="text-xs text-slate-500 font-medium leading-tight">
+                  <p className="text-[11px] text-slate-500 font-medium leading-tight">
                     {n.message}
                   </p>
 
-                  <div className="mt-2.5 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all translate-y-1 group-hover:translate-y-0">
-                    <button className="flex items-center gap-1.5 px-2 py-1 bg-slate-900 text-white rounded-md text-[8px] font-black uppercase tracking-widest hover:bg-black transition-all">
-                      Review
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        deleteNotification(n.id);
-                      }}
-                      className="p-1 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-md transition-all"
-                    >
-                      <TrashIcon className="w-3 h-3" />
-                    </button>
+                  <div className="mt-2.5 flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all translate-y-1 group-hover:translate-y-0">
+                      <button className="flex items-center gap-1.5 px-2 py-1 bg-slate-900 text-white rounded-md text-[8px] font-black uppercase tracking-widest hover:bg-black transition-all">
+                        Review
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteNotification(n.id);
+                        }}
+                        className="p-1 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-md transition-all"
+                      >
+                        <TrashIcon className="w-3 h-3" />
+                      </button>
+                    </div>
+                    <span className="text-[9px] text-slate-300 font-semibold tabular-nums">
+                      {formatDistanceToNow(n.time, { addSuffix: false })}
+                    </span>
                   </div>
                 </div>
 

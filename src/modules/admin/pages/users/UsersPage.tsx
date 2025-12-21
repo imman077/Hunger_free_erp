@@ -336,7 +336,7 @@ const UsersPage = () => {
       <div className="w-full space-y-6 p-6">
         {/* Header */}
         <div className="w-full flex items-center justify-between">
-          <h1 className="text-2xl font-semibold text-gray-900">
+          <h1 className="text-xl font-bold text-gray-900 tracking-tight">
             User Management
           </h1>
         </div>
@@ -349,9 +349,11 @@ const UsersPage = () => {
               size={18}
               className="absolute top-4 right-4 text-gray-400"
             />
-            <h2 className="text-sm text-gray-500">Total Users</h2>
-            <p className="text-3xl font-semibold mt-2">1,245</p>
-            <p className="text-gray-400 text-sm mt-1">All registered users</p>
+            <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+              Total Users
+            </h2>
+            <p className="text-2xl font-black mt-2 text-slate-800">1,245</p>
+            <p className="text-gray-400 text-xs mt-1">All registered users</p>
           </div>
 
           {/* Active Users */}
@@ -360,9 +362,11 @@ const UsersPage = () => {
               size={18}
               className="absolute top-4 right-4 text-gray-400"
             />
-            <h2 className="text-sm text-gray-500">Active Users</h2>
-            <p className="text-3xl font-semibold mt-2">1,100</p>
-            <p className="text-gray-400 text-sm mt-1">
+            <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+              Active Users
+            </h2>
+            <p className="text-2xl font-black mt-2 text-slate-800">1,100</p>
+            <p className="text-gray-400 text-xs mt-1">
               Currently active on platform
             </p>
           </div>
@@ -373,9 +377,11 @@ const UsersPage = () => {
               size={18}
               className="absolute top-4 right-4 text-gray-400"
             />
-            <h2 className="text-sm text-gray-500">New Users</h2>
-            <p className="text-3xl font-semibold mt-2">45</p>
-            <p className="text-gray-400 text-sm mt-1">
+            <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+              New Users
+            </h2>
+            <p className="text-2xl font-black mt-2 text-slate-800">45</p>
+            <p className="text-gray-400 text-xs mt-1">
               Joined in the last 30 days
             </p>
           </div>
