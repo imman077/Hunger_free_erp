@@ -6,7 +6,10 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import DatePicker from "../../../../global/common_functions/datepicker";
-import Tabs, { type Tab } from "../../../../global/components/resuable-components/tabs";
+import Tabs, {
+  type Tab,
+} from "../../../../global/components/resuable-components/tabs";
+import ResuableButton from "../../../../global/components/resuable-components/button";
 
 const DonationOverview = () => {
   const [activeTab, setActiveTab] = useState("All");
@@ -400,29 +403,26 @@ const DonationOverview = () => {
 
       {/* Action Buttons */}
       <div className="flex gap-3 justify-end p-3">
-        <button
-          type="button"
-          className="inline-flex items-center gap-2 rounded-md bg-green-500 px-4 py-2 text-sm font-medium text-white hover:bg-green-600 active:bg-green-700 focus:outline-none"
+        <ResuableButton
+          variant="success"
+          startContent={<i className="fa-solid fa-user-plus text-xs" />}
         >
-          <i className="fa-solid fa-user-plus text-xs" />
-          <span>Assign Volunteer</span>
-        </button>
+          Assign Volunteer
+        </ResuableButton>
 
-        <button
-          type="button"
-          className="inline-flex items-center gap-2 rounded-md bg-green-500 px-4 py-2 text-sm font-medium text-white hover:bg-green-600 active:bg-green-700 focus:outline-none"
+        <ResuableButton
+          variant="success"
+          startContent={<i className="fa-solid fa-rotate-right text-xs" />}
         >
-          <i className="fa-solid fa-rotate-right text-xs" />
-          <span>Update Status</span>
-        </button>
+          Update Status
+        </ResuableButton>
 
-        <button
-          type="button"
-          className="inline-flex items-center gap-2 rounded-md bg-green-500 px-4 py-2 text-sm font-medium text-white hover:bg-green-600 active:bg-green-700 focus:outline-none"
+        <ResuableButton
+          variant="success"
+          startContent={<i className="fa-solid fa-download text-xs" />}
         >
-          <i className="fa-solid fa-download text-xs" />
-          <span>Export</span>
-        </button>
+          Export
+        </ResuableButton>
       </div>
     </div>
   );

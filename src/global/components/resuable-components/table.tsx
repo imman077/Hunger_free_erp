@@ -293,14 +293,14 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
                         "border",
                         "border-gray-300",
                         "bg-white",
-                        "rounded",
+                        "rounded-sm",
                         "!shadow-none",
                         "hover:border-gray-300",
                         "focus-within:border-gray-300",
                         "data-[hover=true]:border-gray-300",
                         "data-[focus=true]:border-gray-300",
                       ].join(" "),
-                      input: "text-gray-900 placeholder:text-gray-400",
+                      input: "text-gray-900 placeholder:text-gray-400 pl-2",
                       clearButton:
                         "text-gray-400 hover:text-gray-600 !border-none !p-0 !bg-transparent",
                     }}
@@ -313,7 +313,7 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
                   <DropdownTrigger>
                     <Button
                       variant="flat"
-                      className="border border-gray-300 bg-white rounded h-10 data-[hover=true]:bg-gray-50 data-[hover=true]:border-gray-400"
+                      className="border border-gray-300 bg-white rounded-sm h-10 data-[hover=true]:bg-gray-50 data-[hover=true]:border-gray-400"
                       style={{
                         backgroundColor: "white",
                         color: "#4b5563",
@@ -339,10 +339,27 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
                       setPage(1);
                     }}
                     classNames={{
-                      base: "bg-white border border-gray-200 rounded-lg shadow-lg min-w-[140px]",
+                      base: "bg-white border border-gray-200 rounded-sm min-w-[140px]",
                     }}
                     itemClasses={{
-                      base: "text-gray-700 data-[hover=true]:bg-gray-100 data-[selected=true]:bg-blue-50 data-[selected=true]:text-blue-700 rounded-md px-3 py-2",
+                      base: [
+                        "text-gray-700",
+                        "data-[hover=true]:bg-gray-100",
+                        "data-[selected=true]:bg-blue-50",
+                        "data-[selected=true]:text-blue-700",
+                        "rounded-sm",
+                        "px-3",
+                        "py-2",
+                        "relative", // Add relative positioning
+                      ].join(" "),
+                      selectedIcon: [
+                        "text-green-600",
+                        "absolute", // Position absolutely
+                        "right-3", // Position on the right
+                        "top-1/2", // Center vertically
+                        "-translate-y-1/2", // Center vertically
+                      ].join(" "),
+                      wrapper: "pr-6", // Add padding on the right for the icon
                     }}
                   >
                     {statusOptions.map((status) => (
@@ -360,7 +377,7 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
                 <DropdownTrigger>
                   <Button
                     variant="flat"
-                    className="border border-gray-300 bg-white rounded h-10 data-[hover=true]:bg-gray-50 data-[hover=true]:border-gray-400"
+                    className="border border-gray-300 bg-white rounded-sm h-10 data-[hover=true]:bg-gray-50 data-[hover=true]:border-gray-400"
                     style={{
                       backgroundColor: "white",
                       color: "#4b5563",
@@ -381,14 +398,28 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
                   selectionMode="multiple"
                   onSelectionChange={setVisibleColumns}
                   classNames={{
-                    base: "bg-white border border-gray-200 rounded-lg shadow-lg min-w-[140px]",
+                    base: "bg-white border border-gray-200 rounded-sm min-w-[160px] p-1",
                   }}
                   itemClasses={{
-                    base: "text-gray-700 data-[hover=true]:bg-gray-100 data-[selected=true]:bg-blue-50 data-[selected=true]:text-blue-700 rounded-md px-3 py-2",
+                    base: [
+                      "text-gray-700",
+                      "data-[hover=true]:bg-gray-100",
+                      "data-[selected=true]:bg-white",
+                      "data-[selected=true]:text-gray-900",
+                      "rounded-sm",
+                      "px-3",
+                      "py-2",
+                      "transition-colors",
+                    ].join(" "),
+                    selectedIcon: "text-green-600",
                   }}
                 >
                   {columns.map((column) => (
-                    <DropdownItem key={column.uid} className="capitalize">
+                    <DropdownItem
+                      key={column.uid}
+                      className="capitalize"
+                      showDivider={false}
+                    >
                       {column.name}
                     </DropdownItem>
                   ))}
@@ -397,7 +428,7 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
               {onAddNew && (
                 <Button
                   color="primary"
-                  className="bg-green-600 text-white rounded h-10 px-4 font-medium data-[hover=true]:bg-green-700"
+                  className="bg-green-600 text-white rounded-sm h-10 px-4 font-medium data-[hover=true]:bg-green-700"
                   style={{ backgroundColor: "#22c55e", color: "white" }}
                   endContent={<PlusIcon />}
                   onPress={onAddNew}
@@ -408,11 +439,27 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-2">
+          <div className="flex justify-between items-center">
             <div className="flex items-center gap-3">
-              <span className="text-gray-600 text-sm">
-                Total {data.length} items
-              </span>
+              <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-sm px-3 py-1.5">
+                {/* <svg
+                  className="w-4 h-4 text-green-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
+                </svg> */}
+                <span className="text-gray-700 text-sm font-medium">
+                  Total <span className="font-semibold">{data.length}</span>{" "}
+                  items
+                </span>
+              </div>
               {filteredItems.length !== data.length && (
                 <Chip
                   variant="flat"
@@ -426,7 +473,7 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
               <label className="flex items-center text-gray-600 text-sm">
                 Rows per page:
                 <select
-                  className="bg-transparent outline-none text-gray-700 text-sm ml-2 cursor-pointer border border-gray-300 rounded px-2 py-1 hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                  className="bg-transparent outline-none text-gray-700 text-sm ml-2 cursor-pointer border border-gray-300 rounded-sm px-2 py-1 hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                   onChange={onRowsPerPageChange}
                   value={rowsPerPage}
                 >
@@ -463,7 +510,7 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
 
     return (
       <div className="py-2 px-2 flex flex-col sm:flex-row justify-between items-center gap-2">
-        <div className="w-full sm:w-[30%]">
+        <div className="w-full sm:w-[30%] flex justify-start">
           {selectedKeys !== "all" && Array.from(selectedKeys).length > 0 && (
             <Chip
               variant="flat"
@@ -483,10 +530,10 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
           onChange={setPage}
           classNames={{
             wrapper: "gap-1",
-            item: "min-w-8 h-8 text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-100",
+            item: "min-w-8 h-8 text-gray-700 bg-white border border-gray-300 rounded-sm hover:bg-gray-100",
             cursor: "bg-green-600 text-white border-green-600",
-            prev: "min-w-8 h-8 bg-white border border-gray-300 rounded text-gray-700 hover:bg-gray-100",
-            next: "min-w-8 h-8 bg-white border border-gray-300 rounded text-gray-700 hover:bg-gray-100",
+            prev: "min-w-8 h-8 bg-white border border-gray-300 rounded-sm text-gray-700 hover:bg-gray-100",
+            next: "min-w-8 h-8 bg-white border border-gray-300 rounded-sm text-gray-700 hover:bg-gray-100",
           }}
         />
 
@@ -517,14 +564,15 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
   }, [page, pages, enablePagination, selectedKeys, onPreviousPage, onNextPage]);
 
   return (
-    <div className="bg-white border border-gray-300 rounded-lg p-4">
+    <div className="bg-white border border-gray-300 rounded-sm p-4">
       <Table
+        isCompact
         isHeaderSticky
         aria-label="Table"
         bottomContent={bottomContent}
         bottomContentPlacement="outside"
         classNames={{
-          wrapper: "min-h-[400px]",
+          wrapper: "p-0",
           th: `
               bg-gray-100 
               text-gray-700 
@@ -552,9 +600,9 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
           {(column: ColumnDef) => (
             <TableColumn
               key={column.uid}
-              align={column.uid === "actions" ? "center" : "start"}
+              align="center"
               allowsSorting={column.sortable}
-              className="text-gray-700"
+              className="text-gray-700 text-center"
             >
               {column.name}
             </TableColumn>
@@ -575,7 +623,7 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
               className="data-[hover=true]:bg-gray-50"
             >
               {(columnKey) => (
-                <TableCell className="text-gray-900">
+                <TableCell className="text-gray-900 text-center">
                   {renderCell(item, columnKey)}
                 </TableCell>
               )}

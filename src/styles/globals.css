@@ -112,15 +112,13 @@ input[type="checkbox"]:hover {
 }
 
 /* Removed the global [data-hover="true"] rule that was hiding borders on all hover states */
-/* Pagination button styles - force white background */
-.pagination-btn,
-button[data-variant="flat"] {
+/* Pagination button styles - only for table pagination */
+.pagination-btn {
   background-color: white !important;
   color: #4b5563 !important;
 }
 
-.pagination-btn:hover,
-button[data-variant="flat"]:hover {
+.pagination-btn:hover {
   background-color: #f3f4f6 !important;
 }
 
@@ -128,18 +126,4 @@ button[data-variant="flat"]:hover {
 [data-slot="prev"]:hover,
 [data-slot="next"]:hover {
   background-color: #f3f4f6 !important;
-}
-
-/* Preserve green color for primary/green buttons */
-button.bg-green-600,
-button[style*="background-color: rgb(34, 197, 94)"] {
-  background-color: #22c55e !important;
-  color: white !important;
-  border-color: #22c55e !important;
-}
-
-button.bg-green-600:hover,
-button[style*="background-color: rgb(34, 197, 94)"]:hover {
-  background-color: #22c55e !important;
-  border-color: #22c55e !important;
 }

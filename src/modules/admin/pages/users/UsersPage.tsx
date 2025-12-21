@@ -23,14 +23,14 @@ import theme from "../../../../global/utils/theme";
 import CustomTabs, {
   type Tab,
 } from "../../../../global/components/resuable-components/tabs";
-import ERPGridTable from "../../../../global/components/resuable-components/table";
+import ResuableTable from "../../../../global/components/resuable-components/table";
 import type { ColumnDef } from "../../../../global/components/resuable-components/table";
 
 // User type for this page (unchanged)
 interface UserItem {
   id: number;
   name: string;
-  type: string;
+  role: string;
   status: string;
   date: string;
   userId: string;
@@ -57,7 +57,7 @@ const USERS: UserItem[] = [
   {
     id: 1,
     name: "Hotel Grand",
-    type: "Donor",
+    role: "Donor",
     status: "Active",
     date: "Dec 1, 2023",
     userId: "USR-00789",
@@ -92,7 +92,7 @@ const USERS: UserItem[] = [
   {
     id: 2,
     name: "Hope Foundation",
-    type: "NGO",
+    role: "NGO",
     status: "Active",
     date: "Nov 28, 2023",
     userId: "USR-00790",
@@ -126,7 +126,7 @@ const USERS: UserItem[] = [
   {
     id: 3,
     name: "Raj Kumar",
-    type: "Volunteer",
+    role: "Volunteer",
     status: "New",
     date: "Dec 15, 2023",
     userId: "USR-00791",
@@ -155,7 +155,7 @@ const USERS: UserItem[] = [
   {
     id: 4,
     name: "Admin One",
-    type: "Admin",
+    role: "Admin",
     status: "Active",
     date: "Jan 5, 2023",
     userId: "USR-00792",
@@ -180,7 +180,7 @@ const USERS: UserItem[] = [
   {
     id: 5,
     name: "Green Earth Trust",
-    type: "NGO",
+    role: "NGO",
     status: "Pending",
     date: "Dec 10, 2023",
     userId: "USR-00793",
@@ -225,7 +225,9 @@ const UsersPage = () => {
   // HeroUI Column definitions
   const columns: ColumnDef[] = useMemo(
     () => [
+      { name: "Image", uid: "avatar", sortable: false },
       { name: "User", uid: "name", sortable: true },
+      { name: "Role", uid: "role", sortable: true },
       { name: "Type", uid: "type", sortable: true },
       { name: "Status", uid: "status", sortable: true },
       { name: "Join Date", uid: "date", sortable: true },
@@ -265,41 +267,45 @@ const UsersPage = () => {
       const cellValue = user[columnKey as keyof UserItem];
 
       switch (columnKey) {
-        case "name":
+        case "avatar":
           return (
-            <div
-              className="flex items-center gap-3 py-1 cursor-pointer"
-              onClick={() => openUserModal(user)}
-            >
+            <div className="flex justify-center">
               <img
                 src={`https://i.pravatar.cc/150?u=${user.id}`}
                 alt={user.name}
-                className="w-10 h-10 rounded-full object-cover"
+                className="w-10 h-10 rounded-full object-cover cursor-pointer"
+                onClick={() => openUserModal(user)}
               />
-              <div className="flex flex-col">
-                <span className="font-medium text-gray-900">{user.name}</span>
-                <span className="text-xs text-gray-500">{user.email}</span>
-              </div>
             </div>
           );
-        case "type":
-          const typeColors: Record<string, string> = {
+        case "name":
+          return (
+            <div
+              className="flex flex-col add new-pointer"
+              onClick={() => openUserModal(user)}
+            >
+              <span className="font-medium text-gray-900">{user.name}</span>
+            </div>
+          );
+        case "role":
+          const roleColors: Record<string, string> = {
             Donor: "bg-blue-100 text-blue-800",
             NGO: "bg-purple-100 text-purple-800",
             Volunteer: "bg-green-100 text-green-800",
             Admin: "bg-red-100 text-red-800",
           };
           return (
-            <div className="flex flex-col gap-1">
-              <span
-                className={`px-2 py-0.5 rounded-full text-xs font-medium inline-block w-fit ${
-                  typeColors[user.type] || "bg-gray-100 text-gray-800"
-                }`}
-              >
-                {user.type}
-              </span>
-              <span className="text-xs text-gray-500">{user.organization}</span>
-            </div>
+            <span
+              className={`px-2 py-0.5 rounded-full text-xs font-medium inline-block ${
+                roleColors[user.role] || "bg-gray-100 text-gray-800"
+              }`}
+            >
+              {user.role}
+            </span>
+          );
+        case "type":
+          return (
+            <span className="text-sm text-gray-700">{user.organization}</span>
           );
         case "status":
           const statusColors: Record<string, string> = {
@@ -384,10 +390,21 @@ const UsersPage = () => {
         />
 
         {/* Users Table - Generic HeroUI Table */}
-        <ERPGridTable
+        <ResuableTable
           data={filteredUsers}
           columns={columns}
           renderCell={renderCell}
+          initialVisibleColumns={[
+            "avatar",
+            "name",
+            "role",
+            "status",
+            "date",
+            "email",
+            "phone",
+            "location",
+            "totalPoints",
+          ]}
           onAddNew={() => console.log("Add new clicked")}
         />
       </div>
@@ -415,7 +432,7 @@ const UsersPage = () => {
                     {selectedUser.name}
                   </Typography>
                   <MuiChip
-                    label={selectedUser.type}
+                    label={selectedUser.role}
                     color="primary"
                     size="small"
                   />
@@ -667,8 +684,8 @@ const UsersPage = () => {
                       </Box>
                     </Box>
 
-                    {/* Table for donation history using Global ERPGridTable */}
-                    <ERPGridTable
+                    {/* Table for donation history using Global ResuableTable */}
+                    <ResuableTable
                       data={[
                         {
                           date: "11/20/2025",

@@ -1,5 +1,4 @@
-import { Button } from "@heroui/react";
-import { Users, Shield, HandHeart, UserPlus, Handshake } from "lucide-react";
+import { Users, HandHeart, UserPlus, Handshake } from "lucide-react";
 import {
   CheckCircle,
   User,
@@ -9,6 +8,7 @@ import {
 } from "lucide-react";
 import LineChart from "../../../../global/charts/LineChart";
 import BarChart from "../../../../global/charts/BarChart";
+import { StatCardGrid } from "../../../../global/components/resuable-components/cards";
 
 const AdminDashboard = () => {
   const stats = [
@@ -17,28 +17,28 @@ const AdminDashboard = () => {
       value: "1.2K",
       change: "+15% from last month",
       changeColor: "text-green-600",
-      icon: <HandHeart size={20} className="text-gray-500" />,
+      icon: <HandHeart size={20} />,
     },
     {
       title: "Active Users",
       value: "542",
       change: "+8% from last week",
       changeColor: "text-green-600",
-      icon: <Users size={20} className="text-gray-500" />,
+      icon: <Users size={20} />,
     },
     {
       title: "NGO Partners",
       value: "68",
       change: "+2 new this month",
       changeColor: "text-green-600",
-      icon: <Handshake size={20} className="text-gray-500" />,
+      icon: <Handshake size={20} />,
     },
     {
       title: "Volunteers Onboarded",
       value: "210",
       change: "-3% from last month",
       changeColor: "text-red-600",
-      icon: <UserPlus size={20} className="text-gray-500" />,
+      icon: <UserPlus size={20} />,
     },
   ];
 
@@ -93,30 +93,18 @@ const AdminDashboard = () => {
       </h1>
 
       {/* Four Boxes */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        {stats.map((item, index) => (
-          <div
-            key={index}
-            className="bg-white rounded-md p-5 border border-gray-100"
-          >
-            <div className="flex justify-between items-center mb-2">
-              <h4 className="text-sm font-medium text-gray-600">
-                {item.title}
-              </h4>
-              {item.icon}
-            </div>
-            <div className="flex flex-col items-start">
-              <p className="text-2xl font-semibold text-gray-900">
-                {item.value}
-              </p>
-
-              <p className={`text-xs mt-1 ${item.changeColor}`}>
-                {item.change}
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
+      <StatCardGrid
+        cards={stats.map((item) => ({
+          title: item.title,
+          value: item.value,
+          change: item.change,
+          changeType: item.changeColor.includes("green")
+            ? "positive"
+            : "negative",
+          icon: item.icon,
+        }))}
+        columns={4}
+      />
 
       {/* Activity Charts */}
       <h1 className="text-2xl font-semibold text-black text-start">

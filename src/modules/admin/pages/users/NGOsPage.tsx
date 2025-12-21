@@ -7,12 +7,7 @@ import {
   Button,
   useDisclosure,
 } from "@heroui/react";
-import {
-  FormControl,
-  MenuItem,
-  Select,
-  type SelectChangeEvent,
-} from "@mui/material";
+import ResuableDropdown from "../../../../global/components/resuable-components/dropdown";
 
 type NgoStatus = "Active" | "Pending" | "Deactivated";
 
@@ -101,8 +96,8 @@ const NgoPage = () => {
     onOpen();
   };
 
-  const [status, setStatus] = useState("Status");
-  const [serviceArea, setServiceArea] = useState("Service Area");
+  const [status, setStatus] = useState("");
+  const [serviceArea, setServiceArea] = useState("");
 
   const getStatusBadge = (status: NgoStatus): React.ReactElement => {
     const statusClasses: Record<NgoStatus, string> = {
@@ -146,152 +141,37 @@ const NgoPage = () => {
               </span>
 
               {/* Status Filter */}
-              <div className="flex items-center gap-2">
-                <FormControl size="small">
-                  <Select
-                    labelId="status-select-label"
-                    id="status-select"
-                    value={status}
-                    onChange={(e: SelectChangeEvent) =>
-                      setStatus(e.target.value)
-                    }
-                    displayEmpty
-                    sx={{
-                      minWidth: 140,
-                      height: "38px",
-                      fontSize: "14px",
-                      backgroundColor: "white",
-                      borderRadius: "8px",
-                      border: "1px solid #e5e7eb",
-                      // Remove all shadow effects
-                      boxShadow: "none",
-                      "& .MuiOutlinedInput-notchedOutline": {
-                        border: "none",
-                        boxShadow: "none",
-                      },
-                      "&:hover .MuiOutlinedInput-notchedOutline": {
-                        border: "none",
-                        boxShadow: "none",
-                      },
-                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                        border: "none",
-                        boxShadow: "none",
-                      },
-                      // Remove dropdown icon shadow if any
-                      "& .MuiSelect-icon": {
-                        boxShadow: "none",
-                      },
-                    }}
-                    // Remove menu shadow via MenuProps
-                    MenuProps={{
-                      PaperProps: {
-                        sx: {
-                          boxShadow: "none",
-                          border: "1px solid #e5e7eb",
-                          marginTop: "4px",
-                          borderRadius: "8px",
-                        },
-                      },
-                    }}
-                  >
-                    <MenuItem value="Status" sx={{ fontSize: "14px" }}>
-                      Status
-                    </MenuItem>
-                    <MenuItem value="All" sx={{ fontSize: "14px" }}>
-                      All
-                    </MenuItem>
-                    <MenuItem value="Active" sx={{ fontSize: "14px" }}>
-                      Active
-                    </MenuItem>
-                    <MenuItem value="Pending" sx={{ fontSize: "14px" }}>
-                      Pending
-                    </MenuItem>
-                    <MenuItem value="Deactivated" sx={{ fontSize: "14px" }}>
-                      Deactivated
-                    </MenuItem>
-                  </Select>
-                </FormControl>
-              </div>
+              <ResuableDropdown
+                value={status}
+                onChange={setStatus}
+                placeholder="Status"
+                options={[
+                  { value: "All", label: "All" },
+                  { value: "Active", label: "Active" },
+                  { value: "Pending", label: "Pending" },
+                  { value: "Deactivated", label: "Deactivated" },
+                ]}
+              />
 
               {/* Service Area Filter */}
-              <div className="flex items-center gap-2">
-                <FormControl size="small">
-                  <Select
-                    labelId="service-area-select-label"
-                    id="service-area-select"
-                    value={serviceArea}
-                    onChange={(e: SelectChangeEvent) =>
-                      setServiceArea(e.target.value)
-                    }
-                    displayEmpty
-                    sx={{
-                      minWidth: 140,
-                      height: "38px",
-                      fontSize: "14px",
-                      backgroundColor: "white",
-                      borderRadius: "8px",
-                      border: "1px solid #e5e7eb",
-                      // Remove all shadow effects
-                      boxShadow: "none",
-                      "& .MuiOutlinedInput-notchedOutline": {
-                        border: "none",
-                        boxShadow: "none",
-                      },
-                      "&:hover .MuiOutlinedInput-notchedOutline": {
-                        border: "none",
-                        boxShadow: "none",
-                      },
-                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                        border: "none",
-                        boxShadow: "none",
-                      },
-                      // Remove dropdown icon shadow if any
-                      "& .MuiSelect-icon": {
-                        boxShadow: "none",
-                      },
-                    }}
-                    // Remove menu shadow via MenuProps
-                    MenuProps={{
-                      PaperProps: {
-                        sx: {
-                          boxShadow: "none",
-                          border: "1px solid #e5e7eb",
-                          marginTop: "4px",
-                          borderRadius: "8px",
-                        },
-                      },
-                    }}
-                  >
-                    <MenuItem value="Service Area" sx={{ fontSize: "14px" }}>
-                      Service Area
-                    </MenuItem>
-                    <MenuItem value="All" sx={{ fontSize: "14px" }}>
-                      All
-                    </MenuItem>
-                    <MenuItem value="Education" sx={{ fontSize: "14px" }}>
-                      Education
-                    </MenuItem>
-                    <MenuItem value="Health" sx={{ fontSize: "14px" }}>
-                      Health
-                    </MenuItem>
-                    <MenuItem value="Environment" sx={{ fontSize: "14px" }}>
-                      Environment
-                    </MenuItem>
-                    <MenuItem value="Elderly Care" sx={{ fontSize: "14px" }}>
-                      Elderly Care
-                    </MenuItem>
-                    <MenuItem value="Animal Welfare" sx={{ fontSize: "14px" }}>
-                      Animal Welfare
-                    </MenuItem>
-                    <MenuItem
-                      value="Poverty Alleviation"
-                      sx={{ fontSize: "14px" }}
-                    >
-                      Poverty Alleviation
-                    </MenuItem>
-                  </Select>
-                </FormControl>
-              </div>
+              <ResuableDropdown
+                value={serviceArea}
+                onChange={setServiceArea}
+                placeholder="Service Area"
+                minWidth={160}
+                options={[
+                  { value: "All", label: "All" },
+                  { value: "Education", label: "Education" },
+                  { value: "Health", label: "Health" },
+                  { value: "Environment", label: "Environment" },
+                  { value: "Elderly Care", label: "Elderly Care" },
+                  { value: "Animal Welfare", label: "Animal Welfare" },
+                  {
+                    value: "Poverty Alleviation",
+                    label: "Poverty Alleviation",
+                  },
+                ]}
+              />
             </div>
           </div>
 
@@ -483,7 +363,7 @@ const NgoPage = () => {
         }}
       >
         <DrawerContent className="bg-white no-scrollbar">
-          {(onClose) => (
+          {(_onClose) => (
             <>
               <DrawerHeader className="flex flex-col gap-1 no-scrollbar border-b border-gray-200 px-6 py-4">
                 <div className="flex items-center justify-between">

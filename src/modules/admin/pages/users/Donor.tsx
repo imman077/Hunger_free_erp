@@ -1,5 +1,9 @@
 import { useState } from "react";
-import Tabs, { type Tab } from "../../../../global/components/resuable-components/tabs";
+import Tabs, {
+  type Tab,
+} from "../../../../global/components/resuable-components/tabs";
+import ResuableButton from "../../../../global/components/resuable-components/button";
+import ResuableModal from "../../../../global/components/resuable-components/modal";
 
 interface DonationHistory {
   event: string;
@@ -298,12 +302,12 @@ const DonorPage = () => {
           {/* Tabs and Table */}
           <div className="bg-white shadow-sm rounded-xl mt-6 p-5">
             {/* Custom Tabs */}
-           <Tabs
-        tabs={tabs}
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-        className="mb-6"
-      />
+            <Tabs
+              tabs={tabs}
+              activeTab={activeTab}
+              onTabChange={setActiveTab}
+              className="mb-6"
+            />
 
             {/* Table */}
             <div className="overflow-x-auto">
@@ -334,7 +338,8 @@ const DonorPage = () => {
                   {filteredDonors.map((donor) => (
                     <tr
                       key={donor.id}
-                      className="hover:bg-gray-50 transition-colors duration-150"
+                      onClick={() => handleViewProfile(donor)}
+                      className="hover:bg-gray-50 transition-colors duration-150 cursor-pointer"
                     >
                       <td className="py-4 px-6 whitespace-nowrap">
                         <div className="font-medium text-gray-900">
@@ -366,19 +371,27 @@ const DonorPage = () => {
                         </span>
                       </td>
                       <td className="py-4 px-6 whitespace-nowrap">
-                        <div className="flex items-center justify-center gap-4">
-                          <button
-                            onClick={() => handleViewProfile(donor)}
-                            className="text-blue-600 hover:text-blue-900 text-sm font-medium transition-colors duration-200"
+                        <div className="flex items-center justify-center gap-6">
+                          <ResuableButton
+                            variant="success"
+                            size="md"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              console.log("Message clicked");
+                            }}
                           >
-                            View Profile
-                          </button>
-                          <button className="text-green-600 hover:text-green-900 text-sm font-medium transition-colors duration-200">
                             Message
-                          </button>
-                          <button className="text-red-600 hover:text-red-900 text-sm font-medium transition-colors duration-200">
+                          </ResuableButton>
+                          <ResuableButton
+                            variant="danger"
+                            size="md"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              console.log("Deactivate clicked");
+                            }}
+                          >
                             Deactivate
-                          </button>
+                          </ResuableButton>
                         </div>
                       </td>
                     </tr>
@@ -391,24 +404,65 @@ const DonorPage = () => {
       </div>
 
       {/* Profile Modal */}
-      {selectedDonor && (
-        <div className="absolute inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
-            {/* Modal Header */}
-            <div className="bg-gradient-to-r from-blue-600 to-blue-800 p-6 text-white">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h2 className="text-2xl font-bold">
-                    {selectedDonor.businessName}
-                  </h2>
-                  <p className="text-blue-100 mt-1">{selectedDonor.type}</p>
-                </div>
-                <button
-                  onClick={closeModal}
-                  className="text-black transition-colors duration-200 p-1 rounded-full"
-                >
+      <ResuableModal
+        isOpen={!!selectedDonor}
+        onOpenChange={(open: boolean) => !open && closeModal()}
+        size="4xl"
+        title={
+          selectedDonor && (
+            <div className="flex flex-col">
+              <h2 className="text-2xl font-bold text-gray-900">
+                {selectedDonor.businessName}
+              </h2>
+              <p className="text-sm text-gray-500 font-normal">
+                {selectedDonor.type}
+              </p>
+            </div>
+          )
+        }
+        footer={
+          <div className="flex justify-end gap-3 w-full">
+            <ResuableButton variant="success" onClick={() => {}}>
+              Share Profile
+            </ResuableButton>
+          </div>
+        }
+      >
+        {selectedDonor && (
+          <div className="space-y-8">
+            {/* Header Stats */}
+            <div className="flex items-center gap-6 pb-6 border-b border-gray-100">
+              <span
+                className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                  selectedDonor.status === "Active"
+                    ? "bg-green-100 text-green-800"
+                    : selectedDonor.status === "Pending"
+                    ? "bg-yellow-100 text-yellow-800"
+                    : "bg-gray-100 text-gray-800"
+                }`}
+              >
+                {selectedDonor.status}
+              </span>
+              <div className="text-gray-600">
+                <span className="font-semibold text-gray-900">
+                  {formatCurrency(selectedDonor.totalDonations)}
+                </span>{" "}
+                total donations
+              </div>
+              <div className="text-gray-600">
+                <span className="font-semibold text-gray-900">
+                  {selectedDonor.points.toLocaleString()}
+                </span>{" "}
+                points
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Profile Information */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                   <svg
-                    className="w-6 h-6"
+                    className="w-5 h-5 text-gray-600 mr-2"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -417,138 +471,80 @@ const DonorPage = () => {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                     />
                   </svg>
-                </button>
-              </div>
-              <div className="flex items-center mt-4">
-                <span
-                  className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-                    selectedDonor.status === "Active"
-                      ? "bg-green-100 text-green-800"
-                      : selectedDonor.status === "Pending"
-                      ? "bg-yellow-100 text-yellow-800"
-                      : "bg-gray-100 text-gray-800"
-                  }`}
-                >
-                  {selectedDonor.status}
-                </span>
-                <div className="ml-4 text-blue-100">
-                  <span className="font-semibold">
-                    {formatCurrency(selectedDonor.totalDonations)}
-                  </span>{" "}
-                  total donations
-                </div>
-                <div className="ml-4 text-blue-100">
-                  <span className="font-semibold">
-                    {selectedDonor.points.toLocaleString()}
-                  </span>{" "}
-                  points
-                </div>
-              </div>
-            </div>
-
-            {/* Modal Body */}
-            <div className="p-6 overflow-y-auto max-h-[calc(90vh-200px)]">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Profile Information */}
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                    <svg
-                      className="w-5 h-5 text-gray-600 mr-2"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                      />
-                    </svg>
-                    Profile Information
-                  </h3>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="text-sm font-medium text-gray-500">
-                        Contact Person
-                      </label>
-                      <p className="text-gray-900 font-medium">
-                        {selectedDonor.contactPerson}
-                      </p>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-500">
-                        Email
-                      </label>
-                      <p className="text-gray-900">{selectedDonor.email}</p>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-500">
-                        Address
-                      </label>
-                      <p className="text-gray-900">{selectedDonor.address}</p>
-                    </div>
+                  Profile Information
+                </h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-sm font-medium text-gray-500">
+                      Contact Person
+                    </label>
+                    <p className="text-gray-900 font-medium">
+                      {selectedDonor.contactPerson}
+                    </p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-500">
+                      Email
+                    </label>
+                    <p className="text-gray-900">{selectedDonor.email}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-500">
+                      Address
+                    </label>
+                    <p className="text-gray-900">{selectedDonor.address}</p>
                   </div>
                 </div>
+              </div>
 
-                {/* Donation History */}
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                    <svg
-                      className="w-5 h-5 text-gray-600 mr-2"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
+              {/* Donation History */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <svg
+                    className="w-5 h-5 text-gray-600 mr-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                    />
+                  </svg>
+                  Donation History
+                </h3>
+                <div className="space-y-3">
+                  {selectedDonor.donationHistory?.map((donation, index) => (
+                    <div
+                      key={index}
+                      className="flex justify-between items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-150"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                      />
-                    </svg>
-                    Donation History
-                  </h3>
-                  <div className="space-y-3">
-                    {selectedDonor.donationHistory?.map((donation, index) => (
-                      <div
-                        key={index}
-                        className="flex justify-between items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-150"
-                      >
-                        <div>
-                          <p className="font-medium text-gray-900">
-                            {donation.event}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            on {formatDate(donation.date)}
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-semibold text-green-600">
-                            {formatCurrency(donation.amount)}
-                          </p>
-                        </div>
+                      <div>
+                        <p className="font-medium text-gray-900">
+                          {donation.event}
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          on {formatDate(donation.date)}
+                        </p>
                       </div>
-                    ))}
-                  </div>
+                      <div className="text-right">
+                        <p className="font-semibold text-green-600">
+                          {formatCurrency(donation.amount)}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              </div>
-            </div>
-
-            {/* Modal Footer */}
-            <div className="border-t border-gray-200 px-6 py-4 bg-gray-50">
-              <div className="flex justify-end space-x-3">
-                <button className="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700 transition-colors duration-200">
-                  Share Profile
-                </button>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </ResuableModal>
     </>
   );
 };
