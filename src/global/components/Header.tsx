@@ -16,8 +16,6 @@ import {
   MenuIcon,
   XIcon,
   CheckCircleIcon,
-  AlertCircleIcon,
-  InfoIcon,
   TrashIcon,
 } from "lucide-react";
 import { useSidebar } from "../contexts/SidebarContext";
@@ -148,19 +146,6 @@ const Header: React.FC = () => {
     setNotificationDrawerOpen(true);
   };
 
-  const getNotificationIcon = (iconType: string) => {
-    switch (iconType) {
-      case "check":
-        return <CheckCircleIcon className="h-5 w-5 text-green-500" />;
-      case "alert":
-        return <AlertCircleIcon className="h-5 w-5 text-yellow-500" />;
-      case "info":
-        return <InfoIcon className="h-5 w-5 text-blue-500" />;
-      default:
-        return <InfoIcon className="h-5 w-5 text-gray-500" />;
-    }
-  };
-
   const getUnreadCount = () => {
     return notifications.filter((notification) => !notification.isRead).length;
   };
@@ -179,8 +164,8 @@ const Header: React.FC = () => {
     <>
       <header
         className={
-          "fixed top-0 right-0 h-20 bg-white shadow z-40 flex items-center justify-between px-6 transition-all duration-300 " +
-          (expanded ? "md:left-64" : "md:left-20") + // Changed from left-50 to left-64
+          "fixed top-0 right-0 h-20 bg-white shadow z-40 flex items-center justify-between px-6 transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] " +
+          (expanded ? "md:left-[260px]" : "md:left-[70px]") + // Increased to match new sidebar width
           " left-0 right-0"
         }
       >
@@ -193,10 +178,12 @@ const Header: React.FC = () => {
             </IconButton>
           </div>
 
-          {/* Title - Visible on all screens */}
-          <p className="text-black text-2xl font-semibold">
-            Welcome Back, Admin
-          </p>
+          {/* Image - Visible on all screens */}
+          <img
+              src="/HungerFree.svg"
+              className="h-14 w-auto object-contain animate-in fade-in slide-in-from-left-4 duration-500 filter drop-shadow-sm"
+              alt="HungerFree Logo"
+            />
         </div>
 
         {/* Right section - Notifications and avatar */}
@@ -225,85 +212,87 @@ const Header: React.FC = () => {
             </Badge>
           </IconButton>
 
-          {/* Avatar Dropdown Trigger */}
-          <div>
-            <div onClick={handleAvatarClick} className="cursor-pointer z-50">
-              <StyledBadge
-                overlap="circular"
-                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                variant="dot"
-              >
-                <Avatar
-                  alt="User"
-                  src="https://mui.com/static/images/avatar/1.jpg"
-                  sx={{
-                    width: { xs: 32, sm: 40 },
-                    height: { xs: 32, sm: 40 },
-                  }}
-                />
-              </StyledBadge>
-            </div>
+          {/* Avatar Dropdown Trigger - Shown when sidebar is collapsed */}
+          {!expanded && (
+            <div>
+              <div onClick={handleAvatarClick} className="cursor-pointer z-50">
+                <StyledBadge
+                  overlap="circular"
+                  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                  variant="dot"
+                >
+                  <Avatar
+                    alt="User"
+                    src="https://mui.com/static/images/avatar/1.jpg"
+                    sx={{
+                      width: { xs: 32, sm: 40 },
+                      height: { xs: 32, sm: 40 },
+                    }}
+                  />
+                </StyledBadge>
+              </div>
 
-            <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleMenuClose}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "right",
-              }}
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              slotProps={{
-                paper: {
-                  sx: {
-                    mt: 1,
-                    borderRadius: 2,
-                    width: "160px",
-                    maxWidth: "160px",
-                    boxShadow: 3,
-                    "@media (max-width: 640px)": {
-                      width: "140px",
-                      maxWidth: "140px",
-                      "& .MuiMenuItem-root": {
-                        fontSize: "0.875rem",
-                        minHeight: "40px",
-                        padding: "8px 12px",
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleMenuClose}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "right",
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                slotProps={{
+                  paper: {
+                    sx: {
+                      mt: 1,
+                      borderRadius: 2,
+                      width: "180px",
+                      maxWidth: "180px",
+                      boxShadow: 3,
+                      "@media (max-width: 640px)": {
+                        width: "160px",
+                        maxWidth: "160px",
+                        "& .MuiMenuItem-root": {
+                          fontSize: "0.95rem",
+                          minHeight: "44px",
+                          padding: "10px 14px",
+                        },
                       },
                     },
                   },
-                },
-              }}
-              disableScrollLock={false}
-              MenuListProps={{
-                sx: {
-                  padding: "4px 0",
-                  "& .MuiMenuItem-root": {
-                    fontSize: "0.875rem",
-                    minHeight: "36px",
-                    "@media (max-width: 640px)": {
+                }}
+                disableScrollLock={false}
+                MenuListProps={{
+                  sx: {
+                    padding: "4px 0",
+                    "& .MuiMenuItem-root": {
+                      fontSize: "0.95rem",
                       minHeight: "40px",
-                      fontSize: "0.875rem",
+                      "@media (max-width: 640px)": {
+                        minHeight: "44px",
+                        fontSize: "0.95rem",
+                      },
                     },
                   },
-                },
-              }}
-            >
-              <MenuItem onClick={handleMenuClose}>My Profile</MenuItem>
-              <MenuItem onClick={handleMenuClose}>Settings</MenuItem>
-              <MenuItem onClick={handleMenuClose} sx={{ color: "red" }}>
-                Logout
-              </MenuItem>
-            </Menu>
-          </div>
+                }}
+              >
+                <MenuItem onClick={handleMenuClose}>My Profile</MenuItem>
+                <MenuItem onClick={handleMenuClose}>Settings</MenuItem>
+                <MenuItem onClick={handleMenuClose} sx={{ color: "red" }}>
+                  Logout
+                </MenuItem>
+              </Menu>
+            </div>
+          )}
         </div>
       </header>
 
       {/* ---------------- NOTIFICATION DRAWER ---------------- */}
       <div
-        className={`fixed top-0 right-0 h-full w-full max-w-[340px] bg-white shadow-[-20px_0_60px_rgba(0,0,0,0.05)] z-[100] transform transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col ${
+        className={`fixed top-0 right-0 h-full w-full max-w-[420px] bg-white shadow-[-20px_0_60px_rgba(0,0,0,0.05)] z-[100] transform transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col ${
           notificationDrawerOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -311,7 +300,7 @@ const Header: React.FC = () => {
         <div className="p-5 pb-0 flex flex-col gap-4 flex-shrink-0">
           <div className="flex items-center justify-between">
             <div className="flex flex-col">
-              <h3 className="text-[14px] font-extrabold text-slate-900 tracking-tight leading-none mb-1.5">
+              <h3 className="text-lg font-extrabold text-slate-900 tracking-tight leading-none mb-1.5">
                 Notifications
               </h3>
               <div className="flex items-center gap-1.5">
@@ -321,12 +310,12 @@ const Header: React.FC = () => {
                       className="w-1.5 h-1.5 rounded-full bg-hf-green animate-pulse"
                       style={{ backgroundColor: "#22c55e" }}
                     />
-                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                    <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">
                       {getUnreadCount()} Active
                     </span>
                   </>
                 ) : (
-                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                  <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">
                     No New Messages
                   </span>
                 )}
@@ -349,7 +338,7 @@ const Header: React.FC = () => {
                     prev.map((n) => ({ ...n, isRead: true }))
                   );
                 }}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-emerald-50 border border-slate-200/60 rounded-lg text-[9px] font-black text-slate-600 hover:text-hf-green uppercase tracking-wider transition-all"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-emerald-50 border border-slate-200/60 rounded-lg text-xs font-black text-slate-600 hover:text-hf-green uppercase tracking-wider transition-all"
               >
                 <CheckCircleIcon
                   className="w-3 h-3 text-hf-green"
@@ -359,7 +348,7 @@ const Header: React.FC = () => {
               </button>
               <button
                 onClick={clearAllNotifications}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-rose-50 border border-slate-200/60 rounded-lg text-[9px] font-black text-slate-600 hover:text-rose-500 uppercase tracking-wider transition-all"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-rose-50 border border-slate-200/60 rounded-lg text-xs font-black text-slate-600 hover:text-rose-500 uppercase tracking-wider transition-all"
               >
                 <TrashIcon className="w-3 h-3" />
                 Clear
@@ -377,8 +366,8 @@ const Header: React.FC = () => {
         <div className="flex-1 overflow-y-auto no-scrollbar px-5 pb-5 space-y-2.5">
           {notifications.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center p-8">
-              <BellIcon className="h-12 w-12 text-slate-200 mb-4" />
-              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+              <BellIcon className="h-16 w-16 text-slate-200 mb-4" />
+              <p className="text-[13px] font-bold text-slate-400 uppercase tracking-widest">
                 No notifications
               </p>
             </div>
@@ -425,20 +414,20 @@ const Header: React.FC = () => {
                     >
                       {n.type === "success" ? "SYSTEM" : n.type.toUpperCase()}
                     </span>
-                    <span className="text-[9px] text-slate-300 font-bold tabular-nums">
+                    <span className="text-xs text-slate-300 font-bold tabular-nums">
                       {formatDistanceToNow(n.time, { addSuffix: false })}
                     </span>
                   </div>
 
                   <h4
-                    className="text-[12px] font-bold text-slate-900 mb-0.5 group-hover:text-hf-green transition-colors leading-snug truncate"
+                    className="text-base font-bold text-slate-900 mb-0.5 group-hover:text-hf-green transition-colors leading-snug truncate"
                     style={
                       { "--hover-color": "#22c55e" } as React.CSSProperties
                     }
                   >
                     {n.title}
                   </h4>
-                  <p className="text-[10px] text-slate-500 font-medium leading-tight">
+                  <p className="text-xs text-slate-500 font-medium leading-tight">
                     {n.message}
                   </p>
 
@@ -462,7 +451,7 @@ const Header: React.FC = () => {
                   <div className="absolute top-3 right-3">
                     <div
                       className="w-1.5 h-1.5 rounded-full bg-hf-green shadow-sm shadow-hf-green/50"
-                      style={{ backgroundColor: "#22c55e" }}
+                      style={{ backgroundColor: "#8aaf98ff" }}
                     />
                   </div>
                 )}
@@ -473,7 +462,7 @@ const Header: React.FC = () => {
           {notifications.length > 0 && (
             <div className="py-6 text-center">
               <div className="w-8 h-[2px] bg-slate-100 mx-auto rounded-full mb-3" />
-              <p className="text-[9px] font-black text-slate-300 uppercase tracking-[0.2em]">
+              <p className="text-xs font-black text-slate-300 uppercase tracking-[0.2em]">
                 End of registry
               </p>
             </div>

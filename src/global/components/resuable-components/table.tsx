@@ -12,7 +12,6 @@ import {
   Dropdown,
   DropdownMenu,
   DropdownItem,
-  Chip,
 } from "@heroui/react";
 import type { SortDescriptor, Selection } from "@heroui/react";
 
