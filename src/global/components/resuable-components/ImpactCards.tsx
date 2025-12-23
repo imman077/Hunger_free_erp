@@ -39,9 +39,9 @@ const ImpactCard: React.FC<
         >
           {trend}
         </p>
-        <p className="text-[8px] font-bold text-slate-300 uppercase tracking-widest mt-1">
+        {/* <p className="text-[8px] font-bold text-slate-300 uppercase tracking-widest mt-1">
           Live Statistics
-        </p>
+        </p> */}
       </div>
     </div>
   );
