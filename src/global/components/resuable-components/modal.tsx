@@ -188,7 +188,7 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
                         <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
                           Partner ID
                         </span>
-                        <p className="text-lg font-black text-slate-800">
+                        <p className="text-base font-black text-slate-800">
                           {displayId}
                         </p>
                       </div>
@@ -199,7 +199,7 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
                         <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
                           Last Sync
                         </span>
-                        <p className="text-lg font-black text-slate-800">
+                        <p className="text-base font-black text-slate-800">
                           {joinDate}
                         </p>
                       </div>
@@ -260,7 +260,7 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
                         </h3>
                         <div className="p-8 bg-white border border-slate-100 rounded-sm shadow-sm flex flex-col">
                           <div className="text-center mb-6">
-                            <p className="text-5xl font-black text-slate-800 tracking-tighter">
+                            <p className="text-2xl font-black text-slate-800 tracking-tighter">
                               {data?.activeLedgers || 0}
                             </p>
                             <span className="text-[9px] font-bold uppercase text-slate-400 tracking-widest mt-1 block">

@@ -1,4 +1,3 @@
-import { Users, HandHeart, UserPlus, Handshake } from "lucide-react";
 import {
   CheckCircle,
   User,
@@ -8,7 +7,7 @@ import {
 } from "lucide-react";
 import LineChart from "../../../../global/charts/LineChart";
 import BarChart from "../../../../global/charts/BarChart";
-import { StatCardGrid } from "../../../../global/components/resuable-components/cards";
+import ImpactCards from "../../../../global/components/resuable-components/ImpactCards";
 
 const AdminDashboard = () => {
   const stats = [
@@ -17,28 +16,28 @@ const AdminDashboard = () => {
       value: "1.2K",
       change: "+15% from last month",
       changeColor: "text-green-600",
-      icon: <HandHeart size={20} />,
+      // icon: <HandHeart size={20} />,
     },
     {
       title: "Active Users",
       value: "542",
       change: "+8% from last week",
       changeColor: "text-green-600",
-      icon: <Users size={20} />,
+      // icon: <Users size={20} />,
     },
     {
       title: "NGO Partners",
       value: "68",
       change: "+2 new this month",
       changeColor: "text-green-600",
-      icon: <Handshake size={20} />,
+      // icon: <Handshake size={20} />,
     },
     {
       title: "Volunteers Onboarded",
       value: "210",
       change: "-3% from last month",
       changeColor: "text-red-600",
-      icon: <UserPlus size={20} />,
+      // icon: <UserPlus size={20} />,
     },
   ];
 
@@ -93,17 +92,15 @@ const AdminDashboard = () => {
       </h1>
 
       {/* Four Boxes */}
-      <StatCardGrid
-        cards={stats.map((item) => ({
-          title: item.title,
-          value: item.value,
-          change: item.change,
-          changeType: item.changeColor.includes("green")
-            ? "positive"
-            : "negative",
-          icon: item.icon,
+      <ImpactCards
+        data={stats.map((item) => ({
+          label: item.title,
+          val: item.value,
+          trend: item.change,
+          color: item.changeColor.includes("green")
+            ? "bg-emerald-500"
+            : "bg-slate-300",
         }))}
-        columns={4}
       />
 
       {/* Activity Charts */}

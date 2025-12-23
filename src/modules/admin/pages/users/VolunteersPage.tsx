@@ -195,7 +195,7 @@ const VolunteersPage: React.FC = () => {
         <div className="">
           {/* Header with Search + Filters */}
           <div className="mb-6 flex items-center justify-between gap-6">
-            <h1 className="text-3xl font-bold whitespace-nowrap">
+            <h1 className="text-xl font-bold text-gray-900 tracking-tight whitespace-nowrap">
               Volunteer Management
             </h1>
 
@@ -421,7 +421,7 @@ const VolunteersPage: React.FC = () => {
                         <h3 className="text-sm font-semibold text-gray-600 mb-1">
                           Completion Rate
                         </h3>
-                        <div className="text-3xl font-bold text-blue-500">
+                        <div className="text-2xl font-black text-blue-500">
                           92%
                         </div>
                       </div>
@@ -430,7 +430,7 @@ const VolunteersPage: React.FC = () => {
                           Average Rating
                         </h3>
                         <div className="flex items-center gap-2 justify-center">
-                          <div className="text-3xl font-bold text-blue-500">
+                          <div className="text-2xl font-black text-blue-500">
                             {activeVolunteer.rating}
                           </div>
                           <div className="inline-flex gap-1">
