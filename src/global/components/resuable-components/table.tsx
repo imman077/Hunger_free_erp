@@ -1,4 +1,11 @@
-import React, { useMemo, useState, useCallback } from "react";
+import { ChevronRight, Calendar as CalendarIcon } from "lucide-react";
+import React, {
+  useMemo,
+  useState,
+  useCallback,
+  useRef,
+  useEffect,
+} from "react";
 import {
   Table,
   TableHeader,
@@ -14,6 +21,7 @@ import {
   DropdownItem,
 } from "@heroui/react";
 import type { SortDescriptor, Selection } from "@heroui/react";
+import HeroDateRangePicker from "./HeroDateRangePicker";
 
 // --- Icons ---
 const PlusIcon = ({ size = 20, width, height, ...props }: any) => {
@@ -156,6 +164,10 @@ interface ERPGridTableProps {
   initialVisibleColumns?: string[];
   enableSearch?: boolean;
   enablePagination?: boolean;
+  enableDateFilter?: boolean;
+  onDateRangeChange?: (
+    range: { start: string | null; end: string | null } | null
+  ) => void;
   onAddNew?: () => void;
   title?: string;
   description?: string;
@@ -172,12 +184,33 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
   initialVisibleColumns,
   enableSearch = true,
   enablePagination = true,
+  enableDateFilter = false,
+  onDateRangeChange,
   onAddNew,
   title,
   description,
 }) => {
   const [filterValue, setFilterValue] = useState("");
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
+  const [dateRange, setDateRange] = useState<{
+    start: string | null;
+    end: string | null;
+  }>({ start: null, end: null });
+  const [showPicker, setShowPicker] = useState(false);
+  const pickerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        pickerRef.current &&
+        !pickerRef.current.contains(event.target as Node)
+      ) {
+        setShowPicker(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const [visibleColumns, setVisibleColumns] = useState<Selection>(
     initialVisibleColumns
@@ -299,10 +332,10 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
         )}
 
         <div className="flex flex-col gap-3">
-          <div className="flex flex-col sm:flex-row gap-3">
-            <div className="flex flex-col sm:flex-row gap-3 flex-1">
+          <div className="flex flex-col sm:flex-row items-end gap-3">
+            <div className="flex flex-col sm:flex-row items-end gap-3 flex-1">
               {enableSearch && (
-                <div className="relative flex-1">
+                <div className="relative flex-1 w-full sm:w-auto">
                   <Input
                     isClearable
                     className="w-full"
@@ -319,6 +352,7 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
                         "bg-slate-50/50",
                         "rounded-sm",
                         "!shadow-none",
+                        "h-10",
                         "hover:bg-white",
                         "hover:border-hf-green/30",
                         "focus-within:!border-hf-green/50",
@@ -338,7 +372,7 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
                   <DropdownTrigger>
                     <Button
                       variant="flat"
-                      className="border border-slate-200 bg-white rounded-sm h-10 px-4 text-xs font-bold text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-all"
+                      className="border border-slate-200 bg-white rounded-sm h-10 px-4 text-[11px] font-bold text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-all"
                       style={{
                         backgroundColor: "white",
                       }}
@@ -387,14 +421,60 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
                   </DropdownMenu>
                 </Dropdown>
               )}
+
+              {enableDateFilter && (
+                <div className="flex gap-3 relative" ref={pickerRef}>
+                  <button
+                    type="button"
+                    onClick={() => setShowPicker(!showPicker)}
+                    className="flex items-center gap-2.5 px-4 h-10 bg-white border border-slate-200 rounded-sm font-bold text-[11px] text-slate-600 uppercase tracking-tight hover:bg-slate-50 hover:border-slate-300 transition-all group/picker"
+                  >
+                    <CalendarIcon
+                      size={14}
+                      className={`transition-colors ${
+                        dateRange.start || dateRange.end
+                          ? "text-hf-green"
+                          : "text-slate-400 group-hover/picker:text-slate-500"
+                      }`}
+                    />
+                    <span className="min-w-[120px] text-left">
+                      {!dateRange.start && !dateRange.end
+                        ? "SELECT RANGE"
+                        : `${dateRange.start || "..."} — ${
+                            dateRange.end || "..."
+                          }`}
+                    </span>
+                    <ChevronDownIconSvg
+                      className={`text-slate-400 text-[10px] transition-transform duration-300 ${
+                        showPicker ? "rotate-180" : ""
+                      }`}
+                    />
+                  </button>
+
+                  {showPicker && (
+                    <HeroDateRangePicker
+                      initialStart={dateRange.start}
+                      initialEnd={dateRange.end}
+                      onRangeSelect={(start, end) => {
+                        const newRange = { start, end };
+                        setDateRange(newRange);
+                        if (onDateRangeChange) {
+                          onDateRangeChange(newRange);
+                        }
+                      }}
+                      onClose={() => setShowPicker(false)}
+                    />
+                  )}
+                </div>
+              )}
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
               <Dropdown placement="bottom-end">
                 <DropdownTrigger>
                   <Button
                     variant="flat"
-                    className="border border-slate-200 bg-white rounded-sm h-10 px-4 text-xs font-bold text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-all"
+                    className="border border-slate-200 bg-white rounded-sm h-10 px-4 text-[11px] font-bold text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-all"
                     style={{
                       backgroundColor: "white",
                     }}
@@ -503,6 +583,10 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
     description,
     statusOptions,
     selectedStatus,
+    showPicker,
+    dateRange,
+    enableDateFilter,
+    onDateRangeChange,
   ]);
 
   const bottomContent = useMemo(() => {
@@ -533,20 +617,20 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
           <button
             onClick={onPreviousPage}
             disabled={page === 1}
-            className={`w-10 h-10 flex items-center justify-center rounded-sm border border-slate-200 transition-all ${
+            className={`w-8 h-8 flex items-center justify-center rounded-sm border border-slate-200 transition-all ${
               page === 1
                 ? "text-slate-300 bg-slate-50 cursor-not-allowed border-slate-100"
                 : "text-slate-600 bg-white hover:bg-slate-50 hover:border-slate-300 active:scale-95"
             }`}
           >
-            <ChevronDownIconSvg className="w-5 h-5 rotate-90" />
+            <ChevronDownIconSvg className="w-4 h-4 rotate-90" />
           </button>
-          <div className="flex gap-1.5 px-2">
+          <div className="flex gap-1 px-1.5">
             {Array.from({ length: pages }).map((_, i) => (
               <button
                 key={i}
                 onClick={() => setPage(i + 1)}
-                className={`w-10 h-10 flex items-center justify-center rounded-sm text-xs font-bold transition-all ${
+                className={`w-8 h-8 flex items-center justify-center rounded-sm text-[11px] font-bold transition-all ${
                   page === i + 1
                     ? "bg-hf-green text-white font-black scale-105"
                     : "bg-white border border-slate-200 text-slate-500 hover:bg-slate-50 hover:border-slate-300"
@@ -559,13 +643,13 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
           <button
             onClick={onNextPage}
             disabled={page >= pages}
-            className={`w-10 h-10 flex items-center justify-center rounded-sm border border-slate-200 transition-all ${
+            className={`w-8 h-8 flex items-center justify-center rounded-sm border border-slate-200 transition-all ${
               page >= pages
                 ? "text-slate-300 bg-slate-50 cursor-not-allowed border-slate-100"
                 : "text-slate-600 bg-white hover:bg-slate-50 hover:border-slate-300 active:scale-95"
             }`}
           >
-            <ChevronDownIconSvg className="w-5 h-5 -rotate-90" />
+            <ChevronDownIconSvg className="w-4 h-4 -rotate-90" />
           </button>
         </div>
       </div>
@@ -581,7 +665,7 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
   ]);
 
   return (
-    <div className="bg-white border border-slate-200 rounded-sm flex flex-col overflow-hidden relative gap-4 w-full">
+    <div className="bg-white border border-slate-200 rounded-sm flex flex-col relative gap-4 w-full">
       <Table
         isCompact
         isHeaderSticky

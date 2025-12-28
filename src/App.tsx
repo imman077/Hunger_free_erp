@@ -7,11 +7,8 @@ import VolunteersPage from "./modules/admin/pages/users/VolunteersPage";
 import DonationsPage from "./modules/admin/pages/donations/DonationsPage";
 import DonationTrackingPage from "./modules/admin/pages/donations/DonationTrackingPage";
 import PendingDonationsPage from "./modules/admin/pages/donations/PendingDonationsPage";
-import AlertsPage from "./modules/admin/pages/alerts/AlertsPage";
-import UrgentAlertsPage from "./modules/admin/pages/alerts/UrgentAlertsPage";
 import AnalyticsPage from "./modules/admin/pages/analytics/AnalyticsPage";
 import AnalyticsReportsPage from "./modules/admin/pages/analytics/AnalyticsReportsPage";
-import SettingsPage from "./modules/admin/pages/settings/SettingsPage";
 import UsersPage from "./modules/admin/pages/users/UsersPage";
 import AdminDashboard from "./modules/admin/pages/dashboard/Dashboard";
 
@@ -46,8 +43,8 @@ function App() {
             />
 
             {/* Alerts Section */}
-            <Route path="alerts" element={<AlertsPage />} />
-            <Route path="alerts/urgent" element={<UrgentAlertsPage />} />
+            {/* <Route path="alerts" element={<AlertsPage />} />
+            <Route path="alerts/urgent" element={<UrgentAlertsPage />} /> */}
 
             {/* Analytics Section */}
             <Route path="analytics" element={<AnalyticsPage />} />
@@ -57,7 +54,7 @@ function App() {
             />
 
             {/* Settings */}
-            <Route path="settings" element={<SettingsPage />} />
+            {/* <Route path="settings" element={<SettingsPage />} /> */}
           </Route>
         </Routes>
       </div>

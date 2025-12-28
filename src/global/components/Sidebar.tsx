@@ -292,12 +292,12 @@ const SidebarIcons: React.FC = () => {
                 subItems={donationsSubItems}
               />
 
-              <SidebarItem
+              {/* <SidebarItem
                 icon={<Icon name="bell" />}
                 label="Alerts"
                 expanded={expanded}
                 subItems={alertsSubItems}
-              />
+              /> */}
 
               <SidebarItem
                 icon={<Icon name="analytics" />}
@@ -306,14 +306,14 @@ const SidebarIcons: React.FC = () => {
                 subItems={analyticsSubItems}
               />
 
-              <Link to="/admin/settings">
+              {/* <Link to="/admin/settings">
                 <SidebarItem
                   icon={<Icon name="settings" />}
                   label="Settings"
                   to="/admin/settings"
                   expanded={expanded}
                 />
-              </Link>
+              </Link> */}
             </div>
           </div>
         </nav>
