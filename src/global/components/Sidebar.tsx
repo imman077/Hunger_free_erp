@@ -190,19 +190,6 @@ const SidebarIcons: React.FC = () => {
     },
   ];
 
-  const alertsSubItems: SubItem[] = [
-    {
-      label: "All Alerts",
-      to: "/admin/alerts",
-      icon: <Icon name="bell" className="h-4 w-4" />,
-    },
-    {
-      label: "Urgent",
-      to: "/admin/alerts/urgent",
-      icon: <Icon name="bell" className="h-4 w-4" />,
-    },
-  ];
-
   const analyticsSubItems: SubItem[] = [
     {
       label: "Overview",
@@ -213,6 +200,88 @@ const SidebarIcons: React.FC = () => {
       label: "Reports",
       to: "/admin/analytics/reports",
       icon: <Icon name="stack" className="h-4 w-4" />,
+    },
+  ];
+
+  const rewardsSubItems: SubItem[] = [
+    {
+      label: "Points & Tiers",
+      to: "/admin/rewards/points",
+      icon: <Icon name="gem" className="h-4 w-4" />,
+    },
+    {
+      label: "Redemptions",
+      to: "/admin/rewards/redemptions",
+      icon: <Icon name="wallet" className="h-4 w-4" />,
+    },
+  ];
+
+  const donorSubItems: SubItem[] = [
+    {
+      label: "Dashboard",
+      to: "/donor/dashboard",
+      icon: <Icon name="dashboard" className="h-4 w-4" />,
+    },
+    {
+      label: "My Donations",
+      to: "/donor/donations",
+      icon: <Icon name="donations" className="h-4 w-4" />,
+    },
+    {
+      label: "Rewards",
+      to: "/donor/rewards",
+      icon: <Icon name="rewards" className="h-4 w-4" />,
+    },
+    {
+      label: "Profile",
+      to: "/donor/profile",
+      icon: <Icon name="users" className="h-4 w-4" />,
+    },
+  ];
+
+  const ngoSubItems: SubItem[] = [
+    {
+      label: "Dashboard",
+      to: "/ngo/dashboard",
+      icon: <Icon name="dashboard" className="h-4 w-4" />,
+    },
+    {
+      label: "Requests",
+      to: "/ngo/requests",
+      icon: <Icon name="bell" className="h-4 w-4" />,
+    },
+    {
+      label: "Inventory",
+      to: "/ngo/inventory",
+      icon: <Icon name="warehouse" className="h-4 w-4" />,
+    },
+    {
+      label: "Profile",
+      to: "/ngo/profile",
+      icon: <Icon name="office" className="h-4 w-4" />,
+    },
+  ];
+
+  const volunteerSubItems: SubItem[] = [
+    {
+      label: "Dashboard",
+      to: "/volunteer/dashboard",
+      icon: <Icon name="dashboard" className="h-4 w-4" />,
+    },
+    {
+      label: "Tasks",
+      to: "/volunteer/tasks",
+      icon: <Icon name="stack" className="h-4 w-4" />,
+    },
+    {
+      label: "Rewards",
+      to: "/volunteer/rewards",
+      icon: <Icon name="rewards" className="h-4 w-4" />,
+    },
+    {
+      label: "Profile",
+      to: "/volunteer/profile",
+      icon: <Icon name="users" className="h-4 w-4" />,
     },
   ];
 
@@ -304,6 +373,38 @@ const SidebarIcons: React.FC = () => {
                 label="Analytics"
                 expanded={expanded}
                 subItems={analyticsSubItems}
+              />
+
+              <SidebarItem
+                icon={<Icon name="rewards" />}
+                label="Rewards"
+                expanded={expanded}
+                subItems={rewardsSubItems}
+              />
+
+              <div className="px-4 py-2 mt-4">
+                <div className="h-px bg-slate-100 w-full" />
+              </div>
+
+              <SidebarItem
+                icon={<Icon name="users" />}
+                label="Donor"
+                expanded={expanded}
+                subItems={donorSubItems}
+              />
+
+              <SidebarItem
+                icon={<Icon name="office" />}
+                label="NGO"
+                expanded={expanded}
+                subItems={ngoSubItems}
+              />
+
+              <SidebarItem
+                icon={<Icon name="users" />}
+                label="Volunteer"
+                expanded={expanded}
+                subItems={volunteerSubItems}
               />
 
               {/* <Link to="/admin/settings">

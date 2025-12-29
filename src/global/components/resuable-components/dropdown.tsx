@@ -16,6 +16,7 @@ export interface ResuableDropdownProps {
   className?: string;
   disabled?: boolean;
   minWidth?: number | string;
+  align?: "left" | "center" | "right";
 }
 
 // --- ResuableDropdown Component ---
@@ -28,6 +29,7 @@ const ResuableDropdown: React.FC<ResuableDropdownProps> = ({
   className = "",
   disabled = false,
   minWidth,
+  align = "center",
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -52,13 +54,20 @@ const ResuableDropdown: React.FC<ResuableDropdownProps> = ({
     setIsOpen(false);
   };
 
+  const alignClass =
+    align === "left"
+      ? "text-left"
+      : align === "right"
+      ? "text-right"
+      : "text-center";
+
   return (
     <div
-      className={`space-y-1.5 relative text-center ${className}`}
+      className={`space-y-1.5 relative ${alignClass} ${className}`}
       ref={dropdownRef}
     >
       {label && (
-        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 block px-1">
           {label}
         </label>
       )}
@@ -67,13 +76,15 @@ const ResuableDropdown: React.FC<ResuableDropdownProps> = ({
         disabled={disabled}
         onClick={() => setIsOpen(!isOpen)}
         style={{ minWidth }}
-        className={`w-full flex items-center justify-between bg-slate-50 border px-3 py-2.5 rounded-sm text-xs font-semibold transition-all text-center ${
+        className={`w-full flex items-center justify-between bg-slate-50 border px-3 py-2.5 rounded-sm text-xs font-semibold transition-all ${
           isOpen
             ? "border-[#22c55e] ring-1 ring-[#22c55e] text-slate-900 shadow-sm"
             : "border-slate-200 text-slate-800"
-        } ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+        } ${
+          disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+        } ${alignClass}`}
       >
-        <span className="flex-1 truncate">
+        <span className={`flex-1 truncate ${alignClass}`}>
           {selectedOption ? selectedOption.label : placeholder}
         </span>
         <Icon
@@ -91,13 +102,13 @@ const ResuableDropdown: React.FC<ResuableDropdownProps> = ({
               key={opt.value}
               type="button"
               onClick={() => handleSelect(opt.value)}
-              className={`w-full text-center px-4 py-3 text-xs font-semibold transition-all border-b border-slate-50 last:border-none flex items-center justify-center gap-3 group ${
+              className={`w-full px-4 py-3 text-xs font-semibold transition-all border-b border-slate-50 last:border-none flex items-center justify-center gap-3 group ${
                 value === opt.value
                   ? "bg-[#22c55e] text-white"
                   : "text-slate-600 hover:bg-emerald-50 hover:text-[#22c55e]"
-              }`}
+              } ${alignClass}`}
             >
-              <span>{opt.label}</span>
+              <span className="flex-1 truncate">{opt.label}</span>
               {value === opt.value && (
                 <Icon name="check-circle" className="w-3.5 h-3.5 text-white" />
               )}

@@ -158,10 +158,6 @@ const AnalyticsReportsPage: React.FC = () => {
           </p>
         </div>
         <div className="flex gap-3">
-          <button className="flex items-center gap-2 px-6 py-3 bg-white border border-slate-200 rounded-sm font-black text-xs text-slate-600 uppercase tracking-widest hover:bg-slate-50 transition-all border-dashed">
-            <Calendar size={16} />
-            Mar 2024
-          </button>
           <button className="flex items-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-sm font-black text-xs uppercase tracking-widest shadow-xl shadow-slate-200 hover:scale-105 transition-all">
             <Download size={16} />
             Export CSV

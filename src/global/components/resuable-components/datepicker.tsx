@@ -6,6 +6,7 @@ interface ResuableDatePickerProps {
   value: string | null;
   onChange: (value: string) => void;
   className?: string;
+  align?: "left" | "center" | "right";
 }
 
 export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
@@ -13,9 +14,12 @@ export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
   value,
   onChange,
   className = "",
+  align = "center",
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [openUpward, setOpenUpward] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const date = value ? new Date(value) : new Date();
   const [viewDate, setViewDate] = useState(
@@ -34,6 +38,19 @@ export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  // Check if dropdown should open upward
+  useEffect(() => {
+    if (isOpen && buttonRef.current) {
+      const buttonRect = buttonRef.current.getBoundingClientRect();
+      const dropdownHeight = 400; // Approximate height of the calendar dropdown
+      const spaceBelow = window.innerHeight - buttonRect.bottom;
+      const spaceAbove = buttonRect.top;
+
+      // Open upward if there's not enough space below but enough space above
+      setOpenUpward(spaceBelow < dropdownHeight && spaceAbove > dropdownHeight);
+    }
+  }, [isOpen]);
 
   const daysInMonth = (year: number, month: number) =>
     new Date(year, month + 1, 0).getDate();
@@ -119,22 +136,33 @@ export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
     );
   }
 
+  const alignClass =
+    align === "left"
+      ? "text-left"
+      : align === "right"
+      ? "text-right"
+      : "text-center";
+
   return (
-    <div className={`space-y-1.5 text-center ${className}`} ref={containerRef}>
+    <div
+      className={`space-y-1.5 ${alignClass} ${className}`}
+      ref={containerRef}
+    >
       {label && (
-        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 block mb-1">
+        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 block mb-1 px-1">
           {label}
         </label>
       )}
       <div className="relative">
         <button
+          ref={buttonRef}
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className={`w-full flex items-center gap-3 bg-white border px-3 py-2.5 rounded-sm text-xs font-semibold transition-all text-left ${
+          className={`w-full flex items-center gap-3 bg-white border px-3 py-2.5 rounded-sm text-xs font-semibold transition-all ${
             isOpen
               ? "border-[#22c55e] ring-1 ring-[#22c55e] text-slate-900"
               : "border-slate-200 text-slate-800 hover:bg-slate-50"
-          }`}
+          } ${alignClass}`}
         >
           <Icon
             name="calendar"
@@ -142,7 +170,9 @@ export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
               isOpen ? "text-[#22c55e]" : "text-slate-400"
             }`}
           />
-          <span className="flex-1">{value || "Select Date"}</span>
+          <span className={`flex-1 ${alignClass}`}>
+            {value || "Select Date"}
+          </span>
           <Icon
             name="chevron-down"
             className={`w-3 h-3 text-slate-400 transition-transform ${
@@ -152,7 +182,11 @@ export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
         </button>
 
         {isOpen && (
-          <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 bg-white border border-slate-200 rounded-sm shadow-2xl z-[110] p-4 w-64 animate-in fade-in zoom-in-95 duration-200">
+          <div
+            className={`absolute left-1/2 -translate-x-1/2 bg-white border border-slate-200 rounded-sm shadow-2xl z-[9999] p-4 w-64 animate-in fade-in zoom-in-95 duration-200 ${
+              openUpward ? "bottom-full mb-1" : "top-full mt-1"
+            }`}
+          >
             <div className="flex items-center justify-between mb-4">
               <h4 className="text-[11px] font-black text-slate-800 uppercase tracking-widest">
                 {monthNames[viewDate.getMonth()]} {viewDate.getFullYear()}
