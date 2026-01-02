@@ -44,7 +44,7 @@ const ResuableInput: React.FC<ResuableInputProps> = ({
         onChange={(e) => onChange(e.target.value)}
         disabled={disabled}
         required={required}
-        className={`w-full bg-slate-50 border border-slate-200 px-3 py-2.5 rounded-sm text-xs font-semibold text-slate-800 focus:outline-none focus:ring-1 focus:ring-[#22c55e]/50 focus:border-[#22c55e] transition-all placeholder:text-slate-300 ${alignClass}`}
+        className={`w-full bg-slate-50 border border-slate-200 px-3 py-2.5 rounded-none text-xs font-semibold text-slate-800 focus:outline-none focus:ring-1 focus:ring-[#22c55e]/50 focus:border-[#22c55e] transition-all placeholder:text-slate-300 ${alignClass}`}
       />
     </div>
   );

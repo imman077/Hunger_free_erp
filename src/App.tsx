@@ -27,6 +27,7 @@ import NGODashboard from "./modules/ngo/pages/dashboard/Dashboard";
 import NGODonationRequests from "./modules/ngo/pages/donations/DonationRequests";
 import NGOInventory from "./modules/ngo/pages/inventory/Inventory";
 import NGOProfile from "./modules/ngo/pages/profile/Profile";
+import PostNewNeed from "./modules/ngo/pages/needs/PostNewNeed";
 
 // Volunteer Imports
 import VolunteerDashboard from "./modules/volunteer/pages/dashboard/Dashboard";
@@ -103,6 +104,7 @@ function App() {
             <Route path="requests" element={<NGODonationRequests />} />
             <Route path="inventory" element={<NGOInventory />} />
             <Route path="profile" element={<NGOProfile />} />
+            <Route path="needs/post" element={<PostNewNeed />} />
           </Route>
 
           {/* Volunteer Section */}

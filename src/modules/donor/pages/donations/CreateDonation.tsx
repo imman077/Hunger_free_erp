@@ -52,14 +52,14 @@ const CreateDonation = () => {
   };
 
   return (
-    <div className="p-6 w-full mx-auto bg-slate-50/30 min-h-screen">
+    <div className="p-6 w-full mx-auto bg-gray-50/50 min-h-screen">
       {/* Header Bar */}
       <div className="max-w-5xl mx-auto mb-10">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-6">
             <button
               onClick={() => navigate("/donor/donations")}
-              className="flex items-center gap-2 text-slate-500 hover:text-slate-800 transition-colors group"
+              className="flex items-center gap-2 text-gray-500 hover:text-gray-800 transition-colors group"
             >
               <ArrowLeft
                 size={18}
@@ -69,9 +69,9 @@ const CreateDonation = () => {
                 Back
               </span>
             </button>
-            <div className="h-10 w-px bg-slate-200 hidden sm:block" />
+            <div className="h-10 w-px bg-gray-200 hidden sm:block" />
             <div>
-              <h1 className="text-4xl font-black text-slate-900 tracking-tighter leading-none mb-1">
+              <h1 className="text-4xl font-black text-gray-900 tracking-tighter leading-none mb-1">
                 Create Donation
               </h1>
               {/* <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
@@ -79,9 +79,9 @@ const CreateDonation = () => {
               </p> */}
             </div>
           </div>
-          <div className="bg-emerald-50 border border-emerald-100 px-4 py-2 rounded-sm flex items-center gap-3">
-            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-            <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">
+          <div className="bg-[#ecfdf5] border border-[#d1fae5] px-4 py-2 rounded-none flex items-center gap-3">
+            <div className="w-2 h-2 rounded-full bg-[#22c55e] animate-pulse" />
+            <span className="text-[10px] font-black text-[#16a34a] uppercase tracking-widest">
               Form Active
             </span>
           </div>
@@ -93,16 +93,16 @@ const CreateDonation = () => {
         className="max-w-5xl mx-auto space-y-10 pb-32"
       >
         {/* Card 01: Food Info */}
-        <div className="bg-white border border-slate-200/60 rounded-sm shadow-[0_2px_15px_-3px_rgba(0,0,0,0.04)]">
-          <div className="bg-slate-50 border-b border-slate-100 p-6 flex items-center gap-4 rounded-t-sm">
-            <div className="w-12 h-12 bg-white border border-slate-200 rounded-sm flex items-center justify-center text-emerald-500 shadow-sm">
+        <div className="bg-white border border-gray-100 rounded-none">
+          <div className="border-b border-gray-100 p-6 flex items-center gap-4 rounded-t-none">
+            <div className="w-12 h-12 bg-[#ecfdf5] border border-[#d1fae5] rounded-none flex items-center justify-center text-[#16a34a]">
               <Package size={24} />
             </div>
             <div>
-              <h2 className="text-base font-black text-slate-800 uppercase tracking-widest leading-none">
+              <h2 className="text-sm font-black text-gray-900 uppercase tracking-tighter leading-none">
                 01. Food Specifications
               </h2>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1.5">
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1.5">
                 Technical details about your donation
               </p>
             </div>
@@ -141,7 +141,7 @@ const CreateDonation = () => {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 block px-1">
+              <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400 block px-1">
                 Detailed Description / Instructions
               </label>
               <textarea
@@ -150,23 +150,23 @@ const CreateDonation = () => {
                   handleValueChange("description", e.target.value)
                 }
                 placeholder="List allergens, storage instructions, or specific handling needs..."
-                className="w-full bg-slate-50 border border-slate-200 p-5 rounded-sm text-xs font-semibold text-slate-800 focus:outline-none focus:ring-1 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all min-h-[140px] resize-none shadow-inner"
+                className="w-full bg-white border border-gray-200 p-5 rounded-none text-xs font-semibold text-gray-800 focus:outline-none focus:ring-1 focus:ring-[#22c55e]/50 focus:border-[#22c55e] transition-all min-h-[140px] resize-none"
               />
             </div>
           </div>
         </div>
 
         {/* Card 02: Logistics */}
-        <div className="bg-white border border-slate-200/60 rounded-sm shadow-[0_2px_15px_-3px_rgba(0,0,0,0.04)]">
-          <div className="bg-slate-50 border-b border-slate-100 p-6 flex items-center gap-4 rounded-t-sm">
-            <div className="w-12 h-12 bg-white border border-slate-200 rounded-sm flex items-center justify-center text-sky-500 shadow-sm">
+        <div className="bg-white border border-gray-100 rounded-none">
+          <div className="border-b border-gray-100 p-6 flex items-center gap-4 rounded-t-none">
+            <div className="w-12 h-12 bg-[#ecfdf5] border border-[#d1fae5] rounded-none flex items-center justify-center text-[#16a34a]">
               <MapPin size={24} />
             </div>
             <div>
-              <h2 className="text-base font-black text-slate-800 uppercase tracking-widest leading-none">
+              <h2 className="text-sm font-black text-gray-900 uppercase tracking-tighter leading-none">
                 02. Pickup Logistics
               </h2>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1.5">
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1.5">
                 Coordination and collection data
               </p>
             </div>
@@ -216,14 +216,14 @@ const CreateDonation = () => {
             <ResuableButton
               variant="ghost"
               onClick={() => navigate("/donor/donations")}
-              className="text-slate-500 font-bold uppercase tracking-widest"
+              className="text-gray-500 font-bold uppercase tracking-widest"
             >
               Discard Entry
             </ResuableButton>
             <ResuableButton
               type="submit"
               variant="dark"
-              className="min-w-[280px] h-[52px] shadow-[0_10px_20px_-5px_rgba(0,0,0,0.3)] !bg-slate-900"
+              className="min-w-[280px] h-[52px] !bg-[#16a34a] hover:!bg-[#15803d]"
               startContent={<CheckCircle size={20} />}
             >
               <span className="text-xs font-black uppercase tracking-widest">

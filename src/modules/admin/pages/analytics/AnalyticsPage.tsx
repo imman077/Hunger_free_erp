@@ -11,9 +11,9 @@ import {
   Bar,
   Cell,
 } from "recharts";
-import { Leaf, Recycle, Trash2, Utensils, AlertTriangle } from "lucide-react";
+import { Leaf, AlertTriangle } from "lucide-react";
 
-import { StatCardGrid } from "../../../../global/components/resuable-components/cards";
+import { ImpactCards } from "../../../../global/components/resuable-components/ImpactCards";
 
 const wasteData = [
   { day: "Mon", rescued: 450, wasted: 45 },
@@ -26,7 +26,7 @@ const wasteData = [
 ];
 
 const categoryData = [
-  { name: "Produce", value: 45, color: "#10b981" },
+  { name: "Produce", value: 45, color: "#22c55e" },
   { name: "Dairy", value: 25, color: "#3b82f6" },
   { name: "Prepared", value: 20, color: "#f59e0b" },
   { name: "Bakery", value: 10, color: "#8b5cf6" },
@@ -35,25 +35,22 @@ const categoryData = [
 const AnalyticsPage: React.FC = () => {
   const impactMetrics = [
     {
-      title: "Meals Provided",
-      value: "12,482",
-      change: "+15.2% from last month",
-      changeType: "positive" as const,
-      icon: <Utensils size={20} />,
+      label: "Meals Provided",
+      val: "12,482",
+      trend: "+15.2% from last month",
+      color: "bg-[#22c55e]",
     },
     {
-      title: "CO2 Offset (kg)",
-      value: "4,120.5",
-      change: "Equivalent to 182 trees",
-      changeType: "neutral" as const,
-      icon: <Recycle size={20} />,
+      label: "CO2 Offset (kg)",
+      val: "4,120.5",
+      trend: "Equivalent to 182 trees",
+      color: "bg-blue-500",
     },
     {
-      title: "Wastage Rate",
-      value: "4.2%",
-      change: "-2.1% improvement",
-      changeType: "positive" as const,
-      icon: <Trash2 size={20} />,
+      label: "Wastage Rate",
+      val: "4.2%",
+      trend: "-2.1% improvement",
+      color: "bg-[#22c55e]",
     },
   ];
 
@@ -69,9 +66,9 @@ const AnalyticsPage: React.FC = () => {
           </p>
         </div>
         <div className="flex gap-4">
-          <div className="flex items-center gap-2 bg-emerald-50 px-4 py-2 rounded-2xl border border-emerald-100">
-            <Leaf size={18} className="text-emerald-600" />
-            <span className="text-sm font-black text-emerald-700">
+          <div className="flex items-center gap-2 bg-[#ecfdf5] px-4 py-2 rounded-2xl border border-[#d1fae5]">
+            <Leaf size={18} className="text-[#22c55e]" />
+            <span className="text-sm font-black text-[#16a34a]">
               92% DIVERTED
             </span>
           </div>
@@ -80,7 +77,7 @@ const AnalyticsPage: React.FC = () => {
 
       {/* Impact Grid */}
       <div className="text-start">
-        <StatCardGrid cards={impactMetrics} columns={3} />
+        <ImpactCards data={impactMetrics} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 text-start">
@@ -101,8 +98,8 @@ const AnalyticsPage: React.FC = () => {
               <AreaChart data={wasteData}>
                 <defs>
                   <linearGradient id="colorRescued" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.1} />
-                    <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#22c55e" stopOpacity={0.1} />
+                    <stop offset="95%" stopColor="#22c55e" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid
@@ -133,7 +130,7 @@ const AnalyticsPage: React.FC = () => {
                 <Area
                   type="monotone"
                   dataKey="rescued"
-                  stroke="#10b981"
+                  stroke="#22c55e"
                   strokeWidth={4}
                   fillOpacity={1}
                   fill="url(#colorRescued)"

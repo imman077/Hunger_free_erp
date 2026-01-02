@@ -424,6 +424,55 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
       return <Icon name="trending" className={className} />;
     case "verified":
       return <Icon name="check-circle" className={className} />;
+    case "ribbon":
+      return (
+        <svg
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+          className={className}
+        >
+          <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1v12zM4 22v-7" />
+        </svg>
+      );
+    case "gift":
+      return (
+        <svg
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+          className={className}
+        >
+          <path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z" />
+        </svg>
+      );
+    case "package":
+      return (
+        <svg
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+          className={className}
+        >
+          <path d="M21 8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16Z" />
+          <path d="m3.3 7 8.7 5 8.7-5M12 22V12" />
+        </svg>
+      );
+    case "trophy":
+      return (
+        <svg
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+          className={className}
+        >
+          <path d="M6 9H4.5a2.5 2.5 0 010-5H6M18 9h1.5a2.5 2.5 0 000-5H18M4 22h16M10 14.66V17c0 .55.47.98.97 1.21C11.47 18.44 12 19 12 19s.53-.56 1.03-.79c.5-.23.97-.66.97-1.21v-2.34M12 14.66l-3-3V9h6v2.66l-3 3z" />
+        </svg>
+      );
     case "flagged":
       return (
         <svg

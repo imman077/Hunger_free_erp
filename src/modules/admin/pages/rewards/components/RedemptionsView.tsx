@@ -2,6 +2,7 @@ import React from "react";
 import { Check, X } from "lucide-react";
 import type { ColumnDef } from "../../../../../global/components/resuable-components/table";
 import ResuableTable from "../../../../../global/components/resuable-components/table";
+import ResuableButton from "../../../../../global/components/resuable-components/button";
 
 const REDEMPTION_REQUESTS = [
   {
@@ -91,12 +92,20 @@ const RedemptionsView: React.FC = () => {
       case "actions":
         return (
           <div className="flex items-center gap-2">
-            <button className="p-1.5 bg-blue-50 text-blue-600 rounded-sm hover:bg-blue-600 hover:text-white transition-all shadow-sm">
+            <ResuableButton
+              variant="ghost"
+              onClick={() => console.log("Approve", req.id)}
+              className="!p-1.5 !bg-blue-50 !text-blue-600 hover:!bg-blue-600 hover:!text-white !min-w-0"
+            >
               <Check size={14} />
-            </button>
-            <button className="p-1.5 bg-red-50 text-red-600 rounded-sm hover:bg-red-600 hover:text-white transition-all shadow-sm">
+            </ResuableButton>
+            <ResuableButton
+              variant="ghost"
+              onClick={() => console.log("Reject", req.id)}
+              className="!p-1.5 !bg-red-50 !text-red-600 hover:!bg-red-600 hover:!text-white !min-w-0"
+            >
               <X size={14} />
-            </button>
+            </ResuableButton>
           </div>
         );
       default:
@@ -144,12 +153,20 @@ const RedemptionsView: React.FC = () => {
             <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-4">
               Bulk Actions
             </p>
-            <button className="w-full py-3 bg-hf-green text-white font-black text-[11px] uppercase tracking-widest rounded-sm hover:bg-emerald-600 transition-all shadow-lg active:scale-95">
+            <ResuableButton
+              variant="dark"
+              onClick={() => console.log("Approve All")}
+              className="w-full !bg-[#22c55e] hover:!bg-[#16a34a]"
+            >
               Approve All
-            </button>
-            <button className="w-full py-3 bg-white border border-slate-200 text-slate-400 font-black text-[11px] uppercase tracking-widest rounded-sm hover:bg-slate-50 transition-all active:scale-95">
+            </ResuableButton>
+            <ResuableButton
+              variant="ghost"
+              onClick={() => console.log("Reject All")}
+              className="w-full"
+            >
               Reject All
-            </button>
+            </ResuableButton>
           </div>
         </div>
       </div>

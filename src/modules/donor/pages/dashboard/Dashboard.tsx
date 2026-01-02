@@ -1,5 +1,6 @@
 import { Heart, Package, Clock, Award } from "lucide-react";
 import ImpactCards from "../../../../global/components/resuable-components/ImpactCards";
+import DonationActivityCard from "../../../../global/components/resuable-components/DonationActivityCard";
 
 const DonorDashboard = () => {
   const stats = [
@@ -60,7 +61,7 @@ const DonorDashboard = () => {
           val: item.value,
           trend: item.change,
           color: item.changeColor.includes("green")
-            ? "bg-emerald-500"
+            ? "bg-[#22c55e]"
             : item.changeColor.includes("blue")
             ? "bg-blue-500"
             : "bg-orange-500",
@@ -68,55 +69,101 @@ const DonorDashboard = () => {
       />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white rounded-md p-5 border border-gray-100 min-h-[300px] flex flex-col items-start">
-          <h3 className="text-lg font-semibold text-black mb-4 flex items-center gap-2">
-            <Award className="text-emerald-500" /> My Badges & Achievements
+        <div className="bg-white rounded-none border border-gray-100 p-8 min-h-[300px] flex flex-col relative group/ach">
+          <h3 className="text-sm font-black text-gray-900 mb-6 flex items-center gap-2 relative z-10 tracking-tighter uppercase px-1">
+            <Award className="text-[#22c55e] w-4 h-4" /> Impact Milestones
           </h3>
-          <div className="flex flex-wrap gap-4 mt-2">
-            <div className="flex flex-col items-center gap-2 p-3 bg-emerald-50 rounded-xl border border-emerald-100">
-              <div className="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center text-white">
-                <Heart size={24} />
-              </div>
-              <span className="text-xs font-bold text-emerald-700">
-                Kind Soul
-              </span>
-            </div>
-            <div className="flex flex-col items-center gap-2 p-3 bg-blue-50 rounded-xl border border-blue-100 text-gray-400 grayscale">
-              <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white">
-                <Package size={24} />
-              </div>
-              <span className="text-xs font-bold text-blue-700">Food Hero</span>
-            </div>
-          </div>
-          <p className="text-sm text-gray-500 mt-6">
-            Donate 5 more times to unlock "Food Hero" badge!
-          </p>
-        </div>
 
-        <div className="bg-white rounded-md p-5 border border-gray-100 min-h-[300px]">
-          <h3 className="text-lg font-semibold text-black mb-4 text-start">
-            Recent Donations
-          </h3>
-          <div className="space-y-4">
-            {recentDonations.map((donation, index) => (
+          <div className="flex flex-wrap gap-6 relative z-10 flex-1">
+            {[
+              {
+                name: "Kind Soul",
+                status: "Unlocked",
+                color: "emerald",
+                icon: <Heart size={32} />,
+                unlocked: true,
+              },
+              {
+                name: "Food Hero",
+                status: "Locked",
+                color: "blue",
+                icon: <Package size={32} />,
+                unlocked: false,
+              },
+            ].map((badge, i) => (
               <div
-                key={index}
-                className={`flex items-start gap-4 p-3 rounded-lg border-l-4 ${donation.color} bg-gray-50`}
+                key={i}
+                className={`group/badge relative p-8 rounded-none border transition-all duration-500 cursor-default min-w-[200px] flex flex-col items-center gap-5
+                ${
+                  badge.unlocked
+                    ? badge.color === "emerald"
+                      ? "bg-white border-[#d1fae5] hover:border-emerald-200"
+                      : "bg-white border-blue-100 hover:border-blue-200"
+                    : "bg-gray-50 border-gray-100 grayscale opacity-60"
+                }
+              `}
               >
-                <div className="pt-1">{donation.icon}</div>
-                <div className="flex flex-col items-start">
-                  <p className="text-gray-900 font-medium">{donation.title}</p>
-                  <p className="text-xs text-gray-500">{donation.ngo}</p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-white border border-gray-200 text-gray-600">
-                      {donation.status}
-                    </span>
-                    <span className="text-[10px] text-gray-400">
-                      {donation.time}
-                    </span>
-                  </div>
+                <div
+                  className={`w-16 h-16 rounded-none flex items-center justify-center transition-all duration-500 group-hover/badge:scale-105
+                  ${
+                    badge.unlocked
+                      ? badge.color === "emerald"
+                        ? "bg-[#22c55e] text-white"
+                        : "bg-blue-500 text-white"
+                      : "bg-gray-200 text-gray-400"
+                  }
+                `}
+                >
+                  {badge.icon}
+                </div>
+                <div className="text-center">
+                  <span className="block text-xs font-black text-gray-900 tracking-tight mb-2">
+                    {badge.name}
+                  </span>
+                  <span
+                    className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-none border
+                    ${
+                      badge.unlocked
+                        ? "bg-[#d1fae5] text-[#15803d] border-emerald-200"
+                        : "bg-gray-100 text-gray-400 border-gray-200"
+                    }
+                  `}
+                  >
+                    {badge.status}
+                  </span>
                 </div>
               </div>
+            ))}
+          </div>
+
+          <div className="mt-6 relative z-10 p-4 bg-[#ecfdf5] rounded-none border border-[#d1fae5]">
+            <p className="text-xs text-emerald-800 font-bold flex items-center gap-2">
+              <div className="w-1.5 h-1.5 bg-[#22c55e] rounded-full animate-pulse" />
+              Donate 5 more times to unlock{" "}
+              <span className="underline decoration-emerald-200">
+                Food Hero
+              </span>{" "}
+              badge!
+            </p>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-none border border-gray-100 p-6 flex flex-col relative group/donations">
+          <h3 className="text-sm font-black text-gray-900 mb-6 tracking-tighter uppercase text-start px-1 flex items-center gap-2">
+            <Clock className="w-4 h-4 text-[#22c55e]" /> Recent Activity
+          </h3>
+
+          <div className="space-y-3 relative z-10 flex-1">
+            {recentDonations.map((donation, index) => (
+              <DonationActivityCard
+                key={index}
+                icon={donation.icon}
+                title={donation.title}
+                subtitle={donation.ngo}
+                status={donation.status}
+                date={donation.time}
+                compact={true}
+              />
             ))}
           </div>
         </div>

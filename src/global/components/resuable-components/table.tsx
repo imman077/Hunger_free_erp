@@ -1,4 +1,4 @@
-import { ChevronRight, Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon } from "lucide-react";
 import React, {
   useMemo,
   useState,
@@ -22,6 +22,8 @@ import {
 } from "@heroui/react";
 import type { SortDescriptor, Selection } from "@heroui/react";
 import HeroDateRangePicker from "./HeroDateRangePicker";
+import { Eye, Mail, CheckCircle, Ban } from "lucide-react";
+import ResuableButton from "./button";
 
 // --- Icons ---
 const PlusIcon = ({ size = 20, width, height, ...props }: any) => {
@@ -157,6 +159,17 @@ export interface ColumnDef {
   sortable?: boolean;
 }
 
+export interface ActionConfig<T = any> {
+  showView?: boolean;
+  showMessage?: boolean;
+  showApprove?: boolean;
+  showDeactivate?: boolean;
+  onView?: (item: T) => void;
+  onMessage?: (item: T) => void;
+  onApprove?: (item: T) => void;
+  onDeactivate?: (item: T) => void;
+}
+
 interface ERPGridTableProps {
   data: any[];
   columns: ColumnDef[];
@@ -171,6 +184,8 @@ interface ERPGridTableProps {
   onAddNew?: () => void;
   title?: string;
   description?: string;
+  actionConfig?: ActionConfig;
+  topContent?: React.ReactNode;
 }
 
 export function capitalize(s: string) {
@@ -189,6 +204,8 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
   onAddNew,
   title,
   description,
+  actionConfig,
+  topContent: customTopContent,
 }) => {
   const [filterValue, setFilterValue] = useState("");
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
@@ -313,6 +330,90 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
     return ["all", ...Array.from(statusSet)];
   }, [data]);
 
+  // Default action renderer
+  const renderDefaultActions = useCallback(
+    (item: any) => {
+      if (!actionConfig) return null;
+
+      const {
+        showView,
+        showMessage,
+        showApprove,
+        showDeactivate,
+        onView,
+        onMessage,
+        onApprove,
+        onDeactivate,
+      } = actionConfig;
+
+      return (
+        <div className="flex items-center justify-center gap-2">
+          {showView && (
+            <div title="View Details">
+              <ResuableButton
+                variant="ghost"
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onView?.(item);
+                }}
+                className="!p-2 !min-w-0 hover:!bg-gray-100"
+              >
+                <Eye size={18} className="text-gray-600" />
+              </ResuableButton>
+            </div>
+          )}
+          {showMessage && (
+            <div title="Send Message">
+              <ResuableButton
+                variant="ghost"
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onMessage?.(item);
+                }}
+                className="!p-2 !min-w-0 hover:!bg-blue-50"
+              >
+                <Mail size={18} className="text-blue-600" />
+              </ResuableButton>
+            </div>
+          )}
+          {showApprove && (
+            <div title="Approve">
+              <ResuableButton
+                variant="ghost"
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onApprove?.(item);
+                }}
+                className="!p-2 !min-w-0 hover:!bg-[#ecfdf5]"
+              >
+                <CheckCircle size={18} className="text-[#22c55e]" />
+              </ResuableButton>
+            </div>
+          )}
+          {showDeactivate && (
+            <div title="Deactivate">
+              <ResuableButton
+                variant="ghost"
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDeactivate?.(item);
+                }}
+                className="!p-2 !min-w-0 hover:!bg-red-50"
+              >
+                <Ban size={18} className="text-red-600" />
+              </ResuableButton>
+            </div>
+          )}
+        </div>
+      );
+    },
+    [actionConfig]
+  );
+
   const topContent = useMemo(() => {
     return (
       <div className="flex flex-col gap-4 p-4 pb-0">
@@ -394,8 +495,11 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
                     selectedKeys={[selectedStatus]}
                     onSelectionChange={(keys) => {
                       const selected = Array.from(keys)[0] as string;
-                      setSelectedStatus(selected);
-                      setPage(1);
+                      // Prevent empty selection - if user clicks same item, keep it selected
+                      if (selected && selected !== selectedStatus) {
+                        setSelectedStatus(selected);
+                        setPage(1);
+                      }
                     }}
                     classNames={{
                       base: "bg-white border border-slate-200 rounded-sm min-w-[160px] p-1",
@@ -589,6 +693,8 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
     onDateRangeChange,
   ]);
 
+  const finalTopContent = customTopContent || topContent;
+
   const bottomContent = useMemo(() => {
     if (!enablePagination) return null;
 
@@ -682,7 +788,7 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
         selectedKeys={undefined}
         selectionMode="none"
         sortDescriptor={sortDescriptor}
-        topContent={topContent}
+        topContent={finalTopContent}
         topContentPlacement="outside"
         onSortChange={setSortDescriptor}
       >
@@ -711,7 +817,11 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
           {(item: any) => (
             <TableRow key={item.id ?? Math.random()}>
               {(columnKey) => (
-                <TableCell>{renderCell(item, columnKey)}</TableCell>
+                <TableCell>
+                  {columnKey === "actions" && actionConfig
+                    ? renderDefaultActions(item)
+                    : renderCell(item, columnKey)}
+                </TableCell>
               )}
             </TableRow>
           )}

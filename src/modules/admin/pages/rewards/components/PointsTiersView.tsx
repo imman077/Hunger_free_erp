@@ -4,6 +4,8 @@ import { Gem, Wallet, Users, BarChart, Settings } from "lucide-react";
 import type { ColumnDef } from "../../../../../global/components/resuable-components/table";
 import ResuableTable from "../../../../../global/components/resuable-components/table";
 import { StatCardGrid } from "../../../../../global/components/resuable-components/cards";
+import ResuableInput from "../../../../../global/components/resuable-components/input";
+import ResuableButton from "../../../../../global/components/resuable-components/button";
 
 const TIERS = [
   {
@@ -106,9 +108,24 @@ const PointsTiersView: React.FC = () => {
               Donation Points
             </h5>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <ConfigInput label="Prepared Unit" value="25" />
-              <ConfigInput label="Raw Unit" value="15" />
-              <ConfigInput label="Packed Unit" value="20" />
+              <ResuableInput
+                label="Prepared Unit"
+                value="25"
+                onChange={() => {}}
+                align="left"
+              />
+              <ResuableInput
+                label="Raw Unit"
+                value="15"
+                onChange={() => {}}
+                align="left"
+              />
+              <ResuableInput
+                label="Packed Unit"
+                value="20"
+                onChange={() => {}}
+                align="left"
+              />
             </div>
           </div>
 
@@ -117,37 +134,40 @@ const PointsTiersView: React.FC = () => {
               Bonus Points
             </h5>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <ConfigInput label="Weekly Streak" value="100" />
-              <ConfigInput label="Referrals" value="500" />
-              <ConfigInput label="Emergency" value="200" />
+              <ResuableInput
+                label="Weekly Streak"
+                value="100"
+                onChange={() => {}}
+                align="left"
+              />
+              <ResuableInput
+                label="Referrals"
+                value="500"
+                onChange={() => {}}
+                align="left"
+              />
+              <ResuableInput
+                label="Emergency"
+                value="200"
+                onChange={() => {}}
+                align="left"
+              />
             </div>
           </div>
         </div>
 
         <div className="mt-10 flex justify-end">
-          <button className="px-8 py-3 bg-slate-900 text-white rounded-sm font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg active:scale-95">
+          <ResuableButton
+            variant="dark"
+            onClick={() => console.log("Save Configuration")}
+            className="!bg-[#22c55e] hover:!bg-[#16a34a]"
+          >
             Save Configuration
-          </button>
+          </ResuableButton>
         </div>
       </div>
     </div>
   );
 };
-
-const ConfigInput: React.FC<{ label: string; value: string }> = ({
-  label,
-  value,
-}) => (
-  <div className="space-y-2 text-start">
-    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-      {label}
-    </label>
-    <input
-      type="text"
-      defaultValue={value}
-      className="w-full bg-slate-50 border border-slate-200 rounded-sm px-4 py-2.5 text-sm font-bold text-slate-700 focus:outline-none focus:ring-1 focus:ring-hf-green focus:bg-white transition-all"
-    />
-  </div>
-);
 
 export default PointsTiersView;

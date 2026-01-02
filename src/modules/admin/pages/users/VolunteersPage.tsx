@@ -5,12 +5,8 @@ import {
   DrawerBody,
   useDisclosure,
 } from "@heroui/react";
-import {
-  FormControl,
-  MenuItem,
-  Select,
-  type SelectChangeEvent,
-} from "@mui/material";
+import ReusableTable from "../../../../global/components/resuable-components/table";
+import ReusableButton from "../../../../global/components/resuable-components/button";
 
 type VolunteerStatus = "available" | "on-leave" | "busy";
 
@@ -117,9 +113,6 @@ const VolunteersPage: React.FC = () => {
     setOnLeaveToggle((prev) => !prev);
   };
 
-  const [status, setStatus] = useState("All Status");
-  const [date, setDate] = useState("All Dates");
-
   const renderAvatar = (vol: Volunteer) => {
     const initials = vol.name
       .split(" ")
@@ -168,12 +161,7 @@ const VolunteersPage: React.FC = () => {
     );
   };
 
-  const renderStatusBadge = (status: VolunteerStatus) => {
-    return getStatusBadge(status);
-  };
-
   const renderStars = (rating: string) => {
-    // Original UI: always 4 filled stars, 1 empty, rating text next to it.
     return (
       <div className="flex items-center">
         <div className="inline-flex gap-1">
@@ -189,213 +177,62 @@ const VolunteersPage: React.FC = () => {
   };
 
   return (
-    <div className="flex text-gray-900 relative min-h-screen p-6 overflow-x-hidden">
-      {/* MAIN CONTENT */}
-      <div className="w-full overflow-x-hidden">
-        <div className="">
-          {/* Header with Search + Filters */}
-          <div className="mb-6 flex items-center justify-between gap-6">
-            <h1 className="text-xl font-bold text-gray-900 tracking-tight whitespace-nowrap">
-              Volunteer Management
-            </h1>
-
-            <div className="flex gap-4">
-              <div className="relative w-80">
-                <input
-                  type="text"
-                  placeholder="Search volunteers..."
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-                />
-                <i className="fas fa-search absolute right-3 top-3 text-gray-400" />
-              </div>
-              <FormControl size="small">
-                <Select
-                  labelId="status-select-label"
-                  id="status-select"
-                  value={status}
-                  onChange={(e: SelectChangeEvent) => setStatus(e.target.value)}
-                  displayEmpty
-                  sx={{
-                    minWidth: 130,
-                    height: "38px",
-                    fontSize: "14px",
-                    backgroundColor: "white",
-                    borderRadius: "8px",
-                    border: "1px solid #e5e7eb",
-                    // Remove all shadow effects
-                    boxShadow: "none",
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      border: "none",
-                      boxShadow: "none",
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      border: "none",
-                      boxShadow: "none",
-                    },
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      border: "none",
-                      boxShadow: "none",
-                    },
-                    // Remove dropdown icon shadow if any
-                    "& .MuiSelect-icon": {
-                      boxShadow: "none",
-                    },
-                  }}
-                  // Remove menu shadow via MenuProps
-                  MenuProps={{
-                    PaperProps: {
-                      sx: {
-                        boxShadow: "none",
-                        border: "1px solid #e5e7eb",
-                        marginTop: "4px",
-                        borderRadius: "8px",
-                      },
-                    },
-                  }}
-                >
-                  <MenuItem value="All Status" sx={{ fontSize: "14px" }}>
-                    All Status
-                  </MenuItem>
-                  <MenuItem value="Active" sx={{ fontSize: "14px" }}>
-                    Active
-                  </MenuItem>
-                  <MenuItem value="Inactive" sx={{ fontSize: "14px" }}>
-                    Inactive
-                  </MenuItem>
-                  <MenuItem value="Pending" sx={{ fontSize: "14px" }}>
-                    Pending
-                  </MenuItem>
-                </Select>
-              </FormControl>
-              <FormControl
-                size="small"
-                sx={{
-                  boxShadow: "none",
-                  "& .MuiInputBase-root": {
-                    boxShadow: "none !important",
-                  },
-                  "& .MuiOutlinedInput-root": {
-                    boxShadow: "none !important",
-                    "& fieldset": {
-                      border: "none",
-                    },
-                    "&:hover fieldset": {
-                      border: "none",
-                    },
-                    "&.Mui-focused fieldset": {
-                      border: "none",
-                    },
-                  },
-                }}
-              >
-                <Select
-                  labelId="date-select-label"
-                  id="date-select"
-                  value={date}
-                  onChange={(e: SelectChangeEvent) => setDate(e.target.value)}
-                  displayEmpty
-                  sx={{
-                    minWidth: 130,
-                    height: "38px",
-                    fontSize: "14px",
-                    backgroundColor: "white",
-                    borderRadius: "8px",
-                    border: "1px solid #e5e7eb",
-                    boxShadow: "none !important",
-                    "& .MuiSelect-select": {
-                      padding: "8px 12px",
-                    },
-                    "& .MuiSelect-icon": {
-                      boxShadow: "none !important",
-                    },
-                  }}
-                  MenuProps={{
-                    PaperProps: {
-                      sx: {
-                        boxShadow: "none !important",
-                        border: "1px solid #e5e7eb",
-                        borderRadius: "8px",
-                        mt: "4px",
-                      },
-                    },
-                  }}
-                >
-                  <MenuItem value="All Dates" sx={{ fontSize: "14px" }}>
-                    All Dates
-                  </MenuItem>
-                  <MenuItem value="Today" sx={{ fontSize: "14px" }}>
-                    Today
-                  </MenuItem>
-                  <MenuItem value="This Week" sx={{ fontSize: "14px" }}>
-                    This Week
-                  </MenuItem>
-                  <MenuItem value="This Month" sx={{ fontSize: "14px" }}>
-                    This Month
-                  </MenuItem>
-                </Select>
-              </FormControl>
-            </div>
-          </div>
-
-          {/* Volunteer List */}
-          <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-            <div className="p-4 border-b border-gray-200">
-              <h2 className="text-lg font-semibold ">Volunteer List</h2>
-              <p className="text-sm text-gray-600">
-                Manage and track volunteer profiles.
-              </p>
-            </div>
-
-            <div className="overflow-x-auto">
-              <table className="w-full table-fixed">
-                <thead className="bg-gray-50 border-b border-gray-200">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">
-                      Name
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">
-                      Zone
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">
-                      Tasks Completed
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">
-                      Rating
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700">
-                      Availability
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {volunteers.map((vol) => (
-                    <tr
-                      key={vol.id}
-                      className="border-b border-gray-200 cursor-pointer hover:bg-gray-100"
-                      onClick={() => openDrawer(vol)}
-                    >
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          {renderAvatar(vol)}
-                          <span className="font-medium">{vol.name}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-gray-600">{vol.zone}</td>
-                      <td className="px-6 py-4 text-gray-600">
-                        {vol.tasksCompleted}
-                      </td>
-                      <td className="px-6 py-4">{renderStars(vol.rating)}</td>
-                      <td className="px-6 py-4">
-                        {renderStatusBadge(vol.status)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
+    <div className="p-6 space-y-6">
+      {/* Header */}
+      <div className="text-left">
+        <h1 className="text-xl font-bold text-gray-900 tracking-tight">
+          Volunteer Management
+        </h1>
+        <p className="text-gray-600 mt-2">
+          Manage and track volunteer profiles
+        </p>
       </div>
+
+      {/* Volunteer Table */}
+      <ReusableTable
+        data={volunteers}
+        columns={[
+          { name: "Avatar", uid: "avatar", sortable: false },
+          { name: "Name", uid: "name", sortable: true },
+          { name: "Zone", uid: "zone", sortable: true },
+          { name: "Tasks Completed", uid: "tasksCompleted", sortable: true },
+          { name: "Rating", uid: "rating", sortable: true },
+          { name: "Availability", uid: "status", sortable: true },
+          { name: "Actions", uid: "actions", sortable: false },
+        ]}
+        renderCell={(vol: Volunteer, columnKey: React.Key) => {
+          switch (columnKey) {
+            case "avatar":
+              return renderAvatar(vol);
+            case "name":
+              return <span className="font-medium">{vol.name}</span>;
+            case "zone":
+              return <span className="text-gray-600">{vol.zone}</span>;
+            case "tasksCompleted":
+              return (
+                <span className="text-gray-600">{vol.tasksCompleted}</span>
+              );
+            case "rating":
+              return renderStars(vol.rating);
+            case "status":
+              return getStatusBadge(vol.status);
+            default:
+              return <span>{String(vol[columnKey as keyof Volunteer])}</span>;
+          }
+        }}
+        // title="Volunteer List"
+        // description="Manage and track volunteer profiles"
+        actionConfig={{
+          showView: true,
+          showMessage: true,
+          showApprove: true,
+          showDeactivate: true,
+          onView: openDrawer,
+          onMessage: (vol) => console.log("Message", vol),
+          onApprove: (vol) => console.log("Approve", vol),
+          onDeactivate: (vol) => console.log("Deactivate", vol),
+        }}
+      />
 
       {/* HeroUI Drawer */}
       <Drawer
@@ -411,7 +248,6 @@ const VolunteersPage: React.FC = () => {
         <DrawerContent className="bg-white no-scrollbar">
           {() => (
             <>
-              {/* <DrawerHeader></DrawerHeader> */}
               <DrawerBody className="px-6 py-4 space-y-6 overflow-y-auto no-scrollbar">
                 {activeVolunteer && (
                   <>
@@ -444,7 +280,7 @@ const VolunteersPage: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Availability Management (Drawer) */}
+                    {/* Availability Management */}
                     <div className="mb-2 pb-6 border-b border-gray-200">
                       <h3 className="font-semibold text-gray-900 mb-3">
                         Availability Management
@@ -489,12 +325,16 @@ const VolunteersPage: React.FC = () => {
                         </label>
                       </div>
 
-                      <button className="px-4 py-2 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-600 transition">
+                      <ReusableButton
+                        variant="primary"
+                        size="md"
+                        onClick={() => console.log("Update Availability")}
+                      >
                         Update Availability
-                      </button>
+                      </ReusableButton>
                     </div>
 
-                    {/* Volunteer Details (Drawer) */}
+                    {/* Volunteer Details */}
                     <div className="text-left">
                       <h3 className="font-bold text-gray-900 text-xl mb-2">
                         Volunteer Details
@@ -510,7 +350,6 @@ const VolunteersPage: React.FC = () => {
                           <h4 className="text-sm font-semibold text-gray-700 mb-2">
                             Personal Information
                           </h4>
-
                           <p className="text-gray-600">
                             {activeVolunteer.email}
                           </p>
@@ -527,7 +366,6 @@ const VolunteersPage: React.FC = () => {
                           <h4 className="text-sm font-semibold text-gray-700 mb-2">
                             Vehicle Details
                           </h4>
-
                           <p className="text-gray-600">
                             Type: {activeVolunteer.vehicle}
                           </p>
@@ -541,7 +379,6 @@ const VolunteersPage: React.FC = () => {
                           <h4 className="text-sm font-semibold text-gray-700 mb-2">
                             Assigned Tasks
                           </h4>
-
                           <ul className="text-gray-600 space-y-1">
                             <li>• Food Distribution - Elm Street Shelter</li>
                             <li>• Community Cleanup – Central Park</li>

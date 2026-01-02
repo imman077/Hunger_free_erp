@@ -210,12 +210,22 @@ const PendingDonationsPage: React.FC = () => {
       <ImpactCards data={stats} />
 
       <ResuableTable
-        title="Incoming Requests"
-        description="All donations awaiting verification from administrative staff"
+        // title="Incoming Requests"
+        // description="All donations awaiting verification from administrative staff"
         columns={columns}
         data={sampleData}
         renderCell={renderCell}
         onAddNew={() => console.log("Add new donation")}
+        actionConfig={{
+          showView: true,
+          showMessage: true,
+          showApprove: true,
+          showDeactivate: true,
+          // onView: handleViewProfile,
+          onMessage: (donor) => console.log("Message", donor),
+          onApprove: (donor) => console.log("Approve", donor),
+          onDeactivate: (donor) => console.log("Deactivate", donor),
+        }}
       />
     </div>
   );

@@ -60,7 +60,7 @@ const ResuableTimePicker: React.FC<ResuableTimePickerProps> = ({
               sx: {
                 "& .MuiOutlinedInput-root": {
                   backgroundColor: "#f8fafc", // slate-50
-                  borderRadius: "2px",
+                  borderRadius: "0px",
                   fontSize: "11px !important",
                   fontWeight: "600 !important",
                   color: "#1e293b", // slate-800

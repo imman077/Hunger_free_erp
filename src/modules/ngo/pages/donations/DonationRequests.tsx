@@ -1,43 +1,107 @@
-const DonationRequests = () => {
-  return (
-    <div className="p-6">
-      <h1 className="text-2xl font-semibold text-black text-start">
-        Donation Requests
-      </h1>
-      <p className="text-gray-600 mt-2 text-start">
-        Review and accept donations from the community.
-      </p>
+import ReusableTable from "../../../../global/components/resuable-components/table";
 
-      <div className="mt-8 space-y-4">
-        {[1, 2, 3].map((i) => (
-          <div
-            key={i}
-            className="bg-white p-4 rounded-xl border border-gray-100 flex justify-between items-center group hover:shadow-sm transition-all"
-          >
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-xl">
-                🥗
-              </div>
-              <div className="flex flex-col items-start">
-                <h4 className="font-bold text-gray-900">
-                  Excess Food from Corporate Event
-                </h4>
-                <p className="text-xs text-gray-500">
-                  Donated by: Global Tech Inc. • 20 miles away
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <button className="px-4 py-1.5 text-xs font-bold text-gray-500 hover:bg-gray-100 rounded-lg transition-colors">
-                Decline
-              </button>
-              <button className="px-4 py-1.5 text-xs font-bold text-white bg-emerald-500 hover:bg-emerald-600 rounded-lg transition-colors shadow-sm shadow-emerald-200">
-                Accept Donation
-              </button>
-            </div>
-          </div>
-        ))}
+interface DonationRequest {
+  id: number;
+  title: string;
+  donor: string;
+  distance: string;
+  icon: string;
+}
+
+const DonationRequests = () => {
+  const donations: DonationRequest[] = [
+    {
+      id: 1,
+      title: "Excess Food from Corporate Event",
+      donor: "Global Tech Inc.",
+      distance: "20 miles away",
+      icon: "🥗",
+    },
+    {
+      id: 2,
+      title: "Fresh Bakery Items",
+      donor: "Local Bakery",
+      distance: "5 miles away",
+      icon: "🥖",
+    },
+    {
+      id: 3,
+      title: "Canned Goods Donation",
+      donor: "Community Center",
+      distance: "12 miles away",
+      icon: "🥫",
+    },
+  ];
+
+  const handleAccept = (donation: DonationRequest) => {
+    console.log("Accepted:", donation);
+  };
+
+  const handleDecline = (donation: DonationRequest) => {
+    console.log("Declined:", donation);
+  };
+
+  return (
+    <div className="p-6 space-y-6">
+      <div className="text-left">
+        <h1 className="text-xl font-bold text-gray-900 tracking-tight">
+          Donation Requests
+        </h1>
+        <p className="text-gray-600 mt-2">
+          Review and accept donations from the community.
+        </p>
       </div>
+
+      <ReusableTable
+        data={donations}
+        columns={[
+          { name: "Icon", uid: "icon", sortable: false },
+          { name: "Donation Details", uid: "title", sortable: true },
+          { name: "Donor", uid: "donor", sortable: true },
+          { name: "Distance", uid: "distance", sortable: false },
+          { name: "Actions", uid: "actions", sortable: false },
+        ]}
+        renderCell={(donation: DonationRequest, columnKey: React.Key) => {
+          switch (columnKey) {
+            case "icon":
+              return (
+                <div className="flex justify-center">
+                  <div className="w-12 h-12 bg-slate-50 rounded-sm flex items-center justify-center text-xl">
+                    {donation.icon}
+                  </div>
+                </div>
+              );
+            case "title":
+              return (
+                <span className="font-bold text-gray-900">
+                  {donation.title}
+                </span>
+              );
+            case "donor":
+              return <span className="text-gray-600">{donation.donor}</span>;
+            case "distance":
+              return (
+                <span className="text-gray-500 text-sm">
+                  {donation.distance}
+                </span>
+              );
+            default:
+              return (
+                <span>
+                  {String(donation[columnKey as keyof DonationRequest])}
+                </span>
+              );
+          }
+        }}
+        actionConfig={{
+          showView: false,
+          showMessage: false,
+          showApprove: true,
+          showDeactivate: true,
+          onApprove: handleAccept,
+          onDeactivate: handleDecline,
+        }}
+      />
     </div>
   );
 };

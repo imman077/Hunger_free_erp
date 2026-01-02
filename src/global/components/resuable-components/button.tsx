@@ -29,19 +29,17 @@ export interface ResuableButtonProps {
 }
 
 const variantClasses: Record<ButtonVariant, string> = {
-  primary:
-    "bg-[#22c55e] text-white hover:bg-[#1eb054] active:bg-[#198e44] shadow-sm",
+  primary: "bg-[#22c55e] text-white hover:bg-[#1eb054] active:bg-[#198e44]",
   secondary:
-    "bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-200 active:bg-gray-300 shadow-sm",
+    "bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-200 active:bg-gray-300",
   outline:
     "bg-transparent text-hf-green border border-hf-green hover:bg-green-50 active:bg-green-100",
   ghost:
     "bg-transparent text-gray-600 border border-transparent hover:bg-gray-100 active:bg-gray-200",
-  danger: "bg-red-600 text-white hover:bg-red-700 active:bg-red-800 shadow-sm",
-  success:
-    "bg-hf-green text-white hover:bg-emerald-600 active:bg-emerald-700 shadow-sm",
+  danger: "bg-red-600 text-white hover:bg-red-700 active:bg-red-800",
+  success: "bg-hf-green text-white hover:bg-emerald-600 active:bg-emerald-700",
   link: "bg-blue-50 text-blue-600 hover:bg-blue-100 active:bg-blue-200",
-  dark: "bg-hf-dark text-white hover:bg-black active:scale-95 shadow-md",
+  dark: "bg-hf-dark text-white hover:bg-black active:scale-95",
   "soft-success":
     "bg-emerald-50 text-hf-green hover:bg-emerald-100 active:bg-emerald-200",
   "soft-danger": "bg-red-50 text-red-600 hover:bg-red-100 active:bg-red-200",
@@ -76,7 +74,7 @@ const ResuableButton: React.FC<ResuableButtonProps> = ({
         ${variantClasses[variant]}
         ${sizeClasses[size]}
         ${fullWidth ? "w-full" : ""}
-        rounded-sm
+        rounded-none
         font-medium
         transition-all
         duration-200

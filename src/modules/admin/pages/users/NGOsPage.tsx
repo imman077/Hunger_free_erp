@@ -6,7 +6,9 @@ import {
   DrawerBody,
   useDisclosure,
 } from "@heroui/react";
-import ResuableDropdown from "../../../../global/components/resuable-components/dropdown";
+import { ImpactCards } from "../../../../global/components/resuable-components/ImpactCards";
+import ReusableTable from "../../../../global/components/resuable-components/table";
+import ReusableButton from "../../../../global/components/resuable-components/button";
 
 type NgoStatus = "Active" | "Pending" | "Deactivated";
 
@@ -95,9 +97,6 @@ const NgoPage = () => {
     onOpen();
   };
 
-  const [status, setStatus] = useState("");
-  const [serviceArea, setServiceArea] = useState("");
-
   const getStatusBadge = (status: NgoStatus): React.ReactElement => {
     const statusClasses: Record<NgoStatus, string> = {
       Active: "bg-emerald-50 text-hf-green border border-emerald-100",
@@ -114,241 +113,156 @@ const NgoPage = () => {
     );
   };
 
+  const pendingCount = ngoData.filter((ngo) => ngo.status === "Pending").length;
+
   return (
-    <div className="font-sans">
-      <div className="p-6">
-        {/* Header */}
-        <div className="mb-8">
-          {/* Row 1: Title and Inline Filters */}
-          <div className="pb-6 border-b border-gray-200 flex flex-row justify-between">
-            <div className="flex items-center gap-6">
-              {/* Left: Title */}
-              <div className="flex flex-col items-start">
-                <h1 className="text-2xl font-bold text-gray-900">
-                  NGO Management
-                </h1>
-                <p className="text-sm text-gray-600 mt-1">
-                  Monitor and manage NGO registrations
-                </p>
-              </div>
-            </div>
-
-            {/* Inline Filters - Below Title */}
-            <div className="flex items-center gap-4 mt-4">
-              <span className="text-sm font-medium text-gray-700">
-                Filter by:
-              </span>
-
-              {/* Status Filter */}
-              <ResuableDropdown
-                value={status}
-                onChange={setStatus}
-                placeholder="Status"
-                options={[
-                  { value: "All", label: "All" },
-                  { value: "Active", label: "Active" },
-                  { value: "Pending", label: "Pending" },
-                  { value: "Deactivated", label: "Deactivated" },
-                ]}
-              />
-
-              {/* Service Area Filter */}
-              <ResuableDropdown
-                value={serviceArea}
-                onChange={setServiceArea}
-                placeholder="Service Area"
-                minWidth={160}
-                options={[
-                  { value: "All", label: "All" },
-                  { value: "Education", label: "Education" },
-                  { value: "Health", label: "Health" },
-                  { value: "Environment", label: "Environment" },
-                  { value: "Elderly Care", label: "Elderly Care" },
-                  { value: "Animal Welfare", label: "Animal Welfare" },
-                  {
-                    value: "Poverty Alleviation",
-                    label: "Poverty Alleviation",
-                  },
-                ]}
-              />
-            </div>
-          </div>
-
-          {/* Row 2: Pending Status and Action Buttons */}
-          <div className="pt-6 flex items-center justify-between">
-            {/* Left: Pending Status Badge */}
-            <div className="flex items-center gap-3 bg-blue-50 px-4 py-2 rounded-lg border border-blue-200">
-              <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
-                <svg
-                  className="w-4 h-4 text-white"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </div>
-              <div>
-                <div className="text-sm font-semibold text-gray-900">
-                  1 Pending Registrations
-                </div>
-                <div className="text-xs text-gray-600">
-                  NGOs awaiting approval
-                </div>
-              </div>
-            </div>
-
-            {/* Right: Action Buttons */}
-            <div className="flex items-center gap-3">
-              <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors">
-                Review Applications
-              </button>
-              <button className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
-                Bulk Approve
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div className="h-px bg-gray-200 my-8"></div>
-
-        {/* Performance Metrics */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-6 text-left">
-            Performance Overview
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-2xl font-bold text-gray-900">92.5%</div>
-                  <div className="text-sm font-medium text-gray-600 mt-1">
-                    Completion Rate
-                  </div>
-                </div>
-                <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center">
-                  <span className="text-blue-600 text-lg">📊</span>
-                </div>
-              </div>
-            </div>
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-2xl font-bold text-gray-900">18 hrs</div>
-                  <div className="text-sm font-medium text-gray-600 mt-1">
-                    Avg. Response Time
-                  </div>
-                </div>
-                <div className="w-12 h-12 bg-emerald-50 rounded-lg flex items-center justify-center">
-                  <span className="text-hf-green text-lg">⏱️</span>
-                </div>
-              </div>
-            </div>
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-2xl font-bold text-gray-900">
-                    {ngoData.length}
-                  </div>
-                  <div className="text-sm font-medium text-gray-600 mt-1">
-                    Total NGOs
-                  </div>
-                </div>
-                <div className="w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center">
-                  <span className="text-purple-600 text-lg">🏢</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* NGO List */}
-        <div>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-gray-900">
-              NGO Directory
-            </h2>
-            <div className="text-sm text-gray-500">
-              {ngoData.length} organizations
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div className="overflow-x-auto no-scrollbar">
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-gray-50 border-b border-gray-200">
-                    <th className="px-6 py-4 text-center font-semibold text-gray-700 text-sm uppercase tracking-wider">
-                      Organization
-                    </th>
-                    <th className="px-6 py-4 text-center font-semibold text-gray-700 text-sm uppercase tracking-wider">
-                      Service Areas
-                    </th>
-                    <th className="px-6 py-4 text-center font-semibold text-gray-700 text-sm uppercase tracking-wider">
-                      Beneficiaries
-                    </th>
-                    <th className="px-6 py-4 text-center font-semibold text-gray-700 text-sm uppercase tracking-wider">
-                      Status
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {ngoData.map((ngo) => (
-                    <tr
-                      key={ngo.id}
-                      onClick={() => handleViewNgo(ngo)}
-                      className={`hover:bg-gray-50 transition-colors cursor-pointer ${
-                        ngo.status === "Deactivated"
-                          ? "bg-red-50 opacity-70"
-                          : ""
-                      }`}
-                    >
-                      <td className="px-6 py-4">
-                        <div>
-                          <div className="font-semibold text-gray-900">
-                            {ngo.name}
-                          </div>
-                          <div className="text-sm text-gray-500 font-mono mt-1">
-                            {ngo.registrationNo}
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex flex-wrap gap-1 justify-center">
-                          {ngo.serviceAreas.slice(0, 2).map((area, index) => (
-                            <span
-                              key={index}
-                              className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
-                            >
-                              {area}
-                            </span>
-                          ))}
-                          {ngo.serviceAreas.length > 2 && (
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
-                              +{ngo.serviceAreas.length - 2}
-                            </span>
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="text-sm text-gray-700">
-                          {ngo.beneficiaries}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        {getStatusBadge(ngo.status)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
+    <div className="p-6 space-y-6">
+      {/* Header */}
+      <div className="text-left">
+        <h1 className="text-xl font-bold text-gray-900 tracking-tight">
+          NGO Management
+        </h1>
+        <p className="text-gray-600 mt-2">
+          Monitor and manage NGO registrations
+        </p>
       </div>
+
+      {/* Pending Status Banner */}
+      {pendingCount > 0 && (
+        <div className="flex items-center justify-between bg-blue-50 px-4 py-3 rounded-lg border border-blue-200">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+              <svg
+                className="w-5 h-5 text-white"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+            <div>
+              <div className="text-sm font-semibold text-gray-900">
+                {pendingCount} Pending Registration
+                {pendingCount !== 1 ? "s" : ""}
+              </div>
+              <div className="text-xs text-gray-600">
+                NGOs awaiting approval
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <ReusableButton
+              variant="ghost"
+              size="md"
+              onClick={() => console.log("Review Applications")}
+            >
+              Review Applications
+            </ReusableButton>
+            <ReusableButton
+              variant="primary"
+              size="md"
+              onClick={() => console.log("Bulk Approve")}
+            >
+              Bulk Approve
+            </ReusableButton>
+          </div>
+        </div>
+      )}
+
+      {/* Performance Metrics */}
+      <ImpactCards
+        data={[
+          {
+            label: "Completion Rate",
+            val: "92.5%",
+            trend: "Program success rate",
+            color: "bg-blue-500",
+          },
+          {
+            label: "Avg. Response Time",
+            val: "18 hrs",
+            trend: "Application processing",
+            color: "bg-[#22c55e]",
+          },
+          {
+            label: "Total NGOs",
+            val: ngoData.length.toString(),
+            trend: "Registered organizations",
+            color: "bg-purple-500",
+          },
+        ]}
+      />
+
+      {/* NGO Table */}
+      <ReusableTable
+        data={ngoData}
+        columns={[
+          { name: "Organization", uid: "name", sortable: true },
+          { name: "Registration No", uid: "registrationNo", sortable: true },
+          { name: "Service Areas", uid: "serviceAreas", sortable: false },
+          { name: "Beneficiaries", uid: "beneficiaries", sortable: true },
+          { name: "Status", uid: "status", sortable: true },
+          { name: "Actions", uid: "actions", sortable: false },
+        ]}
+        renderCell={(ngo: Ngo, columnKey: React.Key) => {
+          switch (columnKey) {
+            case "name":
+              return (
+                <div className="font-semibold text-gray-900">{ngo.name}</div>
+              );
+            case "registrationNo":
+              return (
+                <div className="text-sm text-gray-500 font-mono">
+                  {ngo.registrationNo}
+                </div>
+              );
+            case "serviceAreas":
+              return (
+                <div className="flex flex-wrap gap-1 justify-center">
+                  {ngo.serviceAreas.slice(0, 2).map((area, index) => (
+                    <span
+                      key={index}
+                      className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                    >
+                      {area}
+                    </span>
+                  ))}
+                  {ngo.serviceAreas.length > 2 && (
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                      +{ngo.serviceAreas.length - 2}
+                    </span>
+                  )}
+                </div>
+              );
+            case "beneficiaries":
+              return (
+                <span className="text-sm text-gray-700">
+                  {ngo.beneficiaries}
+                </span>
+              );
+            case "status":
+              return getStatusBadge(ngo.status);
+            default:
+              return <span>{String(ngo[columnKey as keyof Ngo])}</span>;
+          }
+        }}
+        // title="NGO Directory"
+        // description={`${ngoData.length} registered organizations`}
+        actionConfig={{
+          showView: true,
+          showMessage: true,
+          showApprove: true,
+          showDeactivate: true,
+          onView: handleViewNgo,
+          onMessage: (ngo) => console.log("Message", ngo),
+          onApprove: (ngo) => console.log("Approve", ngo),
+          onDeactivate: (ngo) => console.log("Deactivate", ngo),
+        }}
+      />
 
       {/* HeroUI Drawer as Right Sidebar */}
       <Drawer

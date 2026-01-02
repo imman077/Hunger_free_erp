@@ -76,9 +76,9 @@ const ResuableDropdown: React.FC<ResuableDropdownProps> = ({
         disabled={disabled}
         onClick={() => setIsOpen(!isOpen)}
         style={{ minWidth }}
-        className={`w-full flex items-center justify-between bg-slate-50 border px-3 py-2.5 rounded-sm text-xs font-semibold transition-all ${
+        className={`w-full flex items-center justify-between bg-slate-50 border px-3 py-2.5 rounded-none text-xs font-semibold transition-all ${
           isOpen
-            ? "border-[#22c55e] ring-1 ring-[#22c55e] text-slate-900 shadow-sm"
+            ? "border-[#22c55e] ring-1 ring-[#22c55e] text-slate-900"
             : "border-slate-200 text-slate-800"
         } ${
           disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
@@ -96,7 +96,7 @@ const ResuableDropdown: React.FC<ResuableDropdownProps> = ({
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-sm shadow-2xl z-[100] max-h-60 overflow-y-auto no-scrollbar animate-in fade-in zoom-in-95 duration-200">
+        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-none z-[100] max-h-60 overflow-y-auto no-scrollbar animate-in fade-in zoom-in-95 duration-200">
           {options.map((opt) => (
             <button
               key={opt.value}

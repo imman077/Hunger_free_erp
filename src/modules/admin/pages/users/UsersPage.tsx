@@ -1,5 +1,4 @@
 import { useState, useMemo, useCallback } from "react";
-import { RefreshCcw, CheckCircle, Sparkles } from "lucide-react";
 import { Mail, Phone, Building, Globe } from "lucide-react";
 import {
   Dialog,
@@ -25,6 +24,7 @@ import CustomTabs, {
 } from "../../../../global/components/resuable-components/tabs";
 import ResuableTable from "../../../../global/components/resuable-components/table";
 import type { ColumnDef } from "../../../../global/components/resuable-components/table";
+import { ImpactCards } from "../../../../global/components/resuable-components/ImpactCards";
 
 // User type for this page (unchanged)
 interface UserItem {
@@ -235,6 +235,7 @@ const UsersPage = () => {
       { name: "Phone", uid: "phone" },
       { name: "Location", uid: "location", sortable: true },
       { name: "Points", uid: "totalPoints", sortable: true },
+      { name: "Actions", uid: "actions", sortable: false },
     ],
     []
   );
@@ -331,6 +332,27 @@ const UsersPage = () => {
     [openUserModal]
   );
 
+  const userStats = [
+    {
+      label: "Total Users",
+      val: "1,245",
+      trend: "All registered users",
+      color: "bg-[#22c55e]",
+    },
+    {
+      label: "Active Users",
+      val: "1,100",
+      trend: "Currently active on platform",
+      color: "bg-[#22c55e]",
+    },
+    {
+      label: "New Users",
+      val: "45",
+      trend: "Joined in the last 30 days",
+      color: "bg-[#22c55e]",
+    },
+  ];
+
   return (
     <>
       <div className="w-full space-y-6 p-6">
@@ -341,51 +363,8 @@ const UsersPage = () => {
           </h1>
         </div>
 
-        {/* Three Cards */}
-        <div className="grid grid-cols-1 text-black sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-          {/* Total Users */}
-          <div className="bg-white p-6 rounded-md shadow-sm flex flex-col relative">
-            <RefreshCcw
-              size={18}
-              className="absolute top-4 right-4 text-gray-400"
-            />
-            <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider">
-              Total Users
-            </h2>
-            <p className="text-2xl font-black mt-2 text-slate-800">1,245</p>
-            <p className="text-gray-400 text-xs mt-1">All registered users</p>
-          </div>
-
-          {/* Active Users */}
-          <div className="bg-white p-6 rounded-md shadow-sm flex flex-col relative">
-            <CheckCircle
-              size={18}
-              className="absolute top-4 right-4 text-gray-400"
-            />
-            <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider">
-              Active Users
-            </h2>
-            <p className="text-2xl font-black mt-2 text-slate-800">1,100</p>
-            <p className="text-gray-400 text-xs mt-1">
-              Currently active on platform
-            </p>
-          </div>
-
-          {/* New Users */}
-          <div className="bg-white p-6 rounded-md shadow-sm flex flex-col relative">
-            <Sparkles
-              size={18}
-              className="absolute top-4 right-4 text-gray-400"
-            />
-            <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider">
-              New Users
-            </h2>
-            <p className="text-2xl font-black mt-2 text-slate-800">45</p>
-            <p className="text-gray-400 text-xs mt-1">
-              Joined in the last 30 days
-            </p>
-          </div>
-        </div>
+        {/* Stats Cards */}
+        <ImpactCards data={userStats} />
 
         {/* Custom Tabs */}
         <CustomTabs
@@ -410,8 +389,19 @@ const UsersPage = () => {
             "phone",
             "location",
             "totalPoints",
+            "actions",
           ]}
           onAddNew={() => console.log("Add new clicked")}
+          actionConfig={{
+            showView: true,
+            showMessage: true,
+            showApprove: true,
+            showDeactivate: true,
+            // onView: handleViewProfile,
+            onMessage: (donor) => console.log("Message", donor),
+            onApprove: (donor) => console.log("Approve", donor),
+            onDeactivate: (donor) => console.log("Deactivate", donor),
+          }}
         />
       </div>
 

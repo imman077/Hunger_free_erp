@@ -18,23 +18,23 @@ const ImpactCard: React.FC<
 > = ({ label, val, trend, color, orientation }) => {
   return (
     <div
-      className={`bg-white p-7 rounded-sm border border-gray-200 transition-all flex flex-col items-center justify-center min-h-[160px] relative overflow-hidden ${
+      className={`bg-white p-8 rounded-none border border-gray-200 transition-all flex flex-col items-center justify-center min-h-[180px] relative overflow-hidden ${
         orientation === "horizontal" ? "flex-1 min-w-[240px]" : "w-full"
       }`}
     >
-      <div className="mb-4 relative z-10 text-center">
-        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">
+      <div className="mb-6 relative z-10 text-center">
+        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.25em] mb-4">
           {label}
         </p>
-        <h4 className="text-4xl font-black text-slate-900 tracking-tighter tabular-nums leading-none">
+        <h4 className="text-5xl font-black text-slate-900 tracking-tighter tabular-nums leading-none">
           {val}
         </h4>
       </div>
 
       <div className="flex flex-col items-center mt-auto relative z-10 text-center">
         <p
-          className={`text-[10px] font-black leading-none ${
-            color === "bg-emerald-500" ? "text-emerald-500" : "text-slate-500"
+          className={`text-[11px] font-black leading-none ${
+            color === "bg-emerald-500" ? "text-emerald-500" : "text-slate-400"
           }`}
         >
           {trend}

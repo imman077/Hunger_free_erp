@@ -123,9 +123,9 @@ export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
         key={d}
         type="button"
         onClick={() => handleSelectDay(d)}
-        className={`h-8 w-8 text-[11px] font-bold rounded-sm flex items-center justify-center transition-all ${
+        className={`h-8 w-8 text-[11px] font-bold rounded-none flex items-center justify-center transition-all ${
           isSelected(d)
-            ? "bg-[#22c55e] text-white shadow-md"
+            ? "bg-[#22c55e] text-white"
             : isToday(d)
             ? "text-[#22c55e] bg-emerald-50/50 border border-[#22c55e]/30"
             : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
@@ -158,7 +158,7 @@ export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
           ref={buttonRef}
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className={`w-full flex items-center gap-3 bg-white border px-3 py-2.5 rounded-sm text-xs font-semibold transition-all ${
+          className={`w-full flex items-center gap-3 bg-white border px-3 py-2.5 rounded-none text-xs font-semibold transition-all ${
             isOpen
               ? "border-[#22c55e] ring-1 ring-[#22c55e] text-slate-900"
               : "border-slate-200 text-slate-800 hover:bg-slate-50"
@@ -183,7 +183,7 @@ export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
 
         {isOpen && (
           <div
-            className={`absolute left-1/2 -translate-x-1/2 bg-white border border-slate-200 rounded-sm shadow-2xl z-[9999] p-4 w-64 animate-in fade-in zoom-in-95 duration-200 ${
+            className={`absolute left-1/2 -translate-x-1/2 bg-white border border-slate-200 rounded-none z-[9999] p-4 w-64 animate-in fade-in zoom-in-95 duration-200 ${
               openUpward ? "bottom-full mb-1" : "top-full mt-1"
             }`}
           >
@@ -195,7 +195,7 @@ export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
                 <button
                   onClick={handlePrevMonth}
                   type="button"
-                  className="p-1 hover:bg-slate-100 rounded-sm text-slate-400 hover:text-slate-800"
+                  className="p-1 hover:bg-slate-100 rounded-none text-slate-400 hover:text-slate-800"
                 >
                   <Icon name="chevron-down" className="w-4 h-4 rotate-90" />
                 </button>

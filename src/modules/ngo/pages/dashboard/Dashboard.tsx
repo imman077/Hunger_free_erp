@@ -1,31 +1,35 @@
+import { useNavigate } from "react-router-dom";
 import { Package, TrendingUp } from "lucide-react";
-import ImpactCards from "../../../../global/components/resuable-components/ImpactCards";
+import { ImpactCards } from "../../../../global/components/resuable-components/ImpactCards";
+import ReusableButton from "../../../../global/components/resuable-components/button";
 
 const NGODashboard = () => {
+  const navigate = useNavigate();
+
   const stats = [
     {
-      title: "Requested Items",
-      value: "45",
-      change: "Active requests",
-      changeColor: "text-blue-600",
+      label: "Requested Items",
+      val: "45",
+      trend: "Active requests",
+      color: "bg-blue-500",
     },
     {
-      title: "Total Beneficiaries",
-      value: "850",
-      change: "+120 this month",
-      changeColor: "text-green-600",
+      label: "Total Beneficiaries",
+      val: "850",
+      trend: "+120 this month",
+      color: "bg-[#22c55e]",
     },
     {
-      title: "Inventory Status",
-      value: "Good",
-      change: "Stocked up",
-      changeColor: "text-green-600",
+      label: "Inventory Status",
+      val: "Good",
+      trend: "Stocked up",
+      color: "bg-[#22c55e]",
     },
     {
-      title: "Pending Pickups",
-      value: "8",
-      change: "Ready for collection",
-      changeColor: "text-orange-600",
+      label: "Pending Pickups",
+      val: "8",
+      trend: "Ready for collection",
+      color: "bg-orange-500",
     },
   ];
 
@@ -50,27 +54,21 @@ const NGODashboard = () => {
         NGO Operations Center
       </h1>
 
-      <ImpactCards
-        data={stats.map((item) => ({
-          label: item.title,
-          val: item.value,
-          trend: item.change,
-          color: item.changeColor.includes("green")
-            ? "bg-emerald-500"
-            : item.changeColor.includes("blue")
-            ? "bg-blue-500"
-            : "bg-orange-500",
-        }))}
-      />
+      <ImpactCards data={stats} />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Active Needs */}
-        <div className="bg-white rounded-md p-5 border border-gray-100 flex flex-col items-start min-h-[300px]">
+        <div className="bg-white rounded-sm p-5 border border-gray-100 flex flex-col items-start min-h-[300px]">
           <div className="flex justify-between items-center w-full mb-4">
             <h3 className="text-lg font-semibold text-black">Active Needs</h3>
-            <button className="text-xs font-bold text-emerald-600">
+            <ReusableButton
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate("/ngo/needs/post")}
+              className="!text-[#22c55e] !font-bold"
+            >
               Post New Need +
-            </button>
+            </ReusableButton>
           </div>
 
           <div className="w-full space-y-3">
@@ -82,7 +80,7 @@ const NGODashboard = () => {
                 Quantity: 20 packs • Urgency: High
               </p>
               <div className="w-full bg-gray-200 h-1.5 rounded-full mt-2 overflow-hidden">
-                <div className="bg-emerald-500 h-full w-[65%]" />
+                <div className="bg-[#22c55e] h-full w-[65%]" />
               </div>
               <p className="text-[10px] text-gray-400 mt-1 text-right">
                 65% fulfilled
@@ -104,7 +102,7 @@ const NGODashboard = () => {
         </div>
 
         {/* Notifications */}
-        <div className="bg-white rounded-md p-5 border border-gray-100 flex flex-col items-start min-h-[300px]">
+        <div className="bg-white rounded-sm p-5 border border-gray-100 flex flex-col items-start min-h-[300px]">
           <h3 className="text-lg font-semibold text-black mb-4">
             Recent Notifications
           </h3>
@@ -112,9 +110,9 @@ const NGODashboard = () => {
             {notifications.map((notif, index) => (
               <div key={index} className="flex gap-4 items-start group">
                 <div
-                  className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+                  className={`w-10 h-10 rounded-sm flex items-center justify-center shrink-0 ${
                     notif.type === "donation"
-                      ? "bg-emerald-50 text-emerald-500"
+                      ? "bg-emerald-50 text-[#22c55e]"
                       : "bg-blue-50 text-blue-500"
                   }`}
                 >
