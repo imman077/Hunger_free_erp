@@ -309,7 +309,7 @@ const NGOProfile = () => {
             <div className="bg-white rounded-sm shadow-xl shadow-slate-200/50 overflow-hidden border border-slate-100 transition-all duration-500 hover:shadow-2xl hover:shadow-slate-300/40 mt-8">
               <div className="p-7 border-b border-slate-100 flex items-center justify-between bg-white sticky top-0 z-10">
                 <div className="flex items-center space-x-3.5">
-                  <div className="w-10 h-10 rounded-sm bg-emerald-500 flex items-center justify-center text-white shadow-md shadow-emerald-100">
+                  <div className="w-10 h-10 rounded-sm bg-[#22c55e] flex items-center justify-center text-white shadow-md shadow-[#d1fae5]">
                     <svg
                       className="w-5 h-5"
                       fill="none"
@@ -326,16 +326,16 @@ const NGOProfile = () => {
                   </div>
                   <div className="text-start">
                     <h1 className="text-xl font-bold text-slate-800 tracking-tight">
-                      Vault
+                      Documents
                     </h1>
                     <p className="text-xs text-slate-400 font-medium mt-0.5">
-                      Manage credentials
+                      Verification & Credentials
                     </p>
                   </div>
                 </div>
 
-                <div className="hidden sm:flex items-center text-[9px] font-bold text-emerald-600 bg-emerald-50/50 px-2.5 py-1.5 rounded-sm uppercase tracking-widest border border-emerald-100/50">
-                  <span className="flex h-1.5 w-1.5 rounded-full bg-emerald-500 mr-2 animate-pulse"></span>
+                <div className="hidden sm:flex items-center text-[9px] font-bold text-[#16a34a] bg-[#ecfdf5]/50 px-2.5 py-1.5 rounded-sm uppercase tracking-widest border border-[#d1fae5]/50">
+                  <span className="flex h-1.5 w-1.5 rounded-full bg-[#22c55e] mr-2 animate-pulse"></span>
                   Verified
                 </div>
               </div>
@@ -381,7 +381,7 @@ const NGOProfile = () => {
                   <button
                     onClick={() => setIsModalOpen(true)}
                     disabled={isVerifying}
-                    className="group relative inline-flex items-center justify-center px-8 py-3.5 font-bold text-slate-500 bg-white border border-slate-200 rounded-sm transition-all duration-300 hover:text-emerald-600 hover:bg-emerald-50 hover:border-emerald-200 hover:shadow-lg hover:shadow-emerald-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="group relative inline-flex items-center justify-center px-8 py-3.5 font-bold text-slate-500 bg-white border border-slate-200 rounded-sm transition-all duration-300 hover:text-[#16a34a] hover:bg-[#ecfdf5] hover:border-[#d1fae5] hover:shadow-lg hover:shadow-[#ecfdf5] disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <svg
                       className="w-4 h-4 mr-2.5 group-hover:rotate-90 transition-transform duration-500"
@@ -426,7 +426,7 @@ const NGOProfile = () => {
 
           {isVerifying && (
             <div className="fixed bottom-6 right-6 bg-slate-900 text-white px-5 py-3.5 rounded-sm shadow-2xl flex items-center space-x-3 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
-              <div className="w-4 h-4 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-4 h-4 border-2 border-[#22c55e] border-t-transparent rounded-full animate-spin"></div>
               <span className="text-xs font-bold tracking-wide">
                 Analyzing...
               </span>
@@ -479,7 +479,7 @@ const DocumentCard = ({
   const getStatusStyles = (status: string) => {
     switch (status) {
       case "VERIFIED":
-        return "bg-emerald-50 text-emerald-600 border-emerald-100";
+        return "bg-[#ecfdf5] text-[#16a34a] border-[#d1fae5]";
       case "REJECTED":
         return "bg-rose-50 text-rose-600 border-rose-100";
       case "ANALYZING":
@@ -490,16 +490,16 @@ const DocumentCard = ({
   };
 
   return (
-    <div className="group relative flex items-center justify-between p-4 bg-white border border-slate-100 rounded-sm transition-all duration-300 hover:shadow-md hover:shadow-slate-100/50 hover:border-emerald-100">
+    <div className="group relative flex items-center justify-between p-4 bg-white border border-slate-100 rounded-sm transition-all duration-300 hover:shadow-md hover:shadow-slate-100/50 hover:border-[#d1fae5]">
       <div className="flex items-center space-x-4">
         <div
           className={`w-11 h-11 rounded-sm flex items-center justify-center flex-shrink-0 ${
-            doc.status === "REJECTED" ? "bg-rose-50" : "bg-emerald-50"
+            doc.status === "REJECTED" ? "bg-rose-50" : "bg-[#ecfdf5]"
           }`}
         >
           <svg
             className={`w-5 h-5 ${
-              doc.status === "REJECTED" ? "text-rose-500" : "text-emerald-500"
+              doc.status === "REJECTED" ? "text-rose-500" : "text-[#22c55e]"
             }`}
             fill="none"
             viewBox="0 0 24 24"
@@ -620,34 +620,34 @@ const UploadModal = ({
       onOpenChange={(open) => !open && onClose()}
       title="Add Document"
       subtitle="Select classification & upload"
-      size="xl"
+      size="md"
       scrollBehavior="inside"
       classNames={{
-        base: "!rounded-sm border border-white/20 shadow-2xl overflow-hidden max-h-[90vh]",
-        header: "px-8 py-5 !border-slate-50",
-        body: "px-8 py-8 !bg-white custom-scrollbar",
-        footer: "px-8 py-6 !bg-slate-50/80 !border-slate-100",
+        base: "!rounded-sm border border-white/20 shadow-2xl overflow-hidden !max-w-3xl !max-h-[85vh]",
+        header: "px-6 py-4 !border-slate-50",
+        body: "px-6 py-6 !bg-white custom-scrollbar",
+        footer: "px-6 py-4 !bg-slate-50/80 !border-slate-100",
       }}
-      footerLeft={
-        <div className="flex items-center space-x-4">
-          <div className="flex -space-x-2.5">
-            <div className="w-9 h-9 rounded-full border-2 border-white bg-slate-200 flex items-center justify-center overflow-hidden text-slate-400 shadow-sm">
-              <Icon name="user" className="w-4 h-4" />
-            </div>
-            <div className="w-9 h-9 rounded-full border-2 border-white bg-[#ecfdf5] flex items-center justify-center text-[#22c55e] shadow-sm">
-              <Icon name="verified" className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="text-start">
-            <span className="block text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">
-              AI Verification
-            </span>
-            <span className="text-[9px] font-bold text-slate-300 uppercase tracking-widest leading-none mt-1 inline-block">
-              Powered by Gemini
-            </span>
-          </div>
-        </div>
-      }
+      // footerLeft={
+      //   <div className="flex items-center space-x-4">
+      //     <div className="flex -space-x-2.5">
+      //       <div className="w-9 h-9 rounded-full border-2 border-white bg-slate-200 flex items-center justify-center overflow-hidden text-slate-400 shadow-sm">
+      //         <Icon name="user" className="w-4 h-4" />
+      //       </div>
+      //       <div className="w-9 h-9 rounded-full border-2 border-white bg-[#ecfdf5] flex items-center justify-center text-[#22c55e] shadow-sm">
+      //         <Icon name="verified" className="w-4 h-4" />
+      //       </div>
+      //     </div>
+      //     {/* <div className="text-start">
+      //       <span className="block text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">
+      //         AI Verification
+      //       </span>
+      //       <span className="text-[9px] font-bold text-slate-300 uppercase tracking-widest leading-none mt-1 inline-block">
+      //         Powered by Gemini
+      //       </span>
+      //     </div> */}
+      //   </div>
+      // }
       footer={
         <button
           onClick={onClose}
@@ -657,7 +657,7 @@ const UploadModal = ({
         </button>
       }
     >
-      <div className="space-y-10">
+      <div className="space-y-6">
         <section className="text-start">
           <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">
             Classification
@@ -667,7 +667,7 @@ const UploadModal = ({
               <button
                 key={type}
                 onClick={() => setSelectedType(type)}
-                className={`px-5 py-4 rounded-sm text-left text-xs font-black transition-all border flex items-center justify-between group/btn ${
+                className={`px-4 py-3 rounded-sm text-left text-xs font-black transition-all border flex items-center justify-between group/btn ${
                   selectedType === type
                     ? "border-[#22c55e] bg-[#ecfdf5] text-[#15803d] shadow-sm shadow-emerald-100"
                     : "border-slate-100 bg-slate-50/50 text-slate-500 hover:border-slate-200 hover:bg-white"
@@ -705,7 +705,7 @@ const UploadModal = ({
             onDragLeave={handleDrag}
             onDragOver={handleDrag}
             onDrop={handleDrop}
-            className={`group relative border-2 border-dashed rounded-sm p-12 flex flex-col items-center justify-center transition-all duration-300 min-h-[240px] ${
+            className={`group relative border-2 border-dashed rounded-sm p-8 flex flex-col items-center justify-center transition-all duration-300 min-h-[180px] ${
               dragActive
                 ? "border-[#22c55e] bg-[#ecfdf5] scale-[0.98] shadow-inner"
                 : "border-slate-200 bg-slate-50/50 hover:bg-white hover:border-slate-300 hover:shadow-xl hover:shadow-slate-100/50"

@@ -210,8 +210,8 @@ const PostNewNeed = () => {
         </div>
 
         {/* Info Banner */}
-        <div className="bg-blue-50 border border-blue-100 p-6 rounded-sm flex items-start gap-4">
-          <AlertCircle size={24} className="text-blue-600 flex-shrink-0 mt-1" />
+        <div className="bg-blue-50 border border-blue-100 p-6 rounded-sm flex items-center gap-2">
+          <AlertCircle size={16} className="text-blue-600 flex-shrink-0 mt-1" />
           <div>
             <h3 className="font-bold text-blue-900 mb-1">
               Important Information

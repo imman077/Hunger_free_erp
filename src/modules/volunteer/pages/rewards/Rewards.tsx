@@ -1,4 +1,15 @@
-import { Award, Gift, Star, Trophy, Zap, Target, Medal } from "lucide-react";
+import {
+  Award,
+  Gift,
+  Star,
+  Trophy,
+  Zap,
+  Target,
+  Medal,
+  CheckCircle,
+  Lock,
+  TrendingUp,
+} from "lucide-react";
 
 const VolunteerRewards = () => {
   const userStats = {
@@ -16,48 +27,58 @@ const VolunteerRewards = () => {
       id: 1,
       name: "First Steps",
       description: "Completed your first delivery",
-      icon: <Target size={32} />,
+      icon: <Target className="w-8 h-8" />,
       unlocked: true,
       unlockedDate: "Nov 10, 2024",
-      color: "emerald",
+      color: "from-green-50 to-[#ecfdf5]",
+      borderColor: "border-[#d1fae5]",
+      iconColor: "bg-[#22c55e]",
     },
     {
       id: 2,
       name: "Speed Demon",
       description: "Complete 10 deliveries on time",
-      icon: <Zap size={32} />,
+      icon: <Zap className="w-8 h-8" />,
       unlocked: true,
       unlockedDate: "Dec 5, 2024",
-      color: "yellow",
+      color: "from-amber-50 to-amber-100/30",
+      borderColor: "border-amber-200",
+      iconColor: "bg-amber-500",
     },
     {
       id: 3,
       name: "Reliability Star",
       description: "Maintain 95% on-time rate",
-      icon: <Star size={32} />,
+      icon: <Star className="w-8 h-8" />,
       unlocked: true,
       unlockedDate: "Dec 18, 2024",
-      color: "blue",
+      color: "from-blue-50 to-blue-100/30",
+      borderColor: "border-blue-200",
+      iconColor: "bg-blue-500",
     },
     {
       id: 4,
       name: "Century Club",
       description: "Complete 100 deliveries",
-      icon: <Trophy size={32} />,
+      icon: <Trophy className="w-8 h-8" />,
       unlocked: false,
       progress: 32,
       total: 100,
-      color: "purple",
+      color: "from-purple-50 to-purple-100/30",
+      borderColor: "border-purple-200",
+      iconColor: "bg-purple-500",
     },
     {
       id: 5,
       name: "Eco Warrior",
       description: "Save 100kg of CO2 with e-vehicle",
-      icon: <Medal size={32} />,
+      icon: <Medal className="w-8 h-8" />,
       unlocked: false,
       progress: 45,
       total: 100,
-      color: "green",
+      color: "from-emerald-50 to-emerald-100/30",
+      borderColor: "border-emerald-200",
+      iconColor: "bg-emerald-500",
     },
   ];
 
@@ -96,222 +117,299 @@ const VolunteerRewards = () => {
     },
   ];
 
-  const levelPerks = [
-    { level: 1, perk: "Basic volunteer access" },
-    { level: 2, perk: "Priority task selection" },
-    { level: 3, perk: "Flexible scheduling" },
-    { level: 4, perk: "Exclusive rewards access" },
-    { level: 5, perk: "Mentor new volunteers" },
-  ];
-
   return (
-    <div className="p-6 space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold text-black text-start">
-          My Rewards
-        </h1>
-        <p className="text-gray-600 mt-2 text-start">
-          Track your progress and claim your achievements
-        </p>
-      </div>
-
-      {/* Level Progress */}
-      <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-6 text-white">
-        <div className="flex justify-between items-start mb-6">
-          <div>
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center border-2 border-white/30">
-                <Trophy className="text-white" size={32} />
-              </div>
-              <div>
-                <h2 className="text-3xl font-bold">
-                  Level {userStats.currentLevel}
-                </h2>
-                <p className="text-blue-100 text-sm">{userStats.levelName}</p>
-              </div>
-            </div>
-          </div>
-          <div className="text-right">
-            <div className="flex items-center gap-1 justify-end mb-1">
-              <Star className="text-yellow-300" size={20} />
-              <span className="text-2xl font-bold">
-                {userStats.totalPoints.toLocaleString()}
-              </span>
-            </div>
-            <p className="text-blue-100 text-xs">Total Points</p>
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <div className="flex justify-between text-sm">
-            <span className="text-blue-100">
-              Progress to Level {userStats.nextLevel}
-            </span>
-            <span className="font-bold">
-              {userStats.deliveriesToNextLevel} deliveries needed
-            </span>
-          </div>
-          <div className="w-full bg-blue-400/30 h-3 rounded-full overflow-hidden">
-            <div
-              className="bg-white h-full rounded-full transition-all duration-500"
-              style={{
-                width: `${((userStats.totalDeliveries % 40) / 40) * 100}%`,
-              }}
-            />
-          </div>
-          <p className="text-xs text-blue-100 text-right">
-            {userStats.totalDeliveries} total deliveries
+    <div className="p-8 bg-[#f8fafc] min-h-screen space-y-10">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div className="text-start">
+          <h1 className="text-4xl font-black text-slate-900 tracking-tighter uppercase">
+            My Rewards
+          </h1>
+          <p className="text-slate-500 font-bold text-sm tracking-wide mt-1">
+            Track your progress and claim your achievements
           </p>
         </div>
+        <div className="flex items-center gap-4 bg-white px-6 py-4 rounded-sm border border-slate-100">
+          <div className="w-12 h-12 bg-[#ecfdf5] border border-[#d1fae5] rounded-full flex items-center justify-center shrink-0">
+            <Star className="text-[#22c55e]" size={22} fill="currentColor" />
+          </div>
+          <div className="text-start">
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">
+              Available Balance
+            </p>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-3xl font-black text-slate-900 tabular-nums">
+                {userStats.totalPoints.toLocaleString()}
+              </span>
+              <span className="text-[10px] font-black text-[#22c55e] uppercase">
+                Points
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Level Perks */}
-      <div className="bg-white rounded-xl border border-gray-100 p-6">
-        <h3 className="text-lg font-bold text-gray-900 mb-4">Level Perks</h3>
-        <div className="space-y-2">
-          {levelPerks.map((item) => (
-            <div
-              key={item.level}
-              className={`flex items-center gap-3 p-3 rounded-lg ${
-                item.level <= userStats.currentLevel
-                  ? "bg-emerald-50 border border-emerald-200"
-                  : "bg-gray-50 border border-gray-200 opacity-60"
-              }`}
-            >
-              <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${
-                  item.level <= userStats.currentLevel
-                    ? "bg-emerald-500 text-white"
-                    : "bg-gray-300 text-gray-500"
-                }`}
-              >
-                {item.level}
+      {/* Main Level Card */}
+      <div className="relative bg-white rounded-sm border border-slate-100 p-8 text-slate-900">
+        <div className="flex flex-col lg:flex-row lg:items-center gap-10">
+          {/* Trophy & Title Section */}
+          <div className="flex items-center gap-8 lg:border-r lg:border-slate-100 lg:pr-10">
+            <div className="relative shrink-0">
+              <div className="w-28 h-28 rounded-3xl bg-white border border-slate-100 flex items-center justify-center">
+                <Trophy
+                  className="text-[#22c55e]"
+                  size={48}
+                  strokeWidth={1.5}
+                />
               </div>
-              <span
-                className={`text-sm font-medium ${
-                  item.level <= userStats.currentLevel
-                    ? "text-gray-900"
-                    : "text-gray-500"
-                }`}
-              >
-                {item.perk}
-              </span>
-              {item.level <= userStats.currentLevel && (
-                <span className="ml-auto text-emerald-500 text-xs font-bold uppercase">
-                  Unlocked
-                </span>
-              )}
+              <div className="absolute -top-2 -right-4 px-3 py-1 bg-[#22c55e] rounded-full border-2 border-white">
+                <p className="text-[10px] font-black text-white uppercase tracking-tight">
+                  Level 4
+                </p>
+              </div>
             </div>
-          ))}
+
+            <div className="text-start">
+              <h2 className="text-4xl font-black tracking-tighter text-slate-900 uppercase">
+                {userStats.levelName}
+              </h2>
+              <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-[#22c55e]/30 rounded-full">
+                <Star
+                  className="text-[#22c55e]"
+                  size={14}
+                  fill="currentColor"
+                />
+                <span className="text-[11px] font-black text-[#22c55e] uppercase tracking-wider">
+                  {userStats.nextLevelName} Path
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Progress Section */}
+          <div className="flex-1 space-y-6">
+            <div className="flex flex-col md:flex-row md:items-end gap-6">
+              <div className="flex-1 text-start">
+                <div className="flex items-center gap-2 mb-2">
+                  <TrendingUp size={18} className="text-[#22c55e]" />
+                  <h3 className="text-xs font-black text-[#22c55e] uppercase tracking-widest">
+                    Next Milestone
+                  </h3>
+                </div>
+                <p className="text-sm font-medium text-slate-500 leading-relaxed">
+                  Complete{" "}
+                  <span className="font-black text-slate-900">
+                    8 more deliveries
+                  </span>{" "}
+                  to reach{" "}
+                  <span className="text-[#22c55e] font-bold">Level 5</span>
+                </p>
+              </div>
+
+              <div className="flex items-end gap-1">
+                <span className="text-6xl font-black text-slate-900 leading-none tracking-tighter tabular-nums">
+                  85
+                </span>
+                <span className="text-2xl font-black text-[#22c55e] mb-1.5">
+                  %
+                </span>
+              </div>
+            </div>
+
+            <div className="relative">
+              <div className="h-2 w-full bg-slate-50 rounded-full overflow-hidden border border-slate-100/50">
+                <div
+                  className="h-full bg-gradient-to-r from-[#22c55e] to-[#4ade80] rounded-full transition-all duration-1000 ease-out"
+                  style={{ width: "85%" }}
+                ></div>
+              </div>
+              <div className="flex justify-between items-center text-[10px] font-black text-slate-300 uppercase tracking-widest mt-3 px-1">
+                <span>Rookie</span>
+                <span className="text-[#22c55e]">Elite</span>
+                <span>Legendary</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Badges & Achievements */}
-      <div className="bg-white rounded-xl border border-gray-100 p-6">
-        <div className="flex items-center gap-2 mb-6">
-          <Award className="text-blue-500" size={24} />
-          <h3 className="text-lg font-bold text-gray-900">
+      <section className="space-y-6">
+        <div className="flex items-center gap-3 px-2">
+          <div className="p-2 bg-blue-50 border border-blue-100 rounded-sm">
+            <Award className="text-blue-600" size={20} />
+          </div>
+          <h3 className="text-xl font-black text-slate-900 tracking-tight uppercase">
             Badges & Achievements
           </h3>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
           {badges.map((badge) => (
             <div
               key={badge.id}
-              className={`p-4 rounded-xl border-2 transition-all ${
+              className={`relative p-6 rounded-sm border transition-all duration-300 group flex flex-col items-center ${
                 badge.unlocked
-                  ? `border-${badge.color}-200 bg-${badge.color}-50`
-                  : "border-gray-200 bg-gray-50 grayscale opacity-60"
+                  ? `bg-white border-slate-200 hover:border-slate-300`
+                  : "bg-slate-50 border-slate-100 opacity-80"
               }`}
             >
-              <div
-                className={`w-16 h-16 rounded-full flex items-center justify-center mb-3 mx-auto ${
+              <div className="relative mb-4">
+                <div
+                  className={`w-20 h-20 rounded-full flex items-center justify-center transition-all duration-500 overflow-hidden ${
+                    badge.unlocked
+                      ? `${badge.iconColor} text-white shadow-lg`
+                      : "bg-slate-200 text-slate-400"
+                  }`}
+                >
+                  {badge.icon}
+                  {badge.unlocked && (
+                    <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
+                  )}
+                </div>
+                {badge.unlocked && (
+                  <div className="absolute -bottom-1 -right-1 bg-white p-1 rounded-full shadow-md border border-slate-50">
+                    <CheckCircle className="text-[#22c55e] w-4 h-4" />
+                  </div>
+                )}
+              </div>
+
+              <h4
+                className={`font-black text-center text-sm uppercase tracking-tight ${
                   badge.unlocked
-                    ? `bg-${badge.color}-500 text-white`
-                    : "bg-gray-300 text-gray-500"
+                    ? "text-slate-900 transition-colors group-hover:text-[#22c55e]"
+                    : "text-slate-400"
                 }`}
               >
-                {badge.icon}
-              </div>
-              <h4 className="font-bold text-gray-900 text-center text-sm">
                 {badge.name}
               </h4>
-              <p className="text-xs text-gray-500 text-center mt-1">
+              <p className="text-[10px] text-slate-500 text-center font-bold mt-1 line-clamp-2">
                 {badge.description}
               </p>
 
               {badge.unlocked ? (
-                <p className="text-[10px] text-center mt-2 text-gray-400">
-                  Unlocked: {badge.unlockedDate}
-                </p>
+                <div className="mt-4 pt-4 border-t border-slate-50 w-full">
+                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest text-center">
+                    Unlocked On
+                  </p>
+                  <p className="text-[10px] font-black text-slate-900 text-center mt-0.5 uppercase">
+                    {badge.unlockedDate}
+                  </p>
+                </div>
               ) : (
-                <div className="mt-3">
-                  <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden">
+                <div className="mt-4 w-full">
+                  <div className="flex justify-between items-center mb-1.5 px-0.5">
+                    <p className="text-[9px] font-black text-slate-400 uppercase">
+                      Progress
+                    </p>
+                    <p className="text-[9px] font-black text-slate-900 uppercase">
+                      {badge.progress}/{badge.total}
+                    </p>
+                  </div>
+                  <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
                     <div
-                      className="bg-blue-500 h-full rounded-full"
+                      className="bg-slate-400 h-full transition-all duration-500"
                       style={{
                         width: `${(badge.progress! / badge.total!) * 100}%`,
                       }}
                     />
                   </div>
-                  <p className="text-[10px] text-center mt-1 text-gray-500">
-                    {badge.progress}/{badge.total}
-                  </p>
                 </div>
               )}
             </div>
           ))}
         </div>
-      </div>
+      </section>
 
       {/* Redeem Rewards */}
-      <div className="bg-white rounded-xl border border-gray-100 p-6">
-        <div className="flex items-center gap-2 mb-6">
-          <Gift className="text-blue-500" size={24} />
-          <h3 className="text-lg font-bold text-gray-900">Redeem Rewards</h3>
+      <section className="space-y-6">
+        <div className="flex items-center gap-3 px-2">
+          <div className="p-2 bg-blue-50 border border-blue-100 rounded-sm">
+            <Gift className="text-blue-600" size={20} />
+          </div>
+          <h3 className="text-xl font-black text-slate-900 tracking-tight uppercase">
+            Redeem Rewards
+          </h3>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {rewards.map((reward) => (
             <div
               key={reward.id}
-              className={`p-4 rounded-xl border transition-all ${
+              className={`relative bg-white rounded-sm border p-6 flex flex-col items-center text-center transition-all duration-300 ${
                 reward.available
-                  ? "border-gray-200 bg-white hover:border-blue-200 hover:shadow-sm"
-                  : "border-gray-100 bg-gray-50 opacity-60"
+                  ? "border-slate-200 hover:border-slate-300"
+                  : "border-slate-100 bg-slate-50 opacity-60"
               }`}
             >
-              <div className="flex items-start gap-4">
-                <div className="text-4xl">{reward.icon}</div>
-                <div className="flex-1">
-                  <h4 className="font-bold text-gray-900">{reward.name}</h4>
-                  <p className="text-xs text-gray-500 mt-1">
-                    {reward.description}
-                  </p>
-                  <div className="flex items-center justify-between mt-3">
-                    <div className="flex items-center gap-1">
-                      <Star className="text-yellow-500" size={14} />
-                      <span className="text-sm font-bold text-gray-900">
-                        {reward.points} points
-                      </span>
-                    </div>
-                    {reward.available ? (
-                      <button className="px-3 py-1 bg-blue-500 text-white text-xs font-bold rounded-lg hover:bg-blue-600 transition-colors">
-                        Redeem
-                      </button>
-                    ) : (
-                      <span className="text-xs text-gray-400 font-bold">
-                        Locked
-                      </span>
-                    )}
-                  </div>
+              {/* Lock Icon for Unavailable */}
+              {!reward.available && (
+                <div className="absolute top-4 right-4 text-slate-300">
+                  <Lock size={16} />
                 </div>
+              )}
+
+              {/* Large Icon */}
+              <div
+                className={`w-28 h-28 rounded-2xl flex items-center justify-center text-6xl mb-4 transition-all ${
+                  reward.available
+                    ? "bg-amber-50 border border-amber-100"
+                    : "bg-slate-100 grayscale"
+                }`}
+              >
+                {reward.icon}
               </div>
+
+              {/* Title */}
+              <h4
+                className={`text-lg font-black tracking-tight uppercase mb-1 ${
+                  reward.available ? "text-slate-900" : "text-slate-400"
+                }`}
+              >
+                {reward.name}
+              </h4>
+
+              {/* Description */}
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">
+                {reward.description}
+              </p>
+
+              {/* Points Badge */}
+              <div className="flex items-center gap-1.5 mb-6">
+                <Star
+                  className={
+                    reward.available ? "text-[#22c55e]" : "text-slate-300"
+                  }
+                  size={14}
+                  fill="currentColor"
+                />
+                <span
+                  className={`text-xl font-black ${
+                    reward.available ? "text-slate-900" : "text-slate-400"
+                  }`}
+                >
+                  {reward.points.toLocaleString()}
+                </span>
+                <span className="text-[10px] font-black text-slate-400 uppercase">
+                  Points
+                </span>
+              </div>
+
+              {/* Redeem Button */}
+              {reward.available ? (
+                <button className="w-full py-3 bg-[#22c55e] text-white rounded-sm text-[11px] font-black uppercase tracking-[0.15em] hover:bg-[#16a34a] transition-all active:scale-95">
+                  Redeem Item
+                </button>
+              ) : (
+                <div className="w-full py-3 bg-slate-100 text-slate-400 rounded-sm text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-1.5">
+                  <Lock size={10} />
+                  Insufficient Points
+                </div>
+              )}
             </div>
           ))}
         </div>
-      </div>
+      </section>
     </div>
   );
 };
