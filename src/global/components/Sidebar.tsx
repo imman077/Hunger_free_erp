@@ -256,6 +256,11 @@ const SidebarIcons: React.FC = () => {
       icon: <Icon name="warehouse" className="h-4 w-4" />,
     },
     {
+      label: "Rewards",
+      to: "/ngo/rewards",
+      icon: <Icon name="rewards" className="h-4 w-4" />,
+    },
+    {
       label: "Profile",
       to: "/ngo/profile",
       icon: <Icon name="office" className="h-4 w-4" />,

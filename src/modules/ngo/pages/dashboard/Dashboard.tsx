@@ -8,28 +8,28 @@ const NGODashboard = () => {
 
   const stats = [
     {
-      label: "Requested Items",
-      val: "45",
-      trend: "Active requests",
-      color: "bg-blue-500",
+      label: "Impact Points",
+      val: "45,000",
+      trend: "Legend Tier",
+      color: "bg-blue-600",
     },
     {
       label: "Total Beneficiaries",
-      val: "850",
-      trend: "+120 this month",
+      val: "12,500",
+      trend: "+1,200 this month",
       color: "bg-[#22c55e]",
     },
     {
-      label: "Inventory Status",
-      val: "Good",
-      trend: "Stocked up",
-      color: "bg-[#22c55e]",
+      label: "Trees Planted",
+      val: "150",
+      trend: "Impact Forest",
+      color: "bg-emerald-600",
     },
     {
-      label: "Pending Pickups",
-      val: "8",
-      trend: "Ready for collection",
-      color: "bg-orange-500",
+      label: "Grant Eligible",
+      val: "₹3.0L",
+      trend: "Super Grant Unlocked",
+      color: "bg-orange-600",
     },
   ];
 

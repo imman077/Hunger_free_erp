@@ -4,6 +4,8 @@ import {
   Package,
   Database,
   GraduationCap,
+  Sparkles,
+  Gift,
 } from "lucide-react";
 import LineChart from "../../../../global/charts/LineChart";
 import BarChart from "../../../../global/charts/BarChart";
@@ -39,6 +41,18 @@ const AdminDashboard = () => {
       changeColor: "text-red-600",
       // icon: <UserPlus size={20} />,
     },
+    {
+      title: "Points Circulated",
+      value: "8.4M",
+      change: "ULTRA ACTIVE",
+      changeColor: "text-emerald-600",
+    },
+    {
+      title: "Pending Rewards",
+      value: "15",
+      change: "Action Required",
+      changeColor: "text-amber-600",
+    },
   ];
 
   const activities = [
@@ -49,6 +63,22 @@ const AdminDashboard = () => {
       time: "2 hours ago",
       date: "Nov 25, 2025",
       color: "border-green-500",
+    },
+    {
+      icon: <Sparkles className="w-6 h-6 text-amber-500" />,
+      title: 'Volunteer "Amit" redeemed "Goa Beach Trip" reward!',
+      category: "Rewards",
+      time: "3 hours ago",
+      date: "Jan 4, 2026",
+      color: "border-amber-500",
+    },
+    {
+      icon: <Gift className="w-6 h-6 text-purple-600" />,
+      title: 'Donor "XYZ Corp" reached Legend Tier!',
+      category: "Milestone",
+      time: "4 hours ago",
+      date: "Jan 4, 2026",
+      color: "border-purple-500",
     },
     {
       icon: <User className="w-6 h-6 text-blue-600" />,

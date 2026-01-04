@@ -8,11 +8,14 @@ const RewardsPage: React.FC = () => {
 
   const activeTab = location.pathname.includes("redemptions")
     ? "redemptions"
+    : location.pathname.includes("catalog")
+    ? "catalog"
     : "points";
 
   const tabs = [
     { label: "Points & Tiers", value: "points" },
     { label: "Redemption Center", value: "redemptions" },
+    { label: "Reward Catalog", value: "catalog" },
   ];
 
   const handleTabChange = (value: string) => {

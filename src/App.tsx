@@ -13,6 +13,7 @@ import UsersPage from "./modules/admin/pages/users/UsersPage";
 import AdminDashboard from "./modules/admin/pages/dashboard/Dashboard";
 import PointsTiersView from "./modules/admin/pages/rewards/components/PointsTiersView";
 import RedemptionsView from "./modules/admin/pages/rewards/components/RedemptionsView";
+import RewardsConfig from "./modules/admin/pages/rewards/components/RewardsConfig";
 import RewardsPage from "./modules/admin/pages/rewards/RewardsPage";
 
 // Donor Imports
@@ -28,10 +29,11 @@ import NGODonationRequests from "./modules/ngo/pages/donations/DonationRequests"
 import NGOInventory from "./modules/ngo/pages/inventory/Inventory";
 import NGOProfile from "./modules/ngo/pages/profile/Profile";
 import PostNewNeed from "./modules/ngo/pages/needs/PostNewNeed";
+import NGORewards from "./modules/ngo/pages/rewards/Rewards";
 
 // Volunteer Imports
 import VolunteerDashboard from "./modules/volunteer/pages/dashboard/Dashboard";
-import VolunteerTasks from "./modules/volunteer/pages/tasks/MyTasks";
+import VolunteerTasks from "./modules/volunteer/pages/tasks/Tasks";
 import VolunteerProfile from "./modules/volunteer/pages/profile/Profile";
 import VolunteerRewards from "./modules/volunteer/pages/rewards/Rewards";
 
@@ -81,6 +83,7 @@ function App() {
               <Route index element={<Navigate to="points" />} />
               <Route path="points" element={<PointsTiersView />} />
               <Route path="redemptions" element={<RedemptionsView />} />
+              <Route path="catalog" element={<RewardsConfig />} />
             </Route>
 
             {/* Settings */}
@@ -103,6 +106,7 @@ function App() {
             <Route path="dashboard" element={<NGODashboard />} />
             <Route path="requests" element={<NGODonationRequests />} />
             <Route path="inventory" element={<NGOInventory />} />
+            <Route path="rewards" element={<NGORewards />} />
             <Route path="profile" element={<NGOProfile />} />
             <Route path="needs/post" element={<PostNewNeed />} />
           </Route>

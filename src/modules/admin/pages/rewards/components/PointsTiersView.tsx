@@ -1,5 +1,12 @@
 import React from "react";
-import { Gem, Wallet, Users, BarChart, Settings } from "lucide-react";
+import {
+  Gem,
+  Wallet,
+  Users,
+  BarChart,
+  Settings,
+  RotateCcw,
+} from "lucide-react";
 
 import type { ColumnDef } from "../../../../../global/components/resuable-components/table";
 import ResuableTable from "../../../../../global/components/resuable-components/table";
@@ -9,60 +16,84 @@ import ResuableButton from "../../../../../global/components/resuable-components
 
 const TIERS = [
   {
-    name: "Bronze",
-    range: "0 - 2,000",
-    benefit: "₹500",
+    name: "Beginner",
+    range: "0 - 500",
+    bonus: "0%",
     perks: "Basic Badge, Entry Level Perks",
   },
   {
+    name: "Bronze",
+    range: "501 - 1,500",
+    bonus: "5%",
+    perks: "Bronze Badge, Monthly Raffle Entry",
+  },
+  {
     name: "Silver",
-    range: "2,001 - 5,000",
-    benefit: "₹1,000",
-    perks: "Priority Support, Exclusive Content",
+    range: "1,501 - 3,500",
+    bonus: "10%",
+    perks: "Silver Badge, Priority Support",
   },
   {
     name: "Gold",
-    range: "5,001 - 10,000",
-    benefit: "₹2,500",
-    perks: "Featured Spot, Premium Access",
+    range: "3,501 - 7,500",
+    bonus: "15%",
+    perks: "Gold Badge, Event Invites",
+  },
+  {
+    name: "Platinum",
+    range: "7,501 - 15,000",
+    bonus: "20%",
+    perks: "Platinum Badge, Exclusive Gear",
+  },
+  {
+    name: "Diamond",
+    range: "15,001 - 30,000",
+    bonus: "25%",
+    perks: "Diamond Badge, Feature Profile",
+  },
+  {
+    name: "Legend",
+    range: "30,001+",
+    bonus: "40%",
+    perks: "Legend Badge, All-Access Pass, 10 Trees/mo",
   },
 ];
 
 const tierColumns: ColumnDef[] = [
   { name: "TIER NAME", uid: "name", sortable: true },
   { name: "POINT RANGE", uid: "range", sortable: true },
-  { name: "MONTHLY BENEFIT", uid: "benefit", sortable: true },
+  { name: "EARNING BONUS", uid: "bonus", sortable: true },
   { name: "PERKS", uid: "perks", sortable: false },
 ];
 
 const PointsTiersView: React.FC = () => {
   const stats = [
     {
-      title: "Total Points",
-      value: "1.2M",
-      change: "+12%",
+      title: "Active Points Hub",
+      value: "8.4M",
+      change: "+15%",
       changeType: "positive" as const,
       icon: <Gem size={20} />,
     },
     {
-      title: "Monthly Value",
-      value: "₹85,000",
-      change: "+5%",
+      title: "Reward Value Dist.",
+      value: "₹4.2L",
+      change: "+22%",
       changeType: "positive" as const,
       icon: <Wallet size={20} />,
     },
     {
-      title: "Active Users",
-      value: "890",
-      change: "+24",
+      title: "Redemption Rate",
+      value: "68%",
+      change: "+5%",
       changeType: "positive" as const,
       icon: <Users size={20} />,
     },
     {
-      title: "Avg Points",
-      value: "1,350",
-      change: "-2%",
-      changeType: "negative" as const,
+      title: "Global Multiplier",
+      value: "3.0X",
+      change: "Active",
+      changeType: "positive" as const,
       icon: <BarChart size={20} />,
     },
   ];
@@ -71,11 +102,21 @@ const PointsTiersView: React.FC = () => {
     const value = tier[columnKey as string];
     switch (columnKey) {
       case "name":
-        return <span className="font-bold text-slate-800">{value}</span>;
-      case "benefit":
-        return <span className="font-bold text-hf-green">{value}</span>;
+        return (
+          <span className="font-black text-slate-900 uppercase tracking-tighter">
+            {value}
+          </span>
+        );
+      case "bonus":
+        return (
+          <span className="font-black text-emerald-600 tabular-nums">
+            {value}
+          </span>
+        );
       default:
-        return <span className="text-slate-600 font-medium">{value}</span>;
+        return (
+          <span className="text-slate-500 font-bold text-xs">{value}</span>
+        );
     }
   };
 
@@ -83,87 +124,161 @@ const PointsTiersView: React.FC = () => {
     <div className="space-y-10 pb-10">
       <StatCardGrid cards={stats} />
 
-      {/* Tier Management Table */}
-      <ResuableTable
-        data={TIERS}
-        columns={tierColumns}
-        renderCell={renderTierCell}
-        title="Tier Management"
-        description="Configure user progression levels and rewards"
-        onAddNew={() => console.log("Add New Tier")}
-      />
-
-      {/* Configuration Section */}
-      <div className="bg-white rounded-sm border border-slate-200 p-8 shadow-sm">
-        <div className="flex items-center gap-3 mb-6">
-          <Settings className="text-slate-400" size={20} />
-          <h4 className="text-xl font-black text-slate-900 tracking-tight text-start">
-            Points Configuration
-          </h4>
+      {/* Global Controls */}
+      <div className="bg-emerald-600 rounded-sm p-8 text-white flex flex-col md:flex-row items-center justify-between gap-8 shadow-lg shadow-emerald-900/10">
+        <div className="text-start">
+          <h3 className="text-2xl font-black uppercase tracking-tighter mb-2">
+            Global ULTRA Points Multiplier
+          </h3>
+          <p className="text-emerald-50 text-sm font-medium">
+            Current Boost:{" "}
+            <span className="font-black text-amber-300">3X ACTIVE</span> for
+            Donors & Volunteers
+          </p>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-          <div className="space-y-6">
-            <h5 className="font-bold text-slate-800 border-b border-slate-100 pb-2 text-start">
-              Donation Points
-            </h5>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <ResuableInput
-                label="Prepared Unit"
-                value="25"
-                onChange={() => {}}
-                align="left"
-              />
-              <ResuableInput
-                label="Raw Unit"
-                value="15"
-                onChange={() => {}}
-                align="left"
-              />
-              <ResuableInput
-                label="Packed Unit"
-                value="20"
-                onChange={() => {}}
-                align="left"
-              />
-            </div>
+        <div className="flex gap-4">
+          <div className="bg-white/10 p-2 rounded-sm border border-white/20 px-6">
+            <span className="text-2xl font-black">3.0</span>
           </div>
-
-          <div className="space-y-6">
-            <h5 className="font-bold text-slate-800 border-b border-slate-100 pb-2 text-start">
-              Bonus Points
-            </h5>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <ResuableInput
-                label="Weekly Streak"
-                value="100"
-                onChange={() => {}}
-                align="left"
-              />
-              <ResuableInput
-                label="Referrals"
-                value="500"
-                onChange={() => {}}
-                align="left"
-              />
-              <ResuableInput
-                label="Emergency"
-                value="200"
-                onChange={() => {}}
-                align="left"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-10 flex justify-end">
           <ResuableButton
             variant="dark"
-            onClick={() => console.log("Save Configuration")}
-            className="!bg-[#22c55e] hover:!bg-[#16a34a]"
+            className="!bg-amber-400 !text-emerald-900 hover:!bg-amber-300"
           >
-            Save Configuration
+            Update Multiplier
           </ResuableButton>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-10">
+        {/* Tier Management Table */}
+        <div className="space-y-6">
+          <ResuableTable
+            data={TIERS}
+            columns={tierColumns}
+            renderCell={renderTierCell}
+            title="Operational Tiers"
+            description="Manage the 7-tier ULTRA system thresholds"
+            onAddNew={() => console.log("Add New Tier")}
+          />
+        </div>
+
+        {/* Configuration Section */}
+        <div className="bg-white rounded-sm border border-slate-100 p-8">
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-slate-900 rounded-sm">
+                <Settings className="text-white" size={18} />
+              </div>
+              <h4 className="text-xl font-black text-slate-900 tracking-tight uppercase">
+                Ultra Reward Base Rates
+              </h4>
+            </div>
+            <button className="text-[10px] font-black uppercase text-slate-400 flex items-center gap-2 hover:text-slate-900">
+              <RotateCcw size={12} /> Reset Defaults
+            </button>
+          </div>
+
+          <div className="space-y-10">
+            {/* Donor Points */}
+            <div className="space-y-6">
+              <div className="flex items-center gap-2 border-b border-slate-100 pb-2">
+                <span className="w-2 h-6 bg-blue-500 rounded-sm" />
+                <h5 className="font-black text-slate-800 text-xs uppercase tracking-widest">
+                  Donors (3X Base)
+                </h5>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
+                <ResuableInput
+                  label="First Donation"
+                  value="300"
+                  onChange={() => {}}
+                  align="left"
+                />
+                <ResuableInput
+                  label="Per KG Food"
+                  value="25"
+                  onChange={() => {}}
+                  align="left"
+                />
+                <ResuableInput
+                  label="Milestone Bonus"
+                  value="600"
+                  onChange={() => {}}
+                  align="left"
+                />
+              </div>
+            </div>
+
+            {/* Volunteer Points */}
+            <div className="space-y-6">
+              <div className="flex items-center gap-2 border-b border-slate-100 pb-2">
+                <span className="w-2 h-6 bg-emerald-500 rounded-sm" />
+                <h5 className="font-black text-slate-800 text-xs uppercase tracking-widest">
+                  Volunteers (3X Base)
+                </h5>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
+                <ResuableInput
+                  label="Per Delivery"
+                  value="150"
+                  onChange={() => {}}
+                  align="left"
+                />
+                <ResuableInput
+                  label="Weekly Streak"
+                  value="500"
+                  onChange={() => {}}
+                  align="left"
+                />
+                <ResuableInput
+                  label="Emergency Bonus"
+                  value="1000"
+                  onChange={() => {}}
+                  align="left"
+                />
+              </div>
+            </div>
+
+            {/* NGO Points */}
+            <div className="space-y-6">
+              <div className="flex items-center gap-2 border-b border-slate-100 pb-2">
+                <span className="w-2 h-6 bg-amber-500 rounded-sm" />
+                <h5 className="font-black text-slate-800 text-xs uppercase tracking-widest">
+                  NGOs (Fixed Rate)
+                </h5>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
+                <ResuableInput
+                  label="Accept Request"
+                  value="50"
+                  onChange={() => {}}
+                  align="left"
+                />
+                <ResuableInput
+                  label="Waste Managed"
+                  value="10/kg"
+                  onChange={() => {}}
+                  align="left"
+                />
+                <ResuableInput
+                  label="Impact Report"
+                  value="500"
+                  onChange={() => {}}
+                  align="left"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-12 flex justify-end">
+            <ResuableButton
+              variant="dark"
+              onClick={() => console.log("Save Configuration")}
+              className="w-full sm:w-auto !bg-slate-900 hover:!bg-black px-12"
+            >
+              Update Ecosystem Rates
+            </ResuableButton>
+          </div>
         </div>
       </div>
     </div>

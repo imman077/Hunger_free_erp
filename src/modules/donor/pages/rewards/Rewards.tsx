@@ -1,311 +1,553 @@
 import {
   Award,
-  Gift,
   Star,
+  Trophy,
   Heart,
   Package,
   Sparkles,
-  Trophy,
+  CheckCircle,
+  Lock,
+  TrendingUp,
+  Leaf,
+  ChevronRight,
+  IndianRupee,
+  Plane,
+  Gamepad2,
+  Smartphone,
+  Zap,
 } from "lucide-react";
-import { Icon } from "../../../../global/components/resuable-components/Icon";
 
 const DonorRewards = () => {
   const userStats = {
-    totalPoints: 1250,
-    currentTier: "Level 3 Donor",
-    nextTier: "Level 4 Donor",
-    pointsToNextTier: 250,
-    totalDonations: 24,
+    totalPoints: 24500,
+    currentTier: "Diamond",
+    nextTier: "Legend",
+    pointsToNextTier: 5500,
+    totalDonations: 342,
+    treesPlanted: 45,
   };
+
+  const tiers = [
+    { name: "Beginner", points: "0-500", color: "text-gray-400" },
+    { name: "Bronze", points: "501-1,500", color: "text-amber-700" },
+    { name: "Silver", points: "1,501-3,500", color: "text-slate-400" },
+    { name: "Gold", points: "3,501-7,500", color: "text-yellow-600" },
+    { name: "Platinum", points: "7,501-15,000", color: "text-cyan-600" },
+    { name: "Diamond", points: "15,001-30,000", color: "text-blue-600" },
+    { name: "Legend", points: "30,001+", color: "text-purple-600" },
+  ];
 
   const badges = [
     {
       id: 1,
-      name: "Kind Soul",
+      name: "First Step",
       description: "Made your first donation",
-      icon: <Heart size={32} />,
+      icon: <Heart size={24} />,
       unlocked: true,
-      unlockedDate: "Dec 15, 2024",
-      color: "emerald",
+      date: "Oct 12, 2024",
+      color: "bg-emerald-500",
     },
     {
       id: 2,
-      name: "Generous Giver",
-      description: "Donated 10 times",
-      icon: <Gift size={32} />,
+      name: "Kind Soul",
+      description: "5 donations milestone",
+      icon: <Heart size={24} fill="currentColor" />,
       unlocked: true,
-      unlockedDate: "Dec 20, 2024",
-      color: "blue",
+      date: "Oct 25, 2024",
+      color: "bg-red-500",
     },
     {
       id: 3,
       name: "Food Hero",
-      description: "Donate 30 times",
-      icon: <Package size={32} />,
-      unlocked: false,
-      progress: 24,
-      total: 30,
-      color: "purple",
+      description: "25kg+ food donated",
+      icon: <Package size={24} />,
+      unlocked: true,
+      date: "Nov 5, 2024",
+      color: "bg-blue-500",
     },
     {
       id: 4,
-      name: "Community Champion",
-      description: "Reach 2000 impact points",
-      icon: <Trophy size={32} />,
-      unlocked: false,
-      progress: 1250,
-      total: 2000,
-      color: "orange",
+      name: "Weekly Warrior",
+      description: "4 consecutive weeks",
+      icon: <Zap size={24} />,
+      unlocked: true,
+      date: "Dec 1, 2024",
+      color: "bg-amber-500",
+    },
+    {
+      id: 5,
+      name: "Community King",
+      description: "100+ donations record",
+      icon: <Trophy size={24} />,
+      unlocked: true,
+      date: "Jan 3, 2025",
+      color: "bg-purple-500",
     },
   ];
 
-  const rewards = [
+  const rewards = {
+    cash: [
+      {
+        id: 1,
+        name: "Quick Cash",
+        amount: "₹1,000",
+        points: 600,
+        available: true,
+      },
+      {
+        id: 2,
+        name: "Cash Bonus",
+        amount: "₹2,500",
+        points: 1200,
+        available: true,
+      },
+      {
+        id: 3,
+        name: "Big Win",
+        amount: "₹5,000",
+        points: 2500,
+        available: true,
+      },
+      {
+        id: 4,
+        name: "Mega Prize",
+        amount: "₹10,000",
+        points: 5000,
+        available: true,
+      },
+    ],
+    tours: [
+      {
+        id: 5,
+        name: "Goa Beach Trip",
+        desc: "3D/2N, Flights + Hotel",
+        points: 8000,
+        available: true,
+        icon: <Plane size={20} />,
+      },
+      {
+        id: 6,
+        name: "Rajasthan Heritage",
+        desc: "4D/3N Luxury Stay",
+        points: 18000,
+        available: true,
+        icon: <Plane size={20} />,
+      },
+      {
+        id: 7,
+        name: "International - Thailand",
+        desc: "6D/5N Full Package",
+        points: 35000,
+        available: false,
+        icon: <Plane size={20} />,
+      },
+    ],
+    youth: [
+      {
+        id: 8,
+        name: "Gaming Console",
+        desc: "PS5 or Xbox Series X",
+        points: 18000,
+        available: true,
+        icon: <Gamepad2 size={20} />,
+      },
+      {
+        id: 9,
+        name: "iPhone 15 Pro Max",
+        desc: "Latest Apple Flagship",
+        points: 35000,
+        available: false,
+        icon: <Smartphone size={20} />,
+      },
+      {
+        id: 10,
+        name: "MacBook Pro",
+        desc: "M3 Chip Edition",
+        points: 45000,
+        available: false,
+        icon: <Smartphone size={20} />,
+      },
+    ],
+  };
+
+  const treeTiers = [
+    { name: "Sapling Starter", trees: 1, points: 100, impact: "20kg CO₂/year" },
+    { name: "Green Warrior", trees: 5, points: 500, impact: "100kg CO₂/year" },
     {
-      id: 1,
-      name: "Thank You Certificate",
-      points: 500,
-      description: "Digital certificate of appreciation",
-      available: true,
-      icon: "ribbon",
-    },
-    {
-      id: 2,
-      name: "Exclusive Donor Badge",
+      name: "Forest Builder",
+      trees: 10,
       points: 1000,
-      description: "Special badge for your profile",
-      available: true,
-      icon: "verified",
-    },
-    {
-      id: 3,
-      name: "VIP Event Access",
-      points: 1500,
-      description: "Invitation to exclusive donor events",
-      available: false,
-      icon: "calendar",
-    },
-    {
-      id: 4,
-      name: "Personalized Impact Report",
-      points: 2000,
-      description: "Detailed report of your contributions",
-      available: false,
-      icon: "trending",
+      impact: "200kg CO₂/year",
     },
   ];
+
+  const getCurrentTierIndex = () =>
+    tiers.findIndex((t) => t.name === userStats.currentTier);
 
   return (
-    <div className="p-6 space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold text-black text-start">
-          My Rewards
-        </h1>
-        <p className="text-gray-600 mt-2 text-start">
-          Track your achievements and redeem rewards
-        </p>
-      </div>
-
-      {/* Points & Tier Progress */}
-      <div className="bg-emerald-900 rounded-none p-10 text-white relative overflow-hidden group">
-        <div className="flex justify-between items-start mb-10 relative z-10">
-          <div>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-2.5 bg-white/10 rounded-none border border-white/20">
-                <Star className="text-[#34d399] w-6 h-6" />
-              </div>
-              <h2 className="text-4xl font-black tracking-tighter">
-                {userStats.totalPoints.toLocaleString()} Points
-              </h2>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="text-[#34d399] text-sm font-black uppercase tracking-[0.2em]">
-                {userStats.currentTier}
-              </span>
-              <div className="h-0.5 w-12 bg-white/20" />
-            </div>
-          </div>
-          <div className="text-right">
-            <p className="text-[#34d399]/60 text-[10px] font-black uppercase tracking-[0.3em] mb-1">
-              Next Tier
-            </p>
-            <span className="px-3 py-1 bg-white/10 rounded-none border border-white/20 text-sm font-black uppercase tracking-wider text-white">
-              {userStats.nextTier}
-            </span>
-          </div>
-        </div>
-
-        <div className="space-y-4 relative z-10">
-          <div className="flex justify-between items-end px-1">
-            <p className="text-[11px] font-black text-[#6ee7b7] uppercase tracking-[0.2em]">
-              Progress to {userStats.nextTier}
-            </p>
-            <div className="flex items-baseline gap-1">
-              <span className="text-2xl font-black leading-none text-[#34d399]">
-                {Math.round(
-                  (userStats.totalPoints /
-                    (userStats.totalPoints + userStats.pointsToNextTier)) *
-                    100
-                )}
-              </span>
-              <span className="text-xs font-black text-[#16a34a]">%</span>
-            </div>
-          </div>
-          <div className="w-full bg-white/5 h-3 rounded-none overflow-hidden p-0.5 border border-white/10">
-            <div
-              className="bg-[#34d399] h-full rounded-none transition-all duration-1000"
-              style={{
-                width: `${
-                  (userStats.totalPoints /
-                    (userStats.totalPoints + userStats.pointsToNextTier)) *
-                  100
-                }%`,
-              }}
-            />
-          </div>
-          <p className="text-[10px] font-bold text-center text-[#22c55e]/80 uppercase tracking-widest">
-            {userStats.pointsToNextTier} more points to level up
+    <div className="p-8 bg-gray-50/50 min-h-screen space-y-10">
+      {/* Page Heading */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="text-start">
+          <h1 className="text-5xl font-black text-gray-900 tracking-tighter mb-3 uppercase">
+            Donor Rewards
+          </h1>
+          <p className="text-gray-600 font-medium text-lg">
+            Your generosity deserves the best. Win cash, travel, and change
+            lives 🌟
           </p>
         </div>
+        <div className="bg-white border border-gray-100 p-6 flex items-center gap-6 rounded-sm">
+          <div className="w-16 h-16 bg-blue-50 border border-blue-100 flex items-center justify-center rounded-sm">
+            <Star className="text-blue-500" size={32} fill="currentColor" />
+          </div>
+          <div className="text-start">
+            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">
+              Impact Points
+            </p>
+            <div className="flex items-baseline gap-2">
+              <span className="text-4xl font-black text-gray-900">
+                {userStats.totalPoints.toLocaleString()}
+              </span>
+              <span className="text-xs font-black text-blue-500 uppercase tracking-widest">
+                PTS
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Badges & Achievements Section */}
-      <div className="bg-white rounded-none border border-gray-100 p-10 relative group/achSection">
-        <div className="flex items-center gap-3 mb-10 relative z-10">
-          <Award className="text-[#22c55e] w-5 h-5" />
-          <h3 className="text-sm font-black text-gray-900 tracking-tighter uppercase leading-none">
-            Impact Milestones
-          </h3>
+      {/* 7-Tier Progression */}
+      <section className="bg-white border border-gray-100 p-8 rounded-sm">
+        <div className="flex items-center gap-3 mb-10">
+          <TrendingUp className="text-blue-500" size={24} />
+          <h2 className="text-xl font-black text-gray-900 uppercase tracking-tighter">
+            Loyalty Tiers
+          </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
-          {badges.map((badge) => (
-            <div
-              key={badge.id}
-              className={`group/badge relative p-6 rounded-none border transition-all duration-300 cursor-default flex flex-col items-center
-              ${
-                badge.unlocked
-                  ? `bg-white border-${badge.color}-100 hover:border-${badge.color}-200`
-                  : "bg-gray-50 border-gray-100 grayscale opacity-60"
-              }
-            `}
-            >
-              <div
-                className={`w-16 h-16 rounded-none flex items-center justify-center mb-5 transition-all duration-300 group-hover/badge:scale-105
-                ${
-                  badge.unlocked
-                    ? badge.color === "emerald"
-                      ? "bg-[#22c55e] text-white"
-                      : badge.color === "blue"
-                      ? "bg-blue-500 text-white"
-                      : badge.color === "purple"
-                      ? "bg-purple-500 text-white"
-                      : "bg-orange-500 text-white"
-                    : "bg-gray-200 text-gray-400"
-                }
-              `}
-              >
-                {badge.icon}
-              </div>
-              <h4 className="text-sm font-black text-gray-900 text-center tracking-tight mb-1">
-                {badge.name}
-              </h4>
-              <p className="text-[10px] text-gray-500 font-bold text-center mb-4 leading-tight">
-                {badge.description}
-              </p>
+        <div className="relative">
+          <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-100 -translate-y-1/2 z-0 hidden lg:block" />
 
-              {badge.unlocked ? (
-                <div
-                  className={`mt-auto px-3 py-1 bg-${badge.color}-100/50 text-${badge.color}-700 border border-${badge.color}-200 rounded-none text-[9px] font-black uppercase tracking-widest`}
-                >
-                  Unlocked {badge.unlockedDate}
-                </div>
-              ) : (
-                <div className="mt-auto w-full space-y-2">
-                  <div className="w-full bg-gray-200 h-1.5 rounded-none overflow-hidden">
-                    <div
-                      className="bg-[#22c55e] h-full rounded-none transition-all duration-1000"
-                      style={{
-                        width: `${(badge.progress! / badge.total!) * 100}%`,
-                      }}
-                    />
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 relative z-10">
+            {tiers.map((tier, idx) => {
+              const isCurrent = tier.name === userStats.currentTier;
+              const isPast = idx < getCurrentTierIndex();
+
+              return (
+                <div key={tier.name} className="flex flex-col items-center">
+                  <div
+                    className={`w-14 h-14 flex items-center justify-center border-2 mb-4 transition-all duration-500 ${
+                      isCurrent
+                        ? "bg-blue-600 border-white scale-125 ring-4 ring-blue-50"
+                        : isPast
+                        ? "bg-white border-blue-600"
+                        : "bg-white border-gray-100"
+                    } rounded-sm`}
+                  >
+                    {isPast ? (
+                      <CheckCircle className="text-blue-600" size={24} />
+                    ) : isCurrent ? (
+                      <Star
+                        className="text-white"
+                        size={24}
+                        fill="currentColor"
+                      />
+                    ) : (
+                      <Lock className="text-gray-200" size={20} />
+                    )}
                   </div>
-                  <p className="text-[9px] font-black text-center text-gray-400 uppercase tracking-widest">
-                    {badge.progress} / {badge.total}
+                  <p
+                    className={`text-[10px] font-black uppercase tracking-widest mb-1 ${
+                      isCurrent ? "text-blue-600" : "text-gray-400"
+                    }`}
+                  >
+                    {tier.name}
+                  </p>
+                  <p className="text-[9px] font-bold text-gray-300">
+                    {tier.points}
                   </p>
                 </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Redeem Rewards Section - Redesigned */}
-      <div className="bg-white rounded-none border border-gray-100 p-10">
-        <div className="flex items-center gap-3 mb-10">
-          <div className="p-2 bg-[#ecfdf5] text-[#16a34a] rounded-none border border-[#d1fae5]">
-            <Sparkles className="w-5 h-5" />
+              );
+            })}
           </div>
-          <h3 className="text-sm font-black text-gray-900 tracking-tighter uppercase leading-none">
-            Redeem Rewards
-          </h3>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {rewards.map((reward) => (
-            <div
-              key={reward.id}
-              className={`group relative p-5 rounded-none border transition-all duration-300 ${
-                reward.available
-                  ? "border-gray-100 bg-white hover:border-emerald-200"
-                  : "border-gray-100 bg-gray-50/50"
-              }`}
-            >
-              <div className="flex flex-col items-center text-center">
-                {/* Icon */}
-                <div
-                  className={`w-12 h-12 rounded-none flex items-center justify-center mb-4 transition-all duration-300 ${
-                    reward.available
-                      ? "bg-[#ecfdf5] text-[#16a34a] border border-[#d1fae5] group-hover:bg-[#d1fae5]"
-                      : "bg-gray-100 text-gray-400 border border-gray-200"
-                  }`}
-                >
-                  <Icon name={reward.icon} className="w-5 h-5" />
-                </div>
+        <div className="mt-12 flex flex-col md:flex-row items-center justify-between p-6 bg-blue-50/50 rounded-sm border border-blue-100 border-dashed">
+          <div className="flex items-center gap-4 mb-4 md:mb-0">
+            <div className="p-3 bg-white rounded-sm border border-blue-100">
+              <Sparkles className="text-blue-500" size={20} />
+            </div>
+            <div className="text-start">
+              <p className="text-sm font-black text-gray-900 uppercase tracking-tight">
+                Current Status: {userStats.currentTier}
+              </p>
+              <p className="text-xs text-gray-500 font-medium italic">
+                Only {userStats.pointsToNextTier.toLocaleString()} points left
+                to reach the ultimate{" "}
+                <span className="text-purple-600 font-bold">Legend</span>{" "}
+                status!
+              </p>
+            </div>
+          </div>
+          <button className="px-8 py-3 bg-blue-600 text-white text-xs font-black uppercase tracking-widest rounded-sm hover:bg-blue-700 transition-all flex items-center gap-2">
+            View Benefits <ChevronRight size={16} />
+          </button>
+        </div>
+      </section>
 
-                {/* Title */}
-                <h4 className="text-sm font-black text-gray-900 tracking-tight mb-1">
-                  {reward.name}
-                </h4>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Rewards Center */}
+        <section className="lg:col-span-2 space-y-6">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 bg-blue-50 border border-blue-100 rounded-sm">
+              <IndianRupee className="text-blue-600" size={20} />
+            </div>
+            <h3 className="text-xl font-black text-gray-900 tracking-tight uppercase">
+              Mega Cash Rewards
+            </h3>
+          </div>
 
-                {/* Description */}
-                <p className="text-[10px] text-gray-500 font-bold mb-4 leading-relaxed">
-                  {reward.description}
-                </p>
-
-                {/* Points & Button */}
-                <div className="w-full space-y-3 mt-auto">
-                  <div className="flex items-center justify-center gap-1.5">
-                    <Star className="text-amber-500 w-3.5 h-3.5" />
-                    <span className="text-xs font-black text-gray-900">
-                      {reward.points} Points
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {rewards.cash.map((c) => (
+              <div
+                key={c.id}
+                className="bg-white border border-gray-100 p-6 flex items-center justify-between group hover:border-blue-200 transition-all rounded-sm"
+              >
+                <div className="text-start">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-3xl font-black text-gray-900">
+                      {c.amount}
+                    </span>
+                    <span className="text-[10px] font-black text-blue-500 uppercase bg-blue-50 px-2 py-0.5 rounded-sm">
+                      Winner
                     </span>
                   </div>
+                  <p className="text-xs font-black text-gray-400 uppercase tracking-widest">
+                    {c.name}
+                  </p>
+                </div>
+                <button className="flex flex-col items-center gap-1">
+                  <span className="text-[10px] font-black text-gray-900 uppercase">
+                    {c.points} PTS
+                  </span>
+                  <div className="px-5 py-2 bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest rounded-sm group-hover:bg-blue-700 transition-all">
+                    Claim
+                  </div>
+                </button>
+              </div>
+            ))}
+          </div>
 
-                  {reward.available ? (
-                    <button className="w-full px-4 py-2 bg-[#22c55e] text-white text-[10px] font-black uppercase tracking-widest rounded-none hover:bg-[#16a34a] transition-colors">
-                      Redeem
-                    </button>
-                  ) : (
-                    <div className="w-full px-4 py-2 bg-gray-100 text-gray-400 text-[10px] font-black uppercase tracking-widest rounded-none text-center">
-                      Locked
-                    </div>
-                  )}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Plane className="text-cyan-500" size={18} />
+                <h4 className="text-xs font-black text-gray-900 uppercase tracking-widest">
+                  Global Travel
+                </h4>
+              </div>
+              {rewards.tours.map((t) => (
+                <div
+                  key={t.id}
+                  className={`p-4 border rounded-sm flex items-center gap-4 ${
+                    t.available
+                      ? "bg-white border-gray-100"
+                      : "bg-gray-50 border-gray-100 opacity-60"
+                  }`}
+                >
+                  <div
+                    className={`p-2 rounded-sm ${
+                      t.available
+                        ? "bg-cyan-50 text-cyan-500"
+                        : "bg-gray-200 text-gray-400"
+                    }`}
+                  >
+                    {t.icon}
+                  </div>
+                  <div className="flex-1 text-start">
+                    <p className="text-xs font-black text-gray-900">{t.name}</p>
+                    <p className="text-[9px] font-bold text-gray-400 uppercase">
+                      {t.desc}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-[10px] font-black text-gray-900">
+                      {t.points.toLocaleString()}
+                    </p>
+                    <p className="text-[8px] font-black text-gray-400 uppercase">
+                      PTS
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Smartphone className="text-purple-500" size={18} />
+                <h4 className="text-xs font-black text-gray-900 uppercase tracking-widest">
+                  Luxury Tech
+                </h4>
+              </div>
+              {rewards.youth.map((y) => (
+                <div
+                  key={y.id}
+                  className={`p-4 border rounded-sm flex items-center gap-4 ${
+                    y.available
+                      ? "bg-white border-gray-100"
+                      : "bg-gray-50 border-gray-100 opacity-60"
+                  }`}
+                >
+                  <div
+                    className={`p-2 rounded-sm ${
+                      y.available
+                        ? "bg-purple-50 text-purple-500"
+                        : "bg-gray-200 text-gray-400"
+                    }`}
+                  >
+                    {y.icon}
+                  </div>
+                  <div className="flex-1 text-start">
+                    <p className="text-xs font-black text-gray-900">{y.name}</p>
+                    <p className="text-[9px] font-bold text-gray-400 uppercase">
+                      {y.desc}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-[10px] font-black text-gray-900">
+                      {y.points.toLocaleString()}
+                    </p>
+                    <p className="text-[8px] font-black text-gray-400 uppercase">
+                      PTS
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Impact Tracker */}
+        <div className="space-y-8">
+          <section className="bg-blue-900 text-white p-8 rounded-sm relative overflow-hidden">
+            <div className="absolute -top-10 -right-10 opacity-10">
+              <Leaf size={160} />
+            </div>
+            <div className="relative z-10 space-y-6">
+              <div className="flex items-center gap-3">
+                <Leaf className="text-blue-400" size={24} />
+                <h3 className="text-xl font-black uppercase tracking-tighter">
+                  Your Legacy
+                </h3>
+              </div>
+
+              <div className="flex items-center gap-6 py-4 border-y border-white/10">
+                <div className="text-start">
+                  <p className="text-[64px] font-black leading-none">
+                    {userStats.treesPlanted}
+                  </p>
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-400">
+                    Trees in your name
+                  </p>
+                </div>
+                <div className="flex-1 space-y-2">
+                  <div className="flex justify-between text-[9px] font-black uppercase tracking-widest text-blue-400">
+                    <span>Total CO₂ Offset</span>
+                    <span>900kg/yr</span>
+                  </div>
+                  <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-blue-400"
+                      style={{ width: "80%" }}
+                    />
+                  </div>
                 </div>
               </div>
+
+              <div className="space-y-3 pt-4">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-center mb-4">
+                  Grow Your Forest
+                </p>
+                {treeTiers.map((t) => (
+                  <button
+                    key={t.name}
+                    className="w-full flex items-center justify-between p-3 border border-white/20 hover:bg-white/10 transition-all rounded-sm"
+                  >
+                    <div className="text-start">
+                      <p className="text-xs font-black">{t.name}</p>
+                      <p className="text-[9px] font-medium text-blue-400">
+                        {t.trees} Tree • {t.impact}
+                      </p>
+                    </div>
+                    <span className="text-[10px] font-black bg-blue-500 px-3 py-1 rounded-sm uppercase">
+                      {t.points} PTS
+                    </span>
+                  </button>
+                ))}
+              </div>
             </div>
-          ))}
+          </section>
+
+          <section className="bg-white border border-gray-100 p-8 rounded-sm">
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center gap-3">
+                <Award className="text-blue-500" size={20} />
+                <h3 className="text-sm font-black uppercase tracking-tighter">
+                  Impact Badges
+                </h3>
+              </div>
+              <button className="text-[10px] font-black uppercase text-blue-500 hover:underline">
+                View All
+              </button>
+            </div>
+
+            <div className="grid grid-cols-4 gap-4">
+              {badges.map((b) => (
+                <div key={b.id} className="group relative">
+                  <div
+                    className={`w-12 h-12 ${b.color} flex items-center justify-center text-white rounded-sm shadow-sm transform group-hover:scale-110 transition-all`}
+                  >
+                    {b.icon}
+                  </div>
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-gray-900 text-white p-2 rounded-sm text-[8px] font-black uppercase whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all pointer-events-none z-50">
+                    {b.name}
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900" />
+                  </div>
+                </div>
+              ))}
+              <div className="w-12 h-12 bg-gray-50 border border-dashed border-gray-200 flex items-center justify-center text-gray-300 rounded-sm">
+                +15
+              </div>
+            </div>
+          </section>
         </div>
       </div>
+
+      <section className="bg-gradient-to-r from-blue-700 to-indigo-800 p-10 rounded-sm text-white flex flex-col md:flex-row items-center justify-between gap-8">
+        <div className="text-start max-w-lg">
+          <h3 className="text-4xl font-black tracking-tighter uppercase mb-4">
+            Monthly Mega Draw
+          </h3>
+          <p className="text-blue-50 font-medium leading-relaxed">
+            All donors who plant at least one tree this month are entered to win
+            a{" "}
+            <span className="font-bold underline decoration-blue-300 underline-offset-4">
+              ₹50,000 Luxury Gift Voucher
+            </span>
+            !
+          </p>
+        </div>
+        <div className="flex flex-col items-center">
+          <div className="text-4xl font-black mb-2 tabular-nums">12:15:30</div>
+          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-200 mb-6">
+            Days:Hrs:Mins
+          </p>
+          <button className="px-10 py-4 bg-white text-blue-700 text-xs font-black uppercase tracking-widest rounded-sm hover:bg-blue-50 transition-all active:scale-95 shadow-lg shadow-blue-900/20">
+            Join Draw Now
+          </button>
+        </div>
+      </section>
     </div>
   );
 };

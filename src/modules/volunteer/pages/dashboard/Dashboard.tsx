@@ -2,9 +2,9 @@ import {
   MapPin,
   Clock,
   CheckCircle2,
-  Trophy,
   TrendingUp,
   Star,
+  Zap,
 } from "lucide-react";
 import ImpactCards from "../../../../global/components/resuable-components/ImpactCards";
 
@@ -12,26 +12,26 @@ const VolunteerDashboard = () => {
   const stats = [
     {
       title: "Deliveries Completed",
-      value: "32",
-      change: "+4 this week",
+      value: "842",
+      change: "+24 this month",
       changeColor: "text-green-600",
     },
     {
-      title: "Hours Volunteered",
-      value: "156",
-      change: "Top 5% in city",
+      title: "Impact Points",
+      value: "24,500",
+      change: "Diamond Tier",
       changeColor: "text-blue-600",
     },
     {
-      title: "Carbon Offset",
-      value: "45kg",
-      change: "e-Vehicle used",
+      title: "Trees Planted",
+      value: "45",
+      change: "Your Forest",
       changeColor: "text-emerald-600",
     },
     {
-      title: "Active Assignments",
-      value: "2",
-      change: "Due today",
+      title: "Cash Earned",
+      value: "₹8,500",
+      change: "Available: ₹2,500",
       changeColor: "text-orange-600",
     },
   ];
@@ -39,7 +39,7 @@ const VolunteerDashboard = () => {
   return (
     <div className="w-full space-y-6 p-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-semibold text-black text-start">
+        <h1 className="text-2xl font-semibold text-black text-start uppercase tracking-tighter">
           Volunteer Dashboard
         </h1>
         <div className="flex items-center gap-2 px-3 py-1.5 bg-[#ecfdf5] rounded-full border border-[#d1fae5]">
@@ -48,7 +48,7 @@ const VolunteerDashboard = () => {
             <span className="relative inline-flex rounded-full h-2 w-2 bg-[#22c55e]"></span>
           </span>
           <span className="text-xs font-bold text-[#16a34a]">
-            Active - Available for Pickups
+            Active - Earning 3X Points 🔥
           </span>
         </div>
       </div>
@@ -61,7 +61,9 @@ const VolunteerDashboard = () => {
           color: item.changeColor.includes("green")
             ? "bg-[#22c55e]"
             : item.changeColor.includes("blue")
-            ? "bg-blue-500"
+            ? "bg-blue-600"
+            : item.changeColor.includes("emerald")
+            ? "bg-emerald-600"
             : "bg-orange-500",
         }))}
       />
@@ -69,46 +71,46 @@ const VolunteerDashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Today's Schedule */}
         <div className="md:col-span-2 bg-white rounded-md p-5 border border-gray-100 flex flex-col items-start min-h-[300px]">
-          <h3 className="text-lg font-semibold text-black mb-4">
-            Today's Schedule
+          <h3 className="text-lg font-semibold text-black mb-4 uppercase tracking-tight">
+            Active Routes
           </h3>
           <div className="w-full space-y-4">
             <div className="p-4 bg-[#ecfdf5]/50 rounded-xl border border-[#d1fae5] flex items-start gap-4 group cursor-pointer hover:bg-[#ecfdf5] transition-all">
-              <div className="p-3 bg-[#22c55e] text-white rounded-xl shadow-lg shadow-[#d1fae5]">
+              <div className="p-3 bg-blue-600 text-white rounded-xl shadow-lg shadow-blue-100">
                 <MapPin size={24} />
               </div>
               <div className="flex flex-col items-start pt-0.5">
-                <h4 className="font-bold text-gray-900">
-                  Food Collection - Local Bakery
+                <h4 className="font-bold text-gray-900 tracking-tight">
+                  Multi-Stop Route - Area 7
                 </h4>
                 <p className="text-xs text-gray-500 mt-1">
-                  Pickup at 2:00 PM • 15th Ave Street
+                  5 Pickups Pending • Bonus: +300 PTS
                 </p>
                 <div className="flex gap-2 mt-3">
-                  <span className="text-[10px] px-2 py-0.5 bg-white rounded-full border border-[#d1fae5] text-[#16a34a] font-bold uppercase">
-                    Pickup Pending
+                  <span className="text-[10px] px-2 py-0.5 bg-blue-600 rounded-full text-white font-black uppercase tracking-widest">
+                    Hot Route
                   </span>
-                  <span className="text-[10px] text-gray-400 py-0.5 flex items-center gap-1">
-                    <Clock size={10} /> 45 mins from now
+                  <span className="text-[10px] text-gray-400 py-0.5 flex items-center gap-1 font-bold uppercase">
+                    <Clock size={10} /> 3X Multiplier Active
                   </span>
                 </div>
               </div>
             </div>
 
-            <div className="p-4 bg-gray-50 rounded-xl border border-gray-100 flex items-start gap-4 opacity-75">
-              <div className="p-3 bg-blue-500 text-white rounded-xl">
+            <div className="p-4 bg-gray-50 rounded-xl border border-gray-100 flex items-start gap-4">
+              <div className="p-3 bg-emerald-600 text-white rounded-xl shadow-lg shadow-emerald-100">
                 <CheckCircle2 size={24} />
               </div>
               <div className="flex flex-col items-start pt-0.5">
-                <h4 className="font-bold text-gray-900">
-                  Delivery - Orphanage Home
+                <h4 className="font-bold text-gray-900 tracking-tight">
+                  Express Delivery
                 </h4>
                 <p className="text-xs text-gray-500 mt-1">
-                  Completed at 10:30 AM • Downtown Area
+                  Completed in 14 mins • Bonus: +200 PTS earned
                 </p>
                 <div className="flex gap-2 mt-2">
-                  <span className="text-[10px] px-2 py-0.5 bg-blue-50 rounded-full text-blue-700 font-bold uppercase">
-                    Completed
+                  <span className="text-[10px] px-2 py-0.5 bg-emerald-50 rounded-full text-emerald-700 font-black uppercase tracking-widest">
+                    Ultra Fast
                   </span>
                 </div>
               </div>
@@ -116,27 +118,27 @@ const VolunteerDashboard = () => {
           </div>
         </div>
 
-        {/* Milestone Progress */}
-        <div className="bg-white rounded-[32px] p-8 border border-slate-100 flex flex-col items-center text-center">
+        {/* ULTRA Rewards Progress */}
+        <div className="bg-white rounded-[32px] p-8 border border-slate-100 flex flex-col items-center text-center shadow-sm">
           <div className="relative mb-6">
-            <div className="w-24 h-24 rounded-3xl bg-white border border-slate-100 flex items-center justify-center">
-              <Trophy className="text-[#22c55e]" size={40} strokeWidth={1.5} />
+            <div className="w-24 h-24 rounded-3xl bg-blue-50 border border-blue-100 flex items-center justify-center">
+              <Star className="text-blue-600" size={40} fill="currentColor" />
             </div>
-            <div className="absolute -top-2 -right-2 px-3 py-1 bg-[#22c55e] rounded-full border-2 border-white">
+            <div className="absolute -top-2 -right-2 px-3 py-1 bg-blue-600 rounded-full border-2 border-white">
               <p className="text-[10px] font-black text-white uppercase tracking-tight">
-                Level 4
+                Rank 6
               </p>
             </div>
           </div>
 
-          <h4 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">
-            Elite Courier
+          <h4 className="text-3xl font-black text-slate-900 uppercase tracking-tighter">
+            Diamond
           </h4>
 
-          <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-[#22c55e]/30 rounded-full">
-            <Star className="text-[#22c55e]" size={12} fill="currentColor" />
-            <span className="text-[10px] font-black text-[#22c55e] uppercase tracking-wider">
-              Master Volunteer Path
+          <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 border border-blue-100 rounded-full">
+            <Zap className="text-blue-600" size={12} fill="currentColor" />
+            <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest">
+              30% Bonus Active
             </span>
           </div>
 
@@ -144,22 +146,22 @@ const VolunteerDashboard = () => {
             <div className="flex justify-between items-end">
               <div className="text-start">
                 <div className="flex items-center gap-1.5 mb-1">
-                  <TrendingUp size={14} className="text-[#22c55e]" />
-                  <span className="text-[10px] font-black text-[#22c55e] uppercase tracking-widest">
-                    Next Milestone
+                  <TrendingUp size={14} className="text-blue-600" />
+                  <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest">
+                    Next Tier: Legend
                   </span>
                 </div>
                 <p className="text-[11px] font-medium text-slate-500">
-                  <span className="font-black text-slate-900">8 more</span>{" "}
-                  deliveries to reach{" "}
-                  <span className="font-bold text-[#22c55e]">Level 5</span>
+                  Earn{" "}
+                  <span className="font-black text-slate-900">5,500 more</span>{" "}
+                  points
                 </p>
               </div>
               <div className="flex items-end gap-0.5">
                 <span className="text-3xl font-black text-slate-900 leading-none">
-                  85
+                  82
                 </span>
-                <span className="text-sm font-black text-[#22c55e] mb-0.5">
+                <span className="text-sm font-black text-blue-600 mb-0.5">
                   %
                 </span>
               </div>
@@ -168,20 +170,20 @@ const VolunteerDashboard = () => {
             <div className="relative">
               <div className="h-2 w-full bg-slate-50 rounded-full overflow-hidden border border-slate-100/50">
                 <div
-                  className="h-full bg-gradient-to-r from-[#22c55e] to-[#4ade80] rounded-full transition-all duration-1000 ease-out"
-                  style={{ width: "85%" }}
+                  className="h-full bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full transition-all duration-1000 ease-out"
+                  style={{ width: "82%" }}
                 />
               </div>
               <div className="flex justify-between items-center text-[9px] font-black text-slate-300 uppercase tracking-widest mt-3 px-1">
-                <span>Rookie</span>
-                <span className="text-[#22c55e]">Elite</span>
-                <span>Legendary</span>
+                <span>Platinum</span>
+                <span className="text-blue-600">Diamond</span>
+                <span>Legend</span>
               </div>
             </div>
           </div>
 
-          <button className="w-full mt-10 py-4 bg-[#22c55e] text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-[#16a34a] transition-all active:scale-95">
-            Claim Rewards
+          <button className="w-full mt-10 py-4 bg-blue-600 text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-blue-700 transition-all active:scale-95 shadow-lg shadow-blue-100">
+            Redeem Cash Prizes
           </button>
         </div>
       </div>

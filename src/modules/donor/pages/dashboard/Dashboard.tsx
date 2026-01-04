@@ -6,26 +6,26 @@ const DonorDashboard = () => {
   const stats = [
     {
       title: "Total Donations",
-      value: "24",
-      change: "+2 this month",
-      changeColor: "text-green-600",
-    },
-    {
-      title: "Meals Provided",
-      value: "120",
-      change: "+15 since last week",
+      value: "342",
+      change: "+12 this week",
       changeColor: "text-green-600",
     },
     {
       title: "Impact Points",
-      value: "1,250",
-      change: "Level 3 Donor",
+      value: "24,500",
+      change: "Diamond Tier",
       changeColor: "text-blue-600",
     },
     {
-      title: "Active Requests",
-      value: "3",
-      change: "Pending pickups",
+      title: "Trees Planted",
+      value: "45",
+      change: "Your Forest",
+      changeColor: "text-emerald-600",
+    },
+    {
+      title: "Available Points",
+      value: "8,200",
+      change: "Redeem for Cash",
       changeColor: "text-orange-600",
     },
   ];
