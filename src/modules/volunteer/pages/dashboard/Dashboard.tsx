@@ -20,7 +20,7 @@ const VolunteerDashboard = () => {
       title: "Impact Points",
       value: "24,500",
       change: "Diamond Tier",
-      changeColor: "text-blue-600",
+      changeColor: "text-emerald-600",
     },
     {
       title: "Trees Planted",
@@ -39,7 +39,10 @@ const VolunteerDashboard = () => {
   return (
     <div className="w-full space-y-6 p-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-semibold text-black text-start uppercase tracking-tighter">
+        <h1
+          className="text-2xl font-semibold text-start uppercase tracking-tighter"
+          style={{ color: "var(--text-primary)" }}
+        >
           Volunteer Dashboard
         </h1>
         <div className="flex items-center gap-2 px-3 py-1.5 bg-[#ecfdf5] rounded-full border border-[#d1fae5]">
@@ -58,39 +61,56 @@ const VolunteerDashboard = () => {
           label: item.title,
           val: item.value,
           trend: item.change,
-          color: item.changeColor.includes("green")
-            ? "bg-[#22c55e]"
-            : item.changeColor.includes("blue")
-            ? "bg-blue-600"
-            : item.changeColor.includes("emerald")
-            ? "bg-emerald-600"
-            : "bg-orange-500",
+          color:
+            item.changeColor.includes("green") ||
+            item.changeColor.includes("emerald") ||
+            item.changeColor.includes("blue")
+              ? "bg-[#22c55e]"
+              : "bg-orange-500",
         }))}
       />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Today's Schedule */}
-        <div className="md:col-span-2 bg-white rounded-md p-5 border border-gray-100 flex flex-col items-start min-h-[300px]">
-          <h3 className="text-lg font-semibold text-black mb-4 uppercase tracking-tight">
+        <div
+          className="md:col-span-2 rounded-md p-5 border flex flex-col items-start min-h-[300px]"
+          style={{
+            backgroundColor: "var(--bg-primary)",
+            borderColor: "var(--border-color)",
+          }}
+        >
+          <h3
+            className="text-lg font-semibold mb-4 uppercase tracking-tight"
+            style={{ color: "var(--text-primary)" }}
+          >
             Active Routes
           </h3>
           <div className="w-full space-y-4">
             <div className="p-4 bg-[#ecfdf5]/50 rounded-xl border border-[#d1fae5] flex items-start gap-4 group cursor-pointer hover:bg-[#ecfdf5] transition-all">
-              <div className="p-3 bg-blue-600 text-white rounded-xl shadow-lg shadow-blue-100">
+              <div className="p-3 bg-emerald-600 text-white rounded-xl shadow-lg shadow-emerald-100">
                 <MapPin size={24} />
               </div>
               <div className="flex flex-col items-start pt-0.5">
-                <h4 className="font-bold text-gray-900 tracking-tight">
+                <h4
+                  className="font-bold tracking-tight"
+                  style={{ color: "var(--text-primary)" }}
+                >
                   Multi-Stop Route - Area 7
                 </h4>
-                <p className="text-xs text-gray-500 mt-1">
+                <p
+                  className="text-xs mt-1"
+                  style={{ color: "var(--text-secondary)" }}
+                >
                   5 Pickups Pending • Bonus: +300 PTS
                 </p>
                 <div className="flex gap-2 mt-3">
-                  <span className="text-[10px] px-2 py-0.5 bg-blue-600 rounded-full text-white font-black uppercase tracking-widest">
+                  <span className="text-[10px] px-2 py-0.5 bg-emerald-600 rounded-full text-white font-black uppercase tracking-widest">
                     Hot Route
                   </span>
-                  <span className="text-[10px] text-gray-400 py-0.5 flex items-center gap-1 font-bold uppercase">
+                  <span
+                    className="text-[10px] py-0.5 flex items-center gap-1 font-bold uppercase"
+                    style={{ color: "var(--text-muted)" }}
+                  >
                     <Clock size={10} /> 3X Multiplier Active
                   </span>
                 </div>
@@ -102,10 +122,16 @@ const VolunteerDashboard = () => {
                 <CheckCircle2 size={24} />
               </div>
               <div className="flex flex-col items-start pt-0.5">
-                <h4 className="font-bold text-gray-900 tracking-tight">
+                <h4
+                  className="font-bold tracking-tight"
+                  style={{ color: "var(--text-primary)" }}
+                >
                   Express Delivery
                 </h4>
-                <p className="text-xs text-gray-500 mt-1">
+                <p
+                  className="text-xs mt-1"
+                  style={{ color: "var(--text-secondary)" }}
+                >
                   Completed in 14 mins • Bonus: +200 PTS earned
                 </p>
                 <div className="flex gap-2 mt-2">
@@ -119,25 +145,37 @@ const VolunteerDashboard = () => {
         </div>
 
         {/* ULTRA Rewards Progress */}
-        <div className="bg-white rounded-[32px] p-8 border border-slate-100 flex flex-col items-center text-center shadow-sm">
+        <div
+          className="rounded-[32px] p-8 border flex flex-col items-center text-center shadow-sm"
+          style={{
+            backgroundColor: "var(--bg-primary)",
+            borderColor: "var(--border-color)",
+          }}
+        >
           <div className="relative mb-6">
-            <div className="w-24 h-24 rounded-3xl bg-blue-50 border border-blue-100 flex items-center justify-center">
-              <Star className="text-blue-600" size={40} fill="currentColor" />
+            <div className="w-24 h-24 rounded-3xl bg-emerald-50 border border-emerald-100 flex items-center justify-center">
+              <Star className="text-[#22c55e]" size={40} fill="currentColor" />
             </div>
-            <div className="absolute -top-2 -right-2 px-3 py-1 bg-blue-600 rounded-full border-2 border-white">
+            <div
+              className="absolute -top-2 -right-2 px-3 py-1 bg-emerald-600 rounded-full border-2"
+              style={{ borderColor: "var(--bg-primary)" }}
+            >
               <p className="text-[10px] font-black text-white uppercase tracking-tight">
                 Rank 6
               </p>
             </div>
           </div>
 
-          <h4 className="text-3xl font-black text-slate-900 uppercase tracking-tighter">
+          <h4
+            className="text-3xl font-black uppercase tracking-tighter"
+            style={{ color: "var(--text-primary)" }}
+          >
             Diamond
           </h4>
 
-          <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 border border-blue-100 rounded-full">
-            <Zap className="text-blue-600" size={12} fill="currentColor" />
-            <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest">
+          <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-50 border border-emerald-100 rounded-full">
+            <Zap className="text-[#22c55e]" size={12} fill="currentColor" />
+            <span className="text-[10px] font-black text-[#16a34a] uppercase tracking-widest">
               30% Bonus Active
             </span>
           </div>
@@ -146,22 +184,33 @@ const VolunteerDashboard = () => {
             <div className="flex justify-between items-end">
               <div className="text-start">
                 <div className="flex items-center gap-1.5 mb-1">
-                  <TrendingUp size={14} className="text-blue-600" />
-                  <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest">
+                  <TrendingUp size={14} className="text-[#22c55e]" />
+                  <span className="text-[10px] font-black text-[#16a34a] uppercase tracking-widest">
                     Next Tier: Legend
                   </span>
                 </div>
-                <p className="text-[11px] font-medium text-slate-500">
+                <p
+                  className="text-[11px] font-medium"
+                  style={{ color: "var(--text-secondary)" }}
+                >
                   Earn{" "}
-                  <span className="font-black text-slate-900">5,500 more</span>{" "}
+                  <span
+                    className="font-black"
+                    style={{ color: "var(--text-primary)" }}
+                  >
+                    5,500 more
+                  </span>{" "}
                   points
                 </p>
               </div>
               <div className="flex items-end gap-0.5">
-                <span className="text-3xl font-black text-slate-900 leading-none">
+                <span
+                  className="text-3xl font-black leading-none"
+                  style={{ color: "var(--text-primary)" }}
+                >
                   82
                 </span>
-                <span className="text-sm font-black text-blue-600 mb-0.5">
+                <span className="text-sm font-black text-[#16a34a] mb-0.5">
                   %
                 </span>
               </div>
@@ -170,19 +219,22 @@ const VolunteerDashboard = () => {
             <div className="relative">
               <div className="h-2 w-full bg-slate-50 rounded-full overflow-hidden border border-slate-100/50">
                 <div
-                  className="h-full bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full transition-all duration-1000 ease-out"
+                  className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full transition-all duration-1000 ease-out"
                   style={{ width: "82%" }}
                 />
               </div>
-              <div className="flex justify-between items-center text-[9px] font-black text-slate-300 uppercase tracking-widest mt-3 px-1">
+              <div
+                className="flex justify-between items-center text-[9px] font-black uppercase tracking-widest mt-3 px-1"
+                style={{ color: "var(--text-muted)" }}
+              >
                 <span>Platinum</span>
-                <span className="text-blue-600">Diamond</span>
+                <span className="text-emerald-600">Diamond</span>
                 <span>Legend</span>
               </div>
             </div>
           </div>
 
-          <button className="w-full mt-10 py-4 bg-blue-600 text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-blue-700 transition-all active:scale-95 shadow-lg shadow-blue-100">
+          <button className="w-full mt-10 py-4 bg-[#22c55e] text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-[#16a34a] transition-all active:scale-95 shadow-lg shadow-emerald-100">
             Redeem Cash Prizes
           </button>
         </div>

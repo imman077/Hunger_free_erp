@@ -103,7 +103,10 @@ const PointsTiersView: React.FC = () => {
     switch (columnKey) {
       case "name":
         return (
-          <span className="font-black text-slate-900 uppercase tracking-tighter">
+          <span
+            className="font-black uppercase tracking-tighter"
+            style={{ color: "var(--text-primary)" }}
+          >
             {value}
           </span>
         );
@@ -163,13 +166,22 @@ const PointsTiersView: React.FC = () => {
         </div>
 
         {/* Configuration Section */}
-        <div className="bg-white rounded-sm border border-slate-100 p-8">
+        <div
+          className="rounded-sm border p-8"
+          style={{
+            backgroundColor: "var(--bg-primary)",
+            borderColor: "var(--border-color)",
+          }}
+        >
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-slate-900 rounded-sm">
                 <Settings className="text-white" size={18} />
               </div>
-              <h4 className="text-xl font-black text-slate-900 tracking-tight uppercase">
+              <h4
+                className="text-xl font-black tracking-tight uppercase"
+                style={{ color: "var(--text-primary)" }}
+              >
                 Ultra Reward Base Rates
               </h4>
             </div>
@@ -181,9 +193,15 @@ const PointsTiersView: React.FC = () => {
           <div className="space-y-10">
             {/* Donor Points */}
             <div className="space-y-6">
-              <div className="flex items-center gap-2 border-b border-slate-100 pb-2">
+              <div
+                className="flex items-center gap-2 pb-2"
+                style={{ borderBottom: "1px solid var(--border-color)" }}
+              >
                 <span className="w-2 h-6 bg-blue-500 rounded-sm" />
-                <h5 className="font-black text-slate-800 text-xs uppercase tracking-widest">
+                <h5
+                  className="font-black text-xs uppercase tracking-widest"
+                  style={{ color: "var(--text-primary)" }}
+                >
                   Donors (3X Base)
                 </h5>
               </div>
@@ -211,9 +229,15 @@ const PointsTiersView: React.FC = () => {
 
             {/* Volunteer Points */}
             <div className="space-y-6">
-              <div className="flex items-center gap-2 border-b border-slate-100 pb-2">
+              <div
+                className="flex items-center gap-2 pb-2"
+                style={{ borderBottom: "1px solid var(--border-color)" }}
+              >
                 <span className="w-2 h-6 bg-emerald-500 rounded-sm" />
-                <h5 className="font-black text-slate-800 text-xs uppercase tracking-widest">
+                <h5
+                  className="font-black text-xs uppercase tracking-widest"
+                  style={{ color: "var(--text-primary)" }}
+                >
                   Volunteers (3X Base)
                 </h5>
               </div>
@@ -241,9 +265,15 @@ const PointsTiersView: React.FC = () => {
 
             {/* NGO Points */}
             <div className="space-y-6">
-              <div className="flex items-center gap-2 border-b border-slate-100 pb-2">
+              <div
+                className="flex items-center gap-2 pb-2"
+                style={{ borderBottom: "1px solid var(--border-color)" }}
+              >
                 <span className="w-2 h-6 bg-amber-500 rounded-sm" />
-                <h5 className="font-black text-slate-800 text-xs uppercase tracking-widest">
+                <h5
+                  className="font-black text-xs uppercase tracking-widest"
+                  style={{ color: "var(--text-primary)" }}
+                >
                   NGOs (Fixed Rate)
                 </h5>
               </div>

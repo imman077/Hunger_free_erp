@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Icon } from "./resuable-components/Icon";
 import { useSidebar } from "../contexts/SidebarContext";
 import { Link, useLocation } from "react-router-dom";
+import ThemeToggle from "./ThemeToggle";
 
 type SubItem = {
   label: string;
@@ -45,11 +46,11 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
 
   const content = (
     <div
-      className={`group relative w-full flex items-center px-4 py-2 border border-slate-100 transition-all duration-300 cursor-pointer mb-0.5
+      className={`group relative w-full flex items-center px-4 py-2 transition-all duration-300 cursor-pointer mb-0.5
         ${
           isActive || isSubItemActive
             ? "text-emerald-700 bg-emerald-50/40"
-            : "text-slate-600 hover:text-slate-900 hover:bg-slate-50/50"
+            : "hover:text-slate-900 hover:bg-slate-50/50"
         }
         ${
           !expanded
@@ -57,6 +58,11 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
             : "rounded-xl mx-2 w-[calc(100%-16px)]"
         }
       `}
+      style={{
+        borderColor: "var(--border-color)",
+        color:
+          isActive || isSubItemActive ? "#047857" : "var(--text-secondary)",
+      }}
       onClick={handleClick}
     >
       {/* Premium Active Indicator - Floating Pill */}
@@ -115,7 +121,10 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
             isOpen ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0"
           }`}
         >
-          <div className="ml-9 pl-4 border-l border-slate-100 space-y-0.5 py-1 mb-2">
+          <div
+            className="ml-9 pl-4 space-y-0.5 py-1 mb-2"
+            style={{ borderLeft: "1px solid var(--border-color)" }}
+          >
             {subItems.map((item) => {
               const isSubActive = location.pathname === item.to;
               return (
@@ -125,8 +134,11 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
                   className={`w-full text-left px-3 py-1.5 rounded-lg transition-all flex items-center group/sub ${
                     isSubActive
                       ? "text-emerald-600 bg-emerald-50/50 font-semibold"
-                      : "text-slate-500 hover:text-slate-900 hover:bg-slate-50/50 font-medium"
+                      : "hover:bg-slate-50/50 font-medium"
                   }`}
+                  style={{
+                    color: isSubActive ? "#059669" : "var(--text-secondary)",
+                  }}
                 >
                   <span className="truncate text-sm flex-1">{item.label}</span>
                   {isSubActive && (
@@ -294,12 +306,15 @@ const SidebarIcons: React.FC = () => {
     <aside
       className={`
         fixed top-0 left-0 h-screen
-        bg-white border-r border-slate-100
         transition-[width] duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)]
         flex flex-col z-[50]
         ${expanded ? "md:w-[260px]" : "md:w-[70px]"}
         hidden md:flex shadow-[2px_0_12px_rgba(0,0,0,0.02)]
       `}
+      style={{
+        backgroundColor: "var(--bg-primary)",
+        borderRight: "1px solid var(--border-color)",
+      }}
     >
       {/* Sidebar Header - Adjusted for better spacing */}
       {/* Sidebar Header */}
@@ -310,18 +325,35 @@ const SidebarIcons: React.FC = () => {
         >
           {expanded ? (
             <div className="flex items-center gap-2 w-full px-2">
-              <div className="h-px bg-slate-100 flex-1" />
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] whitespace-nowrap">
+              <div
+                className="h-px flex-1"
+                style={{ backgroundColor: "var(--border-color)" }}
+              />
+              <span
+                className="text-[10px] font-black uppercase tracking-[0.2em] whitespace-nowrap"
+                style={{ color: "var(--text-muted)" }}
+              >
                 Navigation
               </span>
-              <div className="h-px bg-slate-100 flex-1" />
+              <div
+                className="h-px flex-1"
+                style={{ backgroundColor: "var(--border-color)" }}
+              />
             </div>
           ) : (
-            <div className="w-10 h-10 rounded-xl bg-slate-50/50 flex items-center justify-center border border-slate-100/50">
-              <Icon
-                name="menu"
-                className="w-5 h-5 text-slate-400 hover:text-emerald-500 transition-colors duration-300"
-              />
+            <div
+              className="w-10 h-10 rounded-xl flex items-center justify-center border"
+              style={{
+                backgroundColor: "var(--bg-secondary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
+              <span style={{ color: "var(--text-muted)" }}>
+                <Icon
+                  name="menu"
+                  className="w-5 h-5 transition-colors duration-300"
+                />
+              </span>
             </div>
           )}
         </div>
@@ -424,14 +456,24 @@ const SidebarIcons: React.FC = () => {
           </div>
         </nav>
 
-        <div className="p-4 border-t border-slate-50 bg-slate-50/20 flex flex-col items-center gap-3 transition-all duration-500">
+        <div
+          className="p-4 bg-slate-50/20 flex flex-col items-center gap-3 transition-all duration-500"
+          style={{ borderTop: "1px solid var(--border-color)" }}
+        >
           {expanded && (
-            <div className="w-full p-2.5 rounded-2xl bg-white border border-slate-100 transition-all duration-500 group/profile cursor-pointer">
+            <div
+              className="w-full p-2.5 rounded-2xl border transition-all duration-500 group/profile cursor-pointer"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
               <div className="flex items-center gap-3">
                 <div className="relative shrink-0">
                   <img
                     src="https://mui.com/static/images/avatar/1.jpg"
-                    className="w-10 h-10 rounded-xl border border-slate-100 shadow-sm object-cover"
+                    className="w-10 h-10 rounded-xl border object-cover"
+                    style={{ borderColor: "var(--border-color)" }}
                     alt="Admin"
                   />
                   <div
@@ -440,11 +482,14 @@ const SidebarIcons: React.FC = () => {
                   />
                 </div>
                 <div className="flex flex-col min-w-0">
-                  <span className="text-slate-900 text-sm font-bold leading-tight truncate">
+                  <span
+                    className="text-sm font-bold leading-tight truncate"
+                    style={{ color: "var(--text-primary)" }}
+                  >
                     Admin Hub
                   </span>
                   <span
-                    className="text-emerald-500 text-[9px] font-black tracking-widest uppercase mt-0.5"
+                    className="text-[9px] font-black tracking-widest uppercase mt-0.5"
                     style={{ color: "#22c55e" }}
                   >
                     Operational
@@ -454,7 +499,8 @@ const SidebarIcons: React.FC = () => {
             </div>
           )}
 
-          <div className="w-full flex justify-center px-2">
+          <div className="flex items-center justify-center gap-3 px-2">
+            <ThemeToggle />
             <button
               onClick={() => setExpanded(!expanded)}
               className="w-10 h-1.5 rounded-full bg-slate-200/50 hover:bg-emerald-500/30 transition-all duration-300 group/toggle relative"

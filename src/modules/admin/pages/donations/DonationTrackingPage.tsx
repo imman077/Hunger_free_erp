@@ -23,9 +23,6 @@ const MapController = ({ center }: { center: [number, number] | null }) => {
 };
 
 const DonationTrackingPage: React.FC = () => {
-  const [selectedMarker, setSelectedMarker] = useState<DonationMarker | null>(
-    null
-  );
   const [userLocation, setUserLocation] = useState<[number, number] | null>(
     null
   );
@@ -213,10 +210,13 @@ const DonationTrackingPage: React.FC = () => {
 
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-gray-900 tracking-tight">
+          <h1
+            className="text-xl font-bold tracking-tight"
+            style={{ color: "var(--text-primary)" }}
+          >
             Live Tracking
           </h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm mt-1" style={{ color: "var(--text-muted)" }}>
             Real-time donation tracking across all hubs
           </p>
         </div>
@@ -224,16 +224,25 @@ const DonationTrackingPage: React.FC = () => {
           <button
             onClick={handleLocateMe}
             disabled={isLocating}
-            className={`flex items-center gap-2 px-4 py-2 bg-white rounded-sm border border-gray-200 text-xs font-bold transition-all hover:bg-gray-50 active:scale-95 ${
-              isLocating ? "text-gray-400" : "text-gray-700"
-            }`}
+            className={`flex items-center gap-2 px-4 py-2 rounded-sm border text-xs font-bold transition-all active:scale-95`}
+            style={{
+              backgroundColor: "var(--bg-primary)",
+              borderColor: "var(--border-color)",
+              color: isLocating ? "var(--text-muted)" : "var(--text-primary)",
+            }}
           >
             <Crosshair
               className={`w-4 h-4 ${isLocating ? "animate-spin" : ""}`}
             />
             {isLocating ? "Locating..." : "Locate Me"}
           </button>
-          <div className="flex items-center gap-2 px-4 py-2 bg-emerald-50 rounded-sm border border-emerald-100">
+          <div
+            className="flex items-center gap-2 px-4 py-2 rounded-sm border"
+            style={{
+              backgroundColor: "rgba(16, 185, 129, 0.1)",
+              borderColor: "rgba(16, 185, 129, 0.2)",
+            }}
+          >
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             <span className="text-xs font-bold text-emerald-600 uppercase tracking-wider">
               Live
@@ -248,32 +257,51 @@ const DonationTrackingPage: React.FC = () => {
       {/* Map and Activity Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Map */}
-        <div className="lg:col-span-2 bg-white rounded-sm border border-gray-200 p-6">
+        <div
+          className="lg:col-span-2 rounded-sm border p-6"
+          style={{
+            backgroundColor: "var(--bg-primary)",
+            borderColor: "var(--border-color)",
+          }}
+        >
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-base font-bold text-gray-900">
+            <h2
+              className="text-base font-bold"
+              style={{ color: "var(--text-primary)" }}
+            >
               Donation Locations
             </h2>
             <div className="flex items-center gap-4 text-xs">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-blue-500" />
-                <span className="text-gray-600">My Location</span>
+                <span style={{ color: "var(--text-secondary)" }}>
+                  My Location
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-emerald-500" />
-                <span className="text-gray-600">Active</span>
+                <span style={{ color: "var(--text-secondary)" }}>Active</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-amber-500" />
-                <span className="text-gray-600">Pending</span>
+                <span style={{ color: "var(--text-secondary)" }}>Pending</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-gray-400" />
-                <span className="text-gray-600">Completed</span>
+                <span style={{ color: "var(--text-secondary)" }}>
+                  Completed
+                </span>
               </div>
             </div>
           </div>
 
-          <div className="relative bg-gray-50 rounded-sm border border-gray-200 overflow-hidden h-[500px]">
+          <div
+            className="relative rounded-sm border overflow-hidden h-[500px]"
+            style={{
+              backgroundColor: "var(--bg-secondary)",
+              borderColor: "var(--border-color)",
+            }}
+          >
             <MapContainer
               center={[20.5937, 78.9629]}
               zoom={5}
@@ -303,9 +331,6 @@ const DonationTrackingPage: React.FC = () => {
                   key={donation.id}
                   position={donation.coordinates}
                   icon={getMarkerIcon(donation.status)}
-                  eventHandlers={{
-                    click: () => setSelectedMarker(donation),
-                  }}
                 >
                   <Popup>
                     <div className="p-2">
@@ -343,8 +368,17 @@ const DonationTrackingPage: React.FC = () => {
         </div>
 
         {/* Live Activity Feed */}
-        <div className="bg-white rounded-sm border border-gray-200 p-6">
-          <h2 className="text-base font-bold text-gray-900 mb-4">
+        <div
+          className="rounded-sm border p-6"
+          style={{
+            backgroundColor: "var(--bg-primary)",
+            borderColor: "var(--border-color)",
+          }}
+        >
+          <h2
+            className="text-base font-bold mb-4"
+            style={{ color: "var(--text-primary)" }}
+          >
             Live Activity
           </h2>
           <div className="space-y-4">
@@ -387,21 +421,33 @@ const DonationTrackingPage: React.FC = () => {
             ].map((activity, index) => (
               <div
                 key={index}
-                className="flex items-start gap-3 pb-4 border-b border-gray-100 last:border-0 last:pb-0"
+                className="flex items-start gap-3 pb-4 border-b last:border-0 last:pb-0"
+                style={{ borderBottomColor: "var(--border-color)" }}
               >
-                <div className="w-8 h-8 rounded-sm bg-emerald-50 flex items-center justify-center flex-shrink-0">
+                <div
+                  className="w-8 h-8 rounded-sm flex items-center justify-center flex-shrink-0"
+                  style={{ backgroundColor: "rgba(16, 185, 129, 0.1)" }}
+                >
                   <activity.icon className="w-4 h-4 text-emerald-600" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-bold text-gray-900 mb-1">
+                  <p
+                    className="text-xs font-bold mb-1"
+                    style={{ color: "var(--text-primary)" }}
+                  >
                     {activity.action}
                   </p>
-                  <p className="text-xs text-gray-500">{activity.location}</p>
+                  <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+                    {activity.location}
+                  </p>
                   <div className="flex items-center justify-between mt-1">
                     <span className="text-xs font-bold text-emerald-600">
                       {activity.amount}
                     </span>
-                    <span className="text-xs text-gray-400">
+                    <span
+                      className="text-xs"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       {activity.time}
                     </span>
                   </div>

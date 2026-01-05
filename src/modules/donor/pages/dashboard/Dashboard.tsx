@@ -14,7 +14,7 @@ const DonorDashboard = () => {
       title: "Impact Points",
       value: "24,500",
       change: "Diamond Tier",
-      changeColor: "text-blue-600",
+      changeColor: "text-[#22c55e]",
     },
     {
       title: "Trees Planted",
@@ -40,18 +40,21 @@ const DonorDashboard = () => {
       color: "border-green-500",
     },
     {
-      icon: <Clock className="w-6 h-6 text-blue-600" />,
+      icon: <Clock className="w-6 h-6 text-[#22c55e]" />,
       title: "Cooked Meals (10 portions)",
       ngo: "Hope Shelter",
       time: "Yesterday",
       status: "In Transit",
-      color: "border-blue-500",
+      color: "border-emerald-500",
     },
   ];
 
   return (
     <div className="w-full space-y-6 p-6">
-      <h1 className="text-2xl font-semibold text-black text-start">
+      <h1
+        className="text-2xl font-semibold text-start"
+        style={{ color: "var(--text-primary)" }}
+      >
         My Impact Overview
       </h1>
 
@@ -60,17 +63,26 @@ const DonorDashboard = () => {
           label: item.title,
           val: item.value,
           trend: item.change,
-          color: item.changeColor.includes("green")
-            ? "bg-[#22c55e]"
-            : item.changeColor.includes("blue")
-            ? "bg-blue-500"
-            : "bg-orange-500",
+          color:
+            item.changeColor.includes("green") ||
+            item.changeColor.includes("#22c55e")
+              ? "bg-[#22c55e]"
+              : "bg-emerald-600",
         }))}
       />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white rounded-none border border-gray-100 p-8 min-h-[300px] flex flex-col relative group/ach">
-          <h3 className="text-sm font-black text-gray-900 mb-6 flex items-center gap-2 relative z-10 tracking-tighter uppercase px-1">
+        <div
+          className="rounded-none border p-8 min-h-[300px] flex flex-col relative group/ach"
+          style={{
+            backgroundColor: "var(--bg-primary)",
+            borderColor: "var(--border-color)",
+          }}
+        >
+          <h3
+            className="text-sm font-black mb-6 flex items-center gap-2 relative z-10 tracking-tighter uppercase px-1"
+            style={{ color: "var(--text-primary)" }}
+          >
             <Award className="text-[#22c55e] w-4 h-4" /> Impact Milestones
           </h3>
 
@@ -86,7 +98,7 @@ const DonorDashboard = () => {
               {
                 name: "Food Hero",
                 status: "Locked",
-                color: "blue",
+                color: "emerald",
                 icon: <Package size={32} />,
                 unlocked: false,
               },
@@ -96,9 +108,7 @@ const DonorDashboard = () => {
                 className={`group/badge relative p-8 rounded-none border transition-all duration-500 cursor-default min-w-[200px] flex flex-col items-center gap-5
                 ${
                   badge.unlocked
-                    ? badge.color === "emerald"
-                      ? "bg-white border-[#d1fae5] hover:border-emerald-200"
-                      : "bg-white border-blue-100 hover:border-blue-200"
+                    ? "bg-white border-[#d1fae5] hover:border-emerald-200"
                     : "bg-gray-50 border-gray-100 grayscale opacity-60"
                 }
               `}
@@ -107,9 +117,7 @@ const DonorDashboard = () => {
                   className={`w-16 h-16 rounded-none flex items-center justify-center transition-all duration-500 group-hover/badge:scale-105
                   ${
                     badge.unlocked
-                      ? badge.color === "emerald"
-                        ? "bg-[#22c55e] text-white"
-                        : "bg-blue-500 text-white"
+                      ? "bg-[#22c55e] text-white"
                       : "bg-gray-200 text-gray-400"
                   }
                 `}
@@ -117,7 +125,10 @@ const DonorDashboard = () => {
                   {badge.icon}
                 </div>
                 <div className="text-center">
-                  <span className="block text-xs font-black text-gray-900 tracking-tight mb-2">
+                  <span
+                    className="block text-xs font-black tracking-tight mb-2"
+                    style={{ color: "var(--text-primary)" }}
+                  >
                     {badge.name}
                   </span>
                   <span
@@ -148,8 +159,17 @@ const DonorDashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-none border border-gray-100 p-6 flex flex-col relative group/donations">
-          <h3 className="text-sm font-black text-gray-900 mb-6 tracking-tighter uppercase text-start px-1 flex items-center gap-2">
+        <div
+          className="rounded-none border p-6 flex flex-col relative group/donations"
+          style={{
+            backgroundColor: "var(--bg-primary)",
+            borderColor: "var(--border-color)",
+          }}
+        >
+          <h3
+            className="text-sm font-black mb-6 tracking-tighter uppercase text-start px-1 flex items-center gap-2"
+            style={{ color: "var(--text-primary)" }}
+          >
             <Clock className="w-4 h-4 text-[#22c55e]" /> Recent Activity
           </h3>
 

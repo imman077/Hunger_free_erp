@@ -184,27 +184,48 @@ const NGORewards = () => {
     tiers.findIndex((t) => t.name === userStats.currentTier);
 
   return (
-    <div className="p-8 bg-gray-50/50 min-h-screen space-y-10">
+    <div
+      className="p-8 min-h-screen space-y-10"
+      style={{ backgroundColor: "var(--bg-secondary)" }}
+    >
       {/* Page Heading */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div className="text-start">
-          <h1 className="text-5xl font-black text-gray-900 tracking-tighter mb-3 uppercase">
+          <h1
+            className="text-5xl font-black tracking-tighter mb-3 uppercase"
+            style={{ color: "var(--text-primary)" }}
+          >
             NGO Grants & Rewards
           </h1>
-          <p className="text-gray-600 font-medium text-lg">
+          <p
+            className="font-medium text-lg"
+            style={{ color: "var(--text-secondary)" }}
+          >
             Maximizing your impact through generous funds and recognition 🏢
           </p>
         </div>
-        <div className="bg-white border border-gray-100 p-6 flex items-center gap-6 rounded-sm">
+        <div
+          className="border p-6 flex items-center gap-6 rounded-sm"
+          style={{
+            backgroundColor: "var(--bg-primary)",
+            borderColor: "var(--border-color)",
+          }}
+        >
           <div className="w-16 h-16 bg-emerald-50 border border-emerald-100 flex items-center justify-center rounded-sm">
             <TrendingUp className="text-emerald-500" size={32} />
           </div>
           <div className="text-start">
-            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">
+            <p
+              className="text-[10px] font-black uppercase tracking-[0.2em] mb-1"
+              style={{ color: "var(--text-muted)" }}
+            >
               Impact Points earned
             </p>
             <div className="flex items-baseline gap-2">
-              <span className="text-4xl font-black text-gray-900">
+              <span
+                className="text-4xl font-black"
+                style={{ color: "var(--text-primary)" }}
+              >
                 {userStats.totalPoints.toLocaleString()}
               </span>
               <span className="text-xs font-black text-emerald-500 uppercase tracking-widest">
@@ -216,10 +237,19 @@ const NGORewards = () => {
       </div>
 
       {/* 6-Tier Progression */}
-      <section className="bg-white border border-gray-100 p-8 rounded-sm">
+      <section
+        className="border p-8 rounded-sm"
+        style={{
+          backgroundColor: "var(--bg-primary)",
+          borderColor: "var(--border-color)",
+        }}
+      >
         <div className="flex items-center gap-3 mb-10">
           <Award className="text-emerald-500" size={24} />
-          <h2 className="text-xl font-black text-gray-900 uppercase tracking-tighter">
+          <h2
+            className="text-xl font-black uppercase tracking-tighter"
+            style={{ color: "var(--text-primary)" }}
+          >
             Operational Tiers
           </h2>
         </div>
@@ -239,9 +269,14 @@ const NGORewards = () => {
                       isCurrent
                         ? "bg-emerald-600 border-white scale-125 ring-4 ring-emerald-50"
                         : isPast
-                        ? "bg-white border-emerald-600"
-                        : "bg-white border-gray-100"
+                        ? "border-emerald-600"
+                        : "border-transparent"
                     } rounded-sm`}
+                    style={{
+                      backgroundColor: isCurrent
+                        ? "#059669"
+                        : "var(--bg-secondary)",
+                    }}
                   >
                     {isPast ? (
                       <CheckCircle className="text-emerald-600" size={24} />
@@ -257,12 +292,18 @@ const NGORewards = () => {
                   </div>
                   <p
                     className={`text-[10px] font-black uppercase tracking-widest mb-1 ${
-                      isCurrent ? "text-emerald-600" : "text-gray-400"
+                      isCurrent ? "text-emerald-600" : ""
                     }`}
+                    style={{
+                      color: isCurrent ? "#059669" : "var(--text-muted)",
+                    }}
                   >
                     {tier.name}
                   </p>
-                  <p className="text-[9px] font-bold text-gray-300">
+                  <p
+                    className="text-[9px] font-bold"
+                    style={{ color: "var(--text-muted)" }}
+                  >
                     {tier.points} PTS
                   </p>
                 </div>
@@ -299,7 +340,10 @@ const NGORewards = () => {
             <div className="p-2.5 bg-emerald-50 border border-emerald-100 rounded-sm">
               <IndianRupee className="text-emerald-600" size={20} />
             </div>
-            <h3 className="text-xl font-black text-gray-900 tracking-tight uppercase">
+            <h3
+              className="text-xl font-black tracking-tight uppercase"
+              style={{ color: "var(--text-primary)" }}
+            >
               Available Grants
             </h3>
           </div>
@@ -308,18 +352,28 @@ const NGORewards = () => {
             {rewards.grants.map((g) => (
               <div
                 key={g.id}
-                className="bg-white border border-gray-100 p-6 flex items-center justify-between group hover:border-emerald-200 transition-all rounded-sm"
+                className="border p-6 flex items-center justify-between group hover:border-emerald-200 transition-all rounded-sm"
+                style={{
+                  backgroundColor: "var(--bg-primary)",
+                  borderColor: "var(--border-color)",
+                }}
               >
                 <div className="text-start">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="text-3xl font-black text-gray-900">
+                    <span
+                      className="text-3xl font-black"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       {g.amount}
                     </span>
                     <span className="text-[10px] font-black text-emerald-500 uppercase bg-emerald-50 px-2 py-0.5 rounded-sm">
                       Grant
                     </span>
                   </div>
-                  <p className="text-xs font-black text-gray-400 uppercase tracking-widest">
+                  <p
+                    className="text-xs font-black uppercase tracking-widest"
+                    style={{ color: "var(--text-muted)" }}
+                  >
                     {g.name}
                   </p>
                 </div>
@@ -386,7 +440,10 @@ const NGORewards = () => {
             <div className="space-y-4">
               <div className="flex items-center gap-2 mb-2">
                 <HandHeart className="text-purple-500" size={18} />
-                <h4 className="text-xs font-black text-gray-900 uppercase tracking-widest">
+                <h4
+                  className="text-xs font-black uppercase tracking-widest"
+                  style={{ color: "var(--text-primary)" }}
+                >
                   Impact Programs
                 </h4>
               </div>
@@ -394,10 +451,14 @@ const NGORewards = () => {
                 <div
                   key={s.id}
                   className={`p-4 border rounded-sm flex items-center gap-4 ${
-                    s.available
-                      ? "bg-white border-gray-100"
-                      : "bg-gray-50 border-gray-100 opacity-60"
+                    s.available ? "" : "opacity-60"
                   }`}
+                  style={{
+                    backgroundColor: s.available
+                      ? "var(--bg-primary)"
+                      : "var(--bg-secondary)",
+                    borderColor: "var(--border-color)",
+                  }}
                 >
                   <div
                     className={`p-2 rounded-sm ${
@@ -409,16 +470,30 @@ const NGORewards = () => {
                     {s.icon}
                   </div>
                   <div className="flex-1 text-start">
-                    <p className="text-xs font-black text-gray-900">{s.name}</p>
-                    <p className="text-[9px] font-bold text-gray-400 uppercase">
+                    <p
+                      className="text-xs font-black"
+                      style={{ color: "var(--text-primary)" }}
+                    >
+                      {s.name}
+                    </p>
+                    <p
+                      className="text-[9px] font-bold uppercase"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       {s.desc}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-[10px] font-black text-gray-900">
+                    <p
+                      className="text-[10px] font-black"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       {s.points.toLocaleString()}
                     </p>
-                    <p className="text-[8px] font-black text-gray-400 uppercase">
+                    <p
+                      className="text-[8px] font-black uppercase"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       PTS
                     </p>
                   </div>
@@ -474,11 +549,20 @@ const NGORewards = () => {
             </div>
           </section>
 
-          <section className="bg-white border border-gray-100 p-8 rounded-sm">
+          <section
+            className="border p-8 rounded-sm"
+            style={{
+              backgroundColor: "var(--bg-primary)",
+              borderColor: "var(--border-color)",
+            }}
+          >
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-3">
                 <Award className="text-emerald-500" size={20} />
-                <h3 className="text-sm font-black uppercase tracking-tighter">
+                <h3
+                  className="text-sm font-black uppercase tracking-tighter"
+                  style={{ color: "var(--text-primary)" }}
+                >
                   National Badges
                 </h3>
               </div>
@@ -494,7 +578,14 @@ const NGORewards = () => {
                   </div>
                 </div>
               ))}
-              <div className="w-12 h-12 bg-gray-50 border border-dashed border-gray-200 flex items-center justify-center text-gray-300 rounded-sm">
+              <div
+                className="w-12 h-12 border border-dashed flex items-center justify-center rounded-sm"
+                style={{
+                  backgroundColor: "var(--bg-secondary)",
+                  borderColor: "var(--border-color)",
+                  color: "var(--text-muted)",
+                }}
+              >
                 +10
               </div>
             </div>

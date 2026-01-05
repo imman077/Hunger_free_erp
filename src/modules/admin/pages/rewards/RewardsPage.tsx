@@ -26,8 +26,11 @@ const RewardsPage: React.FC = () => {
     <div className="p-10 w-full mx-auto space-y-8 animate-in slide-in-from-bottom-4 duration-700 text-start">
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-4xl font-black text-slate-900 tracking-tight">
-            Rewards Management
+          <h1
+            className="text-4xl font-black tracking-tight"
+            style={{ color: "var(--text-primary)" }}
+          >
+            ULTRA Rewards Command Center
           </h1>
           <p className="text-slate-500 font-semibold mt-2">
             Configure point systems, tiers, and manage user redemptions.

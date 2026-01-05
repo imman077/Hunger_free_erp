@@ -114,16 +114,28 @@ const DonorPage = () => {
     { label: "Event", value: "Event" },
   ];
 
-  const getStatusColor = (status: string): string => {
+  const getStatusColor = (
+    status: string
+  ): { backgroundColor: string; color: string; border?: string } => {
     switch (status) {
       case "Active":
-        return "bg-emerald-50 text-hf-green border border-emerald-100";
+        return {
+          backgroundColor: "rgba(34, 197, 94, 0.1)",
+          color: "#22c55e",
+          border: "1px solid rgba(34, 197, 94, 0.2)",
+        };
       case "Pending":
-        return "bg-yellow-100 text-yellow-800";
+        return { backgroundColor: "rgba(234, 179, 8, 0.1)", color: "#ca8a04" };
       case "Inactive":
-        return "bg-gray-100 text-gray-800";
+        return {
+          backgroundColor: "rgba(100, 116, 139, 0.1)",
+          color: "#64748b",
+        };
       default:
-        return "bg-gray-100 text-gray-800";
+        return {
+          backgroundColor: "rgba(100, 116, 139, 0.1)",
+          color: "#64748b",
+        };
     }
   };
 
@@ -150,14 +162,20 @@ const DonorPage = () => {
 
   return (
     <>
-      <div className="min-h-screen p-6">
+      <div
+        className="min-h-screen p-6"
+        style={{ backgroundColor: "var(--bg-primary)" }}
+      >
         <div className="w-full">
           {/* Header */}
           <div className="mb-5 flex flex-col items-start">
-            <h1 className="text-xl font-bold text-gray-900 tracking-tight">
+            <h1
+              className="text-xl font-bold tracking-tight"
+              style={{ color: "var(--text-primary)" }}
+            >
               Donor Management
             </h1>
-            <p className="text-gray-600 mt-2">
+            <p className="mt-2" style={{ color: "var(--text-muted)" }}>
               Manage your donors and their contributions
             </p>
           </div>
@@ -226,7 +244,8 @@ const DonorPage = () => {
                 case "businessName":
                   return (
                     <div
-                      className="font-medium text-gray-900 cursor-pointer"
+                      className="font-medium cursor-pointer"
+                      style={{ color: "var(--text-primary)" }}
                       onClick={() => handleViewProfile(donor)}
                     >
                       {donor.businessName}
@@ -234,26 +253,43 @@ const DonorPage = () => {
                   );
                 case "type":
                   return (
-                    <span className="text-sm text-gray-600">{donor.type}</span>
+                    <span
+                      className="text-sm"
+                      style={{ color: "var(--text-secondary)" }}
+                    >
+                      {donor.type}
+                    </span>
                   );
                 case "totalDonations":
                   return (
-                    <div className="text-sm font-semibold text-gray-900">
+                    <div
+                      className="text-sm font-semibold"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       {formatCurrency(donor.totalDonations)}
                     </div>
                   );
                 case "points":
                   return (
-                    <div className="text-sm text-gray-900 font-medium">
+                    <div
+                      className="text-sm font-medium"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       {donor.points.toLocaleString()}
                     </div>
                   );
                 case "status":
+                  const statusStyle = getStatusColor(donor.status);
                   return (
                     <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
-                        donor.status
-                      )}`}
+                      className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border"
+                      style={{
+                        backgroundColor: statusStyle.backgroundColor,
+                        color: statusStyle.color,
+                        borderColor: statusStyle.border
+                          ? "transparent"
+                          : statusStyle.color + "20",
+                      }}
                     >
                       {donor.status}
                     </span>

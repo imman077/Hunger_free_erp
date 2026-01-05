@@ -117,7 +117,10 @@ const AdminDashboard = () => {
   return (
     <div className="w-full space-y-6 p-6">
       {/* Admin Panel */}
-      <h1 className="text-2xl font-semibold text-black text-start">
+      <h1
+        className="text-2xl font-semibold text-start"
+        style={{ color: "var(--text-primary)" }}
+      >
         Quick Stats
       </h1>
 
@@ -134,41 +137,73 @@ const AdminDashboard = () => {
       />
 
       {/* Activity Charts */}
-      <h1 className="text-2xl font-semibold text-black text-start">
+      <h1
+        className="text-2xl font-semibold text-start"
+        style={{ color: "var(--text-primary)" }}
+      >
         Activity Charts
       </h1>
 
       {/* Charts */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white rounded-md p-5 border border-gray-100">
+        <div
+          className="rounded-md p-5 border"
+          style={{
+            backgroundColor: "var(--bg-primary)",
+            borderColor: "var(--border-color)",
+          }}
+        >
           <div className="mb-3 flex flex-col items-start">
-            <h3 className="text-lg font-semibold text-black">
+            <h3
+              className="text-lg font-semibold"
+              style={{ color: "var(--text-primary)" }}
+            >
               Donation Trends
             </h3>
-            <p className="text-gray-600">
+            <p style={{ color: "var(--text-secondary)" }}>
               Monthly overview of donations and pickups.
             </p>
           </div>
           <LineChart />
         </div>
-        <div className="bg-white rounded-md p-5 border border-gray-100">
+        <div
+          className="rounded-md p-5 border"
+          style={{
+            backgroundColor: "var(--bg-primary)",
+            borderColor: "var(--border-color)",
+          }}
+        >
           <div className="mb-3 flex flex-col items-start">
-            <h3 className="text-lg font-semibold text-black">
+            <h3
+              className="text-lg font-semibold"
+              style={{ color: "var(--text-primary)" }}
+            >
               User Sign-ups by Role
             </h3>
-            <p className="text-gray-600">New user registrations per role.</p>
+            <p style={{ color: "var(--text-secondary)" }}>
+              New user registrations per role.
+            </p>
           </div>
           <BarChart />
         </div>
       </div>
 
       {/* Recent Activities */}
-      <h1 className="text-2xl font-semibold text-black text-start">
+      <h1
+        className="text-2xl font-semibold text-start"
+        style={{ color: "var(--text-primary)" }}
+      >
         Recent Activities & Alerts
       </h1>
 
       {/* Recent Activities */}
-      <div className="bg-white rounded-md border border-gray-100 p-5">
+      <div
+        className="rounded-md border p-5"
+        style={{
+          backgroundColor: "var(--bg-primary)",
+          borderColor: "var(--border-color)",
+        }}
+      >
         {/* Activity List */}
         <div className="">
           {activities.map((activity, index) => (

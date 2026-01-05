@@ -12,14 +12,20 @@ import {
 
 const VolunteerProfile = () => {
   return (
-    <div className="p-8 bg-gray-50/50 min-h-screen">
+    <div
+      className="p-8 min-h-screen"
+      style={{ backgroundColor: "var(--bg-secondary)" }}
+    >
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Page Heading */}
         <div className="text-start">
-          <h1 className="text-4xl font-black text-gray-900 tracking-tighter mb-2">
+          <h1
+            className="text-4xl font-black tracking-tighter mb-2"
+            style={{ color: "var(--text-primary)" }}
+          >
             VOLUNTEER PROFILE
           </h1>
-          <p className="text-gray-600 font-medium">
+          <p className="font-medium" style={{ color: "var(--text-secondary)" }}>
             Manage your credentials, availability and showcase your
             contributions
           </p>
@@ -29,21 +35,45 @@ const VolunteerProfile = () => {
           {/* Left Column - Profile Overview & Info (4 cols) */}
           <div className="lg:col-span-4 space-y-6">
             {/* Main Profile Card */}
-            <div className="bg-white p-8 rounded-sm border border-gray-100 text-center">
+            <div
+              className="p-8 rounded-sm border text-center"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
               <div className="relative inline-block mb-6">
-                <div className="w-32 h-32 rounded-sm bg-gray-50 border border-gray-100 flex items-center justify-center text-6xl overflow-hidden">
+                <div
+                  className="w-32 h-32 rounded-sm border flex items-center justify-center text-6xl overflow-hidden"
+                  style={{
+                    backgroundColor: "var(--bg-secondary)",
+                    borderColor: "var(--border-color)",
+                  }}
+                >
                   🚴
                 </div>
-                <div className="absolute -bottom-2 -right-2 bg-white p-1 rounded-sm border border-gray-100">
+                <div
+                  className="absolute -bottom-2 -right-2 p-1 rounded-sm border"
+                  style={{
+                    backgroundColor: "var(--bg-primary)",
+                    borderColor: "var(--border-color)",
+                  }}
+                >
                   <div className="bg-emerald-50 p-1.5 rounded-sm border border-emerald-100">
                     <CheckCircle className="w-4 h-4 text-[#22c55e]" />
                   </div>
                 </div>
               </div>
-              <h3 className="text-2xl font-black text-gray-900 tracking-tight">
+              <h3
+                className="text-2xl font-black tracking-tight"
+                style={{ color: "var(--text-primary)" }}
+              >
                 Sam Volunteer
               </h3>
-              <p className="text-gray-400 font-bold text-xs uppercase tracking-[0.2em] mt-2 mb-6">
+              <p
+                className="font-bold text-xs uppercase tracking-[0.2em] mt-2 mb-6"
+                style={{ color: "var(--text-muted)" }}
+              >
                 Active Member since 2024
               </p>
 
@@ -56,8 +86,17 @@ const VolunteerProfile = () => {
             </div>
 
             {/* Personal Information */}
-            <div className="bg-white p-6 rounded-sm border border-gray-100">
-              <h4 className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
+            <div
+              className="p-6 rounded-sm border"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
+              <h4
+                className="text-[11px] font-black uppercase tracking-[0.2em] mb-6 flex items-center gap-2"
+                style={{ color: "var(--text-muted)" }}
+              >
                 <User size={14} /> Personal Information
               </h4>
               <div className="space-y-5">
@@ -79,14 +118,27 @@ const VolunteerProfile = () => {
                   },
                 ].map((info, idx) => (
                   <div key={idx} className="flex items-start gap-4">
-                    <div className="p-2 bg-gray-50 border border-gray-100 rounded-sm text-gray-400 shrink-0">
+                    <div
+                      className="p-2 border rounded-sm shrink-0"
+                      style={{
+                        backgroundColor: "var(--bg-secondary)",
+                        borderColor: "var(--border-color)",
+                        color: "var(--text-muted)",
+                      }}
+                    >
                       {info.icon}
                     </div>
                     <div className="text-start">
-                      <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">
+                      <p
+                        className="text-[10px] font-black uppercase tracking-widest leading-none mb-1"
+                        style={{ color: "var(--text-muted)" }}
+                      >
                         {info.label}
                       </p>
-                      <p className="text-sm font-bold text-gray-900 leading-tight">
+                      <p
+                        className="text-sm font-bold leading-tight"
+                        style={{ color: "var(--text-primary)" }}
+                      >
                         {info.value}
                       </p>
                     </div>
@@ -96,8 +148,17 @@ const VolunteerProfile = () => {
             </div>
 
             {/* Availability Grid */}
-            <div className="bg-white p-6 rounded-sm border border-gray-100">
-              <h4 className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
+            <div
+              className="p-6 rounded-sm border"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
+              <h4
+                className="text-[11px] font-black uppercase tracking-[0.2em] mb-6 flex items-center gap-2"
+                style={{ color: "var(--text-muted)" }}
+              >
                 <Calendar size={14} /> Weekly Availability
               </h4>
               <div className="grid grid-cols-4 gap-2">
@@ -109,20 +170,31 @@ const VolunteerProfile = () => {
                         key={day}
                         className={`p-2 rounded-sm border text-center transition-all ${
                           isActive
-                            ? "bg-blue-50 border-blue-100"
-                            : "bg-gray-50 border-gray-100 opacity-50"
+                            ? "bg-emerald-50 border-emerald-100"
+                            : "opacity-50"
                         }`}
+                        style={{
+                          backgroundColor: isActive
+                            ? "#ecfdf5"
+                            : "var(--bg-secondary)",
+                          borderColor: isActive
+                            ? "#d1fae5"
+                            : "var(--border-color)",
+                        }}
                       >
                         <p
                           className={`text-[10px] font-black uppercase ${
-                            isActive ? "text-blue-600" : "text-gray-400"
+                            isActive ? "text-emerald-600" : ""
                           }`}
+                          style={{
+                            color: isActive ? "#22c55e" : "var(--text-muted)",
+                          }}
                         >
                           {day}
                         </p>
                         <div
                           className={`w-1 h-1 rounded-full mx-auto mt-1 ${
-                            isActive ? "bg-blue-400" : "bg-gray-200"
+                            isActive ? "bg-emerald-400" : "bg-gray-200"
                           }`}
                         ></div>
                       </div>
@@ -136,13 +208,29 @@ const VolunteerProfile = () => {
           {/* Right Column - Stats & Vehicle (8 cols) */}
           <div className="lg:col-span-8 space-y-8">
             {/* Impact & Achievements Record */}
-            <div className="bg-white p-8 rounded-sm border border-gray-100">
+            <div
+              className="p-8 rounded-sm border"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
               <div className="flex items-center justify-between mb-8">
-                <h4 className="text-lg font-black text-gray-900 uppercase tracking-tight flex items-center gap-3">
+                <h4
+                  className="text-lg font-black uppercase tracking-tight flex items-center gap-3"
+                  style={{ color: "var(--text-primary)" }}
+                >
                   <Star className="w-6 h-6 text-[#22c55e]" />
                   Impact & Achievement Record
                 </h4>
-                <div className="px-3 py-1 bg-gray-50 border border-gray-100 rounded-sm text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                <div
+                  className="px-3 py-1 border rounded-sm text-[10px] font-black uppercase tracking-widest"
+                  style={{
+                    backgroundColor: "var(--bg-secondary)",
+                    borderColor: "var(--border-color)",
+                    color: "var(--text-muted)",
+                  }}
+                >
                   Updated Today
                 </div>
               </div>
@@ -161,14 +249,14 @@ const VolunteerProfile = () => {
                     value: "98",
                     unit: "%",
                     label: "On-time Delivery",
-                    color: "bg-blue-50 text-blue-600 border-blue-100",
+                    color: "bg-emerald-50 text-emerald-600 border-emerald-100",
                   },
                   {
                     icon: <CheckCircle />,
                     value: "0",
                     unit: "Issues",
                     label: "Reliability Score",
-                    color: "bg-purple-50 text-purple-600 border-purple-100",
+                    color: "bg-emerald-50 text-emerald-600 border-emerald-100",
                   },
                 ].map((stat, idx) => (
                   <div
@@ -193,22 +281,49 @@ const VolunteerProfile = () => {
             </div>
 
             {/* Registered Vehicle Section */}
-            <div className="bg-white p-8 rounded-sm border border-gray-100">
-              <h4 className="text-lg font-black text-gray-900 mb-8 uppercase tracking-tight flex items-center gap-3">
+            <div
+              className="p-8 rounded-sm border"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
+              <h4
+                className="text-lg font-black mb-8 uppercase tracking-tight flex items-center gap-3"
+                style={{ color: "var(--text-primary)" }}
+              >
                 <TrendingUp className="w-5 h-5 text-[#22c55e]" />
                 Primary Transport Vehicle
               </h4>
 
-              <div className="p-8 rounded-sm border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-8 group transition-all hover:bg-gray-50/50">
+              <div
+                className="p-8 rounded-sm border flex flex-col md:flex-row justify-between items-center gap-8 group transition-all hover:bg-opacity-50"
+                style={{
+                  backgroundColor: "var(--bg-secondary)",
+                  borderColor: "var(--border-color)",
+                }}
+              >
                 <div className="flex items-center gap-8">
-                  <div className="w-24 h-24 bg-gray-50 border border-gray-100 rounded-sm flex items-center justify-center text-5xl shrink-0 group-hover:bg-white transition-colors">
+                  <div
+                    className="w-24 h-24 border rounded-sm flex items-center justify-center text-5xl shrink-0 transition-colors"
+                    style={{
+                      backgroundColor: "var(--bg-primary)",
+                      borderColor: "var(--border-color)",
+                    }}
+                  >
                     🚲
                   </div>
                   <div>
-                    <h5 className="text-xl font-black text-gray-900 tracking-tight">
+                    <h5
+                      className="text-xl font-black tracking-tight"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       Electric Bicycle
                     </h5>
-                    <p className="text-gray-400 font-bold text-sm mt-1 mb-4 uppercase tracking-widest">
+                    <p
+                      className="font-bold text-sm mt-1 mb-4 uppercase tracking-widest"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       Model: EcoRider 3000
                     </p>
                     <div className="flex items-center gap-4">
@@ -218,9 +333,9 @@ const VolunteerProfile = () => {
                           Verified
                         </span>
                       </div>
-                      <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 border border-blue-100 rounded-sm">
-                        <Clock className="w-3 h-3 text-blue-500" />
-                        <span className="text-[9px] text-blue-600 font-black uppercase tracking-widest">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-50 border border-emerald-100 rounded-sm">
+                        <Clock className="w-3 h-3 text-emerald-500" />
+                        <span className="text-[9px] text-emerald-600 font-black uppercase tracking-widest">
                           Last Service: Dec 2025
                         </span>
                       </div>
@@ -234,8 +349,18 @@ const VolunteerProfile = () => {
                 </div>
               </div>
 
-              <div className="mt-8 pt-8 border-t border-gray-50 flex justify-end gap-4">
-                <button className="px-8 py-3 bg-white border border-gray-200 text-gray-600 rounded-sm text-xs font-black uppercase tracking-[0.15em] hover:bg-gray-50 transition-colors">
+              <div
+                className="mt-8 pt-8 flex justify-end gap-4"
+                style={{ borderTop: "1px solid var(--border-color)" }}
+              >
+                <button
+                  className="px-8 py-3 border rounded-sm text-xs font-black uppercase tracking-[0.15em] transition-colors"
+                  style={{
+                    backgroundColor: "var(--bg-primary)",
+                    borderColor: "var(--border-color)",
+                    color: "var(--text-secondary)",
+                  }}
+                >
                   Request Change
                 </button>
                 <button className="px-8 py-3 bg-[#22c55e] text-white rounded-sm text-xs font-black uppercase tracking-[0.15em] hover:bg-[#16a34a] transition-all shadow-none">

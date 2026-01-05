@@ -1,5 +1,6 @@
 import "./App.css";
 import { Routes, Route, Navigate } from "react-router-dom";
+import { ThemeProvider } from "./global/contexts/ThemeContext";
 import AdminLayout from "./global/layouts/AdminLayout";
 import DonorPage from "./modules/admin/pages/users/Donor";
 import NGOsPage from "./modules/admin/pages/users/NGOsPage";
@@ -39,7 +40,7 @@ import VolunteerRewards from "./modules/volunteer/pages/rewards/Rewards";
 
 function App() {
   return (
-    <>
+    <ThemeProvider>
       <div>
         <Routes>
           {/* Redirect root to /admin */}
@@ -121,7 +122,7 @@ function App() {
           </Route>
         </Routes>
       </div>
-    </>
+    </ThemeProvider>
   );
 }
 

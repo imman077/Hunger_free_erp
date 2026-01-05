@@ -127,9 +127,21 @@ export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
           isSelected(d)
             ? "bg-[#22c55e] text-white"
             : isToday(d)
-            ? "text-[#22c55e] bg-emerald-50/50 border border-[#22c55e]/30"
-            : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+            ? "text-[#22c55e] border border-[#22c55e]/30"
+            : "hover:bg-hf-green/10 hover:text-[#22c55e]"
         }`}
+        style={{
+          backgroundColor: isSelected(d)
+            ? "#22c55e"
+            : isToday(d)
+            ? "rgba(34, 197, 94, 0.1)"
+            : "transparent",
+          color: isSelected(d)
+            ? "white"
+            : isToday(d)
+            ? "#22c55e"
+            : "var(--text-secondary)",
+        }}
       >
         {d}
       </button>
@@ -149,7 +161,10 @@ export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
       ref={containerRef}
     >
       {label && (
-        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 block mb-1 px-1">
+        <label
+          className="text-[10px] font-bold uppercase tracking-widest block mb-1 px-1"
+          style={{ color: "var(--text-muted)" }}
+        >
           {label}
         </label>
       )}
@@ -158,51 +173,63 @@ export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
           ref={buttonRef}
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className={`w-full flex items-center gap-3 bg-white border px-3 py-2.5 rounded-none text-xs font-semibold transition-all ${
-            isOpen
-              ? "border-[#22c55e] ring-1 ring-[#22c55e] text-slate-900"
-              : "border-slate-200 text-slate-800 hover:bg-slate-50"
+          className={`w-full flex items-center gap-3 border px-3 py-2.5 rounded-none text-xs font-semibold transition-all ${
+            isOpen ? "ring-1 ring-[#22c55e]" : ""
           } ${alignClass}`}
+          style={{
+            backgroundColor: "var(--bg-secondary)",
+            borderColor: "var(--border-color)",
+            color: "var(--text-primary)",
+          }}
         >
-          <Icon
-            name="calendar"
-            className={`w-3.5 h-3.5 transition-colors ${
-              isOpen ? "text-[#22c55e]" : "text-slate-400"
-            }`}
-          />
+          <span
+            className={`transition-colors ${isOpen ? "text-[#22c55e]" : ""}`}
+            style={{ color: isOpen ? "#22c55e" : "var(--text-muted)" }}
+          >
+            <Icon name="calendar" className="w-3.5 h-3.5" />
+          </span>
           <span className={`flex-1 ${alignClass}`}>
             {value || "Select Date"}
           </span>
-          <Icon
-            name="chevron-down"
-            className={`w-3 h-3 text-slate-400 transition-transform ${
-              isOpen ? "rotate-180" : ""
-            }`}
-          />
+          <span
+            className={`transition-transform ${isOpen ? "rotate-180" : ""}`}
+            style={{ color: "var(--text-muted)" }}
+          >
+            <Icon name="chevron-down" className="w-3 h-3" />
+          </span>
         </button>
 
         {isOpen && (
           <div
-            className={`absolute left-1/2 -translate-x-1/2 bg-white border border-slate-200 rounded-none z-[9999] p-4 w-64 animate-in fade-in zoom-in-95 duration-200 ${
+            className={`absolute left-1/2 -translate-x-1/2 border rounded-none z-[9999] p-4 w-64 animate-in fade-in zoom-in-95 duration-200 ${
               openUpward ? "bottom-full mb-1" : "top-full mt-1"
             }`}
+            style={{
+              backgroundColor: "var(--bg-primary)",
+              borderColor: "var(--border-color)",
+            }}
           >
             <div className="flex items-center justify-between mb-4">
-              <h4 className="text-[11px] font-black text-slate-800 uppercase tracking-widest">
+              <h4
+                className="text-[11px] font-black uppercase tracking-widest"
+                style={{ color: "var(--text-primary)" }}
+              >
                 {monthNames[viewDate.getMonth()]} {viewDate.getFullYear()}
               </h4>
               <div className="flex gap-1">
                 <button
                   onClick={handlePrevMonth}
                   type="button"
-                  className="p-1 hover:bg-slate-100 rounded-none text-slate-400 hover:text-slate-800"
+                  className="p-1 rounded-none transition-colors"
+                  style={{ color: "var(--text-muted)" }}
                 >
                   <Icon name="chevron-down" className="w-4 h-4 rotate-90" />
                 </button>
                 <button
                   onClick={handleNextMonth}
                   type="button"
-                  className="p-1 hover:bg-slate-100 rounded-sm text-slate-400 hover:text-slate-800"
+                  className="p-1 rounded-sm transition-colors"
+                  style={{ color: "var(--text-muted)" }}
                 >
                   <Icon name="chevron-down" className="w-4 h-4 -rotate-90" />
                 </button>
@@ -213,7 +240,8 @@ export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
               {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((d) => (
                 <div
                   key={d}
-                  className="h-8 w-8 flex items-center justify-center text-[9px] font-black text-slate-400 uppercase"
+                  className="h-8 w-8 flex items-center justify-center text-[9px] font-black uppercase"
+                  style={{ color: "var(--text-muted)" }}
                 >
                   {d}
                 </div>
@@ -221,7 +249,10 @@ export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
               {days}
             </div>
 
-            <div className="flex items-center justify-between pt-3 border-t border-slate-100 mt-2">
+            <div
+              className="flex items-center justify-between pt-3 border-t mt-2"
+              style={{ borderTopColor: "var(--border-color)" }}
+            >
               <button
                 type="button"
                 onClick={() => {
@@ -236,7 +267,8 @@ export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="text-[9px] font-bold text-slate-400 uppercase tracking-widest hover:text-slate-600"
+                className="text-[9px] font-bold uppercase tracking-widest transition-colors"
+                style={{ color: "var(--text-muted)" }}
               >
                 Cancel
               </button>

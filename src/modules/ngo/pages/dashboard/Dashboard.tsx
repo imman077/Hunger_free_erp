@@ -58,9 +58,20 @@ const NGODashboard = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Active Needs */}
-        <div className="bg-white rounded-sm p-5 border border-gray-100 flex flex-col items-start min-h-[300px]">
+        <div
+          className="rounded-sm p-5 border flex flex-col items-start min-h-[300px]"
+          style={{
+            backgroundColor: "var(--bg-primary)",
+            borderColor: "var(--border-color)",
+          }}
+        >
           <div className="flex justify-between items-center w-full mb-4">
-            <h3 className="text-lg font-semibold text-black">Active Needs</h3>
+            <h3
+              className="text-lg font-semibold"
+              style={{ color: "var(--text-primary)" }}
+            >
+              Active Needs
+            </h3>
             <ReusableButton
               variant="ghost"
               size="sm"
@@ -102,8 +113,17 @@ const NGODashboard = () => {
         </div>
 
         {/* Notifications */}
-        <div className="bg-white rounded-sm p-5 border border-gray-100 flex flex-col items-start min-h-[300px]">
-          <h3 className="text-lg font-semibold text-black mb-4">
+        <div
+          className="rounded-sm p-5 border flex flex-col items-start min-h-[300px]"
+          style={{
+            backgroundColor: "var(--bg-primary)",
+            borderColor: "var(--border-color)",
+          }}
+        >
+          <h3
+            className="text-lg font-semibold mb-4"
+            style={{ color: "var(--text-primary)" }}
+          >
             Recent Notifications
           </h3>
           <div className="w-full space-y-4">

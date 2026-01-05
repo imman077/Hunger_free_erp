@@ -140,10 +140,25 @@ const VolunteersPage: React.FC = () => {
   };
 
   const getStatusBadge = (status: VolunteerStatus): React.ReactElement => {
-    const statusClasses: Record<VolunteerStatus, string> = {
-      available: "bg-emerald-50 text-hf-green border border-emerald-100",
-      "on-leave": "bg-red-100 text-red-800 border border-red-300",
-      busy: "bg-amber-100 text-amber-800 border border-amber-300",
+    const statusStyles: Record<
+      VolunteerStatus,
+      { backgroundColor: string; color: string; border: string }
+    > = {
+      available: {
+        backgroundColor: "rgba(34, 197, 94, 0.1)",
+        color: "#22c55e",
+        border: "1px solid rgba(34, 197, 94, 0.2)",
+      },
+      "on-leave": {
+        backgroundColor: "rgba(239, 68, 68, 0.1)",
+        color: "#ef4444",
+        border: "1px solid rgba(239, 68, 68, 0.2)",
+      },
+      busy: {
+        backgroundColor: "rgba(245, 158, 11, 0.1)",
+        color: "#f59e0b",
+        border: "1px solid rgba(245, 158, 11, 0.2)",
+      },
     };
 
     const statusLabels: Record<VolunteerStatus, string> = {
@@ -152,9 +167,16 @@ const VolunteersPage: React.FC = () => {
       busy: "Busy",
     };
 
+    const style = statusStyles[status];
+
     return (
       <span
-        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${statusClasses[status]}`}
+        className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium"
+        style={{
+          backgroundColor: style.backgroundColor,
+          color: style.color,
+          border: style.border,
+        }}
       >
         {statusLabels[status]}
       </span>
@@ -169,21 +191,31 @@ const VolunteersPage: React.FC = () => {
           <span className="text-amber-400 text-sm">★</span>
           <span className="text-amber-400 text-sm">★</span>
           <span className="text-amber-400 text-sm">★</span>
-          <span className="text-gray-300 text-sm">★</span>
+          <span className="text-sm" style={{ color: "var(--border-color)" }}>
+            ★
+          </span>
         </div>
-        <span className="text-xs ml-1 text-gray-500">{rating}</span>
+        <span className="text-xs ml-1" style={{ color: "var(--text-muted)" }}>
+          {rating}
+        </span>
       </div>
     );
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div
+      className="p-6 space-y-6 min-h-screen"
+      style={{ backgroundColor: "var(--bg-primary)" }}
+    >
       {/* Header */}
       <div className="text-left">
-        <h1 className="text-xl font-bold text-gray-900 tracking-tight">
+        <h1
+          className="text-xl font-bold tracking-tight"
+          style={{ color: "var(--text-primary)" }}
+        >
           Volunteer Management
         </h1>
-        <p className="text-gray-600 mt-2">
+        <p className="mt-2" style={{ color: "var(--text-muted)" }}>
           Manage and track volunteer profiles
         </p>
       </div>
@@ -205,12 +237,31 @@ const VolunteersPage: React.FC = () => {
             case "avatar":
               return renderAvatar(vol);
             case "name":
-              return <span className="font-medium">{vol.name}</span>;
+              return (
+                <span
+                  className="font-medium"
+                  style={{ color: "var(--text-primary)" }}
+                >
+                  {vol.name}
+                </span>
+              );
             case "zone":
-              return <span className="text-gray-600">{vol.zone}</span>;
+              return (
+                <span
+                  className="text-sm"
+                  style={{ color: "var(--text-secondary)" }}
+                >
+                  {vol.zone}
+                </span>
+              );
             case "tasksCompleted":
               return (
-                <span className="text-gray-600">{vol.tasksCompleted}</span>
+                <span
+                  className="text-sm"
+                  style={{ color: "var(--text-secondary)" }}
+                >
+                  {vol.tasksCompleted}
+                </span>
               );
             case "rating":
               return renderStars(vol.rating);
@@ -245,16 +296,25 @@ const VolunteersPage: React.FC = () => {
           backdrop: "bg-black/50",
         }}
       >
-        <DrawerContent className="bg-white no-scrollbar">
+        <DrawerContent
+          className="no-scrollbar"
+          style={{ backgroundColor: "var(--bg-primary)" }}
+        >
           {() => (
             <>
               <DrawerBody className="px-6 py-4 space-y-6 overflow-y-auto no-scrollbar">
                 {activeVolunteer && (
                   <>
                     {/* Stats */}
-                    <div className="mb-3 pb-3 border-b border-gray-200 flex flex-row justify-between px-2">
+                    <div
+                      className="mb-3 pb-3 border-b flex flex-row justify-between px-2"
+                      style={{ borderBottomColor: "var(--border-color)" }}
+                    >
                       <div className="mb-4">
-                        <h3 className="text-sm font-semibold text-gray-600 mb-1">
+                        <h3
+                          className="text-sm font-semibold mb-1"
+                          style={{ color: "var(--text-muted)" }}
+                        >
                           Completion Rate
                         </h3>
                         <div className="text-2xl font-black text-blue-500">
@@ -262,7 +322,10 @@ const VolunteersPage: React.FC = () => {
                         </div>
                       </div>
                       <div>
-                        <h3 className="text-sm font-semibold text-gray-600 mb-1">
+                        <h3
+                          className="text-sm font-semibold mb-1"
+                          style={{ color: "var(--text-muted)" }}
+                        >
                           Average Rating
                         </h3>
                         <div className="flex items-center gap-2 justify-center">
@@ -281,20 +344,35 @@ const VolunteersPage: React.FC = () => {
                     </div>
 
                     {/* Availability Management */}
-                    <div className="mb-2 pb-6 border-b border-gray-200">
-                      <h3 className="font-semibold text-gray-900 mb-3">
+                    <div
+                      className="mb-2 pb-6 border-b"
+                      style={{ borderBottomColor: "var(--border-color)" }}
+                    >
+                      <h3
+                        className="font-semibold mb-3"
+                        style={{ color: "var(--text-primary)" }}
+                      >
                         Availability Management
                       </h3>
-                      <p className="text-sm text-gray-600 mb-4">
+                      <p
+                        className="text-sm mb-4"
+                        style={{ color: "var(--text-muted)" }}
+                      >
                         Adjust volunteer&apos;s working hours and status.
                       </p>
 
                       <div className="mb-4">
                         <div className="flex flex-row justify-between">
-                          <label className="text-sm font-medium text-gray-700 block mb-2">
+                          <label
+                            className="text-sm font-medium block mb-2"
+                            style={{ color: "var(--text-secondary)" }}
+                          >
                             Weekly Hours
                           </label>
-                          <div className="text-right text-sm font-semibold text-gray-900 mt-1">
+                          <div
+                            className="text-right text-sm font-semibold mt-1"
+                            style={{ color: "var(--text-primary)" }}
+                          >
                             {weeklyHours} hours
                           </div>
                         </div>
@@ -309,7 +387,10 @@ const VolunteersPage: React.FC = () => {
                       </div>
 
                       <div className="mb-4">
-                        <label className="text-sm font-medium text-gray-700 flex justify-between mb-2">
+                        <label
+                          className="text-sm font-medium flex justify-between mb-2"
+                          style={{ color: "var(--text-secondary)" }}
+                        >
                           <span>On Leave</span>
                           <button
                             type="button"
@@ -336,10 +417,16 @@ const VolunteersPage: React.FC = () => {
 
                     {/* Volunteer Details */}
                     <div className="text-left">
-                      <h3 className="font-bold text-gray-900 text-xl mb-2">
+                      <h3
+                        className="font-bold text-xl mb-2"
+                        style={{ color: "var(--text-primary)" }}
+                      >
                         Volunteer Details
                       </h3>
-                      <p className="text-sm text-gray-600 mb-4">
+                      <p
+                        className="text-sm mb-4"
+                        style={{ color: "var(--text-muted)" }}
+                      >
                         Comprehensive profile information for{" "}
                         {activeVolunteer.name}.
                       </p>
@@ -347,39 +434,51 @@ const VolunteersPage: React.FC = () => {
                       <div className="space-y-6 text-sm">
                         {/* Personal Info */}
                         <div className="space-y-1">
-                          <h4 className="text-sm font-semibold text-gray-700 mb-2">
+                          <h4
+                            className="text-sm font-semibold mb-2"
+                            style={{ color: "var(--text-primary)" }}
+                          >
                             Personal Information
                           </h4>
-                          <p className="text-gray-600">
+                          <p style={{ color: "var(--text-secondary)" }}>
                             {activeVolunteer.email}
                           </p>
-                          <p className="text-gray-600">
+                          <p style={{ color: "var(--text-secondary)" }}>
                             {activeVolunteer.phone}
                           </p>
-                          <p className="text-gray-600">
+                          <p style={{ color: "var(--text-secondary)" }}>
                             {activeVolunteer.address}
                           </p>
                         </div>
 
                         {/* Vehicle Info */}
                         <div className="space-y-1">
-                          <h4 className="text-sm font-semibold text-gray-700 mb-2">
+                          <h4
+                            className="text-sm font-semibold mb-2"
+                            style={{ color: "var(--text-primary)" }}
+                          >
                             Vehicle Details
                           </h4>
-                          <p className="text-gray-600">
+                          <p style={{ color: "var(--text-secondary)" }}>
                             Type: {activeVolunteer.vehicle}
                           </p>
-                          <p className="text-gray-600">
+                          <p style={{ color: "var(--text-secondary)" }}>
                             License Plate: {activeVolunteer.license}
                           </p>
                         </div>
 
                         {/* Assigned Tasks */}
                         <div>
-                          <h4 className="text-sm font-semibold text-gray-700 mb-2">
+                          <h4
+                            className="text-sm font-semibold mb-2"
+                            style={{ color: "var(--text-primary)" }}
+                          >
                             Assigned Tasks
                           </h4>
-                          <ul className="text-gray-600 space-y-1">
+                          <ul
+                            className="space-y-1"
+                            style={{ color: "var(--text-secondary)" }}
+                          >
                             <li>• Food Distribution - Elm Street Shelter</li>
                             <li>• Community Cleanup – Central Park</li>
                           </ul>

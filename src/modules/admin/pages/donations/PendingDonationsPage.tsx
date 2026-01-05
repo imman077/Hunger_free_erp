@@ -105,11 +105,20 @@ const PendingDonationsPage: React.FC = () => {
 
     switch (columnKey) {
       case "id":
-        return <span className="font-bold text-slate-900">{value}</span>;
+        return (
+          <span className="font-bold" style={{ color: "var(--text-primary)" }}>
+            {value}
+          </span>
+        );
       case "donor":
         return (
           <div className="flex flex-col items-center">
-            <span className="font-bold text-slate-700">{value}</span>
+            <span
+              className="font-bold"
+              style={{ color: "var(--text-secondary)" }}
+            >
+              {value}
+            </span>
           </div>
         );
       case "status":
@@ -133,15 +142,23 @@ const PendingDonationsPage: React.FC = () => {
       case "quantity":
         return (
           <div className="flex items-center justify-center gap-1">
-            <Package size={14} className="text-slate-400" />
-            <span className="font-bold text-slate-700">{value}</span>
+            <Package size={14} style={{ color: "var(--text-muted)" }} />
+            <span
+              className="font-bold"
+              style={{ color: "var(--text-secondary)" }}
+            >
+              {value}
+            </span>
           </div>
         );
       case "location":
         return (
           <div className="flex items-center justify-center gap-1">
-            <MapPin size={14} className="text-slate-400" />
-            <span className="text-slate-600 truncate max-w-[150px]">
+            <MapPin size={14} style={{ color: "var(--text-muted)" }} />
+            <span
+              className="truncate max-w-[150px]"
+              style={{ color: "var(--text-secondary)" }}
+            >
               {value}
             </span>
           </div>
@@ -149,9 +166,11 @@ const PendingDonationsPage: React.FC = () => {
       case "expiry":
         return (
           <span
-            className={`font-bold ${
-              item.status === "urgent" ? "text-red-500" : "text-slate-600"
-            }`}
+            className="font-bold"
+            style={{
+              color:
+                item.status === "urgent" ? "#ef4444" : "var(--text-secondary)",
+            }}
           >
             {value}
           </span>
@@ -199,10 +218,13 @@ const PendingDonationsPage: React.FC = () => {
   return (
     <div className="p-6 space-y-6">
       <div>
-        <h1 className="text-xl font-bold text-gray-900 tracking-tight">
+        <h1
+          className="text-xl font-bold tracking-tight"
+          style={{ color: "var(--text-primary)" }}
+        >
           Pending Donations
         </h1>
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-sm mt-1" style={{ color: "var(--text-muted)" }}>
           Review and approve incoming food donations for distribution
         </p>
       </div>

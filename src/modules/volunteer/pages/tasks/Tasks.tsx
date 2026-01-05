@@ -28,26 +28,26 @@ const TaskRow: React.FC<{ task: Task }> = ({ task }) => {
   const getIcon = () => {
     switch (task.type) {
       case "delivery":
-        return <Truck className="w-6 h-6 text-blue-600" />;
+        return <Truck className="w-6 h-6 text-[#22c55e]" />;
       case "kitchen":
         return <ChefHat className="w-6 h-6 text-orange-500" />;
       case "shelter":
         return <Heart className="w-6 h-6 text-rose-500" />;
       default:
-        return <Package className="w-6 h-6 text-blue-600" />;
+        return <Package className="w-6 h-6 text-[#22c55e]" />;
     }
   };
 
   const getIconBg = () => {
     switch (task.type) {
       case "delivery":
-        return "bg-blue-50";
+        return "bg-emerald-50";
       case "kitchen":
         return "bg-orange-50";
       case "shelter":
         return "bg-rose-50";
       default:
-        return "bg-blue-50";
+        return "bg-emerald-50";
     }
   };
 
@@ -56,18 +56,25 @@ const TaskRow: React.FC<{ task: Task }> = ({ task }) => {
       case "IN PROGRESS":
         return "text-amber-600 bg-amber-50 border-amber-100";
       case "AVAILABLE":
-        return "text-blue-600 bg-blue-50 border-blue-100";
+        return "text-emerald-700 bg-emerald-50 border-emerald-100";
       case "COMPLETED":
         return "text-emerald-600 bg-emerald-50 border-emerald-100";
     }
   };
 
   return (
-    <div className="bg-white rounded-sm border border-gray-100 p-6 flex flex-col md:flex-row items-center justify-between gap-6 transition-all">
+    <div
+      className="border p-6 flex flex-col md:flex-row items-center justify-between gap-6 transition-all"
+      style={{
+        backgroundColor: "var(--bg-primary)",
+        borderColor: "var(--border-color)",
+      }}
+    >
       <div className="flex items-center gap-5 flex-1 min-w-0">
         {/* Icon Container */}
         <div
-          className={`w-14 h-14 ${getIconBg()} rounded-sm flex items-center justify-center shrink-0 border border-white`}
+          className={`w-14 h-14 ${getIconBg()} rounded-sm flex items-center justify-center shrink-0 border`}
+          style={{ borderColor: "var(--border-color)" }}
         >
           {getIcon()}
         </div>
@@ -75,24 +82,39 @@ const TaskRow: React.FC<{ task: Task }> = ({ task }) => {
         {/* Task Info */}
         <div className="space-y-1.5">
           <div className="flex items-baseline gap-2">
-            <h4 className="text-[17px] font-black text-gray-900 tracking-tight">
+            <h4
+              className="text-[17px] font-black tracking-tight"
+              style={{ color: "var(--text-primary)" }}
+            >
               {task.title}
             </h4>
-            <span className="text-gray-400 font-medium text-sm">
+            <span
+              className="font-medium text-sm"
+              style={{ color: "var(--text-muted)" }}
+            >
               — Route #{task.routeNumber}
             </span>
           </div>
           <div className="flex flex-wrap items-center gap-4">
-            <div className="flex items-center gap-1.5 text-gray-400 text-[13px] font-bold">
-              <MapPin size={14} className="text-gray-300" />
+            <div
+              className="flex items-center gap-1.5 text-[13px] font-bold"
+              style={{ color: "var(--text-muted)" }}
+            >
+              <MapPin size={14} style={{ color: "var(--text-muted)" }} />
               <span>{task.stops} Stop Points</span>
             </div>
-            <div className="flex items-center gap-1.5 text-gray-400 text-[13px] font-bold">
-              <Clock size={14} className="text-gray-300" />
+            <div
+              className="flex items-center gap-1.5 text-[13px] font-bold"
+              style={{ color: "var(--text-muted)" }}
+            >
+              <Clock size={14} style={{ color: "var(--text-muted)" }} />
               <span>{task.duration} Est.</span>
             </div>
-            <div className="flex items-center gap-1.5 text-gray-400 text-[13px] font-bold">
-              <Weight size={14} className="text-gray-300" />
+            <div
+              className="flex items-center gap-1.5 text-[13px] font-bold"
+              style={{ color: "var(--text-muted)" }}
+            >
+              <Weight size={14} style={{ color: "var(--text-muted)" }} />
               <span>{task.load} Load</span>
             </div>
           </div>
@@ -109,16 +131,19 @@ const TaskRow: React.FC<{ task: Task }> = ({ task }) => {
 
         {/* Action Buttons */}
         <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 px-5 py-2.5 bg-white border border-gray-100 text-gray-700 rounded-sm text-[13px] font-black hover:bg-gray-50 transition-colors">
+          <button
+            className="flex items-center gap-2 px-5 py-2.5 border rounded-sm text-[13px] font-black transition-colors"
+            style={{
+              backgroundColor: "var(--bg-primary)",
+              borderColor: "var(--border-color)",
+              color: "var(--text-primary)",
+            }}
+          >
             <Info size={16} />
             Details
           </button>
           <button
-            className={`flex items-center gap-2 px-6 py-2.5 rounded-sm text-[13px] font-black text-white transition-all active:scale-95 ${
-              task.status === "AVAILABLE"
-                ? "bg-blue-600 hover:bg-blue-700"
-                : "bg-[#0f172a] hover:bg-[#1e293b]"
-            }`}
+            className={`flex items-center gap-2 px-6 py-2.5 rounded-sm text-[13px] font-black text-white transition-all active:scale-95 bg-[#22c55e] hover:bg-[#16a34a]`}
           >
             {task.status === "AVAILABLE" ? "Claim Task" : "Update Status"}
             <ChevronRight size={16} />
@@ -205,20 +230,26 @@ const VolunteerTasks = () => {
   };
 
   return (
-    <div className="p-8 bg-gray-50/50">
+    <div className="p-8" style={{ backgroundColor: "var(--bg-secondary)" }}>
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Page Heading */}
         <div className="text-start">
-          <h1 className="text-4xl font-black text-gray-900 tracking-tighter mb-2">
+          <h1
+            className="text-4xl font-black tracking-tighter mb-2"
+            style={{ color: "var(--text-primary)" }}
+          >
             MY TASKS
           </h1>
-          <p className="text-gray-600 font-medium">
+          <p className="font-medium" style={{ color: "var(--text-secondary)" }}>
             Manage your delivery assignments and track progress
           </p>
         </div>
 
         {/* Header Section with Tabs and Filter */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-gray-100 pb-1">
+        <div
+          className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-1"
+          style={{ borderBottom: "1px solid var(--border-color)" }}
+        >
           <div className="flex items-center gap-10">
             {[
               {
@@ -241,35 +272,36 @@ const VolunteerTasks = () => {
                 <span
                   className={`text-[14px] font-black uppercase tracking-tight ${
                     activeTab === tab.id
-                      ? "text-blue-600"
-                      : "text-gray-400 group-hover:text-gray-600"
+                      ? "text-emerald-600"
+                      : "group-hover:text-gray-600"
                   }`}
+                  style={{
+                    color:
+                      activeTab === tab.id ? "#22c55e" : "var(--text-muted)",
+                  }}
                 >
                   {tab.label}
                 </span>
                 <span
                   className={`px-2 py-0.5 rounded-md text-[11px] font-black ${
-                    activeTab === tab.id
-                      ? "bg-blue-50 text-blue-600"
-                      : "bg-gray-100 text-gray-500"
+                    activeTab === tab.id ? "bg-emerald-50 text-emerald-600" : ""
                   }`}
+                  style={{
+                    backgroundColor:
+                      activeTab === tab.id ? "#ecfdf5" : "var(--bg-secondary)",
+                    color:
+                      activeTab === tab.id
+                        ? "#16a34a"
+                        : "var(--text-secondary)",
+                  }}
                 >
                   {tab.count}
                 </span>
                 {activeTab === tab.id && (
-                  <div className="absolute bottom-0 left-0 w-full h-1 bg-blue-600 rounded-full" />
+                  <div className="absolute bottom-0 left-0 w-full h-1 bg-[#22c55e] rounded-full" />
                 )}
               </button>
             ))}
-          </div>
-
-          <div className="flex items-center gap-4 self-end md:self-auto pb-4">
-            <div className="flex items-center gap-2 text-gray-300">
-              <Filter size={18} />
-              <span className="text-[12px] font-black uppercase tracking-[0.15em]">
-                Sort: Recent
-              </span>
-            </div>
           </div>
         </div>
 
@@ -280,7 +312,14 @@ const VolunteerTasks = () => {
               <TaskRow key={task.id} task={task} />
             ))
           ) : (
-            <div className="py-20 bg-white rounded-sm border border-gray-100 border-dashed flex flex-col items-center justify-center text-gray-300 gap-3">
+            <div
+              className="py-20 rounded-sm border border-dashed flex flex-col items-center justify-center gap-3"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+                color: "var(--text-muted)",
+              }}
+            >
               <Package className="w-12 h-12 opacity-10" />
               <p className="font-black text-xs uppercase tracking-[0.2em]">
                 No tasks available

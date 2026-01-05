@@ -32,9 +32,9 @@ const DonorRewards = () => {
     { name: "Bronze", points: "501-1,500", color: "text-amber-700" },
     { name: "Silver", points: "1,501-3,500", color: "text-slate-400" },
     { name: "Gold", points: "3,501-7,500", color: "text-yellow-600" },
-    { name: "Platinum", points: "7,501-15,000", color: "text-cyan-600" },
-    { name: "Diamond", points: "15,001-30,000", color: "text-blue-600" },
-    { name: "Legend", points: "30,001+", color: "text-purple-600" },
+    { name: "Platinum", points: "7,501-15,000", color: "text-teal-600" },
+    { name: "Diamond", points: "15,001-30,000", color: "text-emerald-700" },
+    { name: "Legend", points: "30,001+", color: "text-[#15803d]" },
   ];
 
   const badges = [
@@ -63,7 +63,7 @@ const DonorRewards = () => {
       icon: <Package size={24} />,
       unlocked: true,
       date: "Nov 5, 2024",
-      color: "bg-blue-500",
+      color: "bg-emerald-600",
     },
     {
       id: 4,
@@ -185,31 +185,52 @@ const DonorRewards = () => {
     tiers.findIndex((t) => t.name === userStats.currentTier);
 
   return (
-    <div className="p-8 bg-gray-50/50 min-h-screen space-y-10">
+    <div
+      className="p-8 min-h-screen space-y-10"
+      style={{ backgroundColor: "var(--bg-primary)" }}
+    >
       {/* Page Heading */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div className="text-start">
-          <h1 className="text-5xl font-black text-gray-900 tracking-tighter mb-3 uppercase">
+          <h1
+            className="text-5xl font-black tracking-tighter mb-3 uppercase"
+            style={{ color: "var(--text-primary)" }}
+          >
             Donor Rewards
           </h1>
-          <p className="text-gray-600 font-medium text-lg">
+          <p
+            className="font-medium text-lg"
+            style={{ color: "var(--text-secondary)" }}
+          >
             Your generosity deserves the best. Win cash, travel, and change
             lives 🌟
           </p>
         </div>
-        <div className="bg-white border border-gray-100 p-6 flex items-center gap-6 rounded-sm">
-          <div className="w-16 h-16 bg-blue-50 border border-blue-100 flex items-center justify-center rounded-sm">
-            <Star className="text-blue-500" size={32} fill="currentColor" />
+        <div
+          className="border p-6 flex items-center gap-6 rounded-sm"
+          style={{
+            backgroundColor: "var(--bg-primary)",
+            borderColor: "var(--border-color)",
+          }}
+        >
+          <div className="w-16 h-16 bg-emerald-50 border border-emerald-100 flex items-center justify-center rounded-sm">
+            <Star className="text-[#22c55e]" size={32} fill="currentColor" />
           </div>
           <div className="text-start">
-            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">
+            <p
+              className="text-[10px] font-black uppercase tracking-[0.2em] mb-1"
+              style={{ color: "var(--text-muted)" }}
+            >
               Impact Points
             </p>
             <div className="flex items-baseline gap-2">
-              <span className="text-4xl font-black text-gray-900">
+              <span
+                className="text-4xl font-black"
+                style={{ color: "var(--text-primary)" }}
+              >
                 {userStats.totalPoints.toLocaleString()}
               </span>
-              <span className="text-xs font-black text-blue-500 uppercase tracking-widest">
+              <span className="text-xs font-black text-[#22c55e] uppercase tracking-widest">
                 PTS
               </span>
             </div>
@@ -218,16 +239,28 @@ const DonorRewards = () => {
       </div>
 
       {/* 7-Tier Progression */}
-      <section className="bg-white border border-gray-100 p-8 rounded-sm">
+      <section
+        className="border p-8 rounded-sm"
+        style={{
+          backgroundColor: "var(--bg-primary)",
+          borderColor: "var(--border-color)",
+        }}
+      >
         <div className="flex items-center gap-3 mb-10">
-          <TrendingUp className="text-blue-500" size={24} />
-          <h2 className="text-xl font-black text-gray-900 uppercase tracking-tighter">
+          <TrendingUp className="text-[#22c55e]" size={24} />
+          <h2
+            className="text-xl font-black uppercase tracking-tighter"
+            style={{ color: "var(--text-primary)" }}
+          >
             Loyalty Tiers
           </h2>
         </div>
 
         <div className="relative">
-          <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-100 -translate-y-1/2 z-0 hidden lg:block" />
+          <div
+            className="absolute top-1/2 left-0 w-full h-1 -translate-y-1/2 z-0 hidden lg:block"
+            style={{ backgroundColor: "var(--border-color)" }}
+          />
 
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 relative z-10">
             {tiers.map((tier, idx) => {
@@ -239,14 +272,22 @@ const DonorRewards = () => {
                   <div
                     className={`w-14 h-14 flex items-center justify-center border-2 mb-4 transition-all duration-500 ${
                       isCurrent
-                        ? "bg-blue-600 border-white scale-125 ring-4 ring-blue-50"
+                        ? "bg-[#22c55e] border-white scale-125 ring-4 ring-emerald-50"
                         : isPast
-                        ? "bg-white border-blue-600"
-                        : "bg-white border-gray-100"
+                        ? "border-[#22c55e]"
+                        : "border-gray-100"
                     } rounded-sm`}
+                    style={{
+                      backgroundColor: "var(--bg-primary)",
+                      borderColor: isCurrent
+                        ? "white"
+                        : isPast
+                        ? "#22c55e"
+                        : "var(--border-color)",
+                    }}
                   >
                     {isPast ? (
-                      <CheckCircle className="text-blue-600" size={24} />
+                      <CheckCircle className="text-[#22c55e]" size={24} />
                     ) : isCurrent ? (
                       <Star
                         className="text-white"
@@ -254,17 +295,23 @@ const DonorRewards = () => {
                         fill="currentColor"
                       />
                     ) : (
-                      <Lock className="text-gray-200" size={20} />
+                      <Lock size={20} style={{ color: "var(--text-muted)" }} />
                     )}
                   </div>
                   <p
                     className={`text-[10px] font-black uppercase tracking-widest mb-1 ${
-                      isCurrent ? "text-blue-600" : "text-gray-400"
+                      isCurrent ? "text-[#22c55e]" : ""
                     }`}
+                    style={{
+                      color: isCurrent ? "#22c55e" : "var(--text-muted)",
+                    }}
                   >
                     {tier.name}
                   </p>
-                  <p className="text-[9px] font-bold text-gray-300">
+                  <p
+                    className="text-[9px] font-bold"
+                    style={{ color: "var(--text-muted)", opacity: 0.6 }}
+                  >
                     {tier.points}
                   </p>
                 </div>
@@ -273,24 +320,29 @@ const DonorRewards = () => {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col md:flex-row items-center justify-between p-6 bg-blue-50/50 rounded-sm border border-blue-100 border-dashed">
+        <div className="mt-12 flex flex-col md:flex-row items-center justify-between p-6 bg-emerald-50/50 rounded-sm border border-emerald-100 border-dashed">
           <div className="flex items-center gap-4 mb-4 md:mb-0">
-            <div className="p-3 bg-white rounded-sm border border-blue-100">
-              <Sparkles className="text-blue-500" size={20} />
+            <div className="p-3 bg-white rounded-sm border border-emerald-100">
+              <Sparkles className="text-[#22c55e]" size={20} />
             </div>
             <div className="text-start">
-              <p className="text-sm font-black text-gray-900 uppercase tracking-tight">
+              <p
+                className="text-sm font-black uppercase tracking-tight"
+                style={{ color: "var(--text-primary)" }}
+              >
                 Current Status: {userStats.currentTier}
               </p>
-              <p className="text-xs text-gray-500 font-medium italic">
+              <p
+                className="text-xs font-medium italic"
+                style={{ color: "var(--text-secondary)" }}
+              >
                 Only {userStats.pointsToNextTier.toLocaleString()} points left
                 to reach the ultimate{" "}
-                <span className="text-purple-600 font-bold">Legend</span>{" "}
-                status!
+                <span className="text-[#15803d] font-bold">Legend</span> status!
               </p>
             </div>
           </div>
-          <button className="px-8 py-3 bg-blue-600 text-white text-xs font-black uppercase tracking-widest rounded-sm hover:bg-blue-700 transition-all flex items-center gap-2">
+          <button className="px-8 py-3 bg-[#22c55e] text-white text-xs font-black uppercase tracking-widest rounded-sm hover:bg-emerald-600 transition-all flex items-center gap-2">
             View Benefits <ChevronRight size={16} />
           </button>
         </div>
@@ -300,10 +352,13 @@ const DonorRewards = () => {
         {/* Rewards Center */}
         <section className="lg:col-span-2 space-y-6">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-blue-50 border border-blue-100 rounded-sm">
-              <IndianRupee className="text-blue-600" size={20} />
+            <div className="p-2.5 bg-emerald-50 border border-emerald-100 rounded-sm">
+              <IndianRupee className="text-[#22c55e]" size={20} />
             </div>
-            <h3 className="text-xl font-black text-gray-900 tracking-tight uppercase">
+            <h3
+              className="text-xl font-black tracking-tight uppercase"
+              style={{ color: "var(--text-primary)" }}
+            >
               Mega Cash Rewards
             </h3>
           </div>
@@ -312,26 +367,39 @@ const DonorRewards = () => {
             {rewards.cash.map((c) => (
               <div
                 key={c.id}
-                className="bg-white border border-gray-100 p-6 flex items-center justify-between group hover:border-blue-200 transition-all rounded-sm"
+                className="border p-6 flex items-center justify-between group hover:border-emerald-200 transition-all rounded-sm"
+                style={{
+                  backgroundColor: "var(--bg-primary)",
+                  borderColor: "var(--border-color)",
+                }}
               >
                 <div className="text-start">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="text-3xl font-black text-gray-900">
+                    <span
+                      className="text-3xl font-black"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       {c.amount}
                     </span>
-                    <span className="text-[10px] font-black text-blue-500 uppercase bg-blue-50 px-2 py-0.5 rounded-sm">
+                    <span className="text-[10px] font-black text-[#22c55e] uppercase bg-emerald-50 px-2 py-0.5 rounded-sm">
                       Winner
                     </span>
                   </div>
-                  <p className="text-xs font-black text-gray-400 uppercase tracking-widest">
+                  <p
+                    className="text-xs font-black uppercase tracking-widest"
+                    style={{ color: "var(--text-muted)" }}
+                  >
                     {c.name}
                   </p>
                 </div>
                 <button className="flex flex-col items-center gap-1">
-                  <span className="text-[10px] font-black text-gray-900 uppercase">
+                  <span
+                    className="text-[10px] font-black uppercase"
+                    style={{ color: "var(--text-primary)" }}
+                  >
                     {c.points} PTS
                   </span>
-                  <div className="px-5 py-2 bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest rounded-sm group-hover:bg-blue-700 transition-all">
+                  <div className="px-5 py-2 bg-[#22c55e] text-white text-[10px] font-black uppercase tracking-widest rounded-sm group-hover:bg-emerald-600 transition-all">
                     Claim
                   </div>
                 </button>
@@ -342,8 +410,11 @@ const DonorRewards = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
             <div className="space-y-4">
               <div className="flex items-center gap-2 mb-2">
-                <Plane className="text-cyan-500" size={18} />
-                <h4 className="text-xs font-black text-gray-900 uppercase tracking-widest">
+                <Plane className="text-teal-500" size={18} />
+                <h4
+                  className="text-xs font-black uppercase tracking-widest"
+                  style={{ color: "var(--text-primary)" }}
+                >
                   Global Travel
                 </h4>
               </div>
@@ -351,31 +422,49 @@ const DonorRewards = () => {
                 <div
                   key={t.id}
                   className={`p-4 border rounded-sm flex items-center gap-4 ${
-                    t.available
-                      ? "bg-white border-gray-100"
-                      : "bg-gray-50 border-gray-100 opacity-60"
+                    !t.available && "opacity-60"
                   }`}
+                  style={{
+                    backgroundColor: t.available
+                      ? "var(--bg-primary)"
+                      : "var(--bg-secondary)",
+                    borderColor: "var(--border-color)",
+                  }}
                 >
                   <div
                     className={`p-2 rounded-sm ${
                       t.available
-                        ? "bg-cyan-50 text-cyan-500"
+                        ? "bg-teal-50 text-teal-600"
                         : "bg-gray-200 text-gray-400"
                     }`}
                   >
                     {t.icon}
                   </div>
                   <div className="flex-1 text-start">
-                    <p className="text-xs font-black text-gray-900">{t.name}</p>
-                    <p className="text-[9px] font-bold text-gray-400 uppercase">
+                    <p
+                      className="text-xs font-black"
+                      style={{ color: "var(--text-primary)" }}
+                    >
+                      {t.name}
+                    </p>
+                    <p
+                      className="text-[9px] font-bold uppercase"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       {t.desc}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-[10px] font-black text-gray-900">
+                    <p
+                      className="text-[10px] font-black"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       {t.points.toLocaleString()}
                     </p>
-                    <p className="text-[8px] font-black text-gray-400 uppercase">
+                    <p
+                      className="text-[8px] font-black uppercase"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       PTS
                     </p>
                   </div>
@@ -385,8 +474,11 @@ const DonorRewards = () => {
 
             <div className="space-y-4">
               <div className="flex items-center gap-2 mb-2">
-                <Smartphone className="text-purple-500" size={18} />
-                <h4 className="text-xs font-black text-gray-900 uppercase tracking-widest">
+                <Smartphone className="text-emerald-600" size={18} />
+                <h4
+                  className="text-xs font-black uppercase tracking-widest"
+                  style={{ color: "var(--text-primary)" }}
+                >
                   Luxury Tech
                 </h4>
               </div>
@@ -394,31 +486,49 @@ const DonorRewards = () => {
                 <div
                   key={y.id}
                   className={`p-4 border rounded-sm flex items-center gap-4 ${
-                    y.available
-                      ? "bg-white border-gray-100"
-                      : "bg-gray-50 border-gray-100 opacity-60"
+                    !y.available && "opacity-60"
                   }`}
+                  style={{
+                    backgroundColor: y.available
+                      ? "var(--bg-primary)"
+                      : "var(--bg-secondary)",
+                    borderColor: "var(--border-color)",
+                  }}
                 >
                   <div
                     className={`p-2 rounded-sm ${
                       y.available
-                        ? "bg-purple-50 text-purple-500"
+                        ? "bg-emerald-50 text-emerald-700"
                         : "bg-gray-200 text-gray-400"
                     }`}
                   >
                     {y.icon}
                   </div>
                   <div className="flex-1 text-start">
-                    <p className="text-xs font-black text-gray-900">{y.name}</p>
-                    <p className="text-[9px] font-bold text-gray-400 uppercase">
+                    <p
+                      className="text-xs font-black"
+                      style={{ color: "var(--text-primary)" }}
+                    >
+                      {y.name}
+                    </p>
+                    <p
+                      className="text-[9px] font-bold uppercase"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       {y.desc}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-[10px] font-black text-gray-900">
+                    <p
+                      className="text-[10px] font-black"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       {y.points.toLocaleString()}
                     </p>
-                    <p className="text-[8px] font-black text-gray-400 uppercase">
+                    <p
+                      className="text-[8px] font-black uppercase"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       PTS
                     </p>
                   </div>
@@ -430,13 +540,16 @@ const DonorRewards = () => {
 
         {/* Impact Tracker */}
         <div className="space-y-8">
-          <section className="bg-blue-900 text-white p-8 rounded-sm relative overflow-hidden">
+          <section
+            className="p-8 rounded-sm relative overflow-hidden"
+            style={{ backgroundColor: "#064e3b", color: "white" }}
+          >
             <div className="absolute -top-10 -right-10 opacity-10">
               <Leaf size={160} />
             </div>
             <div className="relative z-10 space-y-6">
               <div className="flex items-center gap-3">
-                <Leaf className="text-blue-400" size={24} />
+                <Leaf className="text-emerald-400" size={24} />
                 <h3 className="text-xl font-black uppercase tracking-tighter">
                   Your Legacy
                 </h3>
@@ -447,18 +560,18 @@ const DonorRewards = () => {
                   <p className="text-[64px] font-black leading-none">
                     {userStats.treesPlanted}
                   </p>
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-400">
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-400">
                     Trees in your name
                   </p>
                 </div>
                 <div className="flex-1 space-y-2">
-                  <div className="flex justify-between text-[9px] font-black uppercase tracking-widest text-blue-400">
+                  <div className="flex justify-between text-[9px] font-black uppercase tracking-widest text-emerald-400">
                     <span>Total CO₂ Offset</span>
                     <span>900kg/yr</span>
                   </div>
                   <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-blue-400"
+                      className="h-full bg-emerald-400"
                       style={{ width: "80%" }}
                     />
                   </div>
@@ -466,21 +579,21 @@ const DonorRewards = () => {
               </div>
 
               <div className="space-y-3 pt-4">
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-center mb-4">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-center mb-4 text-emerald-100">
                   Grow Your Forest
                 </p>
                 {treeTiers.map((t) => (
                   <button
                     key={t.name}
-                    className="w-full flex items-center justify-between p-3 border border-white/20 hover:bg-white/10 transition-all rounded-sm"
+                    className="w-full flex items-center justify-between p-3 border border-white/20 hover:bg-white/10 transition-all rounded-sm text-white"
                   >
                     <div className="text-start">
                       <p className="text-xs font-black">{t.name}</p>
-                      <p className="text-[9px] font-medium text-blue-400">
+                      <p className="text-[9px] font-medium text-emerald-400">
                         {t.trees} Tree • {t.impact}
                       </p>
                     </div>
-                    <span className="text-[10px] font-black bg-blue-500 px-3 py-1 rounded-sm uppercase">
+                    <span className="text-[10px] font-black bg-[#22c55e] px-3 py-1 rounded-sm uppercase">
                       {t.points} PTS
                     </span>
                   </button>
@@ -489,15 +602,24 @@ const DonorRewards = () => {
             </div>
           </section>
 
-          <section className="bg-white border border-gray-100 p-8 rounded-sm">
+          <section
+            className="border p-8 rounded-sm"
+            style={{
+              backgroundColor: "var(--bg-primary)",
+              borderColor: "var(--border-color)",
+            }}
+          >
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-3">
-                <Award className="text-blue-500" size={20} />
-                <h3 className="text-sm font-black uppercase tracking-tighter">
+                <Award className="text-[#22c55e]" size={20} />
+                <h3
+                  className="text-sm font-black uppercase tracking-tighter"
+                  style={{ color: "var(--text-primary)" }}
+                >
                   Impact Badges
                 </h3>
               </div>
-              <button className="text-[10px] font-black uppercase text-blue-500 hover:underline">
+              <button className="text-[10px] font-black uppercase text-[#22c55e] hover:underline">
                 View All
               </button>
             </div>
@@ -524,15 +646,15 @@ const DonorRewards = () => {
         </div>
       </div>
 
-      <section className="bg-gradient-to-r from-blue-700 to-indigo-800 p-10 rounded-sm text-white flex flex-col md:flex-row items-center justify-between gap-8">
+      <section className="bg-gradient-to-r from-emerald-700 to-teal-800 p-10 rounded-sm text-white flex flex-col md:flex-row items-center justify-between gap-8">
         <div className="text-start max-w-lg">
           <h3 className="text-4xl font-black tracking-tighter uppercase mb-4">
             Monthly Mega Draw
           </h3>
-          <p className="text-blue-50 font-medium leading-relaxed">
+          <p className="text-emerald-50 font-medium leading-relaxed">
             All donors who plant at least one tree this month are entered to win
             a{" "}
-            <span className="font-bold underline decoration-blue-300 underline-offset-4">
+            <span className="font-bold underline decoration-emerald-300 underline-offset-4">
               ₹50,000 Luxury Gift Voucher
             </span>
             !
@@ -540,10 +662,10 @@ const DonorRewards = () => {
         </div>
         <div className="flex flex-col items-center">
           <div className="text-4xl font-black mb-2 tabular-nums">12:15:30</div>
-          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-200 mb-6">
+          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-200 mb-6">
             Days:Hrs:Mins
           </p>
-          <button className="px-10 py-4 bg-white text-blue-700 text-xs font-black uppercase tracking-widest rounded-sm hover:bg-blue-50 transition-all active:scale-95 shadow-lg shadow-blue-900/20">
+          <button className="px-10 py-4 bg-white text-emerald-700 text-xs font-black uppercase tracking-widest rounded-sm hover:bg-emerald-50 transition-all active:scale-95 shadow-lg shadow-emerald-900/20">
             Join Draw Now
           </button>
         </div>

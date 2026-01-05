@@ -35,10 +35,16 @@ const RewardsConfig: React.FC = () => {
     <div className="space-y-12 pb-10">
       <header className="flex items-center justify-between">
         <div className="text-start">
-          <h3 className="text-2xl font-black uppercase tracking-tighter text-slate-900">
+          <h3
+            className="text-2xl font-black uppercase tracking-tighter"
+            style={{ color: "var(--text-primary)" }}
+          >
             Reward Catalog Management
           </h3>
-          <p className="text-slate-500 font-medium text-sm italic">
+          <p
+            className="font-medium text-sm italic"
+            style={{ color: "var(--text-secondary)" }}
+          >
             Define what users can buy with their hard-earned points
           </p>
         </div>
@@ -106,10 +112,16 @@ const RewardsConfig: React.FC = () => {
           <Shield className="text-slate-400" size={32} />
         </div>
         <div className="text-start flex-1">
-          <h5 className="font-black text-slate-900 uppercase">
+          <h5
+            className="font-black uppercase"
+            style={{ color: "var(--text-primary)" }}
+          >
             High-Value Validation
           </h5>
-          <p className="text-slate-500 text-xs font-medium">
+          <p
+            className="text-xs font-medium"
+            style={{ color: "var(--text-secondary)" }}
+          >
             Rewards above ₹50,000 require secondary admin approval and manual
             KYC verification of the recipient.
           </p>
@@ -127,13 +139,22 @@ const RewardsConfig: React.FC = () => {
 
 const RewardCard: React.FC<{ item: any }> = ({ item }) => (
   <div
-    className={`p-4 bg-white border border-slate-100 rounded-sm flex items-center justify-between group transition-all ${
-      !item.active && "opacity-60 bg-slate-50 border-dashed"
+    className={`p-4 border rounded-sm flex items-center justify-between group transition-all ${
+      !item.active && "opacity-60 border-dashed"
     }`}
+    style={{
+      backgroundColor: item.active
+        ? "var(--bg-primary)"
+        : "var(--bg-secondary)",
+      borderColor: "var(--border-color)",
+    }}
   >
     <div className="text-start">
       <div className="flex items-center gap-2">
-        <p className="font-black text-slate-900 text-sm leading-tight">
+        <p
+          className="font-black text-sm leading-tight"
+          style={{ color: "var(--text-primary)" }}
+        >
           {item.name}
         </p>
         {!item.active && (

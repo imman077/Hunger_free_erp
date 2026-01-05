@@ -44,18 +44,18 @@ const Tabs: React.FC<TabsProps> = ({
       case "outlined":
         return isActive
           ? `${baseClasses} border-2 rounded-md shadow-sm`
-          : `${baseClasses} border border-gray-200 rounded-md bg-white text-gray-600 hover:bg-white hover:border-[#22c55e] hover:text-black`;
+          : `${baseClasses} border rounded-md hover:opacity-80`;
 
       case "pills":
         return isActive
           ? `${baseClasses} rounded-full shadow-sm`
-          : `${baseClasses} rounded-full bg-gray-100 text-gray-600 hover:bg-white hover:text-black`;
+          : `${baseClasses} rounded-full hover:opacity-80`;
 
       case "default":
       default:
         return isActive
           ? `${baseClasses} rounded-md shadow-sm`
-          : `${baseClasses} bg-white text-gray-600 border border-gray-200 rounded-md hover:bg-white hover:border-[#22c55e] hover:text-black`;
+          : `${baseClasses} border rounded-md hover:opacity-80`;
     }
   };
 
@@ -67,11 +67,11 @@ const Tabs: React.FC<TabsProps> = ({
         borderColor: activeColor,
       };
     }
-    // Inactive tabs - ensure white background and gray text
+    // Inactive tabs
     return {
-      backgroundColor: "white",
-      color: "#4b5563", // gray-600
-      borderColor: "#e5e7eb", // gray-200
+      backgroundColor: "var(--bg-secondary)",
+      color: "var(--text-secondary)",
+      borderColor: "var(--border-color)",
     };
   };
 

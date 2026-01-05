@@ -97,10 +97,16 @@ const RedemptionsView: React.FC = () => {
       case "user":
         return (
           <div className="flex flex-col text-start">
-            <span className="font-black text-slate-900 leading-tight">
+            <span
+              className="font-black leading-tight"
+              style={{ color: "var(--text-primary)" }}
+            >
               {value}
             </span>
-            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
+            <span
+              className="text-[9px] font-black uppercase tracking-widest"
+              style={{ color: "var(--text-muted)" }}
+            >
               {req.role}
             </span>
           </div>
@@ -192,7 +198,13 @@ const RedemptionsView: React.FC = () => {
     <div className="grid grid-cols-1 xl:grid-cols-4 gap-8 pb-10">
       <div className="xl:col-span-3 space-y-8">
         {/* Filters */}
-        <div className="bg-white p-4 border border-slate-100 rounded-sm flex flex-wrap items-center justify-between gap-4">
+        <div
+          className="p-4 border rounded-sm flex flex-wrap items-center justify-between gap-4"
+          style={{
+            backgroundColor: "var(--bg-primary)",
+            borderColor: "var(--border-color)",
+          }}
+        >
           <div className="flex items-center gap-2">
             <Filter size={16} className="text-slate-400" />
             <span className="text-xs font-black uppercase tracking-widest text-slate-400">
@@ -230,10 +242,19 @@ const RedemptionsView: React.FC = () => {
       </div>
 
       <div className="space-y-6">
-        <div className="bg-white rounded-sm border border-slate-100 p-8 shadow-sm text-start overflow-hidden relative">
+        <div
+          className="rounded-sm border p-8 shadow-sm text-start overflow-hidden relative"
+          style={{
+            backgroundColor: "var(--bg-primary)",
+            borderColor: "var(--border-color)",
+          }}
+        >
           <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50/50 rounded-full -mr-16 -mt-16 z-0" />
           <div className="relative z-10">
-            <h4 className="font-black text-slate-900 text-lg tracking-tight mb-8 uppercase">
+            <h4
+              className="font-black text-lg tracking-tight mb-8 uppercase"
+              style={{ color: "var(--text-primary)" }}
+            >
               Payout Summary
             </h4>
 
@@ -287,10 +308,16 @@ const StatMiniCard: React.FC<{ label: string; value: string; sub: string }> = ({
   sub,
 }) => (
   <div className="group cursor-default">
-    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">
+    <p
+      className="text-[9px] font-black uppercase tracking-widest mb-1"
+      style={{ color: "var(--text-muted)" }}
+    >
       {label}
     </p>
-    <h5 className="text-3xl font-black text-slate-900 group-hover:text-emerald-500 transition-colors tracking-tighter">
+    <h5
+      className="text-3xl font-black group-hover:text-emerald-500 transition-colors tracking-tighter"
+      style={{ color: "var(--text-primary)" }}
+    >
       {value}
     </h5>
     <p className="text-[10px] font-bold text-slate-300 uppercase italic tracking-tight">

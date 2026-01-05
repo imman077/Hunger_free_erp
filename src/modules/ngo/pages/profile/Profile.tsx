@@ -131,16 +131,25 @@ const NGOProfile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50/50">
+    <div
+      className="min-h-screen"
+      style={{ backgroundColor: "var(--bg-secondary)" }}
+    >
       {/* Hero Section */}
       <div className="relative h-64 bg-[#15803d] overflow-hidden">
         <div className="relative max-w-7xl mx-auto px-6 h-full flex items-end pb-12">
           <div className="flex flex-col md:flex-row items-center md:items-end gap-6 w-full text-white">
             <div className="relative group">
-              <div className="w-32 h-32 rounded-sm overflow-hidden border-2 border-white/50 group-hover:scale-105 transition-transform duration-300 bg-[#22c55e] flex items-center justify-center">
+              <div
+                className="w-32 h-32 rounded-sm overflow-hidden border-2 group-hover:scale-105 transition-transform duration-300 bg-[#22c55e] flex items-center justify-center"
+                style={{ borderColor: "var(--border-color)" }}
+              >
                 <span className="text-5xl font-black text-white">GH</span>
               </div>
-              <div className="absolute -bottom-2 -right-2 bg-[#22c55e] text-white p-2 rounded-sm border-2 border-white">
+              <div
+                className="absolute -bottom-2 -right-2 bg-[#22c55e] text-white p-2 rounded-sm border-2"
+                style={{ borderColor: "var(--border-color)" }}
+              >
                 <Icon name="verified" className="w-5 h-5" />
               </div>
             </div>
@@ -187,15 +196,27 @@ const NGOProfile = () => {
           {/* Left Column - Profile Info */}
           <div className="lg:col-span-2 space-y-6">
             {/* Personal Information Card */}
-            <div className="bg-white border border-gray-100 rounded-sm p-10">
-              <h2 className="text-xl font-black text-gray-900 tracking-tight mb-10 flex items-center justify-start gap-3">
+            <div
+              className="border rounded-sm p-10"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
+              <h2
+                className="text-xl font-black tracking-tight mb-10 flex items-center justify-start gap-3"
+                style={{ color: "var(--text-primary)" }}
+              >
                 <Icon name="id-card" className="w-5 h-5 text-[#22c55e]" />
                 Organization Information
               </h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-y-10 gap-x-12">
                 <div className="text-center md:text-center flex flex-col items-center">
-                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2">
+                  <label
+                    className="block text-[10px] font-black uppercase tracking-[0.2em] mb-2"
+                    style={{ color: "var(--text-muted)" }}
+                  >
                     Organization Name
                   </label>
                   {isEditing ? (
@@ -208,17 +229,26 @@ const NGOProfile = () => {
                       className="w-full px-4 py-2 border border-gray-300 rounded-sm text-center focus:outline-none focus:ring-1 focus:ring-[#22c55e]"
                     />
                   ) : (
-                    <p className="text-gray-900 font-black text-lg">
+                    <p
+                      className="font-black text-lg"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       {profile.name}
                     </p>
                   )}
                 </div>
 
                 <div className="text-center flex flex-col items-center">
-                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2">
+                  <label
+                    className="block text-[10px] font-black uppercase tracking-[0.2em] mb-2"
+                    style={{ color: "var(--text-muted)" }}
+                  >
                     Registration ID
                   </label>
-                  <p className="text-gray-500 font-bold text-sm">
+                  <p
+                    className="font-bold text-sm"
+                    style={{ color: "var(--text-secondary)" }}
+                  >
                     {profile.registrationId}
                   </p>
                 </div>
@@ -284,7 +314,10 @@ const NGOProfile = () => {
                 </div>
 
                 <div className="md:col-span-2 text-center flex flex-col items-center">
-                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2">
+                  <label
+                    className="block text-[10px] font-black uppercase tracking-[0.2em] mb-2"
+                    style={{ color: "var(--text-muted)" }}
+                  >
                     Organization Description
                   </label>
                   {isEditing ? (
@@ -297,7 +330,10 @@ const NGOProfile = () => {
                       className="w-full px-4 py-2 border border-gray-300 rounded-sm text-center focus:outline-none focus:ring-1 focus:ring-[#22c55e] resize-none"
                     />
                   ) : (
-                    <p className="text-gray-900 font-black leading-relaxed max-w-2xl">
+                    <p
+                      className="font-black leading-relaxed max-w-2xl"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       {profile.description}
                     </p>
                   )}
@@ -306,8 +342,21 @@ const NGOProfile = () => {
             </div>
 
             {/* Vault: Verification Documents UI */}
-            <div className="bg-white rounded-sm shadow-xl shadow-slate-200/50 overflow-hidden border border-slate-100 transition-all duration-500 hover:shadow-2xl hover:shadow-slate-300/40 mt-8">
-              <div className="p-7 border-b border-slate-100 flex items-center justify-between bg-white sticky top-0 z-10">
+            <div
+              className="rounded-sm shadow-xl overflow-hidden border transition-all duration-500 mt-8"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+                boxShadow: "var(--shadow-lg)",
+              }}
+            >
+              <div
+                className="p-7 border-b flex items-center justify-between sticky top-0 z-10"
+                style={{
+                  backgroundColor: "var(--bg-primary)",
+                  borderColor: "var(--border-color)",
+                }}
+              >
                 <div className="flex items-center space-x-3.5">
                   <div className="w-10 h-10 rounded-sm bg-[#22c55e] flex items-center justify-center text-white shadow-md shadow-[#d1fae5]">
                     <svg
@@ -325,10 +374,16 @@ const NGOProfile = () => {
                     </svg>
                   </div>
                   <div className="text-start">
-                    <h1 className="text-xl font-bold text-slate-800 tracking-tight">
+                    <h1
+                      className="text-xl font-bold tracking-tight"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       Documents
                     </h1>
-                    <p className="text-xs text-slate-400 font-medium mt-0.5">
+                    <p
+                      className="text-xs font-medium mt-0.5"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       Verification & Credentials
                     </p>
                   </div>
@@ -435,8 +490,17 @@ const NGOProfile = () => {
 
           {/* Right Column - Activity Timeline */}
           <div className="lg:col-span-1">
-            <div className="bg-white border border-gray-100 rounded-sm p-10 sticky top-6">
-              <h2 className="text-xl font-black text-gray-900 tracking-tight mb-10">
+            <div
+              className="border rounded-sm p-10 sticky top-6"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
+              <h2
+                className="text-xl font-black tracking-tight mb-10"
+                style={{ color: "var(--text-primary)" }}
+              >
                 Recent Activity
               </h2>
 
@@ -446,13 +510,22 @@ const NGOProfile = () => {
                   <div key={index} className="relative pl-10">
                     <div className="absolute left-0 top-1.5 w-4 h-4 rounded-full bg-[#22c55e] border-2 border-white z-10" />
                     <div className="text-center">
-                      <h3 className="font-black text-gray-900 text-sm mb-1 uppercase tracking-tight">
+                      <h3
+                        className="font-black text-sm mb-1 uppercase tracking-tight"
+                        style={{ color: "var(--text-primary)" }}
+                      >
                         {activity.title}
                       </h3>
-                      <p className="text-xs text-gray-500 font-medium leading-relaxed">
+                      <p
+                        className="text-xs font-medium leading-relaxed"
+                        style={{ color: "var(--text-secondary)" }}
+                      >
                         {activity.desc}
                       </p>
-                      <p className="text-[10px] text-gray-400 mt-2 uppercase tracking-widest font-black">
+                      <p
+                        className="text-[10px] mt-2 uppercase tracking-widest font-black"
+                        style={{ color: "var(--text-muted)" }}
+                      >
                         {activity.time}
                       </p>
                     </div>
@@ -485,12 +558,18 @@ const DocumentCard = ({
       case "ANALYZING":
         return "bg-blue-50 text-blue-600 border-blue-100 animate-pulse";
       default:
-        return "bg-slate-50 text-slate-600 border-slate-100";
+        return "text-slate-600 border-slate-100";
     }
   };
 
   return (
-    <div className="group relative flex items-center justify-between p-4 bg-white border border-slate-100 rounded-sm transition-all duration-300 hover:shadow-md hover:shadow-slate-100/50 hover:border-[#d1fae5]">
+    <div
+      className="group relative flex items-center justify-between p-4 border rounded-sm transition-all duration-300"
+      style={{
+        backgroundColor: "var(--bg-primary)",
+        borderColor: "var(--border-color)",
+      }}
+    >
       <div className="flex items-center space-x-4">
         <div
           className={`w-11 h-11 rounded-sm flex items-center justify-center flex-shrink-0 ${
@@ -514,15 +593,24 @@ const DocumentCard = ({
           </svg>
         </div>
         <div className="min-w-0 text-start">
-          <h3 className="text-[15px] font-bold text-slate-800 leading-tight truncate">
+          <h3
+            className="text-[15px] font-bold leading-tight truncate"
+            style={{ color: "var(--text-primary)" }}
+          >
             {doc.name}
           </h3>
           <div className="flex items-center mt-1 space-x-2">
-            <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest truncate max-w-[120px]">
+            <span
+              className="text-[10px] font-semibold uppercase tracking-widest truncate max-w-[120px]"
+              style={{ color: "var(--text-muted)" }}
+            >
               {doc.type}
             </span>
             <span className="text-slate-200">•</span>
-            <span className="text-[10px] text-slate-400 font-medium">
+            <span
+              className="text-[10px] font-medium"
+              style={{ color: "var(--text-muted)" }}
+            >
               {new Date(doc.uploadedAt).toLocaleDateString()}
             </span>
           </div>

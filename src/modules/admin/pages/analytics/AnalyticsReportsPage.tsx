@@ -1,5 +1,5 @@
 import React from "react";
-import { Download, Calendar, FileText } from "lucide-react";
+import { Download, FileText } from "lucide-react";
 
 import ResuableTable, {
   type ColumnDef,
@@ -133,7 +133,7 @@ const AnalyticsReportsPage: React.FC = () => {
                   ? "bg-emerald-500"
                   : report.status === "Pending Review"
                   ? "bg-amber-500"
-                  : "bg-blue-500"
+                  : "bg-emerald-600"
               }`}
             />
             <span className="text-xs font-black text-slate-600 uppercase tracking-wider">
@@ -147,7 +147,7 @@ const AnalyticsReportsPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="p-10 w-full mx-auto space-y-8 animate-in slide-in-from-bottom-4 duration-700 text-start">
+    <div className="p-8 w-full mx-auto space-y-8 animate-in slide-in-from-bottom-4 duration-700 text-start">
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
           <h1 className="text-4xl font-black text-slate-900 tracking-tight">

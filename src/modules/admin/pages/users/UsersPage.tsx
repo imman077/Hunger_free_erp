@@ -285,7 +285,12 @@ const UsersPage = () => {
               className="flex flex-col add new-pointer"
               onClick={() => openUserModal(user)}
             >
-              <span className="font-medium text-gray-900">{user.name}</span>
+              <span
+                className="font-medium"
+                style={{ color: "var(--text-primary)" }}
+              >
+                {user.name}
+              </span>
             </div>
           );
         case "role":
@@ -306,7 +311,12 @@ const UsersPage = () => {
           );
         case "type":
           return (
-            <span className="text-sm text-gray-700">{user.organization}</span>
+            <span
+              className="text-sm"
+              style={{ color: "var(--text-secondary)" }}
+            >
+              {user.organization}
+            </span>
           );
         case "status":
           const statusColors: Record<string, string> = {
@@ -324,9 +334,17 @@ const UsersPage = () => {
             </span>
           );
         case "totalPoints":
-          return <span>{cellValue as number}</span>;
+          return (
+            <span style={{ color: "var(--text-primary)" }}>
+              {cellValue as number}
+            </span>
+          );
         default:
-          return <span>{String(cellValue)}</span>; // Ensure valid JSX
+          return (
+            <span style={{ color: "var(--text-secondary)" }}>
+              {String(cellValue)}
+            </span>
+          );
       }
     },
     [openUserModal]
@@ -355,10 +373,16 @@ const UsersPage = () => {
 
   return (
     <>
-      <div className="w-full space-y-6 p-6">
+      <div
+        className="w-full space-y-6 p-6 min-h-screen"
+        style={{ backgroundColor: "var(--bg-primary)" }}
+      >
         {/* Header */}
         <div className="w-full flex items-center justify-between">
-          <h1 className="text-xl font-bold text-gray-900 tracking-tight">
+          <h1
+            className="text-xl font-bold tracking-tight"
+            style={{ color: "var(--text-primary)" }}
+          >
             User Management
           </h1>
         </div>
@@ -414,17 +438,26 @@ const UsersPage = () => {
             maxWidth="lg"
             fullWidth
             PaperProps={{
-              sx: { borderRadius: 3, maxHeight: "90vh" },
+              sx: {
+                borderRadius: 3,
+                maxHeight: "90vh",
+                backgroundColor: "var(--bg-primary)",
+                color: "var(--text-primary)",
+              },
             }}
           >
-            <DialogTitle>
+            <DialogTitle sx={{ borderBottom: "1px solid var(--border-color)" }}>
               <Box
                 display="flex"
                 alignItems="center"
                 justifyContent="space-between"
               >
                 <Box display="flex" alignItems="center" gap={2}>
-                  <Typography variant="h2" component="h2">
+                  <Typography
+                    variant="h2"
+                    component="h2"
+                    sx={{ color: "var(--text-primary)" }}
+                  >
                     {selectedUser.name}
                   </Typography>
                   <MuiChip
@@ -446,22 +479,34 @@ const UsersPage = () => {
                             : "warning.main",
                       }}
                     />
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography
+                      variant="body2"
+                      sx={{ color: "var(--text-muted)" }}
+                    >
                       {selectedUser.status}
                     </Typography>
                   </Box>
                 </Box>
-                <IconButton onClick={closeModal} size="small">
+                <IconButton
+                  onClick={closeModal}
+                  size="small"
+                  sx={{ color: "var(--text-secondary)" }}
+                >
                   <Close />
                 </IconButton>
               </Box>
             </DialogTitle>
 
-            <DialogContent dividers>
+            <DialogContent dividers sx={{ borderColor: "var(--border-color)" }}>
               <MuiTabs
                 value={modalTab}
                 onChange={(_, newValue) => setModalTab(newValue)}
-                sx={{ mb: 3 }}
+                sx={{
+                  mb: 3,
+                  "& .MuiTab-root": { color: "var(--text-muted)" },
+                  "& .Mui-selected": { color: "#22c55e !important" },
+                  "& .MuiTabs-indicator": { backgroundColor: "#22c55e" },
+                }}
               >
                 <MuiTab value="Profile Details" label="Profile Details" />
                 <MuiTab value="Donation History" label="Donation History" />
@@ -474,51 +519,103 @@ const UsersPage = () => {
                   gap={3}
                 >
                   {/* User ID Card */}
-                  <Card>
+                  <Card
+                    sx={{
+                      backgroundColor: "var(--bg-secondary)",
+                      borderColor: "var(--border-color)",
+                    }}
+                  >
                     <CardContent>
                       <Box
                         display="flex"
                         justifyContent="space-between"
                         alignItems="flex-start"
                       >
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography
+                          variant="body2"
+                          sx={{ color: "var(--text-muted)" }}
+                        >
                           User ID
                         </Typography>
-                        <Box p={1} bgcolor="grey.50" borderRadius={2}>
-                          <Building fontSize="small" color="disabled" />
+                        <Box
+                          p={1}
+                          sx={{ bgcolor: "var(--bg-primary)", borderRadius: 2 }}
+                        >
+                          <Building
+                            style={{
+                              color: "var(--text-muted)",
+                              width: 20,
+                              height: 20,
+                            }}
+                          />
                         </Box>
                       </Box>
-                      <Typography variant="h4" mt={1}>
+                      <Typography
+                        variant="h4"
+                        mt={1}
+                        sx={{ color: "var(--text-primary)" }}
+                      >
                         {selectedUser.userId}
                       </Typography>
                     </CardContent>
                   </Card>
 
                   {/* Joined Date Card */}
-                  <Card>
+                  <Card
+                    sx={{
+                      backgroundColor: "var(--bg-secondary)",
+                      borderColor: "var(--border-color)",
+                    }}
+                  >
                     <CardContent>
                       <Box
                         display="flex"
                         justifyContent="space-between"
                         alignItems="flex-start"
                       >
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography
+                          variant="body2"
+                          sx={{ color: "var(--text-muted)" }}
+                        >
                           Joined Date
                         </Typography>
-                        <Box p={1} bgcolor="grey.50" borderRadius={2}>
-                          <Globe fontSize="small" color="disabled" />
+                        <Box
+                          p={1}
+                          sx={{ bgcolor: "var(--bg-primary)", borderRadius: 2 }}
+                        >
+                          <Globe
+                            style={{
+                              color: "var(--text-muted)",
+                              width: 20,
+                              height: 20,
+                            }}
+                          />
                         </Box>
                       </Box>
-                      <Typography variant="h4" mt={1}>
+                      <Typography
+                        variant="h4"
+                        mt={1}
+                        sx={{ color: "var(--text-primary)" }}
+                      >
                         {selectedUser.joinedDate}
                       </Typography>
                     </CardContent>
                   </Card>
 
                   {/* Profile Card */}
-                  <Card sx={{ gridColumn: "span 1" }}>
+                  <Card
+                    sx={{
+                      gridColumn: "span 1",
+                      backgroundColor: "var(--bg-secondary)",
+                      borderColor: "var(--border-color)",
+                    }}
+                  >
                     <CardContent>
-                      <Typography variant="h3" gutterBottom>
+                      <Typography
+                        variant="h3"
+                        gutterBottom
+                        sx={{ color: "var(--text-primary)" }}
+                      >
                         Profile
                       </Typography>
                       <Box
@@ -548,20 +645,38 @@ const UsersPage = () => {
 
                       <Box display="flex" flexDirection="column" gap={2}>
                         <Box display="flex" alignItems="center" gap={2}>
-                          <Mail color="disabled" />
-                          <Typography color="text.secondary">
+                          <Mail
+                            style={{
+                              color: "var(--text-muted)",
+                              width: 20,
+                              height: 20,
+                            }}
+                          />
+                          <Typography sx={{ color: "var(--text-secondary)" }}>
                             {selectedUser.email}
                           </Typography>
                         </Box>
                         <Box display="flex" alignItems="center" gap={2}>
-                          <Phone color="disabled" />
-                          <Typography color="text.secondary">
+                          <Phone
+                            style={{
+                              color: "var(--text-muted)",
+                              width: 20,
+                              height: 20,
+                            }}
+                          />
+                          <Typography sx={{ color: "var(--text-secondary)" }}>
                             {selectedUser.phone}
                           </Typography>
                         </Box>
                         <Box display="flex" alignItems="center" gap={2}>
-                          <Building color="disabled" />
-                          <Typography color="text.secondary">
+                          <Building
+                            style={{
+                              color: "var(--text-muted)",
+                              width: 20,
+                              height: 20,
+                            }}
+                          />
+                          <Typography sx={{ color: "var(--text-secondary)" }}>
                             {selectedUser.organization}
                           </Typography>
                         </Box>
@@ -570,9 +685,19 @@ const UsersPage = () => {
                   </Card>
 
                   {/* Overview Card */}
-                  <Card sx={{ gridColumn: "span 1" }}>
+                  <Card
+                    sx={{
+                      gridColumn: "span 1",
+                      backgroundColor: "var(--bg-secondary)",
+                      borderColor: "var(--border-color)",
+                    }}
+                  >
                     <CardContent>
-                      <Typography variant="h3" gutterBottom>
+                      <Typography
+                        variant="h3"
+                        gutterBottom
+                        sx={{ color: "var(--text-primary)" }}
+                      >
                         Overview
                       </Typography>
 
@@ -582,15 +707,22 @@ const UsersPage = () => {
                         alignItems="center"
                         mb={4}
                       >
-                        <Typography variant="h2" color="primary">
+                        <Typography variant="h2" sx={{ color: "#22c55e" }}>
                           {selectedUser.donationsMade}
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography
+                          variant="body2"
+                          sx={{ color: "var(--text-muted)" }}
+                        >
                           Donations Made
                         </Typography>
                       </Box>
 
-                      <Typography variant="h6" gutterBottom>
+                      <Typography
+                        variant="h6"
+                        gutterBottom
+                        sx={{ color: "var(--text-primary)" }}
+                      >
                         Recent Events
                       </Typography>
 
@@ -603,7 +735,7 @@ const UsersPage = () => {
                             top: 0,
                             bottom: 0,
                             width: 2,
-                            bgcolor: "grey.100",
+                            bgcolor: "var(--border-color)",
                           }}
                         />
                         <Box
@@ -634,12 +766,16 @@ const UsersPage = () => {
                                 }}
                               />
                               <Box>
-                                <Typography variant="body2" fontWeight="medium">
+                                <Typography
+                                  variant="body2"
+                                  fontWeight="medium"
+                                  sx={{ color: "var(--text-primary)" }}
+                                >
                                   {item.event}
                                 </Typography>
                                 <Typography
                                   variant="caption"
-                                  color="text.secondary"
+                                  sx={{ color: "var(--text-muted)" }}
                                 >
                                   {item.date}
                                 </Typography>
@@ -652,7 +788,12 @@ const UsersPage = () => {
                   </Card>
                 </Box>
               ) : (
-                <Card>
+                <Card
+                  sx={{
+                    backgroundColor: "var(--bg-secondary)",
+                    borderColor: "var(--border-color)",
+                  }}
+                >
                   <CardContent>
                     <Box
                       display="flex"
@@ -660,22 +801,40 @@ const UsersPage = () => {
                       alignItems="center"
                       mb={3}
                     >
-                      <Typography variant="h3">Donation History</Typography>
+                      <Typography
+                        variant="h3"
+                        sx={{ color: "var(--text-primary)" }}
+                      >
+                        Donation History
+                      </Typography>
                       <Box display="flex" gap={1} alignItems="center">
                         <TextField
                           type="date"
                           size="small"
                           defaultValue="2025-10-01"
-                          sx={{ width: 150 }}
+                          sx={{
+                            width: 150,
+                            "& .MuiInputBase-input": {
+                              color: "var(--text-primary)",
+                            },
+                          }}
                         />
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography
+                          variant="body2"
+                          sx={{ color: "var(--text-muted)" }}
+                        >
                           to
                         </Typography>
                         <TextField
                           type="date"
                           size="small"
                           defaultValue="2025-12-31"
-                          sx={{ width: 150 }}
+                          sx={{
+                            width: 150,
+                            "& .MuiInputBase-input": {
+                              color: "var(--text-primary)",
+                            },
+                          }}
                         />
                       </Box>
                     </Box>
@@ -737,7 +896,11 @@ const UsersPage = () => {
                             />
                           );
                         }
-                        return <span>{val}</span>;
+                        return (
+                          <span style={{ color: "var(--text-secondary)" }}>
+                            {val}
+                          </span>
+                        );
                       }}
                     />
                   </CardContent>
@@ -745,8 +908,17 @@ const UsersPage = () => {
               )}
             </DialogContent>
 
-            <DialogActions>
-              <Button variant="outlined" color="inherit">
+            <DialogActions
+              sx={{ borderTop: "1px solid var(--border-color)", p: 2 }}
+            >
+              <Button
+                variant="outlined"
+                sx={{
+                  color: "var(--text-primary)",
+                  borderColor: "var(--border-color)",
+                  "&:hover": { borderColor: "#22c55e", color: "#22c55e" },
+                }}
+              >
                 Export Profile
               </Button>
             </DialogActions>

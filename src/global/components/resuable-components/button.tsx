@@ -30,19 +30,19 @@ export interface ResuableButtonProps {
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary: "bg-[#22c55e] text-white hover:bg-[#1eb054] active:bg-[#198e44]",
-  secondary:
-    "bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-200 active:bg-gray-300",
+  secondary: "hover:opacity-80 active:scale-95 transition-all duration-200",
   outline:
-    "bg-transparent text-hf-green border border-hf-green hover:bg-green-50 active:bg-green-100",
+    "hover:bg-hf-green/5 active:bg-hf-green/10 transition-all duration-200",
   ghost:
-    "bg-transparent text-gray-600 border border-transparent hover:bg-gray-100 active:bg-gray-200",
+    "hover:bg-hf-green/5 active:bg-hf-green/10 transition-all duration-200",
   danger: "bg-red-600 text-white hover:bg-red-700 active:bg-red-800",
-  success: "bg-hf-green text-white hover:bg-emerald-600 active:bg-emerald-700",
-  link: "bg-blue-50 text-blue-600 hover:bg-blue-100 active:bg-blue-200",
-  dark: "bg-hf-dark text-white hover:bg-black active:scale-95",
+  success: "bg-[#22c55e] text-white hover:bg-emerald-600 active:bg-emerald-700",
+  link: "text-blue-600 hover:underline active:opacity-70",
+  dark: "bg-slate-900 text-white hover:bg-black active:scale-95 dark:bg-slate-800",
   "soft-success":
-    "bg-emerald-50 text-hf-green hover:bg-emerald-100 active:bg-emerald-200",
-  "soft-danger": "bg-red-50 text-red-600 hover:bg-red-100 active:bg-red-200",
+    "hover:opacity-80 active:opacity-60 transition-all duration-200",
+  "soft-danger":
+    "hover:opacity-80 active:opacity-60 transition-all duration-200",
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
@@ -65,11 +65,50 @@ const ResuableButton: React.FC<ResuableButtonProps> = ({
   className = "",
   type = "button",
 }) => {
+  const getVariantStyles = (): React.CSSProperties => {
+    switch (variant) {
+      case "secondary":
+        return {
+          backgroundColor: "var(--bg-secondary)",
+          color: "var(--text-primary)",
+          border: "1px solid var(--border-color)",
+        };
+      case "ghost":
+        return {
+          backgroundColor: "transparent",
+          color: "var(--text-secondary)",
+        };
+      case "soft-success":
+        return {
+          backgroundColor: "rgba(34, 197, 94, 0.1)",
+          color: "#22c55e",
+        };
+      case "soft-danger":
+        return {
+          backgroundColor: "rgba(239, 68, 68, 0.1)",
+          color: "#ef4444",
+        };
+      case "outline":
+        return {
+          backgroundColor: "transparent",
+          color: "#22c55e",
+          border: "1px solid #22c55e",
+        };
+      case "link":
+        return {
+          backgroundColor: "transparent",
+        };
+      default:
+        return {};
+    }
+  };
+
   return (
     <button
       type={type}
       disabled={disabled || loading}
       onClick={onClick}
+      style={getVariantStyles()}
       className={`
         ${variantClasses[variant]}
         ${sizeClasses[size]}

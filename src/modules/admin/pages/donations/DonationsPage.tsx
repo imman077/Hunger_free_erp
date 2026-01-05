@@ -128,15 +128,15 @@ const DonationOverview = () => {
   const getStatusColor = (status: any) => {
     switch (status) {
       case "Pending":
-        return "text-yellow-600";
+        return "#ca8a04"; // yellow-600
       case "Assigned":
-        return "text-blue-600";
+        return "#2563eb"; // blue-600
       case "In Progress":
-        return "text-orange-600";
+        return "#ea580c"; // orange-600
       case "Completed":
-        return "text-hf-green";
+        return "#22c55e"; // hf-green
       default:
-        return "text-gray-600";
+        return "var(--text-muted)";
     }
   };
 
@@ -145,19 +145,32 @@ const DonationOverview = () => {
 
     if (columnKey === "status") {
       return (
-        <span className={`text-sm font-medium ${getStatusColor(cellValue)}`}>
+        <span
+          className="text-sm font-medium"
+          style={{ color: getStatusColor(cellValue) }}
+        >
           {cellValue}
         </span>
       );
     }
-    return <span className="text-sm text-gray-900">{cellValue}</span>;
+    return (
+      <span className="text-sm" style={{ color: "var(--text-primary)" }}>
+        {cellValue}
+      </span>
+    );
   };
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div
+      className="p-6 min-h-screen"
+      style={{ backgroundColor: "var(--bg-primary)" }}
+    >
       {/* Header */}
       <div className="mb-4">
-        <h2 className="text-lg font-semibold text-gray-800 text-left">
+        <h2
+          className="text-lg font-semibold text-left"
+          style={{ color: "var(--text-primary)" }}
+        >
           Donation Overview
         </h2>
       </div>
@@ -172,22 +185,37 @@ const DonationOverview = () => {
 
       {/* Filters */}
       <div className="mb-6">
-        <h3 className="text-xl font-semibold text-left text-gray-800 mb-4">
+        <h3
+          className="text-xl font-semibold text-left mb-4"
+          style={{ color: "var(--text-primary)" }}
+        >
           Filters
         </h3>
 
         {/* Filter Labels */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-2">
-          <label className="text-sm font-medium text-gray-700 text-left">
+          <label
+            className="text-sm font-medium text-left"
+            style={{ color: "var(--text-secondary)" }}
+          >
             Food Type
           </label>
-          <label className="text-sm font-medium text-gray-700 text-left">
+          <label
+            className="text-sm font-medium text-left"
+            style={{ color: "var(--text-secondary)" }}
+          >
             Quantity
           </label>
-          <label className="text-sm font-medium text-gray-700 text-left">
+          <label
+            className="text-sm font-medium text-left"
+            style={{ color: "var(--text-secondary)" }}
+          >
             Location
           </label>
-          <label className="text-sm font-medium text-gray-700 text-left">
+          <label
+            className="text-sm font-medium text-left"
+            style={{ color: "var(--text-secondary)" }}
+          >
             Time Range
           </label>
         </div>
@@ -221,7 +249,10 @@ const DonationOverview = () => {
 
       {/* Donations Count */}
       <div className="mb-4">
-        <h2 className="text-lg font-semibold text-gray-800 text-left">
+        <h2
+          className="text-lg font-semibold text-left"
+          style={{ color: "var(--text-primary)" }}
+        >
           All Donations ({filteredDonations.length})
         </h2>
       </div>

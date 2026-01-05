@@ -25,13 +25,17 @@ const DonationActivityCard: React.FC<DonationActivityCardProps> = ({
 
   return (
     <div
-      className={`group/item relative flex items-center transition-all duration-300 overflow-hidden bg-white border border-gray-100 font-sans rounded-none
+      className={`group/item relative flex items-center transition-all duration-300 overflow-hidden border font-sans rounded-none
         ${
           compact
-            ? "gap-4 p-4 hover:bg-gray-50/50"
-            : "gap-5 p-5 hover:border-emerald-100/50 hover:bg-gray-50/30"
+            ? "gap-4 p-4 hover:bg-emerald-50/10"
+            : "gap-5 p-5 hover:border-emerald-100/50 hover:bg-emerald-50/10"
         }
       `}
+      style={{
+        backgroundColor: "var(--bg-primary)",
+        borderColor: "var(--border-color)",
+      }}
     >
       {/* Slim Vertical Status Bar */}
       <div
@@ -59,16 +63,18 @@ const DonationActivityCard: React.FC<DonationActivityCardProps> = ({
       <div className="flex-1 min-w-0">
         <div className="flex flex-col items-start mb-1.5">
           <h3
-            className={`font-bold text-gray-900 tracking-tight truncate w-full text-start leading-none mb-2
+            className={`font-bold tracking-tight truncate w-full text-start leading-none mb-2
             ${compact ? "text-xs" : "text-base"}
           `}
+            style={{ color: "var(--text-primary)" }}
           >
             {title}
           </h3>
           <p
-            className={`font-black text-gray-400 uppercase tracking-[0.2em]
+            className={`font-black uppercase tracking-[0.2em]
             ${compact ? "text-[9px]" : "text-[11px]"}
           `}
+            style={{ color: "var(--text-muted)" }}
           >
             {subtitle}
           </p>
@@ -95,11 +101,15 @@ const DonationActivityCard: React.FC<DonationActivityCardProps> = ({
             >
               {status}
             </span>
-            <div className="w-1.5 h-1.5 bg-gray-100 rounded-full" />
+            <div
+              className="w-1.5 h-1.5 rounded-full"
+              style={{ backgroundColor: "var(--border-color)" }}
+            />
             <p
-              className={`font-bold text-gray-400 tracking-tight
+              className={`font-bold tracking-tight
               ${compact ? "text-[9px]" : "text-[11px]"}
             `}
+              style={{ color: "var(--text-muted)" }}
             >
               {date}
             </p>
@@ -108,7 +118,8 @@ const DonationActivityCard: React.FC<DonationActivityCardProps> = ({
           {!compact && actionLabel && (
             <button
               onClick={onActionClick}
-              className="text-[10px] font-black text-gray-400 uppercase tracking-widest hover:text-emerald-500 transition-all border-b border-transparent hover:border-emerald-500/20"
+              className="text-[10px] font-black uppercase tracking-widest hover:text-emerald-500 transition-all border-b border-transparent hover:border-emerald-500/20"
+              style={{ color: "var(--text-muted)" }}
             >
               {actionLabel}
             </button>

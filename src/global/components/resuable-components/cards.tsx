@@ -64,7 +64,7 @@ const StatCard: React.FC<StatCardProps> = ({
         };
       default:
         return {
-          textColor: "text-gray-500",
+          textColor: "var(--text-muted)",
           icon: null,
         };
     }
@@ -74,16 +74,29 @@ const StatCard: React.FC<StatCardProps> = ({
 
   return (
     <div
-      className="bg-white rounded-sm border border-gray-200 p-5 transition-all duration-200 hover:border-gray-300 cursor-pointer group"
+      className="rounded-sm border p-5 transition-all duration-200 cursor-pointer group"
+      style={{
+        backgroundColor: "var(--bg-primary)",
+        borderColor: "var(--border-color)",
+      }}
       onClick={onClick}
     >
       {/* Header: Title and Icon */}
       <div className="flex justify-between items-start mb-4">
-        <h4 className="text-sm font-medium text-gray-500 uppercase tracking-wide">
+        <h4
+          className="text-sm font-medium uppercase tracking-wide"
+          style={{ color: "var(--text-muted)" }}
+        >
           {title}
         </h4>
         {icon && (
-          <div className="p-2.5 rounded-sm bg-gray-50 text-gray-400 group-hover:bg-gray-100 transition-colors">
+          <div
+            className="p-2.5 rounded-sm transition-colors"
+            style={{
+              backgroundColor: "var(--bg-secondary)",
+              color: "var(--text-muted)",
+            }}
+          >
             {icon}
           </div>
         )}
@@ -91,7 +104,12 @@ const StatCard: React.FC<StatCardProps> = ({
 
       {/* Value */}
       <div className="mb-3">
-        <p className="text-2xl font-black text-slate-800">{value}</p>
+        <p
+          className="text-2xl font-black"
+          style={{ color: "var(--text-primary)" }}
+        >
+          {value}
+        </p>
       </div>
 
       {/* Change Indicator */}

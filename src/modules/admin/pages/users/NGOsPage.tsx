@@ -98,15 +98,37 @@ const NgoPage = () => {
   };
 
   const getStatusBadge = (status: NgoStatus): React.ReactElement => {
-    const statusClasses: Record<NgoStatus, string> = {
-      Active: "bg-emerald-50 text-hf-green border border-emerald-100",
-      Pending: "bg-yellow-100 text-yellow-800 border border-yellow-300",
-      Deactivated: "bg-red-100 text-red-800 border border-red-300",
+    const statusStyles: Record<
+      NgoStatus,
+      { backgroundColor: string; color: string; border: string }
+    > = {
+      Active: {
+        backgroundColor: "rgba(34, 197, 94, 0.1)",
+        color: "#22c55e",
+        border: "1px solid rgba(34, 197, 94, 0.2)",
+      },
+      Pending: {
+        backgroundColor: "rgba(234, 179, 8, 0.1)",
+        color: "#ca8a04",
+        border: "1px solid rgba(234, 179, 8, 0.2)",
+      },
+      Deactivated: {
+        backgroundColor: "rgba(239, 68, 68, 0.1)",
+        color: "#ef4444",
+        border: "1px solid rgba(239, 68, 68, 0.2)",
+      },
     };
+
+    const style = statusStyles[status];
 
     return (
       <span
-        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${statusClasses[status]}`}
+        className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium"
+        style={{
+          backgroundColor: style.backgroundColor,
+          color: style.color,
+          border: style.border,
+        }}
       >
         {status}
       </span>
@@ -116,20 +138,32 @@ const NgoPage = () => {
   const pendingCount = ngoData.filter((ngo) => ngo.status === "Pending").length;
 
   return (
-    <div className="p-6 space-y-6">
+    <div
+      className="p-6 space-y-6 min-h-screen"
+      style={{ backgroundColor: "var(--bg-primary)" }}
+    >
       {/* Header */}
       <div className="text-left">
-        <h1 className="text-xl font-bold text-gray-900 tracking-tight">
+        <h1
+          className="text-xl font-bold tracking-tight"
+          style={{ color: "var(--text-primary)" }}
+        >
           NGO Management
         </h1>
-        <p className="text-gray-600 mt-2">
+        <p className="mt-2" style={{ color: "var(--text-muted)" }}>
           Monitor and manage NGO registrations
         </p>
       </div>
 
       {/* Pending Status Banner */}
       {pendingCount > 0 && (
-        <div className="flex items-center justify-between bg-blue-50 px-4 py-3 rounded-lg border border-blue-200">
+        <div
+          className="flex items-center justify-between px-4 py-3 rounded-lg border"
+          style={{
+            backgroundColor: "rgba(59, 130, 246, 0.1)",
+            borderColor: "rgba(59, 130, 246, 0.2)",
+          }}
+        >
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
               <svg
@@ -145,11 +179,14 @@ const NgoPage = () => {
               </svg>
             </div>
             <div>
-              <div className="text-sm font-semibold text-gray-900">
+              <div
+                className="text-sm font-semibold"
+                style={{ color: "var(--text-primary)" }}
+              >
                 {pendingCount} Pending Registration
                 {pendingCount !== 1 ? "s" : ""}
               </div>
-              <div className="text-xs text-gray-600">
+              <div className="text-xs" style={{ color: "var(--text-muted)" }}>
                 NGOs awaiting approval
               </div>
             </div>
@@ -212,11 +249,19 @@ const NgoPage = () => {
           switch (columnKey) {
             case "name":
               return (
-                <div className="font-semibold text-gray-900">{ngo.name}</div>
+                <div
+                  className="font-semibold"
+                  style={{ color: "var(--text-primary)" }}
+                >
+                  {ngo.name}
+                </div>
               );
             case "registrationNo":
               return (
-                <div className="text-sm text-gray-500 font-mono">
+                <div
+                  className="text-sm font-mono"
+                  style={{ color: "var(--text-muted)" }}
+                >
                   {ngo.registrationNo}
                 </div>
               );
@@ -240,7 +285,10 @@ const NgoPage = () => {
               );
             case "beneficiaries":
               return (
-                <span className="text-sm text-gray-700">
+                <span
+                  className="text-sm"
+                  style={{ color: "var(--text-secondary)" }}
+                >
                   {ngo.beneficiaries}
                 </span>
               );
@@ -275,17 +323,29 @@ const NgoPage = () => {
           backdrop: "bg-black/50",
         }}
       >
-        <DrawerContent className="bg-white no-scrollbar">
+        <DrawerContent
+          className="no-scrollbar"
+          style={{ backgroundColor: "var(--bg-primary)" }}
+        >
           {(_onClose) => (
             <>
-              <DrawerHeader className="flex flex-col gap-1 no-scrollbar border-b border-gray-200 px-6 py-4">
+              <DrawerHeader
+                className="flex flex-col gap-1 no-scrollbar border-b px-6 py-4"
+                style={{ borderBottomColor: "var(--border-color)" }}
+              >
                 <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-bold text-gray-900">
+                  <h2
+                    className="text-xl font-bold"
+                    style={{ color: "var(--text-primary)" }}
+                  >
                     NGO Details
                   </h2>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-500">
+                  <span
+                    className="text-sm"
+                    style={{ color: "var(--text-muted)" }}
+                  >
                     Registration Details
                   </span>
                   {selectedNgo && getStatusBadge(selectedNgo.status)}
@@ -296,12 +356,29 @@ const NgoPage = () => {
                 {selectedNgo && (
                   <>
                     {/* Organization Overview */}
-                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-3 rounded-lg border border-blue-100">
-                      <h3 className="font-semibold text-gray-900 text-md mb-2">
+                    <div
+                      className="p-3 rounded-lg border"
+                      style={{
+                        background:
+                          "linear-gradient(to right, rgba(59, 130, 246, 0.1), rgba(99, 102, 241, 0.1))",
+                        borderColor: "rgba(59, 130, 246, 0.2)",
+                      }}
+                    >
+                      <h3
+                        className="font-semibold text-md mb-2"
+                        style={{ color: "var(--text-primary)" }}
+                      >
                         {selectedNgo.name}
                       </h3>
-                      <div className="text-sm text-gray-600">
-                        <div className="font-mono text-xs bg-white px-2 py-1 rounded border inline-block">
+                      <div className="text-sm">
+                        <div
+                          className="font-mono text-xs px-2 py-1 rounded border inline-block"
+                          style={{
+                            backgroundColor: "var(--bg-secondary)",
+                            borderColor: "var(--border-color)",
+                            color: "var(--text-primary)",
+                          }}
+                        >
                           {selectedNgo.registrationNo}
                         </div>
                       </div>
@@ -309,47 +386,83 @@ const NgoPage = () => {
 
                     {/* Contact Information */}
                     <div>
-                      <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-2">
+                      <h3
+                        className="text-sm font-semibold uppercase tracking-wider mb-2"
+                        style={{ color: "var(--text-primary)" }}
+                      >
                         Contact Information
                       </h3>
                       <div className="space-y-2">
                         <div className="flex items-start space-x-2">
-                          <div className="w-6 h-6 bg-blue-100 rounded flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <div
+                            className="w-6 h-6 rounded flex items-center justify-center flex-shrink-0 mt-0.5"
+                            style={{
+                              backgroundColor: "rgba(59, 130, 246, 0.1)",
+                            }}
+                          >
                             <span className="text-blue-600 text-xs">📧</span>
                           </div>
                           <div className="min-w-0 flex-1">
-                            <div className="text-xs font-medium text-gray-500 uppercase">
+                            <div
+                              className="text-xs font-medium uppercase"
+                              style={{ color: "var(--text-muted)" }}
+                            >
                               Email
                             </div>
-                            <div className="text-sm text-gray-900 break-words">
+                            <div
+                              className="text-sm break-words"
+                              style={{ color: "var(--text-secondary)" }}
+                            >
                               {selectedNgo.email}
                             </div>
                           </div>
                         </div>
 
                         <div className="flex items-start space-x-2">
-                          <div className="w-6 h-6 bg-emerald-50 rounded flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <div
+                            className="w-6 h-6 rounded flex items-center justify-center flex-shrink-0 mt-0.5"
+                            style={{
+                              backgroundColor: "rgba(34, 197, 94, 0.1)",
+                            }}
+                          >
                             <span className="text-hf-green text-xs">📞</span>
                           </div>
                           <div className="min-w-0 flex-1">
-                            <div className="text-xs font-medium text-gray-500 uppercase">
+                            <div
+                              className="text-xs font-medium uppercase"
+                              style={{ color: "var(--text-muted)" }}
+                            >
                               Phone
                             </div>
-                            <div className="text-sm text-gray-900">
+                            <div
+                              className="text-sm"
+                              style={{ color: "var(--text-secondary)" }}
+                            >
                               {selectedNgo.phone}
                             </div>
                           </div>
                         </div>
 
                         <div className="flex items-start space-x-2">
-                          <div className="w-6 h-6 bg-purple-100 rounded flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <div
+                            className="w-6 h-6 rounded flex items-center justify-center flex-shrink-0 mt-0.5"
+                            style={{
+                              backgroundColor: "rgba(168, 85, 247, 0.1)",
+                            }}
+                          >
                             <span className="text-purple-600 text-xs">📍</span>
                           </div>
                           <div className="min-w-0 flex-1">
-                            <div className="text-xs font-medium text-gray-500 uppercase">
+                            <div
+                              className="text-xs font-medium uppercase"
+                              style={{ color: "var(--text-muted)" }}
+                            >
                               Address
                             </div>
-                            <div className="text-sm text-gray-900">
+                            <div
+                              className="text-sm"
+                              style={{ color: "var(--text-secondary)" }}
+                            >
                               {selectedNgo.address}
                             </div>
                           </div>
@@ -359,14 +472,22 @@ const NgoPage = () => {
 
                     {/* Service Areas */}
                     <div>
-                      <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-2">
+                      <h3
+                        className="text-sm font-semibold uppercase tracking-wider mb-2"
+                        style={{ color: "var(--text-primary)" }}
+                      >
                         Service Areas
                       </h3>
                       <div className="flex flex-wrap gap-1">
                         {selectedNgo.serviceAreas.map((area, index) => (
                           <span
                             key={index}
-                            className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-emerald-50 text-hf-green border border-emerald-100"
+                            className="inline-flex items-center px-2 py-1 rounded text-xs font-medium border"
+                            style={{
+                              backgroundColor: "rgba(34, 197, 94, 0.1)",
+                              color: "#22c55e",
+                              borderColor: "rgba(34, 197, 94, 0.2)",
+                            }}
                           >
                             {area}
                           </span>
@@ -376,24 +497,42 @@ const NgoPage = () => {
 
                     {/* Beneficiaries */}
                     <div>
-                      <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-2">
+                      <h3
+                        className="text-sm font-semibold uppercase tracking-wider mb-2"
+                        style={{ color: "var(--text-primary)" }}
+                      >
                         Beneficiaries
                       </h3>
-                      <div className="text-sm text-gray-900 bg-orange-50 px-3 py-2 rounded border border-orange-200">
+                      <div
+                        className="text-sm px-3 py-2 rounded border"
+                        style={{
+                          backgroundColor: "rgba(249, 115, 22, 0.1)",
+                          borderColor: "rgba(249, 115, 22, 0.2)",
+                          color: "var(--text-secondary)",
+                        }}
+                      >
                         {selectedNgo.beneficiaries}
                       </div>
                     </div>
 
                     {/* Volunteers */}
                     <div>
-                      <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-2">
+                      <h3
+                        className="text-sm font-semibold uppercase tracking-wider mb-2"
+                        style={{ color: "var(--text-primary)" }}
+                      >
                         Volunteers ({selectedNgo.volunteers.length})
                       </h3>
                       <div className="space-y-1">
                         {selectedNgo.volunteers.map((volunteer, index) => (
                           <div
                             key={index}
-                            className="flex items-center space-x-2 text-sm text-gray-700 bg-gray-50 px-3 py-2 rounded border border-gray-200"
+                            className="flex items-center space-x-2 text-sm px-3 py-2 rounded border"
+                            style={{
+                              backgroundColor: "var(--bg-secondary)",
+                              borderColor: "var(--border-color)",
+                              color: "var(--text-secondary)",
+                            }}
                           >
                             <div className="w-6 h-6 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
                               {volunteer

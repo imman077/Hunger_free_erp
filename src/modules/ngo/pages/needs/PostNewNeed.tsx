@@ -96,7 +96,13 @@ const PostNewNeed = () => {
         className="max-w-5xl mx-auto space-y-10 pb-32"
       >
         {/* Card 01: Item Info */}
-        <div className="bg-white border border-gray-100 rounded-sm">
+        <div
+          className="border rounded-sm"
+          style={{
+            backgroundColor: "var(--bg-primary)",
+            borderColor: "var(--border-color)",
+          }}
+        >
           <div className="border-b border-gray-100 p-6 flex items-center gap-4 rounded-t-none">
             <div className="w-12 h-12 bg-[#ecfdf5] border border-[#d1fae5] rounded-sm flex items-center justify-center text-[#16a34a]">
               <Package size={24} />
@@ -160,7 +166,13 @@ const PostNewNeed = () => {
         </div>
 
         {/* Card 02: Beneficiary Info */}
-        <div className="bg-white border border-gray-100 rounded-sm">
+        <div
+          className="border rounded-sm"
+          style={{
+            backgroundColor: "var(--bg-primary)",
+            borderColor: "var(--border-color)",
+          }}
+        >
           <div className="border-b border-gray-100 p-6 flex items-center gap-4">
             <div className="w-12 h-12 bg-blue-50 border border-blue-100 rounded-sm flex items-center justify-center text-blue-600">
               <Users size={24} />

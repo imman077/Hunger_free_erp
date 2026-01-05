@@ -164,10 +164,14 @@ const Header: React.FC = () => {
     <>
       <header
         className={
-          "fixed top-0 right-0 h-20 bg-white shadow z-40 flex items-center justify-between px-6 transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] " +
+          "fixed top-0 right-0 h-20 shadow z-40 flex items-center justify-between px-6 transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] " +
           (expanded ? "md:left-[260px]" : "md:left-[70px]") + // Increased to match new sidebar width
           " left-0 right-0"
         }
+        style={{
+          backgroundColor: "var(--bg-primary)",
+          borderBottom: "1px solid var(--border-color)",
+        }}
       >
         {/* Left section - Mobile menu and title */}
         <div className="flex items-center">
@@ -208,7 +212,10 @@ const Header: React.FC = () => {
                 },
               }}
             >
-              <BellIcon color="black" className="h-6 w-6" />
+              <BellIcon
+                className="h-6 w-6"
+                style={{ color: "var(--text-primary)" }}
+              />
             </Badge>
           </IconButton>
 
@@ -292,15 +299,23 @@ const Header: React.FC = () => {
 
       {/* ---------------- NOTIFICATION DRAWER ---------------- */}
       <div
-        className={`fixed top-0 right-0 h-full w-full max-w-[380px] bg-white shadow-[-20px_0_60px_rgba(0,0,0,0.05)] z-[100] transform transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col ${
+        className={`fixed top-0 right-0 h-full w-full max-w-[380px] z-[100] transform transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col ${
           notificationDrawerOpen ? "translate-x-0" : "translate-x-full"
         }`}
+        style={{
+          backgroundColor: "var(--bg-primary)",
+          boxShadow: "var(--shadow-lg)",
+          borderLeft: "1px solid var(--border-color)",
+        }}
       >
         {/* HEADER SECTION */}
         <div className="p-5 pb-0 flex flex-col gap-4 flex-shrink-0">
           <div className="flex items-center justify-between">
             <div className="flex flex-col">
-              <h3 className="text-base font-extrabold text-slate-900 tracking-tight leading-none mb-1">
+              <h3
+                className="text-base font-extrabold tracking-tight leading-none mb-1"
+                style={{ color: "var(--text-primary)" }}
+              >
                 Notifications
               </h3>
               <div className="flex items-center gap-1.5">
@@ -310,12 +325,18 @@ const Header: React.FC = () => {
                       className="w-1.5 h-1.5 rounded-full bg-hf-green animate-pulse"
                       style={{ backgroundColor: "#22c55e" }}
                     />
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    <span
+                      className="text-[10px] font-black uppercase tracking-widest"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       {getUnreadCount()} Active
                     </span>
                   </>
                 ) : (
-                  <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                  <span
+                    className="text-xs font-bold uppercase tracking-widest"
+                    style={{ color: "var(--text-muted)" }}
+                  >
                     No New Messages
                   </span>
                 )}
@@ -323,7 +344,12 @@ const Header: React.FC = () => {
             </div>
             <button
               onClick={() => setNotificationDrawerOpen(false)}
-              className="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-all border border-slate-100"
+              className="w-9 h-9 flex items-center justify-center rounded-xl transition-all border"
+              style={{
+                color: "var(--text-secondary)",
+                borderColor: "var(--border-color)",
+                backgroundColor: "var(--bg-secondary)",
+              }}
             >
               <XIcon className="w-4.5 h-4.5" />
             </button>
@@ -372,12 +398,14 @@ const Header: React.FC = () => {
             notifications.map((n) => (
               <div
                 key={n.id}
-                className={`group relative flex gap-3.5 p-3 bg-white rounded-2xl border transition-all duration-300 cursor-pointer overflow-hidden
-                  ${
-                    !n.isRead
-                      ? "border-slate-200 shadow-sm"
-                      : "border-slate-100 opacity-60 grayscale-[0.3]"
-                  }`}
+                className={`group relative flex gap-3.5 p-3 rounded-2xl border transition-all duration-300 cursor-pointer overflow-hidden
+                  ${!n.isRead ? "shadow-sm" : "opacity-60 grayscale-[0.3]"}`}
+                style={{
+                  backgroundColor: n.isRead
+                    ? "var(--bg-secondary)"
+                    : "var(--bg-primary)",
+                  borderColor: "var(--border-color)",
+                }}
               >
                 {/* Type/Priority Vertical Pillar */}
                 <div
@@ -414,14 +442,20 @@ const Header: React.FC = () => {
                   </div>
 
                   <h4
-                    className="text-[13px] font-bold text-slate-900 mb-0.5 group-hover:text-hf-green transition-colors leading-snug truncate"
+                    className="text-[13px] font-bold mb-0.5 group-hover:text-hf-green transition-colors leading-snug truncate"
                     style={
-                      { "--hover-color": "#22c55e" } as React.CSSProperties
+                      {
+                        "--hover-color": "#22c55e",
+                        color: "var(--text-primary)",
+                      } as React.CSSProperties
                     }
                   >
                     {n.title}
                   </h4>
-                  <p className="text-[11px] text-slate-500 font-medium leading-tight">
+                  <p
+                    className="text-[11px] font-medium leading-tight"
+                    style={{ color: "var(--text-secondary)" }}
+                  >
                     {n.message}
                   </p>
 
@@ -435,12 +469,16 @@ const Header: React.FC = () => {
                           e.stopPropagation();
                           deleteNotification(n.id);
                         }}
-                        className="p-1 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-md transition-all"
+                        className="p-1 hover:text-rose-500 hover:bg-rose-50 rounded-md transition-all"
+                        style={{ color: "var(--text-muted)" }}
                       >
                         <TrashIcon className="w-3 h-3" />
                       </button>
                     </div>
-                    <span className="text-[9px] text-slate-300 font-semibold tabular-nums">
+                    <span
+                      className="text-[9px] font-semibold tabular-nums"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       {formatDistanceToNow(n.time, { addSuffix: false })}
                     </span>
                   </div>

@@ -68,7 +68,6 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
   scrollBehavior = "normal",
   placement = "center",
   hideCloseButton = false,
-  radius = "sm",
   className = "",
   classNames = {},
   onClose,
@@ -105,10 +104,10 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
       radius="none"
       className={className}
       classNames={{
-        backdrop: `!fixed !inset-0 !w-screen !h-screen bg-slate-900/50 backdrop-blur-md ${
+        backdrop: `!fixed !inset-0 !w-screen !h-screen bg-black/50 backdrop-blur-md ${
           classNames.backdrop || ""
         }`,
-        base: `!border-none !outline-none !ring-0 !ring-transparent bg-white shadow-2xl overflow-hidden rounded-sm ${
+        base: `!border-none !outline-none !ring-0 !ring-transparent shadow-2xl overflow-hidden rounded-sm ${
           showTrendingLayout ? "max-w-[850px] !h-[680px]" : ""
         } ${classNames.base || ""}`,
         body: `p-0 ${classNames.body || ""}`,
@@ -116,25 +115,45 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
           classNames.wrapper || ""
         }`,
       }}
+      style={{
+        backgroundColor: "var(--bg-primary)",
+      }}
     >
       <ModalContent className="p-0 bg-transparent border-none outline-none ring-0 focus:outline-none focus-visible:outline-none">
         {(onCloseInternal) => (
-          <div className="flex flex-col w-full bg-white overflow-hidden rounded-sm border-none outline-none">
+          <div
+            className="flex flex-col w-full overflow-hidden rounded-sm border-none outline-none"
+            style={{ backgroundColor: "var(--bg-primary)" }}
+          >
             {/* Header */}
             <div
-              className={`flex-shrink-0 px-6 py-5 flex items-center justify-between border-b border-slate-100 bg-white z-20 ${
+              className={`flex-shrink-0 px-6 py-5 flex items-center justify-between border-b z-20 ${
                 classNames.header || ""
               }`}
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderBottomColor: "var(--border-color)",
+              }}
             >
               <div className="flex items-center gap-4">
                 {icon && (
-                  <div className="flex items-center justify-center w-10 h-10 rounded-sm bg-slate-50 border border-slate-100 text-slate-400">
+                  <div
+                    className="flex items-center justify-center w-10 h-10 rounded-sm border"
+                    style={{
+                      backgroundColor: "var(--bg-secondary)",
+                      borderColor: "var(--border-color)",
+                      color: "var(--text-muted)",
+                    }}
+                  >
                     {icon}
                   </div>
                 )}
                 <div className="flex flex-col">
                   <div className="flex items-center gap-3">
-                    <h2 className="text-xl font-bold text-slate-800 tracking-tight truncate max-w-[400px]">
+                    <h2
+                      className="text-xl font-bold tracking-tight truncate max-w-[400px]"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       {displayName}
                     </h2>
                     {(badge || (showTrendingLayout && !badge)) && (
@@ -145,14 +164,20 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
                     {(status || (showTrendingLayout && !status)) && (
                       <div className="flex items-center gap-1.5 ml-1">
                         <div className="w-2 h-2 bg-emerald-500 rounded-sm" />
-                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                        <span
+                          className="text-[10px] font-bold uppercase tracking-widest"
+                          style={{ color: "var(--text-muted)" }}
+                        >
                           {status || "Live"}
                         </span>
                       </div>
                     )}
                   </div>
                   {subtitle && (
-                    <p className="text-xs text-slate-500 font-normal mt-0.5">
+                    <p
+                      className="text-xs font-normal mt-0.5"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       {subtitle}
                     </p>
                   )}
@@ -165,9 +190,10 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
                     handleClose();
                     onCloseInternal();
                   }}
-                  className={`p-1.5 text-slate-400 hover:text-slate-800 hover:bg-slate-50 rounded-sm transition-all ${
+                  className={`p-1.5 hover:opacity-70 rounded-sm transition-all ${
                     classNames.closeButton || ""
                   }`}
+                  style={{ color: "var(--text-muted)" }}
                 >
                   <Icon name="close" className="w-5 h-5" />
                 </button>
@@ -176,30 +202,55 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
 
             {/* Body */}
             <div
-              className={`flex-1 overflow-y-auto p-6 no-scrollbar bg-[#fafbfc] min-h-[150px] ${
+              className={`flex-1 overflow-y-auto p-6 no-scrollbar min-h-[150px] ${
                 classNames.body || ""
               }`}
+              style={{ backgroundColor: "var(--bg-secondary)" }}
             >
               {showTrendingLayout ? (
                 <div className="space-y-8 animate-in fade-in duration-500">
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="p-4 bg-white border border-slate-100 rounded-sm flex justify-between items-start shadow-sm">
+                    <div
+                      className="p-4 border rounded-sm flex justify-between items-start shadow-sm"
+                      style={{
+                        backgroundColor: "var(--bg-primary)",
+                        borderColor: "var(--border-color)",
+                      }}
+                    >
                       <div className="space-y-1">
-                        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                        <span
+                          className="text-[9px] font-bold uppercase tracking-widest"
+                          style={{ color: "var(--text-muted)" }}
+                        >
                           Partner ID
                         </span>
-                        <p className="text-base font-black text-slate-800">
+                        <p
+                          className="text-base font-black"
+                          style={{ color: "var(--text-primary)" }}
+                        >
                           {displayId}
                         </p>
                       </div>
                       <Icon name="stack" className="w-4 h-4 text-slate-300" />
                     </div>
-                    <div className="p-4 bg-white border border-slate-100 rounded-sm flex justify-between items-start shadow-sm">
+                    <div
+                      className="p-4 border rounded-sm flex justify-between items-start shadow-sm"
+                      style={{
+                        backgroundColor: "var(--bg-primary)",
+                        borderColor: "var(--border-color)",
+                      }}
+                    >
                       <div className="space-y-1">
-                        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                        <span
+                          className="text-[9px] font-bold uppercase tracking-widest"
+                          style={{ color: "var(--text-muted)" }}
+                        >
                           Last Sync
                         </span>
-                        <p className="text-base font-black text-slate-800">
+                        <p
+                          className="text-base font-black"
+                          style={{ color: "var(--text-primary)" }}
+                        >
                           {joinDate}
                         </p>
                       </div>
@@ -213,32 +264,63 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
                   {activeTab === "Profile" ? (
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-in fade-in slide-in-from-left-4 duration-400">
                       <div className="space-y-4">
-                        <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] px-1">
+                        <h3
+                          className="text-[10px] font-bold uppercase tracking-[0.2em] px-1"
+                          style={{ color: "var(--text-muted)" }}
+                        >
                           Identity
                         </h3>
-                        <div className="p-8 bg-white border border-slate-100 rounded-sm shadow-sm flex flex-col items-center">
-                          <div className="w-24 h-24 rounded-sm bg-slate-50 mb-6 border border-slate-100 flex items-center justify-center relative">
+                        <div
+                          className="p-8 border rounded-sm shadow-sm flex flex-col items-center"
+                          style={{
+                            backgroundColor: "var(--bg-primary)",
+                            borderColor: "var(--border-color)",
+                          }}
+                        >
+                          <div
+                            className="w-24 h-24 rounded-sm mb-6 border flex items-center justify-center relative"
+                            style={{
+                              backgroundColor: "var(--bg-secondary)",
+                              borderColor: "var(--border-color)",
+                            }}
+                          >
                             <Icon
                               name="donations"
                               className="w-10 h-10 text-slate-200"
                             />
                           </div>
                           <div className="w-full space-y-3">
-                            <div className="flex items-center gap-3 py-2 border-b border-slate-50">
+                            <div
+                              className="flex items-center gap-3 py-2 border-b"
+                              style={{
+                                borderBottomColor: "var(--border-color)",
+                              }}
+                            >
                               <Icon
                                 name="mail"
                                 className="w-4 h-4 text-slate-400"
                               />
-                              <span className="text-xs font-bold text-slate-600 truncate">
+                              <span
+                                className="text-xs font-bold truncate"
+                                style={{ color: "var(--text-secondary)" }}
+                              >
                                 {email}
                               </span>
                             </div>
-                            <div className="flex items-center gap-3 py-2 border-b border-slate-50">
+                            <div
+                              className="flex items-center gap-3 py-2 border-b"
+                              style={{
+                                borderBottomColor: "var(--border-color)",
+                              }}
+                            >
                               <Icon
                                 name="phone"
                                 className="w-4 h-4 text-slate-400"
                               />
-                              <span className="text-xs font-bold text-slate-600">
+                              <span
+                                className="text-xs font-bold"
+                                style={{ color: "var(--text-secondary)" }}
+                              >
                                 {phone}
                               </span>
                             </div>
@@ -247,7 +329,10 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
                                 name="office"
                                 className="w-4 h-4 text-slate-400"
                               />
-                              <span className="text-xs font-bold text-slate-600 truncate">
+                              <span
+                                className="text-xs font-bold truncate"
+                                style={{ color: "var(--text-secondary)" }}
+                              >
                                 {displayName}
                               </span>
                             </div>
@@ -255,32 +340,64 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
                         </div>
                       </div>
                       <div className="space-y-4">
-                        <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] px-1">
+                        <h3
+                          className="text-[10px] font-bold uppercase tracking-[0.2em] px-1"
+                          style={{ color: "var(--text-muted)" }}
+                        >
                           Metrics
                         </h3>
-                        <div className="p-8 bg-white border border-slate-100 rounded-sm shadow-sm flex flex-col">
+                        <div
+                          className="p-8 border rounded-sm shadow-sm flex flex-col"
+                          style={{
+                            backgroundColor: "var(--bg-primary)",
+                            borderColor: "var(--border-color)",
+                          }}
+                        >
                           <div className="text-center mb-6">
-                            <p className="text-2xl font-black text-slate-800 tracking-tighter">
+                            <p
+                              className="text-2xl font-black tracking-tighter"
+                              style={{ color: "var(--text-primary)" }}
+                            >
                               {data?.activeLedgers || 0}
                             </p>
-                            <span className="text-[9px] font-bold uppercase text-slate-400 tracking-widest mt-1 block">
+                            <span
+                              className="text-[9px] font-bold uppercase tracking-widest mt-1 block"
+                              style={{ color: "var(--text-muted)" }}
+                            >
                               Active Ledgers
                             </span>
                           </div>
                           <div className="space-y-4">
-                            <h4 className="text-[9px] font-bold text-slate-800 border-b border-slate-100 pb-2 uppercase">
+                            <h4
+                              className="text-[9px] font-bold border-b pb-2 uppercase"
+                              style={{
+                                color: "var(--text-primary)",
+                                borderBottomColor: "var(--border-color)",
+                              }}
+                            >
                               Log Events
                             </h4>
                             <div className="relative pl-5 space-y-6">
-                              <div className="absolute left-[5px] top-1 bottom-1 w-px bg-slate-100" />
+                              <div
+                                className="absolute left-[5px] top-1 bottom-1 w-px"
+                                style={{
+                                  backgroundColor: "var(--border-color)",
+                                }}
+                              />
                               {(data?.logEvents || []).map(
                                 (event: any, idx: number) => (
                                   <div key={idx} className="relative">
                                     <div className="absolute -left-[19px] top-1 w-2 h-2 rounded-sm bg-emerald-500" />
-                                    <p className="text-[11px] font-bold text-slate-800 leading-none">
+                                    <p
+                                      className="text-[11px] font-bold leading-none"
+                                      style={{ color: "var(--text-primary)" }}
+                                    >
                                       {event.title}
                                     </p>
-                                    <p className="text-[9px] text-slate-400 font-medium uppercase mt-0.5">
+                                    <p
+                                      className="text-[9px] font-medium uppercase mt-0.5"
+                                      style={{ color: "var(--text-muted)" }}
+                                    >
                                       {event.date}
                                     </p>
                                   </div>
@@ -293,45 +410,84 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
                     </div>
                   ) : (
                     <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-400">
-                      <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] px-1">
+                      <h3
+                        className="text-[10px] font-bold uppercase tracking-[0.2em] px-1"
+                        style={{ color: "var(--text-muted)" }}
+                      >
                         Transaction History
                       </h3>
-                      <div className="bg-white border border-slate-100 rounded-sm shadow-sm overflow-hidden text-left">
+                      <div
+                        className="border rounded-sm shadow-sm overflow-hidden text-left"
+                        style={{
+                          backgroundColor: "var(--bg-primary)",
+                          borderColor: "var(--border-color)",
+                        }}
+                      >
                         <table className="w-full text-left">
                           <thead>
-                            <tr className="bg-slate-50 border-b border-slate-100">
-                              <th className="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-slate-400">
+                            <tr
+                              className="border-b"
+                              style={{
+                                backgroundColor: "var(--bg-secondary)",
+                                borderBottomColor: "var(--border-color)",
+                              }}
+                            >
+                              <th
+                                className="px-6 py-4 text-[9px] font-black uppercase tracking-widest"
+                                style={{ color: "var(--text-muted)" }}
+                              >
                                 ID
                               </th>
-                              <th className="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-slate-400">
+                              <th
+                                className="px-6 py-4 text-[9px] font-black uppercase tracking-widest"
+                                style={{ color: "var(--text-muted)" }}
+                              >
                                 Date
                               </th>
-                              <th className="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-slate-400">
+                              <th
+                                className="px-6 py-4 text-[9px] font-black uppercase tracking-widest"
+                                style={{ color: "var(--text-muted)" }}
+                              >
                                 Asset
                               </th>
-                              <th className="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-slate-400 text-center">
+                              <th
+                                className="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-center"
+                                style={{ color: "var(--text-muted)" }}
+                              >
                                 Audit
                               </th>
                             </tr>
                           </thead>
-                          <tbody className="divide-y divide-slate-50">
+                          <tbody className="divide-y">
                             {history.map((item: any) => (
                               <tr
                                 key={item.id}
-                                className="hover:bg-slate-50 transition-colors"
+                                className="transition-colors"
+                                style={{
+                                  borderBottomColor: "var(--border-color)",
+                                }}
                               >
                                 <td className="px-6 py-3.5">
-                                  <span className="text-[10px] font-bold text-slate-400">
+                                  <span
+                                    className="text-[10px] font-bold"
+                                    style={{ color: "var(--text-muted)" }}
+                                  >
                                     {item.id}
                                   </span>
                                 </td>
                                 <td className="px-6 py-3.5">
-                                  <span className="text-[11px] font-bold text-slate-800">
+                                  <span
+                                    className="text-[11px] font-bold"
+                                    style={{ color: "var(--text-primary)" }}
+                                  >
                                     {item.date}
                                   </span>
                                 </td>
                                 <td className="px-6 py-3.5">
-                                  <span className="text-[9px] font-bold text-slate-500 uppercase tracking-tighter">
+                                  <span
+                                    className="text-[9px] font-bold uppercase tracking-tighter"
+                                    style={{ color: "var(--text-secondary)" }}
+                                  >
                                     {item.type}
                                   </span>
                                 </td>
@@ -354,14 +510,34 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
                     </div>
                   )}
 
-                  <div className="bg-slate-100 p-1 rounded-sm flex items-center h-12 border border-slate-200 shadow-inner">
+                  <div
+                    className="p-1 rounded-sm flex items-center h-12 border shadow-inner"
+                    style={{
+                      backgroundColor: "var(--bg-secondary)",
+                      borderColor: "var(--border-color)",
+                    }}
+                  >
                     <button
                       onClick={() => setActiveTab("Profile")}
                       className={`flex-1 h-full rounded-sm text-[9px] font-bold uppercase tracking-widest transition-all duration-300 ${
                         activeTab === "Profile"
-                          ? "bg-white text-slate-800 shadow-sm border border-slate-100"
-                          : "text-slate-400 hover:text-slate-500"
+                          ? "shadow-sm border"
+                          : "hover:text-slate-500"
                       }`}
+                      style={{
+                        backgroundColor:
+                          activeTab === "Profile"
+                            ? "var(--bg-primary)"
+                            : "transparent",
+                        borderColor:
+                          activeTab === "Profile"
+                            ? "var(--border-color)"
+                            : "transparent",
+                        color:
+                          activeTab === "Profile"
+                            ? "var(--text-primary)"
+                            : "var(--text-muted)",
+                      }}
                     >
                       System Profile
                     </button>
@@ -369,9 +545,23 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
                       onClick={() => setActiveTab("History")}
                       className={`flex-1 h-full rounded-sm text-[9px] font-bold uppercase tracking-widest transition-all duration-300 ${
                         activeTab === "History"
-                          ? "bg-white text-slate-800 shadow-sm border border-slate-100"
-                          : "text-slate-400 hover:text-slate-500"
+                          ? "shadow-sm border"
+                          : "hover:text-slate-500"
                       }`}
+                      style={{
+                        backgroundColor:
+                          activeTab === "History"
+                            ? "var(--bg-primary)"
+                            : "transparent",
+                        borderColor:
+                          activeTab === "History"
+                            ? "var(--border-color)"
+                            : "transparent",
+                        color:
+                          activeTab === "History"
+                            ? "var(--text-primary)"
+                            : "var(--text-muted)",
+                      }}
                     >
                       Ledger Audit
                     </button>
@@ -385,14 +575,25 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
             {/* Footer */}
             {(footer || footerLeft || showTrendingLayout) && (
               <div
-                className={`flex-shrink-0 px-6 py-4 border-t border-slate-100 flex items-center justify-between bg-white z-20 ${
+                className={`flex-shrink-0 px-6 py-4 border-t flex items-center justify-between z-20 ${
                   classNames.footer || ""
                 }`}
+                style={{
+                  backgroundColor: "var(--bg-primary)",
+                  borderTopColor: "var(--border-color)",
+                }}
               >
                 <div className="flex-1">
                   {footerLeft ||
                     (showTrendingLayout && (
-                      <button className="px-4 py-2 border border-slate-200 rounded-sm text-[9px] font-bold text-slate-500 uppercase tracking-widest hover:bg-slate-50 transition-all">
+                      <button
+                        className="px-4 py-2 border rounded-sm text-[9px] font-bold uppercase tracking-widest hover:opacity-70 transition-all"
+                        style={{
+                          backgroundColor: "var(--bg-secondary)",
+                          borderColor: "var(--border-color)",
+                          color: "var(--text-muted)",
+                        }}
+                      >
                         Export JSON
                       </button>
                     ))}
@@ -404,7 +605,8 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
                         handleClose();
                         onCloseInternal();
                       }}
-                      className="px-8 py-2 bg-slate-900 text-white rounded-sm text-[9px] font-bold uppercase tracking-widest hover:bg-black transition-all shadow-md active:scale-95"
+                      className="px-8 py-2 text-white rounded-sm text-[9px] font-bold uppercase tracking-widest hover:opacity-90 transition-all shadow-md active:scale-95"
+                      style={{ backgroundColor: "var(--text-primary)" }}
                     >
                       {showTrendingLayout ? "Close Portal" : "Close"}
                     </button>

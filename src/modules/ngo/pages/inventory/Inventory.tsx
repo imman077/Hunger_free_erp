@@ -62,12 +62,18 @@ const NGOInventory = () => {
   ];
 
   return (
-    <div className="p-6 space-y-6">
+    <div
+      className="p-6 space-y-6"
+      style={{ backgroundColor: "var(--bg-secondary)", minHeight: "100%" }}
+    >
       <div className="text-left">
-        <h1 className="text-xl font-bold text-gray-900 tracking-tight">
+        <h1
+          className="text-xl font-bold tracking-tight"
+          style={{ color: "var(--text-primary)" }}
+        >
           Inventory Management
         </h1>
-        <p className="text-gray-600 mt-2">
+        <p className="mt-2" style={{ color: "var(--text-secondary)" }}>
           Track your current stock and distributed items.
         </p>
       </div>
@@ -88,14 +94,31 @@ const NGOInventory = () => {
           switch (columnKey) {
             case "item":
               return (
-                <span className="font-medium text-gray-900">{record.item}</span>
+                <span
+                  className="font-medium"
+                  style={{ color: "var(--text-primary)" }}
+                >
+                  {record.item}
+                </span>
               );
             case "quantity":
-              return <span className="text-gray-600">{record.quantity}</span>;
+              return (
+                <span style={{ color: "var(--text-secondary)" }}>
+                  {record.quantity}
+                </span>
+              );
             case "location":
-              return <span className="text-gray-600">{record.location}</span>;
+              return (
+                <span style={{ color: "var(--text-secondary)" }}>
+                  {record.location}
+                </span>
+              );
             case "date":
-              return <span className="text-gray-500">{record.date}</span>;
+              return (
+                <span style={{ color: "var(--text-muted)" }}>
+                  {record.date}
+                </span>
+              );
             default:
               return (
                 <span>

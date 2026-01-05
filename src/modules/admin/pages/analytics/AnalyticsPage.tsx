@@ -44,7 +44,7 @@ const AnalyticsPage: React.FC = () => {
       label: "CO2 Offset (kg)",
       val: "4,120.5",
       trend: "Equivalent to 182 trees",
-      color: "bg-blue-500",
+      color: "bg-emerald-500",
     },
     {
       label: "Wastage Rate",
@@ -55,10 +55,13 @@ const AnalyticsPage: React.FC = () => {
   ];
 
   return (
-    <div className="p-10 w-full mx-auto space-y-10 animate-in fade-in duration-700">
+    <div className="p-8 w-full mx-auto space-y-10 animate-in fade-in duration-700">
       <header className="flex justify-between items-end">
         <div className="text-start">
-          <h1 className="text-4xl font-black text-slate-900 tracking-tight">
+          <h1
+            className="text-4xl font-black tracking-tight"
+            style={{ color: "var(--text-primary)" }}
+          >
             Food Rescue Intelligence
           </h1>
           <p className="text-slate-500 font-semibold mt-2">
@@ -82,10 +85,19 @@ const AnalyticsPage: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 text-start">
         {/* Main Graph */}
-        <div className="lg:col-span-8 bg-white p-6 rounded-sm border border-gray-200 shadow-sm">
+        <div
+          className="lg:col-span-8 p-6 rounded-sm border shadow-sm"
+          style={{
+            backgroundColor: "var(--bg-primary)",
+            borderColor: "var(--border-color)",
+          }}
+        >
           <div className="flex justify-between items-center mb-8">
             <div>
-              <h3 className="font-black text-slate-900 text-xl tracking-tight">
+              <h3
+                className="font-black text-xl tracking-tight"
+                style={{ color: "var(--text-primary)" }}
+              >
                 Rescue Velocity
               </h3>
               <p className="text-sm text-slate-400 font-medium">
@@ -150,8 +162,17 @@ const AnalyticsPage: React.FC = () => {
         </div>
 
         {/* Categories Bar Chart */}
-        <div className="lg:col-span-4 bg-white p-6 rounded-sm border border-gray-200 shadow-sm flex flex-col">
-          <h3 className="font-black text-slate-900 text-xl tracking-tight mb-2">
+        <div
+          className="lg:col-span-4 p-6 rounded-sm border shadow-sm flex flex-col"
+          style={{
+            backgroundColor: "var(--bg-primary)",
+            borderColor: "var(--border-color)",
+          }}
+        >
+          <h3
+            className="font-black text-xl tracking-tight mb-2"
+            style={{ color: "var(--text-primary)" }}
+          >
             Loss by Category
           </h3>
           <p className="text-sm text-slate-400 font-medium mb-8">

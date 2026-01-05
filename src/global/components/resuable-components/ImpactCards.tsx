@@ -18,15 +18,25 @@ const ImpactCard: React.FC<
 > = ({ label, val, trend, color, orientation }) => {
   return (
     <div
-      className={`bg-white p-8 rounded-none border border-gray-200 transition-all flex flex-col items-center justify-center min-h-[180px] relative overflow-hidden ${
+      className={`p-8 rounded-none border transition-all flex flex-col items-center justify-center min-h-[180px] relative overflow-hidden ${
         orientation === "horizontal" ? "flex-1 min-w-[240px]" : "w-full"
       }`}
+      style={{
+        backgroundColor: "var(--bg-primary)",
+        borderColor: "var(--border-color)",
+      }}
     >
       <div className="mb-6 relative z-10 text-center">
-        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.25em] mb-4">
+        <p
+          className="text-[10px] font-black uppercase tracking-[0.25em] mb-4"
+          style={{ color: "var(--text-muted)" }}
+        >
           {label}
         </p>
-        <h4 className="text-5xl font-black text-slate-900 tracking-tighter tabular-nums leading-none">
+        <h4
+          className="text-5xl font-black tracking-tighter tabular-nums leading-none"
+          style={{ color: "var(--text-primary)" }}
+        >
           {val}
         </h4>
       </div>
@@ -34,14 +44,14 @@ const ImpactCard: React.FC<
       <div className="flex flex-col items-center mt-auto relative z-10 text-center">
         <p
           className={`text-[11px] font-black leading-none ${
-            color === "bg-emerald-500" ? "text-emerald-500" : "text-slate-400"
+            color === "bg-emerald-500" ? "text-emerald-500" : ""
           }`}
+          style={{
+            color: color === "bg-emerald-500" ? "#10b981" : "var(--text-muted)",
+          }}
         >
           {trend}
         </p>
-        {/* <p className="text-[8px] font-bold text-slate-300 uppercase tracking-widest mt-1">
-          Live Statistics
-        </p> */}
       </div>
     </div>
   );

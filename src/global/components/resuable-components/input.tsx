@@ -33,7 +33,10 @@ const ResuableInput: React.FC<ResuableInputProps> = ({
   return (
     <div className={`space-y-1.5 ${alignClass} ${className}`}>
       {label && (
-        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 block px-1">
+        <label
+          className="text-[10px] font-bold uppercase tracking-widest block px-1"
+          style={{ color: "var(--text-muted)" }}
+        >
           {label}
         </label>
       )}
@@ -44,7 +47,12 @@ const ResuableInput: React.FC<ResuableInputProps> = ({
         onChange={(e) => onChange(e.target.value)}
         disabled={disabled}
         required={required}
-        className={`w-full bg-slate-50 border border-slate-200 px-3 py-2.5 rounded-none text-xs font-semibold text-slate-800 focus:outline-none focus:ring-1 focus:ring-[#22c55e]/50 focus:border-[#22c55e] transition-all placeholder:text-slate-300 ${alignClass}`}
+        style={{
+          backgroundColor: "var(--bg-secondary)",
+          borderColor: "var(--border-color)",
+          color: "var(--text-primary)",
+        }}
+        className={`w-full border px-3 py-2.5 rounded-none text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#22c55e]/50 focus:border-[#22c55e] transition-all placeholder:text-neutral-500 ${alignClass}`}
       />
     </div>
   );

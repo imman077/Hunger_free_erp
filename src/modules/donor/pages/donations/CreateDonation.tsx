@@ -52,14 +52,18 @@ const CreateDonation = () => {
   };
 
   return (
-    <div className="p-6 w-full mx-auto bg-gray-50/50 min-h-screen">
+    <div
+      className="p-6 w-full mx-auto min-h-screen"
+      style={{ backgroundColor: "var(--bg-secondary)" }}
+    >
       {/* Header Bar */}
       <div className="max-w-5xl mx-auto mb-10">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-6">
             <button
               onClick={() => navigate("/donor/donations")}
-              className="flex items-center gap-2 text-gray-500 hover:text-gray-800 transition-colors group"
+              className="flex items-center gap-2 transition-colors group"
+              style={{ color: "var(--text-secondary)" }}
             >
               <ArrowLeft
                 size={18}
@@ -71,12 +75,12 @@ const CreateDonation = () => {
             </button>
             <div className="h-10 w-px bg-gray-200 hidden sm:block" />
             <div>
-              <h1 className="text-4xl font-black text-gray-900 tracking-tighter leading-none mb-1">
+              <h1
+                className="text-4xl font-black tracking-tighter leading-none mb-1"
+                style={{ color: "var(--text-primary)" }}
+              >
                 Create Donation
               </h1>
-              {/* <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
-                Module: Donor / Donations / New
-              </p> */}
             </div>
           </div>
           <div className="bg-[#ecfdf5] border border-[#d1fae5] px-4 py-2 rounded-none flex items-center gap-3">
@@ -93,16 +97,31 @@ const CreateDonation = () => {
         className="max-w-5xl mx-auto space-y-10 pb-32"
       >
         {/* Card 01: Food Info */}
-        <div className="bg-white border border-gray-100 rounded-none">
-          <div className="border-b border-gray-100 p-6 flex items-center gap-4 rounded-t-none">
+        <div
+          className="border rounded-none"
+          style={{
+            backgroundColor: "var(--bg-primary)",
+            borderColor: "var(--border-color)",
+          }}
+        >
+          <div
+            className="border-b p-6 flex items-center gap-4 rounded-t-none"
+            style={{ borderColor: "var(--border-color)" }}
+          >
             <div className="w-12 h-12 bg-[#ecfdf5] border border-[#d1fae5] rounded-none flex items-center justify-center text-[#16a34a]">
               <Package size={24} />
             </div>
             <div>
-              <h2 className="text-sm font-black text-gray-900 uppercase tracking-tighter leading-none">
+              <h2
+                className="text-sm font-black uppercase tracking-tighter leading-none"
+                style={{ color: "var(--text-primary)" }}
+              >
                 01. Food Specifications
               </h2>
-              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1.5">
+              <p
+                className="text-[10px] font-bold uppercase tracking-widest mt-1.5"
+                style={{ color: "var(--text-muted)" }}
+              >
                 Technical details about your donation
               </p>
             </div>
@@ -141,7 +160,10 @@ const CreateDonation = () => {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400 block px-1">
+              <label
+                className="text-[10px] font-bold uppercase tracking-widest block px-1"
+                style={{ color: "var(--text-muted)" }}
+              >
                 Detailed Description / Instructions
               </label>
               <textarea
@@ -150,23 +172,43 @@ const CreateDonation = () => {
                   handleValueChange("description", e.target.value)
                 }
                 placeholder="List allergens, storage instructions, or specific handling needs..."
-                className="w-full bg-white border border-gray-200 p-5 rounded-none text-xs font-semibold text-gray-800 focus:outline-none focus:ring-1 focus:ring-[#22c55e]/50 focus:border-[#22c55e] transition-all min-h-[140px] resize-none"
+                className="w-full border p-5 rounded-none text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#22c55e]/50 focus:border-[#22c55e] transition-all min-h-[140px] resize-none"
+                style={{
+                  backgroundColor: "var(--bg-primary)",
+                  borderColor: "var(--border-color)",
+                  color: "var(--text-primary)",
+                }}
               />
             </div>
           </div>
         </div>
 
         {/* Card 02: Logistics */}
-        <div className="bg-white border border-gray-100 rounded-none">
-          <div className="border-b border-gray-100 p-6 flex items-center gap-4 rounded-t-none">
+        <div
+          className="border rounded-none"
+          style={{
+            backgroundColor: "var(--bg-primary)",
+            borderColor: "var(--border-color)",
+          }}
+        >
+          <div
+            className="border-b p-6 flex items-center gap-4 rounded-t-none"
+            style={{ borderColor: "var(--border-color)" }}
+          >
             <div className="w-12 h-12 bg-[#ecfdf5] border border-[#d1fae5] rounded-none flex items-center justify-center text-[#16a34a]">
               <MapPin size={24} />
             </div>
             <div>
-              <h2 className="text-sm font-black text-gray-900 uppercase tracking-tighter leading-none">
+              <h2
+                className="text-sm font-black uppercase tracking-tighter leading-none"
+                style={{ color: "var(--text-primary)" }}
+              >
                 02. Pickup Logistics
               </h2>
-              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1.5">
+              <p
+                className="text-[10px] font-bold uppercase tracking-widest mt-1.5"
+                style={{ color: "var(--text-muted)" }}
+              >
                 Coordination and collection data
               </p>
             </div>
@@ -211,7 +253,14 @@ const CreateDonation = () => {
         </div>
 
         {/* Action Bar (Fixed) */}
-        <div className="fixed bottom-0 left-0 right-0 bg-white/60 backdrop-blur-xl border-t border-slate-100 p-6 z-[200]">
+        <div
+          className="fixed bottom-0 left-0 right-0 backdrop-blur-xl border-t p-6 z-[200]"
+          style={{
+            backgroundColor: "var(--bg-primary)",
+            borderColor: "var(--border-color)",
+            opacity: 0.9,
+          }}
+        >
           <div className="max-w-5xl mx-auto flex items-center justify-end gap-6">
             <ResuableButton
               variant="ghost"

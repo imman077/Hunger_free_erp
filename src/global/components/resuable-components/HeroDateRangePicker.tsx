@@ -80,15 +80,25 @@ const HeroDateRangePicker: React.FC<HeroDateRangePickerProps> = ({
   };
 
   return (
-    <div className="absolute right-0 mt-2 w-[300px] bg-white rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-100 p-5 z-[100] animate-in fade-in zoom-in-95 duration-200">
+    <div
+      className="absolute right-0 mt-2 w-[300px] rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border p-5 z-[100] animate-in fade-in zoom-in-95 duration-200"
+      style={{
+        backgroundColor: "var(--bg-primary)",
+        borderColor: "var(--border-color)",
+      }}
+    >
       <div className="flex items-center justify-between mb-5">
         <button
           onClick={() => changeMonth(-1)}
-          className="p-2 hover:bg-slate-50 rounded-xl transition-colors text-slate-400"
+          className="p-2 transition-colors rounded-xl"
+          style={{ color: "var(--text-muted)" }}
         >
           <ChevronLeft size={18} />
         </button>
-        <h4 className="font-black text-slate-800 text-sm tracking-tight uppercase">
+        <h4
+          className="text-sm font-black tracking-tight uppercase"
+          style={{ color: "var(--text-primary)" }}
+        >
           {currentMonth.toLocaleString("default", {
             month: "long",
             year: "numeric",
@@ -96,7 +106,8 @@ const HeroDateRangePicker: React.FC<HeroDateRangePickerProps> = ({
         </h4>
         <button
           onClick={() => changeMonth(1)}
-          className="p-2 hover:bg-slate-50 rounded-xl transition-colors text-slate-400"
+          className="p-2 transition-colors rounded-xl"
+          style={{ color: "var(--text-muted)" }}
         >
           <ChevronRight size={18} />
         </button>
@@ -106,7 +117,8 @@ const HeroDateRangePicker: React.FC<HeroDateRangePickerProps> = ({
         {["S", "M", "T", "W", "T", "F", "S"].map((d) => (
           <div
             key={d}
-            className="text-[10px] font-black text-slate-300 uppercase py-1"
+            className="text-[10px] font-black uppercase py-1"
+            style={{ color: "var(--text-muted)" }}
           >
             {d}
           </div>
@@ -125,14 +137,22 @@ const HeroDateRangePicker: React.FC<HeroDateRangePickerProps> = ({
               onClick={() => handleDateClick(day)}
               className={`
                 h-9 w-9 text-[11px] font-bold rounded-xl transition-all relative flex items-center justify-center
-                ${
-                  selected
-                    ? "bg-[#22c55e] text-white shadow-lg shadow-green-100 z-10 scale-110"
-                    : ""
-                }
-                ${range ? "bg-green-50 text-[#22c55e] rounded-none" : ""}
-                ${!selected && !range ? "hover:bg-slate-50 text-slate-600" : ""}
+                ${selected ? "bg-[#22c55e] text-white z-10 scale-110" : ""}
+                ${range ? "rounded-none" : ""}
+                ${!selected && !range ? "hover:bg-hf-green/10" : ""}
               `}
+              style={{
+                backgroundColor: selected
+                  ? "#22c55e"
+                  : range
+                  ? "rgba(34, 197, 94, 0.1)"
+                  : "transparent",
+                color: selected
+                  ? "white"
+                  : range
+                  ? "#22c55e"
+                  : "var(--text-secondary)",
+              }}
             >
               {day}
             </button>
@@ -140,22 +160,46 @@ const HeroDateRangePicker: React.FC<HeroDateRangePickerProps> = ({
         })}
       </div>
 
-      <div className="pt-5 border-t border-slate-50 space-y-4">
-        <div className="flex items-center justify-between px-3 bg-slate-50/50 rounded-lg py-3 border border-slate-100">
+      <div
+        className="pt-5 border-t space-y-4"
+        style={{ borderTopColor: "var(--border-color)" }}
+      >
+        <div
+          className="flex items-center justify-between px-3 rounded-lg py-3 border"
+          style={{
+            backgroundColor: "var(--bg-secondary)",
+            borderColor: "var(--border-color)",
+          }}
+        >
           <div className="flex flex-col">
-            <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">
+            <span
+              className="text-[8px] font-black uppercase tracking-widest"
+              style={{ color: "var(--text-muted)" }}
+            >
               Start
             </span>
-            <span className="text-[10px] font-black text-slate-800">
+            <span
+              className="text-[10px] font-black"
+              style={{ color: "var(--text-primary)" }}
+            >
               {selection.start ? formatDateString(selection.start) : "None"}
             </span>
           </div>
-          <div className="w-8 h-[1px] bg-slate-200" />
+          <div
+            className="w-8 h-[1px]"
+            style={{ backgroundColor: "var(--border-color)" }}
+          />
           <div className="flex flex-col items-end">
-            <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">
+            <span
+              className="text-[8px] font-black uppercase tracking-widest"
+              style={{ color: "var(--text-muted)" }}
+            >
               End
             </span>
-            <span className="text-[10px] font-black text-slate-800">
+            <span
+              className="text-[10px] font-black"
+              style={{ color: "var(--text-primary)" }}
+            >
               {selection.end ? formatDateString(selection.end) : "None"}
             </span>
           </div>
@@ -168,7 +212,12 @@ const HeroDateRangePicker: React.FC<HeroDateRangePickerProps> = ({
               setSelection({ start: null, end: null });
               onRangeSelect(null, null);
             }}
-            className="flex-1 py-2.5 bg-white border border-slate-200 text-slate-500 rounded-sm font-bold text-[10px] uppercase tracking-widest hover:bg-slate-50 transition-all flex items-center justify-center gap-2 shadow-sm"
+            className="flex-1 py-2.5 border rounded-sm font-bold text-[10px] uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-sm"
+            style={{
+              backgroundColor: "var(--bg-primary)",
+              borderColor: "var(--border-color)",
+              color: "var(--text-secondary)",
+            }}
           >
             <RotateCcw size={12} />
             Reset

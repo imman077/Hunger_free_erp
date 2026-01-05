@@ -42,12 +42,18 @@ const DonationRequests = () => {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div
+      className="p-6 space-y-6"
+      style={{ backgroundColor: "var(--bg-primary)" }}
+    >
       <div className="text-left">
-        <h1 className="text-xl font-bold text-gray-900 tracking-tight">
+        <h1
+          className="text-xl font-bold tracking-tight"
+          style={{ color: "var(--text-primary)" }}
+        >
           Donation Requests
         </h1>
-        <p className="text-gray-600 mt-2">
+        <p className="mt-2" style={{ color: "var(--text-muted)" }}>
           Review and accept donations from the community.
         </p>
       </div>
@@ -66,28 +72,41 @@ const DonationRequests = () => {
             case "icon":
               return (
                 <div className="flex justify-center">
-                  <div className="w-12 h-12 bg-slate-50 rounded-sm flex items-center justify-center text-xl">
+                  <div
+                    className="w-12 h-12 rounded-sm flex items-center justify-center text-xl"
+                    style={{ backgroundColor: "var(--bg-secondary)" }}
+                  >
                     {donation.icon}
                   </div>
                 </div>
               );
             case "title":
               return (
-                <span className="font-bold text-gray-900">
+                <span
+                  className="font-bold"
+                  style={{ color: "var(--text-primary)" }}
+                >
                   {donation.title}
                 </span>
               );
             case "donor":
-              return <span className="text-gray-600">{donation.donor}</span>;
+              return (
+                <span style={{ color: "var(--text-secondary)" }}>
+                  {donation.donor}
+                </span>
+              );
             case "distance":
               return (
-                <span className="text-gray-500 text-sm">
+                <span
+                  className="text-sm"
+                  style={{ color: "var(--text-muted)" }}
+                >
                   {donation.distance}
                 </span>
               );
             default:
               return (
-                <span>
+                <span style={{ color: "var(--text-primary)" }}>
                   {String(donation[columnKey as keyof DonationRequest])}
                 </span>
               );

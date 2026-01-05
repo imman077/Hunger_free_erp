@@ -69,7 +69,10 @@ const DonorProfile = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50/50">
+    <div
+      className="min-h-screen"
+      style={{ backgroundColor: "var(--bg-secondary)" }}
+    >
       {/* Hero Section */}
       <div className="relative h-64 bg-[#15803d] overflow-hidden">
         <div className="relative max-w-7xl mx-auto px-6 h-full flex items-end pb-12">
@@ -123,9 +126,18 @@ const DonorProfile = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Row 1: Personal Details & Recent Activity */}
-          <section className="lg:col-span-2 bg-white rounded-none border border-gray-100 p-8 hover:border-[#d1fae5] transition-colors h-full flex flex-col">
+          <section
+            className="lg:col-span-2 border p-8 transition-colors h-full flex flex-col"
+            style={{
+              backgroundColor: "var(--bg-primary)",
+              borderColor: "var(--border-color)",
+            }}
+          >
             <div className="flex items-center justify-between mb-8">
-              <h3 className="text-sm font-black text-gray-900 tracking-tight uppercase">
+              <h3
+                className="text-sm font-black tracking-tight uppercase"
+                style={{ color: "var(--text-primary)" }}
+              >
                 Personal Details
               </h3>
               <div className="h-1 w-12 bg-[#22c55e]" />
@@ -159,11 +171,20 @@ const DonorProfile = () => {
                 },
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-4 group">
-                  <div className="p-3 bg-gray-50 rounded-none border border-gray-100 group-hover:bg-[#ecfdf5] group-hover:border-[#d1fae5] group-hover:text-[#16a34a] transition-all duration-300">
+                  <div
+                    className="p-3 rounded-none border transition-all duration-300 group-hover:bg-[#ecfdf5] group-hover:border-[#d1fae5] group-hover:text-[#16a34a]"
+                    style={{
+                      backgroundColor: "var(--bg-secondary)",
+                      borderColor: "var(--border-color)",
+                    }}
+                  >
                     <Icon name={item.icon} className="w-5 h-5" />
                   </div>
                   <div className="flex flex-col min-w-0 flex-1">
-                    <label className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-0.5 group-hover:text-[#22c55e]/50 transition-colors">
+                    <label
+                      className="text-[9px] font-black uppercase tracking-[0.2em] mb-0.5 group-hover:text-[#22c55e]/50 transition-colors"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       {item.label}
                     </label>
                     {isEditing ? (
@@ -176,7 +197,10 @@ const DonorProfile = () => {
                         className="text-sm font-bold text-gray-700 bg-white border border-gray-200 rounded-none px-2 py-1 focus:outline-none focus:border-[#22c55e] transition-colors"
                       />
                     ) : (
-                      <span className="text-sm font-bold text-gray-700 truncate group-hover:text-gray-900 transition-colors">
+                      <span
+                        className="text-sm font-bold truncate transition-colors"
+                        style={{ color: "var(--text-secondary)" }}
+                      >
                         {item.value}
                       </span>
                     )}
@@ -186,9 +210,18 @@ const DonorProfile = () => {
             </div>
           </section>
 
-          <section className="bg-white rounded-none border border-gray-100 p-8 h-full flex flex-col">
+          <section
+            className="border p-8 h-full flex flex-col"
+            style={{
+              backgroundColor: "var(--bg-primary)",
+              borderColor: "var(--border-color)",
+            }}
+          >
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-sm font-black text-gray-900 tracking-tight uppercase px-1">
+              <h3
+                className="text-sm font-black tracking-tight uppercase px-1"
+                style={{ color: "var(--text-primary)" }}
+              >
                 Recent Activity
               </h3>
               <span className="text-[10px] font-black text-[#16a34a] uppercase tracking-widest cursor-pointer hover:underline">
@@ -198,10 +231,19 @@ const DonorProfile = () => {
 
             <div className="relative flex-1 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent">
               <div className="space-y-6 relative">
-                <div className="absolute left-[15px] top-2 bottom-2 w-0.5 bg-gray-100" />
+                <div
+                  className="absolute left-[15px] top-2 bottom-2 w-0.5"
+                  style={{ backgroundColor: "var(--border-color)" }}
+                />
                 {activities.map((activity, i) => (
                   <div key={i} className="relative pl-10 group">
-                    <div className="absolute left-0 top-1 w-8 h-8 rounded-full bg-white border border-gray-100 flex items-center justify-center group-hover:border-[#22c55e] transition-colors z-10">
+                    <div
+                      className="absolute left-0 top-1 w-8 h-8 rounded-full border flex items-center justify-center group-hover:border-[#22c55e] transition-colors z-10"
+                      style={{
+                        backgroundColor: "var(--bg-primary)",
+                        borderColor: "var(--border-color)",
+                      }}
+                    >
                       <Icon
                         name={
                           activity.type === "donation"
@@ -212,13 +254,22 @@ const DonorProfile = () => {
                       />
                     </div>
                     <div>
-                      <h4 className="text-sm font-black text-gray-900 group-hover:text-[#16a34a] transition-colors">
+                      <h4
+                        className="text-sm font-black group-hover:text-[#16a34a] transition-colors"
+                        style={{ color: "var(--text-primary)" }}
+                      >
                         {activity.title}
                       </h4>
-                      <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">
+                      <p
+                        className="text-[10px] font-bold uppercase tracking-wider mb-1"
+                        style={{ color: "var(--text-muted)" }}
+                      >
                         {activity.time}
                       </p>
-                      <p className="text-xs text-gray-600 leading-relaxed font-medium text-start">
+                      <p
+                        className="text-xs leading-relaxed font-medium text-start"
+                        style={{ color: "var(--text-secondary)" }}
+                      >
                         {activity.desc}
                       </p>
                     </div>
@@ -229,13 +280,25 @@ const DonorProfile = () => {
           </section>
 
           {/* Row 2: Achievements & Status */}
-          <section className="lg:col-span-2 bg-white rounded-none border border-gray-100 p-8 h-full flex flex-col relative overflow-hidden group/ach">
+          <section
+            className="lg:col-span-2 border p-8 h-full flex flex-col relative overflow-hidden group/ach"
+            style={{
+              backgroundColor: "var(--bg-primary)",
+              borderColor: "var(--border-color)",
+            }}
+          >
             <div className="flex items-center justify-between mb-8 relative z-10">
               <div>
-                <h3 className="text-sm font-black text-gray-900 tracking-tighter uppercase leading-none px-1">
+                <h3
+                  className="text-sm font-black tracking-tighter uppercase leading-none px-1"
+                  style={{ color: "var(--text-primary)" }}
+                >
                   Impact Milestones
                 </h3>
-                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.25em] mt-2">
+                <p
+                  className="text-[10px] font-bold uppercase tracking-[0.25em] mt-2"
+                  style={{ color: "var(--text-muted)" }}
+                >
                   Unlock your hidden potential
                 </p>
               </div>
@@ -267,14 +330,14 @@ const DonorProfile = () => {
                   name: "Community Hero",
                   desc: "Helped over 50 families",
                   status: "Veteran",
-                  color: "blue",
+                  color: "emerald",
                   icon: "users",
                 },
                 {
                   name: "Consistency King",
                   desc: "Donated 5 weeks in a row",
                   status: "Active",
-                  color: "purple",
+                  color: "emerald",
                   icon: "calendar",
                 },
               ].map((badge, i) => (
@@ -283,25 +346,16 @@ const DonorProfile = () => {
                   className={`group relative p-5 rounded-none border transition-all duration-300 cursor-pointer flex flex-col justify-between
                   ${
                     badge.color === "amber"
-                      ? "bg-white border-amber-50 hover:border-amber-200"
+                      ? "border-amber-50 hover:border-amber-200"
                       : ""
                   }
                   ${
                     badge.color === "emerald"
-                      ? "bg-white border-[#d1fae5] hover:border-emerald-200"
-                      : ""
-                  }
-                  ${
-                    badge.color === "blue"
-                      ? "bg-white border-blue-100 hover:border-blue-200"
-                      : ""
-                  }
-                  ${
-                    badge.color === "purple"
-                      ? "bg-white border-purple-100 hover:border-purple-200"
+                      ? "border-[#d1fae5] hover:border-emerald-200"
                       : ""
                   }
                 `}
+                  style={{ backgroundColor: "var(--bg-primary)" }}
                 >
                   <div className="flex items-center gap-4 relative z-10 mb-3">
                     <div
@@ -314,12 +368,6 @@ const DonorProfile = () => {
                           ? "bg-[#22c55e] text-white"
                           : ""
                       }
-                      ${badge.color === "blue" ? "bg-blue-500 text-white" : ""}
-                      ${
-                        badge.color === "purple"
-                          ? "bg-purple-500 text-white"
-                          : ""
-                      }
                     `}
                     >
                       <Icon name={badge.icon} className="w-6 h-6" />
@@ -327,7 +375,10 @@ const DonorProfile = () => {
 
                     <div className="flex-1 min-w-0">
                       <div className="flex justify-between items-start mb-0.5">
-                        <h4 className="text-sm font-black text-gray-900 tracking-tight truncate">
+                        <h4
+                          className="text-sm font-black tracking-tight truncate"
+                          style={{ color: "var(--text-primary)" }}
+                        >
                           {badge.name}
                         </h4>
                       </div>
@@ -344,16 +395,6 @@ const DonorProfile = () => {
                               ? "bg-[#d1fae5] text-[#15803d] border-emerald-200"
                               : ""
                           }
-                          ${
-                            badge.color === "blue"
-                              ? "bg-blue-100 text-blue-700 border-blue-200"
-                              : ""
-                          }
-                          ${
-                            badge.color === "purple"
-                              ? "bg-purple-100 text-purple-700 border-purple-200"
-                              : ""
-                          }
                         `}
                         >
                           {badge.status}
@@ -362,7 +403,10 @@ const DonorProfile = () => {
                     </div>
                   </div>
 
-                  <p className="text-[10px] text-gray-500 font-bold leading-relaxed relative z-10 text-start">
+                  <p
+                    className="text-[10px] font-bold leading-relaxed relative z-10 text-start"
+                    style={{ color: "var(--text-secondary)" }}
+                  >
                     {badge.desc}
                   </p>
                 </div>
