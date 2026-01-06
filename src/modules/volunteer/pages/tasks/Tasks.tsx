@@ -7,7 +7,6 @@ import {
   MapPin,
   Clock,
   Weight,
-  Filter,
   ChefHat,
   Heart,
 } from "lucide-react";

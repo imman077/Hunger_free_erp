@@ -37,7 +37,7 @@ const ResuableInput: React.FC<ResuableInputProps> = ({
           className="text-[10px] font-bold uppercase tracking-widest block px-1"
           style={{ color: "var(--text-muted)" }}
         >
-          {label}
+          {label} {required && <span style={{ color: "#ef4444" }}>*</span>}
         </label>
       )}
       <input

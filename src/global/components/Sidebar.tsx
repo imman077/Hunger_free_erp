@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Icon } from "./resuable-components/Icon";
 import { useSidebar } from "../contexts/SidebarContext";
 import { Link, useLocation } from "react-router-dom";
-import ThemeToggle from "./ThemeToggle";
 
 type SubItem = {
   label: string;
@@ -25,6 +24,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   expanded,
   subItems,
 }) => {
+  const { setExpanded } = useSidebar();
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const isActive = to ? location.pathname === to : false;
@@ -34,7 +34,12 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
 
   const handleClick = () => {
     if (subItems) {
-      setIsOpen(!isOpen);
+      if (!expanded) {
+        setExpanded(true);
+        setIsOpen(true);
+      } else {
+        setIsOpen(!isOpen);
+      }
     }
   };
 
@@ -46,67 +51,49 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
 
   const content = (
     <div
-      className={`group relative w-full flex items-center px-4 py-2 transition-all duration-300 cursor-pointer mb-0.5
+      className={`group relative flex items-center transition-all duration-200 cursor-pointer mb-1 mx-auto
         ${
           isActive || isSubItemActive
-            ? "text-emerald-700 bg-emerald-50/40"
-            : "hover:text-slate-900 hover:bg-slate-50/50"
-        }
-        ${
-          !expanded
-            ? "justify-center rounded-xl"
-            : "rounded-xl mx-2 w-[calc(100%-16px)]"
+            ? expanded
+              ? "w-full p-2.5 bg-emerald-50 text-emerald-700 font-semibold border-l-4 border-emerald-500 shadow-sm rounded-xl"
+              : "w-11 h-11 bg-emerald-50 text-emerald-700 font-semibold shadow-sm rounded-xl justify-center"
+            : expanded
+            ? "w-full p-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-800 rounded-xl"
+            : "w-11 h-11 text-slate-500 hover:bg-slate-50 hover:text-slate-800 rounded-xl justify-center"
         }
       `}
-      style={{
-        borderColor: "var(--border-color)",
-        color:
-          isActive || isSubItemActive ? "#047857" : "var(--text-secondary)",
-      }}
       onClick={handleClick}
     >
-      {/* Premium Active Indicator - Floating Pill */}
       <div
-        className={`absolute left-0 w-1 h-5 bg-emerald-500 rounded-full transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]
-          ${
-            isActive || isSubItemActive
-              ? "translate-x-1 opacity-100 scale-100"
-              : "-translate-x-2 opacity-0 scale-50"
-          }
-        `}
-        style={{ backgroundColor: "#22c55e" }}
-      />
-      <div className="w-8 h-8 flex items-center justify-center shrink-0">
+        className={`flex items-center justify-center shrink-0 ${
+          expanded ? "w-7 h-7" : ""
+        }`}
+      >
         <Icon
           name={
             typeof icon === "string"
               ? icon
               : (icon as any).props.name || label.toLowerCase()
           }
-          className={`w-6 h-6 transition-colors duration-300 ${
+          className={`w-5 h-5 transition-all duration-300 ${
             isActive || isSubItemActive
-              ? "text-emerald-500"
-              : "opacity-70 group-hover:opacity-100"
+              ? "text-emerald-600 opacity-100"
+              : "opacity-25 group-hover:opacity-60"
           }`}
         />
       </div>
       {expanded && (
-        <div className="flex items-center flex-1 ml-3 animate-in fade-in slide-in-from-left-2 duration-300">
-          <span className="flex-1 text-left truncate text-md font-bold tracking-tight">
-            {label}
-          </span>
+        <div className="flex items-center flex-1 ml-2.5 animate-in fade-in slide-in-from-left-2 duration-300 min-w-0">
+          <span className="text-[15px]">{label}</span>
           {subItems && (
             <Icon
               name="chevron-down"
-              className={`w-3 h-3 transition-transform duration-300 ${
-                isOpen ? "rotate-180" : "opacity-30"
+              className={`w-4 h-4 transition-transform duration-300 ml-auto ${
+                isOpen ? "rotate-180" : ""
               }`}
             />
           )}
         </div>
-      )}
-      {!expanded && (isActive || isSubItemActive) && (
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-emerald-500 rounded-l-full" />
       )}
     </div>
   );
@@ -121,31 +108,22 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
             isOpen ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0"
           }`}
         >
-          <div
-            className="ml-9 pl-4 space-y-0.5 py-1 mb-2"
-            style={{ borderLeft: "1px solid var(--border-color)" }}
-          >
+          <div className="ml-8 border-l border-slate-100 space-y-0.5 mt-0.5">
             {subItems.map((item) => {
               const isSubActive = location.pathname === item.to;
               return (
                 <Link
                   key={item.to}
                   to={item.to}
-                  className={`w-full text-left px-3 py-1.5 rounded-lg transition-all flex items-center group/sub ${
+                  className={`w-full flex items-center justify-between px-3 py-1.5 text-sm rounded-lg transition-all duration-200 ${
                     isSubActive
-                      ? "text-emerald-600 bg-emerald-50/50 font-semibold"
-                      : "hover:bg-slate-50/50 font-medium"
+                      ? "text-emerald-600 font-semibold bg-emerald-50/50"
+                      : "text-slate-500 hover:text-emerald-500 hover:translate-x-1"
                   }`}
-                  style={{
-                    color: isSubActive ? "#059669" : "var(--text-secondary)",
-                  }}
                 >
-                  <span className="truncate text-sm flex-1">{item.label}</span>
+                  <span className="truncate">{item.label}</span>
                   {isSubActive && (
-                    <div
-                      className="w-1 h-1 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]"
-                      style={{ backgroundColor: "#22c55e" }}
-                    />
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]" />
                   )}
                 </Link>
               );
@@ -316,143 +294,100 @@ const SidebarIcons: React.FC = () => {
         borderRight: "1px solid var(--border-color)",
       }}
     >
-      {/* Sidebar Header - Adjusted for better spacing */}
       {/* Sidebar Header */}
-      <div className="h-16 flex items-center px-4 flex-shrink-0 w-full overflow-hidden mb-2">
-        <div
-          className="cursor-pointer active:scale-95 transition-all duration-300 w-full flex items-center justify-center overflow-hidden"
-          onClick={() => setExpanded(!expanded)}
-        >
+      <div className="h-20 flex items-center flex-shrink-0 w-full overflow-hidden mb-4">
+        <div className="w-full flex items-center justify-center">
           {expanded ? (
-            <div className="flex items-center gap-2 w-full px-2">
-              <div
-                className="h-px flex-1"
-                style={{ backgroundColor: "var(--border-color)" }}
-              />
-              <span
-                className="text-[10px] font-black uppercase tracking-[0.2em] whitespace-nowrap"
-                style={{ color: "var(--text-muted)" }}
-              >
-                Navigation
-              </span>
-              <div
-                className="h-px flex-1"
-                style={{ backgroundColor: "var(--border-color)" }}
+            <div
+              className="w-full cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={() => setExpanded(!expanded)}
+            >
+              <img
+                src="/HungerFree.svg"
+                className="h-15 w-auto object-contain mx-auto"
+                alt="HungerFree Logo"
               />
             </div>
           ) : (
-            <div
-              className="w-10 h-10 rounded-xl flex items-center justify-center border"
-              style={{
-                backgroundColor: "var(--bg-secondary)",
-                borderColor: "var(--border-color)",
-              }}
+            <button
+              onClick={() => setExpanded(!expanded)}
+              className="w-11 h-11 rounded-xl flex items-center justify-center border border-slate-200 hover:bg-slate-50 transition-all shadow-sm active:scale-95"
             >
-              <span style={{ color: "var(--text-muted)" }}>
-                <Icon
-                  name="menu"
-                  className="w-5 h-5 transition-colors duration-300"
-                />
-              </span>
-            </div>
+              <Icon name="menu" className="w-5 h-5 text-slate-500" />
+            </button>
           )}
         </div>
       </div>
 
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Subtle separator */}
-        {/* <div className="px-6 pb-2">
-          <div className="h-[2px] bg-slate-50 w-full" />
-        </div> */}
-        <nav className="flex-1 overflow-y-auto no-scrollbar px-0 py-2 space-y-0.5">
+        {/* Nav Section */}
+        <nav
+          className={`flex-1 overflow-y-auto no-scrollbar space-y-1 ${
+            expanded ? "px-4" : "px-2"
+          }`}
+        >
           <div className="space-y-1">
-            {/* {expanded && (
-              <div className="px-4 py-1">
-                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
-                  Navigation
-                </span>
-              </div>
-            )} */}
-
-            <div className="space-y-0.5 w-full">
-              <Link to="/admin/dashboard">
-                <SidebarItem
-                  icon={<Icon name="dashboard" />}
-                  label="Dashboard"
-                  to="/admin/dashboard"
-                  expanded={expanded}
-                />
-              </Link>
-
+            <Link to="/admin/dashboard">
               <SidebarItem
-                icon={<Icon name="users" />}
-                label="Users"
+                icon={<Icon name="dashboard" />}
+                label="Dashboard"
+                to="/admin/dashboard"
                 expanded={expanded}
-                subItems={usersSubItems}
               />
+            </Link>
 
-              <SidebarItem
-                icon={<Icon name="donations" />}
-                label="Donations"
-                expanded={expanded}
-                subItems={donationsSubItems}
-              />
+            <SidebarItem
+              icon={<Icon name="users" />}
+              label="Users"
+              expanded={expanded}
+              subItems={usersSubItems}
+            />
 
-              {/* <SidebarItem
-                icon={<Icon name="bell" />}
-                label="Alerts"
-                expanded={expanded}
-                subItems={alertsSubItems}
-              /> */}
+            <SidebarItem
+              icon={<Icon name="donations" />}
+              label="Donations"
+              expanded={expanded}
+              subItems={donationsSubItems}
+            />
 
-              <SidebarItem
-                icon={<Icon name="analytics" />}
-                label="Analytics"
-                expanded={expanded}
-                subItems={analyticsSubItems}
-              />
+            <SidebarItem
+              icon={<Icon name="analytics" />}
+              label="Analytics"
+              expanded={expanded}
+              subItems={analyticsSubItems}
+            />
 
-              <SidebarItem
-                icon={<Icon name="rewards" />}
-                label="Rewards"
-                expanded={expanded}
-                subItems={rewardsSubItems}
-              />
+            <SidebarItem
+              icon={<Icon name="rewards" />}
+              label="Rewards"
+              expanded={expanded}
+              subItems={rewardsSubItems}
+            />
 
-              <div className="px-4 py-2 mt-4">
-                <div className="h-px bg-slate-100 w-full" />
-              </div>
-
-              <SidebarItem
-                icon={<Icon name="users" />}
-                label="Donor"
-                expanded={expanded}
-                subItems={donorSubItems}
-              />
-
-              <SidebarItem
-                icon={<Icon name="office" />}
-                label="NGO"
-                expanded={expanded}
-                subItems={ngoSubItems}
-              />
-
-              <SidebarItem
-                icon={<Icon name="users" />}
-                label="Volunteer"
-                expanded={expanded}
-                subItems={volunteerSubItems}
-              />
-
-              {/* <Link to="/admin/settings">
-                <SidebarItem
-                  icon={<Icon name="settings" />}
-                  label="Settings"
-                  to="/admin/settings"
-                  expanded={expanded}
-                />
-              </Link> */}
+            <div className="px-4 py-3 mt-2">
+              <div className="h-px bg-slate-100 w-full" />
             </div>
+
+            <SidebarItem
+              icon={<Icon name="users" />}
+              label="Donor"
+              expanded={expanded}
+              subItems={donorSubItems}
+            />
+
+            <SidebarItem
+              icon={<Icon name="office" />}
+              label="NGO"
+              expanded={expanded}
+              subItems={ngoSubItems}
+            />
+
+            <SidebarItem
+              icon={<Icon name="users" />}
+              label="Volunteer"
+              expanded={expanded}
+              subItems={volunteerSubItems}
+            />
           </div>
         </nav>
 
@@ -500,7 +435,6 @@ const SidebarIcons: React.FC = () => {
           )}
 
           <div className="flex items-center justify-center gap-3 px-2">
-            <ThemeToggle />
             <button
               onClick={() => setExpanded(!expanded)}
               className="w-10 h-1.5 rounded-full bg-slate-200/50 hover:bg-emerald-500/30 transition-all duration-300 group/toggle relative"

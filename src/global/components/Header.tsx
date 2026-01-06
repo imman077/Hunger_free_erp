@@ -22,6 +22,9 @@ import { useSidebar } from "../contexts/SidebarContext";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import { formatDistanceToNow } from "date-fns";
+import ThemeToggle from "./ThemeToggle";
+import { Breadcrumbs, BreadcrumbItem } from "@heroui/react";
+import { useLocation } from "react-router-dom";
 
 /* ---------------- MUI Styled Badge ---------------- */
 const StyledBadge = styled(Badge)(({ theme }) => ({
@@ -160,12 +163,15 @@ const Header: React.FC = () => {
     );
   };
 
+  const location = useLocation();
+  const pathnames = location.pathname.split("/").filter((x) => x);
+
   return (
     <>
       <header
         className={
-          "fixed top-0 right-0 h-20 shadow z-40 flex items-center justify-between px-6 transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] " +
-          (expanded ? "md:left-[260px]" : "md:left-[70px]") + // Increased to match new sidebar width
+          "fixed top-0 right-0 h-20 z-40 flex items-center justify-between px-6 transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] " +
+          (expanded ? "md:left-[260px]" : "md:left-[70px]") +
           " left-0 right-0"
         }
         style={{
@@ -174,7 +180,7 @@ const Header: React.FC = () => {
         }}
       >
         {/* Left section - Mobile menu and title */}
-        <div className="flex items-center">
+        <div className="flex items-center gap-4">
           {/* MOBILE HAMBURGER (visible only < md) */}
           <div className="md:hidden mr-4">
             <IconButton onClick={() => setMobileDrawerOpen(true)}>
@@ -182,16 +188,41 @@ const Header: React.FC = () => {
             </IconButton>
           </div>
 
-          {/* Image - Visible on all screens */}
-          <img
-            src="/HungerFree.svg"
-            className="h-14 w-auto object-contain animate-in fade-in slide-in-from-left-4 duration-500 filter drop-shadow-sm"
-            alt="HungerFree Logo"
-          />
+          <Breadcrumbs
+            underline="hover"
+            itemClasses={{
+              item: "text-emerald-600 transition-colors hover:text-emerald-700 font-medium",
+              separator: "text-slate-400 mx-1",
+            }}
+          >
+            <BreadcrumbItem
+              key="home"
+              href="/"
+              className="text-emerald-600 font-medium"
+            >
+              Home
+            </BreadcrumbItem>
+            {pathnames.map((value, index) => {
+              const to = `/${pathnames.slice(0, index + 1).join("/")}`;
+              const isLast = index === pathnames.length - 1;
+              return (
+                <BreadcrumbItem
+                  key={to}
+                  href={to}
+                  className={`capitalize text-emerald-600 ${
+                    isLast ? "font-bold" : "font-medium"
+                  }`}
+                >
+                  {value.replace(/-/g, " ")}
+                </BreadcrumbItem>
+              );
+            })}
+          </Breadcrumbs>
         </div>
 
         {/* Right section - Notifications and avatar */}
         <div className="flex flex-row gap-8 items-center">
+          <ThemeToggle />
           {/* Bell Notification */}
           <IconButton
             onClick={handleNotificationClick}

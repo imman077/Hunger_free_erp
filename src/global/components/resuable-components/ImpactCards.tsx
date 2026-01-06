@@ -18,23 +18,23 @@ const ImpactCard: React.FC<
 > = ({ label, val, trend, color, orientation }) => {
   return (
     <div
-      className={`p-8 rounded-none border transition-all flex flex-col items-center justify-center min-h-[180px] relative overflow-hidden ${
-        orientation === "horizontal" ? "flex-1 min-w-[240px]" : "w-full"
-      }`}
+      className={`group/impact p-7 rounded-md border transition-all duration-300 flex flex-col items-center justify-center min-h-[150px] relative overflow-hidden hover:border-[#22c55e]/30
+        ${orientation === "horizontal" ? "flex-1 min-w-[260px]" : "w-full"}
+      `}
       style={{
         backgroundColor: "var(--bg-primary)",
         borderColor: "var(--border-color)",
       }}
     >
-      <div className="mb-6 relative z-10 text-center">
+      <div className="mb-4 relative z-10 text-center transition-transform duration-300 group-hover/impact:-translate-y-1">
         <p
-          className="text-[10px] font-black uppercase tracking-[0.25em] mb-4"
+          className="text-[10px] font-black uppercase tracking-[0.25em] mb-2.5"
           style={{ color: "var(--text-muted)" }}
         >
           {label}
         </p>
         <h4
-          className="text-5xl font-black tracking-tighter tabular-nums leading-none"
+          className="text-4xl font-black tracking-tighter tabular-nums leading-none transition-colors duration-300 group-hover/impact:text-[#22c55e]"
           style={{ color: "var(--text-primary)" }}
         >
           {val}
@@ -43,16 +43,32 @@ const ImpactCard: React.FC<
 
       <div className="flex flex-col items-center mt-auto relative z-10 text-center">
         <p
-          className={`text-[11px] font-black leading-none ${
-            color === "bg-emerald-500" ? "text-emerald-500" : ""
+          className={`text-[11px] font-black leading-none px-3 py-1.5 rounded-full bg-slate-50 border border-slate-100 ${
+            color === "bg-[#22c55e]" || color === "bg-emerald-500"
+              ? "text-[#22c55e]"
+              : "text-slate-500"
           }`}
           style={{
-            color: color === "bg-emerald-500" ? "#10b981" : "var(--text-muted)",
+            color:
+              color === "bg-[#22c55e]" || color === "bg-emerald-500"
+                ? "#22c55e"
+                : "var(--text-muted)",
           }}
         >
           {trend}
         </p>
       </div>
+
+      {/* Subtle Background Accent */}
+      <div
+        className="absolute -top-10 -right-10 w-24 h-24 opacity-[0.02] blur-2xl rounded-full"
+        style={{
+          backgroundColor:
+            color === "bg-[#22c55e]" || color === "bg-emerald-500"
+              ? "#22c55e"
+              : "transparent",
+        }}
+      />
     </div>
   );
 };

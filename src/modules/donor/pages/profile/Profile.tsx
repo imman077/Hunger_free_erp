@@ -74,45 +74,46 @@ const DonorProfile = () => {
       style={{ backgroundColor: "var(--bg-secondary)" }}
     >
       {/* Hero Section */}
-      <div className="relative h-64 bg-[#15803d] overflow-hidden">
-        <div className="relative max-w-7xl mx-auto px-6 h-full flex items-end pb-12">
-          <div className="flex flex-col md:flex-row items-center md:items-end gap-6 w-full text-white">
+      <div className="relative h-64 bg-[#15803d] overflow-hidden shadow-lg">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+        <div className="relative max-w-7xl mx-auto px-8 h-full flex items-end pb-12">
+          <div className="flex flex-col md:flex-row items-center md:items-end gap-8 w-full text-white">
             <div className="relative group">
-              <div className="w-32 h-32 rounded-none overflow-hidden border-2 border-white/50 group-hover:scale-105 transition-transform duration-300">
+              <div className="w-32 h-32 rounded-md overflow-hidden border-4 border-white/40 shadow-2xl group-hover:scale-105 transition-transform duration-500">
                 <img
                   src="https://mui.com/static/images/avatar/1.jpg"
                   alt="Profile"
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className="absolute -bottom-2 -right-2 bg-[#22c55e] text-white p-2 rounded-none border-2 border-white">
+              <div className="absolute -bottom-1 -right-1 bg-[#22c55e] text-white p-2 rounded-md border-2 border-white shadow-md">
                 <Icon name="verified" className="w-5 h-5" />
               </div>
             </div>
 
             <div className="flex-1 text-center md:text-left mb-2">
-              <div className="flex items-center justify-center md:justify-start gap-3 mb-1">
-                <h1 className="text-3xl font-black tracking-tight">
+              <div className="flex items-center justify-center md:justify-start gap-3 mb-1.5">
+                <h1 className="text-3xl md:text-4xl font-black tracking-tighter">
                   {profile.name}
                 </h1>
-                <span className="px-3 py-1 bg-[#16a34a] rounded-none text-[10px] font-bold uppercase tracking-widest border border-white/20">
+                <span className="px-3 py-1 bg-[#16a34a] rounded-md text-[10px] font-black uppercase tracking-widest border border-white/20 shadow-sm">
                   Lvl 12
                 </span>
               </div>
-              <p className="text-[#ecfdf5]/80 font-medium flex items-center justify-center md:justify-start gap-2">
-                <Icon name="office" className="w-4 h-4" />
-                {profile.location} • Member since Jan 2025
+              <p className="text-[#ecfdf5]/80 font-medium text-xs flex items-center justify-center md:justify-start gap-1.5">
+                <Icon name="office" className="w-3.5 h-3.5" />
+                {profile.location} • Jan 2025
               </p>
             </div>
 
             <div className="flex gap-4 mb-2">
               <button
                 onClick={handleEditToggle}
-                className="px-6 py-2.5 bg-white text-emerald-900 rounded-none text-sm font-black hover:bg-[#ecfdf5] transition-colors uppercase tracking-wider"
+                className="px-8 py-3 bg-white text-emerald-900 rounded-md text-xs font-black hover:bg-[#ecfdf5] transition-all uppercase tracking-widest shadow-lg active:scale-95"
               >
-                {isEditing ? "Save Changes" : "Edit Profile"}
+                {isEditing ? "Save" : "Edit Profile"}
               </button>
-              <button className="p-2.5 bg-white/10 hover:bg-white/20 text-white rounded-none transition-colors border border-white/20">
+              <button className="p-3 bg-white/10 hover:bg-white/20 text-white rounded-md transition-all border border-white/20 backdrop-blur-sm active:scale-95">
                 <Icon name="settings" className="w-5 h-5" />
               </button>
             </div>
@@ -120,30 +121,23 @@ const DonorProfile = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 mt-8 pb-12">
+      <div className="max-w-7xl mx-auto px-8 mt-10 pb-16">
         {/* Impact Cards */}
-        <ImpactCards data={impactData} className="mb-10" />
+        <ImpactCards data={impactData} className="mb-8" />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Row 1: Personal Details & Recent Activity */}
           <section
-            className="lg:col-span-2 border p-8 transition-colors h-full flex flex-col"
-            style={{
-              backgroundColor: "var(--bg-primary)",
-              borderColor: "var(--border-color)",
-            }}
+            className="lg:col-span-2 border p-8 transition-all h-full flex flex-col rounded-md bg-white shadow-sm"
+            style={{ borderColor: "var(--border-color)" }}
           >
             <div className="flex items-center justify-between mb-8">
-              <h3
-                className="text-sm font-black tracking-tight uppercase"
-                style={{ color: "var(--text-primary)" }}
-              >
+              <h3 className="text-sm font-black tracking-tight uppercase text-slate-800">
                 Personal Details
               </h3>
-              <div className="h-1 w-12 bg-[#22c55e]" />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 flex-1">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 flex-1">
               {[
                 {
                   label: "Full Name",
@@ -172,7 +166,7 @@ const DonorProfile = () => {
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-4 group">
                   <div
-                    className="p-3 rounded-none border transition-all duration-300 group-hover:bg-[#ecfdf5] group-hover:border-[#d1fae5] group-hover:text-[#16a34a]"
+                    className="p-3.5 rounded-md border transition-all duration-300 group-hover:bg-[#ecfdf5] group-hover:border-[#d1fae5] group-hover:text-[#16a34a] shadow-sm"
                     style={{
                       backgroundColor: "var(--bg-secondary)",
                       borderColor: "var(--border-color)",
@@ -182,7 +176,7 @@ const DonorProfile = () => {
                   </div>
                   <div className="flex flex-col min-w-0 flex-1">
                     <label
-                      className="text-[9px] font-black uppercase tracking-[0.2em] mb-0.5 group-hover:text-[#22c55e]/50 transition-colors"
+                      className="text-[10px] font-black uppercase tracking-[0.25em] mb-1 group-hover:text-[#22c55e]/50 transition-colors"
                       style={{ color: "var(--text-muted)" }}
                     >
                       {item.label}
@@ -194,11 +188,11 @@ const DonorProfile = () => {
                         onChange={(e) =>
                           setProfile({ ...profile, [item.key]: e.target.value })
                         }
-                        className="text-sm font-bold text-gray-700 bg-white border border-gray-200 rounded-none px-2 py-1 focus:outline-none focus:border-[#22c55e] transition-colors"
+                        className="text-xs font-bold text-gray-700 bg-white border border-gray-200 rounded-sm px-2 py-1 focus:outline-none focus:border-[#22c55e] transition-colors"
                       />
                     ) : (
                       <span
-                        className="text-sm font-bold truncate transition-colors"
+                        className="text-xs font-bold truncate transition-colors"
                         style={{ color: "var(--text-secondary)" }}
                       >
                         {item.value}
@@ -211,17 +205,11 @@ const DonorProfile = () => {
           </section>
 
           <section
-            className="border p-8 h-full flex flex-col"
-            style={{
-              backgroundColor: "var(--bg-primary)",
-              borderColor: "var(--border-color)",
-            }}
+            className="border p-8 h-full flex flex-col rounded-md bg-white shadow-sm"
+            style={{ borderColor: "var(--border-color)" }}
           >
             <div className="flex items-center justify-between mb-6">
-              <h3
-                className="text-sm font-black tracking-tight uppercase px-1"
-                style={{ color: "var(--text-primary)" }}
-              >
+              <h3 className="text-sm font-black tracking-tight uppercase">
                 Recent Activity
               </h3>
               <span className="text-[10px] font-black text-[#16a34a] uppercase tracking-widest cursor-pointer hover:underline">
@@ -229,16 +217,16 @@ const DonorProfile = () => {
               </span>
             </div>
 
-            <div className="relative flex-1 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent">
-              <div className="space-y-6 relative">
+            <div className="relative flex-1 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent">
+              <div className="space-y-4 relative pt-1">
                 <div
-                  className="absolute left-[15px] top-2 bottom-2 w-0.5"
+                  className="absolute left-[13px] top-2 bottom-2 w-px"
                   style={{ backgroundColor: "var(--border-color)" }}
                 />
                 {activities.map((activity, i) => (
                   <div key={i} className="relative pl-10 group">
                     <div
-                      className="absolute left-0 top-1 w-8 h-8 rounded-full border flex items-center justify-center group-hover:border-[#22c55e] transition-colors z-10"
+                      className="absolute left-0 top-0.5 w-8 h-8 rounded-full border flex items-center justify-center group-hover:border-[#22c55e] transition-all z-10 shadow-sm"
                       style={{
                         backgroundColor: "var(--bg-primary)",
                         borderColor: "var(--border-color)",
@@ -255,19 +243,19 @@ const DonorProfile = () => {
                     </div>
                     <div>
                       <h4
-                        className="text-sm font-black group-hover:text-[#16a34a] transition-colors"
+                        className="text-sm font-black group-hover:text-[#16a34a] transition-colors leading-tight"
                         style={{ color: "var(--text-primary)" }}
                       >
                         {activity.title}
                       </h4>
                       <p
-                        className="text-[10px] font-bold uppercase tracking-wider mb-1"
+                        className="text-[9px] font-black uppercase tracking-widest mb-1.5"
                         style={{ color: "var(--text-muted)" }}
                       >
                         {activity.time}
                       </p>
                       <p
-                        className="text-xs leading-relaxed font-medium text-start"
+                        className="text-[11px] leading-relaxed font-semibold text-start opacity-70"
                         style={{ color: "var(--text-secondary)" }}
                       >
                         {activity.desc}
@@ -281,30 +269,21 @@ const DonorProfile = () => {
 
           {/* Row 2: Achievements & Status */}
           <section
-            className="lg:col-span-2 border p-8 h-full flex flex-col relative overflow-hidden group/ach"
-            style={{
-              backgroundColor: "var(--bg-primary)",
-              borderColor: "var(--border-color)",
-            }}
+            className="lg:col-span-2 border p-8 h-full flex flex-col relative overflow-hidden group/ach bg-white rounded-md shadow-sm"
+            style={{ borderColor: "var(--border-color)" }}
           >
             <div className="flex items-center justify-between mb-8 relative z-10">
               <div>
-                <h3
-                  className="text-sm font-black tracking-tighter uppercase leading-none px-1"
-                  style={{ color: "var(--text-primary)" }}
-                >
+                <h3 className="text-sm font-black tracking-tighter uppercase leading-none">
                   Impact Milestones
                 </h3>
-                <p
-                  className="text-[10px] font-bold uppercase tracking-[0.25em] mt-2"
-                  style={{ color: "var(--text-muted)" }}
-                >
-                  Unlock your hidden potential
+                <p className="text-[10px] font-bold uppercase tracking-[0.25em] mt-2 text-slate-400">
+                  Unlock hidden potential
                 </p>
               </div>
-              <div className="flex items-center gap-2.5 px-3 py-1.5 bg-[#ecfdf5] text-[#16a34a] rounded-none border border-[#d1fae5] transition-transform duration-500 group-hover/ach:scale-105">
-                <div className="w-1.5 h-1.5 rounded-full bg-[#22c55e] animate-pulse" />
-                <span className="text-[9px] font-black uppercase tracking-widest">
+              <div className="flex items-center gap-3 px-3 py-1.5 bg-emerald-50 text-[#16a34a] rounded-md border border-emerald-100 shadow-sm">
+                <div className="w-2 h-2 rounded-full bg-[#22c55e] animate-pulse" />
+                <span className="text-[10px] font-black uppercase tracking-widest">
                   4 / 12 UNLOCKED
                 </span>
               </div>
@@ -314,14 +293,14 @@ const DonorProfile = () => {
               {[
                 {
                   name: "Top Contributor",
-                  desc: "Ranked in the top 1% this month",
+                  desc: "Ranked in top 1% this month",
                   status: "Mastered",
                   color: "amber",
                   icon: "verified",
                 },
                 {
                   name: "First Donation",
-                  desc: "Completed your first mission",
+                  desc: "Completed first mission",
                   status: "Unlocked",
                   color: "emerald",
                   icon: "check-circle",
@@ -343,57 +322,38 @@ const DonorProfile = () => {
               ].map((badge, i) => (
                 <div
                   key={i}
-                  className={`group relative p-5 rounded-none border transition-all duration-300 cursor-pointer flex flex-col justify-between
+                  className={`group relative p-6 rounded-md border transition-all duration-300 cursor-pointer flex flex-col justify-between bg-white text-start shadow-sm
                   ${
                     badge.color === "amber"
-                      ? "border-amber-50 hover:border-amber-200"
-                      : ""
-                  }
-                  ${
-                    badge.color === "emerald"
-                      ? "border-[#d1fae5] hover:border-emerald-200"
-                      : ""
+                      ? "border-amber-50 hover:border-amber-200 hover:shadow-md"
+                      : "border-slate-50 hover:border-emerald-200 hover:shadow-md"
                   }
                 `}
-                  style={{ backgroundColor: "var(--bg-primary)" }}
                 >
                   <div className="flex items-center gap-4 relative z-10 mb-3">
                     <div
-                      className={`w-14 h-14 rounded-none flex items-center justify-center transition-all duration-500 group-hover:scale-105
+                      className={`w-12 h-12 rounded-md flex items-center justify-center transition-all duration-500 group-hover:scale-105 shadow-md
                       ${
-                        badge.color === "amber" ? "bg-amber-500 text-white" : ""
-                      }
-                      ${
-                        badge.color === "emerald"
-                          ? "bg-[#22c55e] text-white"
-                          : ""
+                        badge.color === "amber"
+                          ? "bg-amber-500 text-white shadow-amber-500/20"
+                          : "bg-[#22c55e] text-white shadow-emerald-500/20"
                       }
                     `}
                     >
-                      <Icon name={badge.icon} className="w-6 h-6" />
+                      <Icon name={badge.icon} className="w-5 h-5" />
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <div className="flex justify-between items-start mb-0.5">
-                        <h4
-                          className="text-sm font-black tracking-tight truncate"
-                          style={{ color: "var(--text-primary)" }}
-                        >
-                          {badge.name}
-                        </h4>
-                      </div>
-                      <div className="flex items-center gap-2">
+                      <h4 className="text-[13px] font-black tracking-tight truncate text-slate-800">
+                        {badge.name}
+                      </h4>
+                      <div className="flex items-center gap-2 mt-1">
                         <span
-                          className={`text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-none border
+                          className={`text-[8px] font-black uppercase tracking-[0.2em] px-2 py-0.5 rounded-md border
                           ${
                             badge.color === "amber"
-                              ? "bg-amber-100 text-amber-700 border-amber-200"
-                              : ""
-                          }
-                          ${
-                            badge.color === "emerald"
-                              ? "bg-[#d1fae5] text-[#15803d] border-emerald-200"
-                              : ""
+                              ? "bg-amber-50 text-amber-700 border-amber-100"
+                              : "bg-emerald-50 text-[#15803d] border-emerald-100"
                           }
                         `}
                         >
@@ -403,10 +363,7 @@ const DonorProfile = () => {
                     </div>
                   </div>
 
-                  <p
-                    className="text-[10px] font-bold leading-relaxed relative z-10 text-start"
-                    style={{ color: "var(--text-secondary)" }}
-                  >
+                  <p className="text-[11px] font-semibold leading-relaxed text-slate-400 mt-auto">
                     {badge.desc}
                   </p>
                 </div>
@@ -414,43 +371,49 @@ const DonorProfile = () => {
             </div>
           </section>
 
-          <section className="bg-emerald-900 rounded-none p-7 text-white relative overflow-hidden group h-full flex flex-col">
-            <div className="flex items-center justify-between mb-6 relative z-10">
-              <h4 className="text-[#34d399] text-[10px] font-black uppercase tracking-[0.3em]">
+          <section className="bg-emerald-950 rounded-md p-8 text-white relative overflow-hidden group h-full flex flex-col shadow-xl">
+            <div className="flex items-center justify-between mb-8 relative z-10">
+              <h4 className="text-[#34d399] text-[10px] font-black uppercase tracking-[0.4em]">
                 Current Status
               </h4>
-              <div className="flex items-center gap-2 px-2 py-1 bg-white/10 rounded-none border border-white/10 group-hover:bg-[#34d399] group-hover:text-emerald-900 transition-all duration-300">
-                <Icon name="trending" className="w-3 h-3" />
-                <span className="text-[10px] font-black uppercase tracking-wider">
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-md border border-white/5 group-hover:bg-[#34d399] group-hover:text-emerald-900 transition-all duration-500">
+                <Icon name="trending" className="w-4 h-4" />
+                <span className="text-[10px] font-black uppercase tracking-widest">
                   Top 5%
                 </span>
               </div>
             </div>
 
-            <div className="flex items-end gap-2 mb-6 relative z-10">
+            <div className="flex items-end gap-2.5 mb-6 relative z-10">
               <span className="text-4xl font-black tracking-tighter">
                 Elite
               </span>
-              <span className="text-[#34d399] text-xs font-bold pb-1 underline underline-offset-4 decoration-2 decoration-[#22c55e]/50">
-                Level 12
+              <span className="text-[#34d399] text-xs font-black pb-1.5 underline underline-offset-8 decoration-[#22c55e]/50">
+                Lvl 12
               </span>
             </div>
 
             {/* Extra Stats Grid */}
-            <div className="grid grid-cols-2 gap-3 mb-6 flex-1 relative z-10">
-              <div className="bg-white/5 rounded-none p-3.5 border border-white/10 hover:bg-white/10 transition-colors">
-                <div className="flex items-center gap-2 mb-1">
-                  <Icon name="donations" className="w-3 h-3 text-[#34d399]" />
-                  <span className="text-[9px] font-bold text-[#6ee7b7] uppercase tracking-widest">
+            <div className="grid grid-cols-2 gap-4 mb-8 flex-1 relative z-10">
+              <div className="bg-white/5 rounded-md p-5 border border-white/5 hover:bg-white/10 transition-colors shadow-inner">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <Icon
+                    name="donations"
+                    className="w-3.5 h-3.5 text-[#34d399]"
+                  />
+                  <span className="text-[9px] font-black text-[#6ee7b7] uppercase tracking-[0.25em]">
                     Streak
                   </span>
                 </div>
                 <div className="text-lg font-black">15 Weeks</div>
               </div>
-              <div className="bg-white/5 rounded-none p-3.5 border border-white/10 hover:bg-white/10 transition-colors">
-                <div className="flex items-center gap-2 mb-1">
-                  <Icon name="verified" className="w-3 h-3 text-[#34d399]" />
-                  <span className="text-[9px] font-bold text-[#6ee7b7] uppercase tracking-widest">
+              <div className="bg-white/5 rounded-md p-5 border border-white/5 hover:bg-white/10 transition-colors shadow-inner">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <Icon
+                    name="verified"
+                    className="w-3.5 h-3.5 text-[#34d399]"
+                  />
+                  <span className="text-[9px] font-black text-[#6ee7b7] uppercase tracking-[0.25em]">
                     Earned
                   </span>
                 </div>
@@ -459,25 +422,25 @@ const DonorProfile = () => {
             </div>
 
             {/* Next Perk Preview */}
-            <div className="bg-emerald-800/80 rounded-none p-3.5 mb-6 border border-white/5 group-hover:bg-emerald-800 transition-colors relative z-10">
-              <div className="text-[9px] font-bold text-[#34d399] uppercase tracking-widest mb-1">
-                Next Perk Unlocks at Lvl 13
+            <div className="bg-emerald-800/40 rounded-md p-5 mb-8 border border-white/5 group-hover:bg-emerald-800/60 transition-colors relative z-10 shadow-lg">
+              <div className="text-[10px] font-black text-[#34d399] uppercase tracking-[0.25em] mb-1.5">
+                Next: Lvl 13
               </div>
-              <div className="text-xs font-bold flex items-center gap-2">
-                <div className="w-1.5 h-1.5 bg-[#34d399] rounded-full animate-pulse" />
-                Priority Support Access
+              <div className="text-sm font-black flex items-center gap-3">
+                <div className="w-2 h-2 bg-[#34d399] rounded-full animate-pulse shadow-[0_0_10px_rgba(52,211,153,0.5)]" />
+                Priority Support
               </div>
             </div>
 
-            <div className="relative z-10">
-              <div className="flex justify-between items-end mb-2">
-                <p className="text-[10px] font-bold text-[#6ee7b7] uppercase tracking-widest">
+            <div className="relative z-10 mt-auto">
+              <div className="flex justify-between items-end mb-2.5">
+                <p className="text-[10px] font-black text-[#6ee7b7] uppercase tracking-[0.2em]">
                   280 pts to lvl 13
                 </p>
                 <span className="text-[10px] font-black">72%</span>
               </div>
-              <div className="w-full bg-emerald-800/50 h-2 rounded-none overflow-hidden">
-                <div className="bg-[#34d399] h-full w-[72%] transition-all duration-1000 group-hover:w-[75%]" />
+              <div className="w-full bg-emerald-800/50 h-2.5 rounded-full overflow-hidden shadow-inner">
+                <div className="bg-[#34d399] h-full w-[72%] transition-all duration-1000 shadow-[2px_0_10px_rgba(52,211,153,0.5)]" />
               </div>
             </div>
           </section>

@@ -1,12 +1,3 @@
-import {
-  CheckCircle,
-  User,
-  Package,
-  Database,
-  GraduationCap,
-  Sparkles,
-  Gift,
-} from "lucide-react";
 import LineChart from "../../../../global/charts/LineChart";
 import BarChart from "../../../../global/charts/BarChart";
 import ImpactCards from "../../../../global/components/resuable-components/ImpactCards";
@@ -41,88 +32,62 @@ const AdminDashboard = () => {
       changeColor: "text-red-600",
       // icon: <UserPlus size={20} />,
     },
-    {
-      title: "Points Circulated",
-      value: "8.4M",
-      change: "ULTRA ACTIVE",
-      changeColor: "text-emerald-600",
-    },
-    {
-      title: "Pending Rewards",
-      value: "15",
-      change: "Action Required",
-      changeColor: "text-amber-600",
-    },
   ];
 
   const activities = [
     {
-      icon: <CheckCircle className="w-6 h-6 text-green-600" />,
       title: 'New NGO partner "Green Harvest" registered.',
       category: "Partner Registration",
       time: "2 hours ago",
-      date: "Nov 25, 2025",
-      color: "border-green-500",
+      date: "Jan 5, 2026",
     },
     {
-      icon: <Sparkles className="w-6 h-6 text-amber-500" />,
       title: 'Volunteer "Amit" redeemed "Goa Beach Trip" reward!',
       category: "Rewards",
       time: "3 hours ago",
-      date: "Jan 4, 2026",
-      color: "border-amber-500",
+      date: "Jan 5, 2026",
     },
     {
-      icon: <Gift className="w-6 h-6 text-purple-600" />,
       title: 'Donor "XYZ Corp" reached Legend Tier!',
       category: "Milestone",
       time: "4 hours ago",
-      date: "Jan 4, 2026",
-      color: "border-purple-500",
+      date: "Jan 5, 2026",
     },
     {
-      icon: <User className="w-6 h-6 text-blue-600" />,
       title: 'User "John Doe" updated profile details.',
       category: "User Update",
       time: "5 hours ago",
-      date: "Nov 25, 2025",
-      color: "border-blue-500",
+      date: "Jan 5, 2026",
     },
     {
-      icon: <Package className="w-6 h-6 text-orange-600" />,
       title: "Donation pickup for order #10023 confirmed.",
       category: "Logistics",
       time: "Yesterday",
-      date: "Nov 24, 2025",
-      color: "border-orange-500",
+      date: "Jan 4, 2026",
     },
     {
-      icon: <Database className="w-6 h-6 text-purple-600" />,
       title: "System alert: Database backup completed successfully.",
       category: "System Alert",
       time: "Yesterday",
-      date: "Nov 24, 2025",
-      color: "border-purple-500",
+      date: "Jan 4, 2026",
     },
     {
-      icon: <GraduationCap className="w-6 h-6 text-teal-600" />,
       title: 'Volunteer "Jane Smith" completed training.',
       category: "Training",
       time: "2 days ago",
-      date: "Nov 23, 2025",
-      color: "border-teal-500",
+      date: "Jan 3, 2026",
     },
   ];
 
   return (
     <div className="w-full space-y-6 p-6">
       {/* Admin Panel */}
-      <h1
+      {/* <h1
         className="text-2xl font-semibold text-start"
         style={{ color: "var(--text-primary)" }}
       >
         Quick Stats
-      </h1>
+      </h1> */}
 
       {/* Four Boxes */}
       <ImpactCards
@@ -137,12 +102,12 @@ const AdminDashboard = () => {
       />
 
       {/* Activity Charts */}
-      <h1
+      {/* <h1
         className="text-2xl font-semibold text-start"
         style={{ color: "var(--text-primary)" }}
       >
         Activity Charts
-      </h1>
+      </h1> */}
 
       {/* Charts */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -189,53 +154,86 @@ const AdminDashboard = () => {
       </div>
 
       {/* Recent Activities */}
-      <h1
-        className="text-2xl font-semibold text-start"
-        style={{ color: "var(--text-primary)" }}
-      >
-        Recent Activities & Alerts
-      </h1>
-
-      {/* Recent Activities */}
+      {/* Recent Activities Section */}
       <div
-        className="rounded-md border p-5"
+        className="rounded-2xl border transition-all duration-300 shadow-sm"
         style={{
           backgroundColor: "var(--bg-primary)",
           borderColor: "var(--border-color)",
         }}
       >
-        {/* Activity List */}
-        <div className="">
-          {activities.map((activity, index) => (
-            <div key={index}>
+        <div
+          className="p-6 border-b border-dashed flex items-center justify-between"
+          style={{ borderColor: "var(--border-color)" }}
+        >
+          <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+            <div className="w-2 h-6 bg-emerald-500 rounded-full" />
+            Recent Activities & Alerts
+          </h2>
+          <button className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 hover:underline transition-all">
+            See all activity
+          </button>
+        </div>
+
+        <div className="p-4 space-y-2">
+          {activities.map((activity, index) => {
+            // Map categories to pillar colors for consistent visual cues
+            const getPillarColor = (category: string) => {
+              const lowerCat = category.toLowerCase();
+              if (
+                lowerCat.includes("registration") ||
+                lowerCat.includes("confirmed")
+              )
+                return "bg-emerald-500";
+              if (lowerCat.includes("reward") || lowerCat.includes("alert"))
+                return "bg-amber-500";
+              if (
+                lowerCat.includes("milestone") ||
+                lowerCat.includes("training")
+              )
+                return "bg-purple-500";
+              return "bg-blue-500";
+            };
+
+            return (
               <div
-                className={`flex items-start gap-4 p-1 rounded-md ${activity.color} bg-white hover:bg-gray-50 transition-all`}
+                key={index}
+                className="group relative flex items-center gap-3 p-2.5 rounded-xl border border-transparent hover:border-slate-100 hover:bg-slate-50/50 transition-all duration-200 cursor-pointer overflow-hidden"
+                style={{ backgroundColor: "var(--bg-primary)" }}
               >
-                {/* Icon */}
-                <div className="pt-1">{activity.icon}</div>
+                {/* Vertical Pillar Indicator - Pattern matched from Header.tsx */}
+                <div
+                  className={`w-1 h-8 rounded-full shrink-0 ${getPillarColor(
+                    activity.category
+                  )}`}
+                />
 
-                {/* Info */}
-                <div className="flex flex-col items-start">
-                  <p className="text-gray-900 font-medium">{activity.title}</p>
+                {/* Content */}
+                <div className="flex-1 flex items-center justify-between min-w-0">
+                  <div className="flex flex-col items-start min-w-0">
+                    <p className="text-[13px] font-bold text-slate-800 truncate w-full group-hover:text-emerald-700 transition-colors">
+                      {activity.title}
+                    </p>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 group-hover:text-emerald-600 transition-colors">
+                        {activity.category}
+                      </span>
+                    </div>
+                  </div>
 
-                  {/* Category Tag */}
-                  <span className="inline-block mt-1 text-xs px-2 py-1 rounded bg-gray-200 text-gray-700">
-                    {activity.category}
-                  </span>
-
-                  <div className="flex items-center gap-2 mt-1">
-                    <p className="text-xs text-gray-500">{activity.time}</p>•
-                    <p className="text-xs text-gray-400">{activity.date}</p>
+                  {/* Meta - Time and Date */}
+                  <div className="flex flex-col items-end shrink-0 pl-4 border-l border-slate-100/50 ml-4">
+                    <time className="text-[11px] font-bold text-slate-500 uppercase tracking-tighter">
+                      {activity.time}
+                    </time>
+                    <span className="text-[10px] text-slate-400 font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                      {activity.date}
+                    </span>
                   </div>
                 </div>
               </div>
-
-              {/* Divider except last item */}
-              {index < activities.length - 1 && (
-                <hr className="border-gray-200" />
-              )}
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

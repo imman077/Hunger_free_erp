@@ -127,31 +127,6 @@ const PointsTiersView: React.FC = () => {
     <div className="space-y-10 pb-10">
       <StatCardGrid cards={stats} />
 
-      {/* Global Controls */}
-      <div className="bg-emerald-600 rounded-sm p-8 text-white flex flex-col md:flex-row items-center justify-between gap-8 shadow-lg shadow-emerald-900/10">
-        <div className="text-start">
-          <h3 className="text-2xl font-black uppercase tracking-tighter mb-2">
-            Global ULTRA Points Multiplier
-          </h3>
-          <p className="text-emerald-50 text-sm font-medium">
-            Current Boost:{" "}
-            <span className="font-black text-amber-300">3X ACTIVE</span> for
-            Donors & Volunteers
-          </p>
-        </div>
-        <div className="flex gap-4">
-          <div className="bg-white/10 p-2 rounded-sm border border-white/20 px-6">
-            <span className="text-2xl font-black">3.0</span>
-          </div>
-          <ResuableButton
-            variant="dark"
-            className="!bg-amber-400 !text-emerald-900 hover:!bg-amber-300"
-          >
-            Update Multiplier
-          </ResuableButton>
-        </div>
-      </div>
-
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-10">
         {/* Tier Management Table */}
         <div className="space-y-6">

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { Icon } from "../../../../global/components/resuable-components/Icon";
 import { ImpactCards } from "../../../../global/components/resuable-components/ImpactCards";
 import ReusableButton from "../../../../global/components/resuable-components/button";

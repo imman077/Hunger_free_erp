@@ -6,6 +6,7 @@ interface ResuableDatePickerProps {
   value: string | null;
   onChange: (value: string) => void;
   className?: string;
+  required?: boolean;
   align?: "left" | "center" | "right";
 }
 
@@ -14,6 +15,7 @@ export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
   value,
   onChange,
   className = "",
+  required = false,
   align = "center",
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -165,7 +167,7 @@ export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
           className="text-[10px] font-bold uppercase tracking-widest block mb-1 px-1"
           style={{ color: "var(--text-muted)" }}
         >
-          {label}
+          {label} {required && <span style={{ color: "#ef4444" }}>*</span>}
         </label>
       )}
       <div className="relative">
@@ -182,20 +184,14 @@ export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
             color: "var(--text-primary)",
           }}
         >
+          <span className={`flex-1 ${alignClass}`}>
+            {value || "Select Date"}
+          </span>
           <span
             className={`transition-colors ${isOpen ? "text-[#22c55e]" : ""}`}
             style={{ color: isOpen ? "#22c55e" : "var(--text-muted)" }}
           >
             <Icon name="calendar" className="w-3.5 h-3.5" />
-          </span>
-          <span className={`flex-1 ${alignClass}`}>
-            {value || "Select Date"}
-          </span>
-          <span
-            className={`transition-transform ${isOpen ? "rotate-180" : ""}`}
-            style={{ color: "var(--text-muted)" }}
-          >
-            <Icon name="chevron-down" className="w-3 h-3" />
           </span>
         </button>
 

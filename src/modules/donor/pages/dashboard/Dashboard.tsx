@@ -1,6 +1,15 @@
-import { Heart, Package, Clock, Award } from "lucide-react";
+import React from "react";
+import {
+  Heart,
+  Package,
+  Clock,
+  Award,
+  Star,
+  TrendingUp,
+  ShieldCheck,
+  Zap,
+} from "lucide-react";
 import ImpactCards from "../../../../global/components/resuable-components/ImpactCards";
-import DonationActivityCard from "../../../../global/components/resuable-components/DonationActivityCard";
 
 const DonorDashboard = () => {
   const stats = [
@@ -8,183 +17,260 @@ const DonorDashboard = () => {
       title: "Total Donations",
       value: "342",
       change: "+12 this week",
-      changeColor: "text-green-600",
+      icon: <Heart className="w-5 h-5" />,
+      color: "#22c55e",
     },
     {
       title: "Impact Points",
       value: "24,500",
       change: "Diamond Tier",
-      changeColor: "text-[#22c55e]",
+      icon: <Star className="w-5 h-5" />,
+      color: "#22c55e",
     },
     {
       title: "Trees Planted",
       value: "45",
       change: "Your Forest",
-      changeColor: "text-emerald-600",
+      icon: <Zap className="w-5 h-5" />,
+      color: "#22c55e",
     },
     {
       title: "Available Points",
       value: "8,200",
       change: "Redeem for Cash",
-      changeColor: "text-orange-600",
+      icon: <ShieldCheck className="w-5 h-5" />,
+      color: "#22c55e",
     },
   ];
 
   const recentDonations = [
     {
-      icon: <Package className="w-6 h-6 text-green-600" />,
       title: "Fresh Vegetables & Fruits",
       ngo: "Green Harvest NGO",
       time: "2 hours ago",
       status: "Collected",
-      color: "border-green-500",
+      category: "Food",
     },
     {
-      icon: <Clock className="w-6 h-6 text-[#22c55e]" />,
       title: "Cooked Meals (10 portions)",
       ngo: "Hope Shelter",
       time: "Yesterday",
       status: "In Transit",
-      color: "border-emerald-500",
+      category: "Meals",
+    },
+    {
+      title: "Winter Blankets (5 sets)",
+      ngo: "Unity NGO",
+      time: "2 days ago",
+      status: "Delivered",
+      category: "Essentials",
     },
   ];
 
   return (
-    <div className="w-full space-y-6 p-6">
-      <h1
-        className="text-2xl font-semibold text-start"
-        style={{ color: "var(--text-primary)" }}
-      >
-        My Impact Overview
-      </h1>
+    <div className="w-full space-y-8 p-6 max-w-[1700px] mx-auto bg-transparent">
+      {/* Hero / Header Section */}
+      <div className="relative overflow-hidden rounded-md bg-white p-8 md:p-10 border border-slate-100">
+        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[450px] h-[450px] bg-[#22c55e] opacity-[0.03] blur-[110px] rounded-full" />
 
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="space-y-4">
+            <div className="inline-flex items-center gap-2.5 px-4 py-1 rounded-md bg-[#22c55e]/5 border border-[#22c55e]/10">
+              <span className="w-2 h-2 rounded-full bg-[#22c55e] animate-pulse" />
+              <span className="text-[11px] font-black uppercase tracking-widest text-[#22c55e]">
+                Live Impact Status
+              </span>
+            </div>
+            <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-slate-800">
+              Welcome back, <span className="text-[#22c55e]">Anish!</span>
+            </h1>
+            <p className="text-slate-500 font-medium text-base max-w-lg text-start leading-relaxed">
+              Your kindness has touched over{" "}
+              <span className="text-slate-800 font-black underline decoration-[#22c55e] decoration-2 underline-offset-4">
+                1,200 lives
+              </span>{" "}
+              this month alone.
+            </p>
+          </div>
+
+          <div className="shrink-0">
+            <div className="group/hero-stat flex items-center gap-8 bg-slate-50/50 p-6 md:p-7 rounded-md border border-slate-100 min-w-[320px] shadow-inner transition-colors duration-300 hover:bg-emerald-50/30">
+              <div className="w-14 h-14 bg-gradient-to-br from-[#22c55e] to-[#16a34a] rounded-md flex items-center justify-center shadow-lg shadow-emerald-500/20 transition-transform duration-300 group-hover/hero-stat:-translate-y-1">
+                <Award className="text-white w-7 h-7" />
+              </div>
+              <div className="text-start">
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">
+                  Current Contribution Tier
+                </p>
+                <div className="flex items-center gap-3">
+                  <h3 className="text-xl font-black text-slate-800 tracking-tight">
+                    Diamond Donor
+                  </h3>
+                  <div className="p-1.5 rounded-md bg-[#22c55e]/10">
+                    <TrendingUp className="text-[#22c55e] w-3.5 h-3.5" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Stats Grid */}
       <ImpactCards
-        data={stats.map((item) => ({
-          label: item.title,
-          val: item.value,
-          trend: item.change,
-          color:
-            item.changeColor.includes("green") ||
-            item.changeColor.includes("#22c55e")
-              ? "bg-[#22c55e]"
-              : "bg-emerald-600",
+        data={stats.map((stat) => ({
+          label: stat.title,
+          val: stat.value,
+          trend: stat.change,
+          color: stat.color === "#22c55e" ? "bg-[#22c55e]" : "bg-slate-300",
         }))}
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div
-          className="rounded-none border p-8 min-h-[300px] flex flex-col relative group/ach"
-          style={{
-            backgroundColor: "var(--bg-primary)",
-            borderColor: "var(--border-color)",
-          }}
-        >
-          <h3
-            className="text-sm font-black mb-6 flex items-center gap-2 relative z-10 tracking-tighter uppercase px-1"
-            style={{ color: "var(--text-primary)" }}
-          >
-            <Award className="text-[#22c55e] w-4 h-4" /> Impact Milestones
-          </h3>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-2">
+        {/* Left Column: Milestones */}
+        <div className="bg-white border border-slate-100 rounded-md p-8 space-y-8">
+          <div className="flex items-center justify-between px-1">
+            <h2 className="text-xl font-black text-slate-800 uppercase tracking-tight">
+              Impact Milestones
+            </h2>
+            <button className="text-[10px] font-black text-[#22c55e] hover:underline uppercase tracking-widest">
+              View all
+            </button>
+          </div>
 
-          <div className="flex flex-wrap gap-6 relative z-10 flex-1">
+          <div className="grid grid-cols-2 gap-4">
             {[
               {
                 name: "Kind Soul",
+                desc: "Reached 50 donations milestone",
                 status: "Unlocked",
-                color: "emerald",
-                icon: <Heart size={32} />,
+                date: "Oct 24, 2024",
+                icon: <Heart size={24} />,
                 unlocked: true,
               },
               {
                 name: "Food Hero",
+                desc: "Donate 5 more times to unlock",
                 status: "Locked",
-                color: "emerald",
-                icon: <Package size={32} />,
+                icon: <Package size={24} />,
                 unlocked: false,
               },
             ].map((badge, i) => (
               <div
                 key={i}
-                className={`group/badge relative p-8 rounded-none border transition-all duration-500 cursor-default min-w-[200px] flex flex-col items-center gap-5
-                ${
+                className={`group relative p-8 rounded-md border flex flex-col items-center text-center gap-5 transition-all duration-300 aspect-square justify-center ${
                   badge.unlocked
-                    ? "bg-white border-[#d1fae5] hover:border-emerald-200"
-                    : "bg-gray-50 border-gray-100 grayscale opacity-60"
-                }
-              `}
+                    ? "bg-slate-50/50 border-slate-100 hover:border-[#22c55e]/30 hover:bg-white"
+                    : "bg-slate-50/20 border-slate-100 opacity-50 grayscale"
+                }`}
               >
                 <div
-                  className={`w-16 h-16 rounded-none flex items-center justify-center transition-all duration-500 group-hover/badge:scale-105
-                  ${
+                  className={`w-16 h-16 shrink-0 rounded-md flex items-center justify-center text-white transition-transform duration-500 group-hover:-translate-y-2 ${
                     badge.unlocked
-                      ? "bg-[#22c55e] text-white"
-                      : "bg-gray-200 text-gray-400"
-                  }
-                `}
+                      ? "bg-[#22c55e] shadow-lg shadow-emerald-500/20"
+                      : "bg-slate-300"
+                  }`}
                 >
-                  {badge.icon}
-                </div>
-                <div className="text-center">
-                  <span
-                    className="block text-xs font-black tracking-tight mb-2"
-                    style={{ color: "var(--text-primary)" }}
-                  >
-                    {badge.name}
-                  </span>
-                  <span
-                    className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-none border
-                    ${
-                      badge.unlocked
-                        ? "bg-[#d1fae5] text-[#15803d] border-emerald-200"
-                        : "bg-gray-100 text-gray-400 border-gray-200"
+                  {React.cloneElement(
+                    badge.icon as React.ReactElement<{ size: number }>,
+                    {
+                      size: 32,
                     }
-                  `}
-                  >
-                    {badge.status}
-                  </span>
+                  )}
                 </div>
+                <div className="space-y-2">
+                  <h3 className="text-lg font-black text-slate-800 tracking-tighter transition-colors duration-300 group-hover:text-[#22c55e]">
+                    {badge.name}
+                  </h3>
+                  <p className="text-[11px] text-slate-400 font-bold leading-relaxed max-w-[140px]">
+                    {badge.desc}
+                  </p>
+                  <div className="pt-2">
+                    {badge.unlocked ? (
+                      <span className="text-[9px] font-black uppercase tracking-[0.2em] text-[#22c55e] bg-emerald-50 px-2 py-1 rounded-md border border-emerald-100/50">
+                        {badge.status}
+                      </span>
+                    ) : (
+                      <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 bg-slate-100/50 px-2 py-1 rounded-md border border-slate-200/50">
+                        {badge.status}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                {!badge.unlocked && (
+                  <div className="absolute top-4 right-4 text-slate-300">
+                    <Clock size={16} />
+                  </div>
+                )}
               </div>
             ))}
           </div>
-
-          <div className="mt-6 relative z-10 p-4 bg-[#ecfdf5] rounded-none border border-[#d1fae5]">
-            <p className="text-xs text-emerald-800 font-bold flex items-center gap-2">
-              <div className="w-1.5 h-1.5 bg-[#22c55e] rounded-full animate-pulse" />
-              Donate 5 more times to unlock{" "}
-              <span className="underline decoration-emerald-200">
-                Food Hero
-              </span>{" "}
-              badge!
-            </p>
-          </div>
         </div>
 
-        <div
-          className="rounded-none border p-6 flex flex-col relative group/donations"
-          style={{
-            backgroundColor: "var(--bg-primary)",
-            borderColor: "var(--border-color)",
-          }}
-        >
-          <h3
-            className="text-sm font-black mb-6 tracking-tighter uppercase text-start px-1 flex items-center gap-2"
-            style={{ color: "var(--text-primary)" }}
-          >
-            <Clock className="w-4 h-4 text-[#22c55e]" /> Recent Activity
-          </h3>
+        {/* Right Column: Activity */}
+        <div className="bg-white border border-slate-100 rounded-md p-8 space-y-8 h-full">
+          <div className="flex items-center justify-between px-1">
+            <h2 className="text-xl font-black text-slate-800 uppercase tracking-tight">
+              Recent Activity
+            </h2>
+            <button className="text-[10px] font-black uppercase tracking-widest text-[#22c55e] hover:underline underline-offset-4 transition-all">
+              Details
+            </button>
+          </div>
 
-          <div className="space-y-3 relative z-10 flex-1">
-            {recentDonations.map((donation, index) => (
-              <DonationActivityCard
-                key={index}
-                icon={donation.icon}
-                title={donation.title}
-                subtitle={donation.ngo}
-                status={donation.status}
-                date={donation.time}
-                compact={true}
-              />
-            ))}
+          <div className="space-y-2">
+            {recentDonations.map((activity, idx) => {
+              const isCollected = activity.status === "Collected";
+
+              return (
+                <div
+                  key={idx}
+                  className="group flex items-center justify-between p-4 rounded-md transition-all duration-300 hover:bg-slate-50/80 cursor-pointer"
+                >
+                  <div className="flex items-center gap-5 min-w-0">
+                    {/* Status Icon Wrapper */}
+                    <div
+                      className={`w-12 h-12 rounded-md shrink-0 flex items-center justify-center transition-all duration-300 group-hover:scale-105 ${
+                        isCollected
+                          ? "bg-emerald-50 text-[#22c55e] border border-emerald-100/50"
+                          : "bg-blue-50 text-blue-500 border border-blue-100/50"
+                      }`}
+                    >
+                      <Package
+                        size={20}
+                        className="transition-transform group-hover:-translate-y-0.5"
+                      />
+                    </div>
+
+                    <div className="min-w-0">
+                      <h3 className="text-[13px] font-black text-slate-800 tracking-tight truncate group-hover:text-[#22c55e] transition-colors mb-1">
+                        {activity.title}
+                      </h3>
+                      <div className="flex items-center gap-2">
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest truncate">
+                          {activity.ngo}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col items-end gap-2 shrink-0 ml-4">
+                    <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest tabular-nums font-sans">
+                      {activity.time}
+                    </span>
+                    <span
+                      className={`px-2 py-0.5 rounded-sm text-[8px] font-black uppercase tracking-widest border ${
+                        isCollected
+                          ? "text-[#22c55e] bg-emerald-50/50 border-emerald-100/50"
+                          : "text-blue-500 bg-blue-50/50 border-blue-100/50"
+                      }`}
+                    >
+                      {activity.status}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

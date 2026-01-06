@@ -15,6 +15,7 @@ export interface ResuableDropdownProps {
   placeholder?: string;
   className?: string;
   disabled?: boolean;
+  required?: boolean;
   minWidth?: number | string;
   align?: "left" | "center" | "right";
 }
@@ -28,6 +29,7 @@ const ResuableDropdown: React.FC<ResuableDropdownProps> = ({
   placeholder = "Select Option",
   className = "",
   disabled = false,
+  required = false,
   minWidth,
   align = "center",
 }) => {
@@ -62,74 +64,80 @@ const ResuableDropdown: React.FC<ResuableDropdownProps> = ({
       : "text-center";
 
   return (
-    <div
-      className={`space-y-1.5 relative ${alignClass} ${className}`}
-      ref={dropdownRef}
-    >
+    <div className={`w-full ${alignClass} ${className}`}>
       {label && (
         <label
-          className="text-[10px] font-bold uppercase tracking-widest block px-1"
+          className="text-[10px] font-bold uppercase tracking-widest block mb-1 px-1"
           style={{ color: "var(--text-muted)" }}
         >
-          {label}
+          {label} {required && <span style={{ color: "#ef4444" }}>*</span>}
         </label>
       )}
-      <button
-        type="button"
-        disabled={disabled}
-        onClick={() => setIsOpen(!isOpen)}
-        style={{
-          minWidth,
-          backgroundColor: "var(--bg-secondary)",
-          color: "var(--text-primary)",
-          borderColor: "var(--border-color)",
-        }}
-        className={`w-full flex items-center justify-between border px-3 py-2.5 rounded-none text-xs font-semibold transition-all ${
-          isOpen ? "ring-1 ring-[#22c55e]" : ""
-        } ${
-          disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-        } ${alignClass}`}
-      >
-        <span className={`flex-1 truncate ${alignClass}`}>
-          {selectedOption ? selectedOption.label : placeholder}
-        </span>
-        <span
-          className={`transition-transform ${isOpen ? "rotate-180" : ""}`}
-          style={{ color: isOpen ? "#22c55e" : "var(--text-muted)" }}
-        >
-          <Icon name="chevron-down" className="w-4 h-4" />
-        </span>
-      </button>
 
-      {isOpen && (
-        <div
-          className="absolute top-full left-0 right-0 mt-1 border rounded-none z-[100] max-h-60 overflow-y-auto no-scrollbar animate-in fade-in zoom-in-95 duration-200"
+      <div className="relative" ref={dropdownRef}>
+        <button
+          type="button"
+          disabled={disabled}
+          onClick={() => setIsOpen(!isOpen)}
           style={{
-            backgroundColor: "var(--bg-primary)",
+            minWidth,
+            backgroundColor: "var(--bg-secondary)",
+            color: "var(--text-primary)",
             borderColor: "var(--border-color)",
           }}
+          className={`w-full flex items-center justify-between border px-3 py-2.5 rounded-none text-xs font-semibold transition-all ${
+            isOpen ? "ring-1 ring-[#22c55e]" : ""
+          } ${
+            disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+          } ${alignClass}`}
         >
-          {options.map((opt) => (
-            <button
-              key={opt.value}
-              type="button"
-              onClick={() => handleSelect(opt.value)}
-              className={`w-full px-4 py-3 text-xs font-semibold transition-all border-b last:border-none flex items-center justify-center gap-3 group ${alignClass}`}
-              style={{
-                borderBottomColor: "var(--border-color)",
-                backgroundColor:
-                  value === opt.value ? "#22c55e" : "transparent",
-                color: value === opt.value ? "white" : "var(--text-secondary)",
-              }}
-            >
-              <span className="flex-1 truncate">{opt.label}</span>
-              {value === opt.value && (
-                <Icon name="check-circle" className="w-3.5 h-3.5 text-white" />
-              )}
-            </button>
-          ))}
-        </div>
-      )}
+          <span className={`flex-1 truncate ${alignClass}`}>
+            {selectedOption ? selectedOption.label : placeholder}
+          </span>
+          <span
+            className={`transition-transform duration-200 ${
+              isOpen ? "rotate-180" : ""
+            }`}
+            style={{ color: isOpen ? "#22c55e" : "var(--text-muted)" }}
+          >
+            <Icon name="chevron-down" className="w-4 h-4" />
+          </span>
+        </button>
+
+        {isOpen && (
+          <div
+            className="absolute top-full left-0 right-0 mt-1 border rounded-none z-[9999] max-h-60 overflow-y-auto no-scrollbar animate-in fade-in zoom-in-95 duration-200"
+            style={{
+              backgroundColor: "var(--bg-primary)",
+              borderColor: "var(--border-color)",
+            }}
+          >
+            {options.map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => handleSelect(opt.value)}
+                className={`w-full px-4 py-3 text-xs font-semibold transition-all border-b last:border-none flex items-center justify-center gap-3 group ${alignClass}`}
+                style={{
+                  borderBottomColor: "var(--border-color)",
+                  backgroundColor:
+                    value === opt.value ? "#22c55e" : "transparent",
+                  color:
+                    value === opt.value ? "white" : "var(--text-secondary)",
+                }}
+              >
+                <span className="flex-1 truncate">{opt.label}</span>
+                {value === opt.value && (
+                  <Icon
+                    name="check-circle"
+                    className="w-3.5 h-3.5 text-white"
+                  />
+                )}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

@@ -271,7 +271,9 @@ const VolunteerRewards = () => {
                         : "border-gray-100"
                     } rounded-sm`}
                     style={{
-                      backgroundColor: "var(--bg-primary)",
+                      backgroundColor: isCurrent
+                        ? "#10b981"
+                        : "var(--bg-primary)",
                       borderColor: isCurrent
                         ? "white"
                         : isPast

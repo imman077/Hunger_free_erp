@@ -1,27 +1,15 @@
-import React from "react";
-import { TimePicker } from "@mui/x-date-pickers/TimePicker";
-import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
-import dayjs, { Dayjs } from "dayjs";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import React, { useState, useRef, useEffect } from "react";
+import { Clock } from "lucide-react";
+import type { TimeValue } from "../types";
 
 interface ResuableTimePickerProps {
   label?: string;
-  value: string;
+  value: string; // HH:mm format
   onChange: (value: string) => void;
   className?: string;
   required?: boolean;
+  align?: "left" | "center" | "right";
 }
-
-// Create a custom theme with emerald green as primary color
-const emeraldTheme = createTheme({
-  palette: {
-    primary: {
-      main: "#22c55e", // emerald-500
-      light: "#4ade80", // emerald-400
-      dark: "#16a34a", // emerald-600
-    },
-  },
-});
 
 const ResuableTimePicker: React.FC<ResuableTimePickerProps> = ({
   label,
@@ -29,189 +17,303 @@ const ResuableTimePicker: React.FC<ResuableTimePickerProps> = ({
   onChange,
   className = "",
   required = false,
+  align = "center",
 }) => {
-  const handleTimeChange = (newValue: Dayjs | null) => {
-    if (newValue) {
-      onChange(newValue.format("HH:mm"));
+  const [isOpen, setIsOpen] = useState(false);
+  const [placement, setPlacement] = useState<"top" | "bottom">("bottom");
+  const containerRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const hourScrollRef = useRef<HTMLDivElement>(null);
+  const minuteScrollRef = useRef<HTMLDivElement>(null);
+
+  const PRIMARY_EMERALD = "#22c55e";
+
+  const alignClass =
+    align === "left"
+      ? "text-left"
+      : align === "right"
+      ? "text-right"
+      : "text-center";
+
+  // Internal conversion from HH:mm to TimeValue
+  const getTimeValue = (val: string): TimeValue => {
+    if (!val) {
+      const now = new Date();
+      let h = now.getHours();
+      const p = h >= 12 ? "PM" : "AM";
+      h = h % 12 || 12;
+      return { hour: h, minute: now.getMinutes(), period: p };
     }
+    const [h24, m] = val.split(":").map(Number);
+    const period = h24 >= 12 ? "PM" : "AM";
+    const hour = h24 % 12 || 12;
+    return { hour, minute: m || 0, period };
   };
 
+  const timeValue = getTimeValue(value);
+
+  // Internal conversion from TimeValue to HH:mm string
+  const formatToString = (time: TimeValue): string => {
+    let h24 = time.hour;
+    if (time.period === "PM" && h24 < 12) h24 += 12;
+    if (time.period === "AM" && h24 === 12) h24 = 0;
+    return `${h24.toString().padStart(2, "0")}:${time.minute
+      .toString()
+      .padStart(2, "0")}`;
+  };
+
+  const handleTimeValueChange = (newTime: TimeValue) => {
+    onChange(formatToString(newTime));
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    if (isOpen && containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const dropdownHeight = 320; // Estimated height of the picker
+
+      if (spaceBelow < dropdownHeight && rect.top > dropdownHeight) {
+        setPlacement("top");
+      } else {
+        setPlacement("bottom");
+      }
+
+      const scrollToActive = (
+        ref: React.RefObject<HTMLDivElement | null>,
+        val: number
+      ) => {
+        const active = ref.current?.querySelector(`[data-value="${val}"]`);
+        if (active && ref.current) {
+          const container = ref.current;
+          const activeElement = active as HTMLElement;
+          const containerRect = container.getBoundingClientRect();
+          const activeRect = activeElement.getBoundingClientRect();
+          const scrollOffset =
+            activeRect.top -
+            containerRect.top -
+            container.clientHeight / 2 +
+            activeElement.clientHeight / 2;
+          container.scrollTop += scrollOffset;
+        }
+      };
+      const timer = setTimeout(() => {
+        scrollToActive(hourScrollRef, timeValue.hour);
+        scrollToActive(minuteScrollRef, timeValue.minute);
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, timeValue.hour, timeValue.minute]);
+
+  const handleNow = () => {
+    const now = new Date();
+    let h = now.getHours();
+    const p = h >= 12 ? "PM" : "AM";
+    h = h % 12 || 12;
+    handleTimeValueChange({ hour: h, minute: now.getMinutes(), period: p });
+  };
+
+  const displayTime = `${timeValue.hour
+    .toString()
+    .padStart(2, "0")}:${timeValue.minute.toString().padStart(2, "0")} ${
+    timeValue.period
+  }`;
+
   return (
-    <ThemeProvider theme={emeraldTheme}>
-      <div className={`space-y-1.5 ${className}`}>
-        {label && (
-          <label
-            className="text-[10px] font-bold uppercase tracking-widest block px-1"
-            style={{ color: "var(--text-muted)" }}
+    <div className={`w-full ${alignClass} ${className}`}>
+      {label && (
+        <label
+          className="text-[10px] font-bold uppercase tracking-widest block mb-1 px-1"
+          style={{ color: "var(--text-muted)" }}
+        >
+          {label} {required && <span style={{ color: "#ef4444" }}>*</span>}
+        </label>
+      )}
+
+      <div className="relative" ref={containerRef}>
+        <button
+          type="button"
+          onClick={() => setIsOpen(!isOpen)}
+          className={`w-full flex items-center justify-between py-2.5 px-3 bg-white border rounded-none transition-all duration-300 ${alignClass}`}
+          style={{
+            borderColor: isOpen ? "#22c55e" : "var(--border-color)",
+            backgroundColor: "var(--bg-secondary)",
+          }}
+        >
+          <span
+            className={`flex-1 font-semibold text-xs tabular-nums ${alignClass}`}
+            style={{
+              color: value ? "var(--text-primary)" : "var(--text-muted)",
+            }}
           >
-            {label} {required && "*"}
-          </label>
+            {value ? displayTime : "Select Time"}
+          </span>
+          <Clock
+            className={`w-3.5 h-3.5 flex-shrink-0 transition-colors ${
+              isOpen ? "text-[#22c55e]" : "text-slate-400"
+            }`}
+          />
+        </button>
+
+        {isOpen && (
+          <div
+            ref={dropdownRef}
+            className={`absolute left-1/2 -translate-x-1/2 z-[9999] w-64 bg-white rounded-sm overflow-hidden animate-in fade-in zoom-in-95 duration-200 border border-slate-100 ${
+              placement === "top" ? "bottom-full mb-2" : "top-full mt-2"
+            }`}
+            style={{
+              backgroundColor: "var(--bg-primary)",
+              borderColor: "var(--border-color)",
+            }}
+          >
+            <div
+              className="p-4 relative bg-white"
+              style={{ backgroundColor: "var(--bg-primary)" }}
+            >
+              <div className="grid grid-cols-3 mb-3 px-1">
+                <span className="text-center text-[8px] font-black text-slate-300 uppercase tracking-widest">
+                  HOUR
+                </span>
+                <span className="text-center text-[8px] font-black text-slate-300 uppercase tracking-widest">
+                  MIN
+                </span>
+                <span className="text-center text-[8px] font-black text-slate-300 uppercase tracking-widest">
+                  PERIOD
+                </span>
+              </div>
+
+              <div className="relative grid grid-cols-3 h-28 items-center">
+                <div
+                  className="absolute top-1/2 left-0 right-0 h-9 -translate-y-1/2 rounded-sm pointer-events-none mx-1.5 border"
+                  style={{
+                    backgroundColor: `${PRIMARY_EMERALD}10`,
+                    borderColor: `${PRIMARY_EMERALD}20`,
+                  }}
+                ></div>
+
+                <div
+                  ref={hourScrollRef}
+                  className="h-full overflow-y-auto no-scrollbar snap-y snap-mandatory"
+                >
+                  <div className="h-10" />
+                  {Array.from({ length: 12 }, (_, i) => i + 1).map((h) => (
+                    <button
+                      key={h}
+                      data-value={h}
+                      type="button"
+                      onClick={() =>
+                        handleTimeValueChange({ ...timeValue, hour: h })
+                      }
+                      className={`w-full h-9 flex items-center justify-center text-base font-bold transition-all snap-center ${
+                        timeValue.hour === h
+                          ? "scale-110"
+                          : "text-slate-300 hover:text-slate-400"
+                      }`}
+                      style={
+                        timeValue.hour === h ? { color: PRIMARY_EMERALD } : {}
+                      }
+                    >
+                      {h.toString().padStart(2, "0")}
+                    </button>
+                  ))}
+                  <div className="h-10" />
+                </div>
+
+                <div
+                  ref={minuteScrollRef}
+                  className="h-full overflow-y-auto no-scrollbar snap-y snap-mandatory"
+                >
+                  <div className="h-10" />
+                  {Array.from({ length: 60 }, (_, i) => i).map((m) => (
+                    <button
+                      key={m}
+                      data-value={m}
+                      type="button"
+                      onClick={() =>
+                        handleTimeValueChange({ ...timeValue, minute: m })
+                      }
+                      className={`w-full h-9 flex items-center justify-center text-base font-bold transition-all snap-center ${
+                        timeValue.minute === m
+                          ? "scale-110"
+                          : "text-slate-300 hover:text-slate-400"
+                      }`}
+                      style={
+                        timeValue.minute === m ? { color: PRIMARY_EMERALD } : {}
+                      }
+                    >
+                      {m.toString().padStart(2, "0")}
+                    </button>
+                  ))}
+                  <div className="h-10" />
+                </div>
+
+                <div className="h-full flex flex-col items-center justify-center gap-1">
+                  {["AM", "PM"].map((p) => (
+                    <button
+                      key={p}
+                      type="button"
+                      onClick={() =>
+                        handleTimeValueChange({
+                          ...timeValue,
+                          period: p as "AM" | "PM",
+                        })
+                      }
+                      className={`w-14 h-9 rounded-sm flex items-center justify-center text-[10px] font-black transition-all duration-300 ${
+                        timeValue.period === p
+                          ? "text-white z-10"
+                          : "text-slate-300 hover:text-slate-400"
+                      }`}
+                      style={
+                        timeValue.period === p
+                          ? { backgroundColor: PRIMARY_EMERALD }
+                          : {}
+                      }
+                    >
+                      {p}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-5 flex items-center justify-between px-1">
+                <button
+                  type="button"
+                  onClick={handleNow}
+                  className="text-[10px] font-black uppercase tracking-widest transition-opacity px-2 py-1.5"
+                  style={{ color: PRIMARY_EMERALD }}
+                >
+                  NOW
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsOpen(false)}
+                  className="bg-[#1e293b] text-white text-[10px] font-black uppercase tracking-widest px-5 py-2.5 rounded-sm hover:bg-black active:scale-95 transition-all"
+                >
+                  SET
+                </button>
+              </div>
+            </div>
+          </div>
         )}
-        <TimePicker
-          value={value ? dayjs(value, "HH:mm") : null}
-          onChange={handleTimeChange}
-          viewRenderers={{
-            hours: renderTimeViewClock,
-            minutes: renderTimeViewClock,
-            seconds: renderTimeViewClock,
-          }}
-          slotProps={{
-            textField: {
-              size: "small",
-              fullWidth: true,
-              required: required,
-              sx: {
-                "& .MuiOutlinedInput-root": {
-                  backgroundColor: "var(--bg-secondary)",
-                  borderRadius: "0px",
-                  fontSize: "11px !important",
-                  fontWeight: "600 !important",
-                  color: "var(--text-primary)",
-                  fontFamily: "inherit !important",
-                  height: "42px !important",
-                  "& fieldset": {
-                    borderColor: "var(--border-color)",
-                  },
-                  "&:hover fieldset": {
-                    borderColor: "var(--border-color)",
-                    opacity: 0.8,
-                  },
-                  "&.Mui-focused fieldset": {
-                    borderColor: "#22c55e", // emerald-500
-                    borderWidth: "1px",
-                  },
-                },
-                "& .MuiInputBase-input": {
-                  padding: "8px 12px !important",
-                  fontSize: "11px !important",
-                  fontWeight: "600 !important",
-                  fontFamily: "inherit !important",
-                  lineHeight: "1 !important",
-                  height: "auto !important",
-                },
-                "& .MuiInputAdornment-root": {
-                  "& .MuiIconButton-root": {
-                    padding: "4px",
-                    "& svg": {
-                      fontSize: "14px !important",
-                      width: "14px",
-                      height: "14px",
-                    },
-                  },
-                },
-                "& .MuiSvgIcon-root": {
-                  fontSize: "14px !important",
-                  width: "14px !important",
-                  height: "14px !important",
-                },
-              },
-            },
-            actionBar: {
-              actions: ["cancel", "accept"],
-            },
-            digitalClockSectionItem: {
-              sx: {
-                "&.Mui-selected": {
-                  backgroundColor: "#22c55e !important",
-                  color: "#ffffff !important",
-                },
-              },
-            },
-          }}
-          sx={{
-            // Clock hand and selected time colors
-            "& .MuiClockPointer-root": {
-              backgroundColor: "#22c55e !important",
-            },
-            "& .MuiClockPointer-thumb": {
-              backgroundColor: "#22c55e !important",
-              borderColor: "#22c55e !important",
-            },
-            "& .MuiClock-pin": {
-              backgroundColor: "#22c55e !important",
-            },
-            "& .MuiClockNumber-root.Mui-selected": {
-              backgroundColor: "#22c55e !important",
-              color: "#ffffff !important",
-            },
-            // AM/PM buttons and arrows
-            "& .MuiPickersArrowSwitcher-button": {
-              color: "#22c55e !important",
-            },
-            "& .MuiTimeClock-arrowSwitcher button": {
-              color: "#22c55e !important",
-            },
-            "& .MuiIconButton-root": {
-              color: "#22c55e",
-            },
-            // Action buttons (OK, CANCEL)
-            "& .MuiButton-root": {
-              color: "#22c55e !important",
-              fontWeight: "600 !important",
-              fontSize: "11px !important",
-            },
-            "& .MuiButton-text": {
-              color: "#22c55e !important",
-            },
-            // AM/PM toggle buttons
-            "& .MuiToggleButton-root": {
-              color: "var(--text-muted)",
-              fontSize: "11px !important",
-              "&.Mui-selected": {
-                backgroundColor: "#22c55e !important",
-                color: "#ffffff !important",
-                "&:hover": {
-                  backgroundColor: "#16a34a !important",
-                },
-              },
-            },
-            // Paper/Popover background
-            "& .MuiPaper-root": {
-              backgroundColor: "var(--bg-primary) !important",
-              backgroundImage: "none !important",
-              border: "1px solid var(--border-color)",
-              color: "var(--text-primary) !important",
-            },
-            // Clock face
-            "& .MuiClock-root": {
-              backgroundColor: "var(--bg-secondary) !important",
-            },
-            // Clock numbers
-            "& .MuiClockNumber-root": {
-              color: "var(--text-primary) !important",
-            },
-            // Typography
-            "& .MuiTypography-root": {
-              color: "var(--text-primary) !important",
-            },
-            // Digital clock items
-            "& .MuiMultiSectionDigitalClock-root": {
-              backgroundColor: "var(--bg-primary) !important",
-              "& .Mui-selected": {
-                backgroundColor: "#22c55e !important",
-                color: "#ffffff !important",
-              },
-              "& .MuiMenuItem-root": {
-                color: "var(--text-primary) !important",
-                "&:hover": {
-                  backgroundColor: "var(--bg-secondary) !important",
-                },
-              },
-            },
-            // AM/PM section in mobile
-            "& .MuiTimePickerToolbar-amPmSelection": {
-              "& .MuiButtonBase-root": {
-                color: "var(--text-primary) !important",
-              },
-            },
-            // Ensure all MUI primary colors use emerald
-            "& .MuiTypography-root.Mui-selected": {
-              color: "#22c55e !important",
-            },
-          }}
-        />
       </div>
-    </ThemeProvider>
+
+      <style>{`
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
+    </div>
   );
 };
 
