@@ -43,22 +43,24 @@ const DonationRequests = () => {
 
   return (
     <div
-      className="p-6 space-y-6"
-      style={{ backgroundColor: "var(--bg-primary)" }}
+      className="p-8 min-h-screen space-y-8"
+      style={{ backgroundColor: "var(--bg-secondary)" }}
     >
-      <div className="text-left">
-        <h1
-          className="text-xl font-bold tracking-tight"
-          style={{ color: "var(--text-primary)" }}
-        >
-          Donation Requests
-        </h1>
-        <p className="mt-2" style={{ color: "var(--text-muted)" }}>
-          Review and accept donations from the community.
-        </p>
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="text-start">
+          <h1 className="text-5xl font-black tracking-tighter mb-3 uppercase text-slate-900">
+            Donation Requests
+          </h1>
+          <p className="font-medium text-lg text-slate-500">
+            Review and accept donations from the community 🤝
+          </p>
+        </div>
       </div>
 
       <ReusableTable
+        variant="compact"
+        title="Incoming Donations"
+        description="Filter and manage requests based on proximity and item types."
         data={donations}
         columns={[
           { name: "Icon", uid: "icon", sortable: false },
@@ -73,8 +75,8 @@ const DonationRequests = () => {
               return (
                 <div className="flex justify-center">
                   <div
-                    className="w-12 h-12 rounded-sm flex items-center justify-center text-xl"
-                    style={{ backgroundColor: "var(--bg-secondary)" }}
+                    className="w-12 h-12 rounded-sm flex items-center justify-center text-xl shadow-sm border border-slate-100"
+                    style={{ backgroundColor: "var(--bg-primary)" }}
                   >
                     {donation.icon}
                   </div>
@@ -82,31 +84,29 @@ const DonationRequests = () => {
               );
             case "title":
               return (
-                <span
-                  className="font-bold"
-                  style={{ color: "var(--text-primary)" }}
-                >
-                  {donation.title}
-                </span>
+                <div className="text-left">
+                  <span className="font-black text-slate-800 text-sm">
+                    {donation.title}
+                  </span>
+                </div>
               );
             case "donor":
               return (
-                <span style={{ color: "var(--text-secondary)" }}>
-                  {donation.donor}
-                </span>
+                <div className="text-left">
+                  <span className="font-bold text-slate-500 text-xs uppercase tracking-wide">
+                    {donation.donor}
+                  </span>
+                </div>
               );
             case "distance":
               return (
-                <span
-                  className="text-sm"
-                  style={{ color: "var(--text-muted)" }}
-                >
+                <span className="text-xs font-black text-[#22c55e] bg-emerald-50 px-3 py-1.5 rounded-sm border border-emerald-100">
                   {donation.distance}
                 </span>
               );
             default:
               return (
-                <span style={{ color: "var(--text-primary)" }}>
+                <span className="text-slate-700 font-medium">
                   {String(donation[columnKey as keyof DonationRequest])}
                 </span>
               );

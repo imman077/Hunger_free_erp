@@ -79,7 +79,7 @@ const VolunteerProfile = () => {
 
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#ecfdf5] border border-[#d1fae5] rounded-sm">
                 <Star className="w-4 h-4 text-[#22c55e]" fill="currentColor" />
-                <span className="text-[11px] text-[#16a34a] font-black uppercase tracking-[0.15em]">
+                <span className="text-[11px] text-[#22c55e] font-black uppercase tracking-[0.15em]">
                   Master Courier
                 </span>
               </div>
@@ -170,7 +170,7 @@ const VolunteerProfile = () => {
                         key={day}
                         className={`p-2 rounded-sm border text-center transition-all ${
                           isActive
-                            ? "bg-emerald-50 border-emerald-100"
+                            ? "bg-emerald-50 border-[#22c55e]/10"
                             : "opacity-50"
                         }`}
                         style={{
@@ -194,7 +194,7 @@ const VolunteerProfile = () => {
                         </p>
                         <div
                           className={`w-1 h-1 rounded-full mx-auto mt-1 ${
-                            isActive ? "bg-emerald-400" : "bg-gray-200"
+                            isActive ? "bg-[#22c55e]" : "bg-gray-200"
                           }`}
                         ></div>
                       </div>
@@ -242,14 +242,14 @@ const VolunteerProfile = () => {
                     value: "4.9",
                     unit: "/5",
                     label: "Quality Rating",
-                    color: "bg-emerald-50 text-emerald-600 border-emerald-100",
+                    color: "bg-emerald-50 text-[#22c55e] border-[#22c55e]/10",
                   },
                   {
                     icon: <Clock />,
                     value: "98",
                     unit: "%",
                     label: "On-time Delivery",
-                    color: "bg-emerald-50 text-emerald-600 border-emerald-100",
+                    color: "bg-emerald-50 text-[#22c55e] border-[#22c55e]/10",
                   },
                   {
                     icon: <CheckCircle />,
@@ -329,13 +329,13 @@ const VolunteerProfile = () => {
                     <div className="flex items-center gap-4">
                       <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#ecfdf5] border border-[#d1fae5] rounded-sm">
                         <CheckCircle className="w-3 h-3 text-[#22c55e]" />
-                        <span className="text-[9px] text-[#16a34a] font-black uppercase tracking-widest">
+                        <span className="text-[9px] text-[#22c55e] font-black uppercase tracking-widest">
                           Verified
                         </span>
                       </div>
                       <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-50 border border-emerald-100 rounded-sm">
-                        <Clock className="w-3 h-3 text-emerald-500" />
-                        <span className="text-[9px] text-emerald-600 font-black uppercase tracking-widest">
+                        <Clock className="w-3 h-3 text-[#22c55e]" />
+                        <span className="text-[9px] text-[#22c55e] font-black uppercase tracking-widest">
                           Last Service: Dec 2025
                         </span>
                       </div>
@@ -363,7 +363,7 @@ const VolunteerProfile = () => {
                 >
                   Request Change
                 </button>
-                <button className="px-8 py-3 bg-[#22c55e] text-white rounded-sm text-xs font-black uppercase tracking-[0.15em] hover:bg-[#16a34a] transition-all shadow-none">
+                <button className="px-8 py-3 bg-[#22c55e] text-white rounded-sm text-xs font-black uppercase tracking-[0.15em] hover:bg-[#1eb054] transition-all shadow-none">
                   Edit Profile
                 </button>
               </div>

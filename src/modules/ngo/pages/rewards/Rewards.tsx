@@ -29,7 +29,7 @@ const NGORewards = () => {
 
   const tiers = [
     { name: "Beginner", points: "0-1,000", color: "text-gray-400" },
-    { name: "Partner", points: "1,001-5,000", color: "text-emerald-600" },
+    { name: "Partner", points: "1,001-5,000", color: "text-[#22c55e]" },
     { name: "Elite", points: "5,001-15,000", color: "text-blue-600" },
     { name: "Master", points: "15,001-35,000", color: "text-purple-600" },
     { name: "Legend", points: "35,001-75,000", color: "text-amber-600" },
@@ -44,7 +44,7 @@ const NGORewards = () => {
       icon: <Building2 size={24} />,
       unlocked: true,
       date: "Sep 5, 2024",
-      color: "bg-emerald-500",
+      color: "bg-[#22c55e]",
     },
     {
       id: 2,
@@ -188,52 +188,68 @@ const NGORewards = () => {
       className="p-8 min-h-screen space-y-10"
       style={{ backgroundColor: "var(--bg-secondary)" }}
     >
-      {/* Page Heading */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div className="text-start">
-          <h1
-            className="text-5xl font-black tracking-tighter mb-3 uppercase"
-            style={{ color: "var(--text-primary)" }}
-          >
-            NGO Grants & Rewards
-          </h1>
-          <p
-            className="font-medium text-lg"
-            style={{ color: "var(--text-secondary)" }}
-          >
-            Maximizing your impact through generous funds and recognition 🏢
-          </p>
-        </div>
-        <div
-          className="border p-6 flex items-center gap-6 rounded-sm"
-          style={{
-            backgroundColor: "var(--bg-primary)",
-            borderColor: "var(--border-color)",
-          }}
-        >
-          <div className="w-16 h-16 bg-emerald-50 border border-emerald-100 flex items-center justify-center rounded-sm">
-            <TrendingUp className="text-emerald-500" size={32} />
-          </div>
+      {/* Page Heading and Top Challenge */}
+      <div className="flex flex-col gap-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="text-start">
-            <p
-              className="text-[10px] font-black uppercase tracking-[0.2em] mb-1"
-              style={{ color: "var(--text-muted)" }}
-            >
-              Impact Points earned
+            <h1 className="text-5xl font-black tracking-tighter mb-3 uppercase text-slate-900">
+              NGO Grants & Rewards
+            </h1>
+            <p className="font-medium text-lg text-slate-500">
+              Maximizing your impact through generous funds and recognition 🏢
             </p>
-            <div className="flex items-baseline gap-2">
-              <span
-                className="text-4xl font-black"
-                style={{ color: "var(--text-primary)" }}
-              >
-                {userStats.totalPoints.toLocaleString()}
-              </span>
-              <span className="text-xs font-black text-emerald-500 uppercase tracking-widest">
-                Points
-              </span>
+          </div>
+          <div
+            className="border p-6 bg-white flex items-center gap-6 rounded-sm shadow-sm"
+            style={{
+              borderColor: "var(--border-color)",
+            }}
+          >
+            <div className="w-16 h-16 bg-emerald-50 border border-emerald-100 flex items-center justify-center rounded-sm">
+              <TrendingUp className="text-[#22c55e]" size={32} />
+            </div>
+            <div className="text-start">
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] mb-1 text-slate-400">
+                Impact Points earned
+              </p>
+              <div className="flex items-baseline gap-2">
+                <span className="text-4xl font-black text-slate-900">
+                  {userStats.totalPoints.toLocaleString()}
+                </span>
+                <span className="text-xs font-black text-[#22c55e] uppercase tracking-widest">
+                  Points
+                </span>
+              </div>
             </div>
           </div>
         </div>
+
+        {/* Quarterly Top NGOs - Moved to Top and Reduced Size */}
+        <section className="bg-[#22c55e] p-8 rounded-sm text-white flex flex-col md:flex-row items-center justify-between gap-8 shadow-sm">
+          <div className="text-start max-w-xl">
+            <h3 className="text-2xl font-black tracking-tighter uppercase mb-2">
+              Quarterly Top NGOs Challenge
+            </h3>
+            <p className="text-emerald-50 text-sm font-medium leading-relaxed opacity-90">
+              The top 3 NGOs based on operational excellence will receive a{" "}
+              <span className="font-bold underline decoration-white/30 underline-offset-4">
+                ₹2,00,000 special grant
+              </span>
+              .
+            </p>
+          </div>
+          <div className="flex items-center gap-10">
+            <div className="text-center">
+              <div className="text-2xl font-black tracking-widest">Q1 2025</div>
+              <p className="text-[9px] font-black uppercase tracking-[0.3em] text-emerald-200">
+                Current Challenge
+              </p>
+            </div>
+            <button className="px-8 py-3 bg-white text-emerald-700 text-[10px] font-black uppercase tracking-widest rounded-sm hover:bg-emerald-50 transition-all active:scale-95 shadow-lg">
+              Submit Report
+            </button>
+          </div>
+        </section>
       </div>
 
       {/* 6-Tier Progression */}
@@ -245,7 +261,7 @@ const NGORewards = () => {
         }}
       >
         <div className="flex items-center gap-3 mb-10">
-          <Award className="text-emerald-500" size={24} />
+          <Award className="text-[#22c55e]" size={24} />
           <h2
             className="text-xl font-black uppercase tracking-tighter"
             style={{ color: "var(--text-primary)" }}
@@ -267,19 +283,19 @@ const NGORewards = () => {
                   <div
                     className={`w-14 h-14 flex items-center justify-center border-2 mb-4 transition-all duration-500 ${
                       isCurrent
-                        ? "bg-emerald-600 border-white scale-125 ring-4 ring-emerald-50"
+                        ? "bg-[#22c55e] border-white scale-125 ring-4 ring-emerald-50"
                         : isPast
-                        ? "border-emerald-600"
+                        ? "border-[#22c55e]"
                         : "border-transparent"
                     } rounded-sm`}
                     style={{
                       backgroundColor: isCurrent
-                        ? "#059669"
+                        ? "#22c55e"
                         : "var(--bg-secondary)",
                     }}
                   >
                     {isPast ? (
-                      <CheckCircle className="text-emerald-600" size={24} />
+                      <CheckCircle className="text-[#22c55e]" size={24} />
                     ) : isCurrent ? (
                       <Star
                         className="text-white"
@@ -292,7 +308,7 @@ const NGORewards = () => {
                   </div>
                   <p
                     className={`text-[10px] font-black uppercase tracking-widest mb-1 ${
-                      isCurrent ? "text-emerald-600" : ""
+                      isCurrent ? "text-[#22c55e]" : ""
                     }`}
                     style={{
                       color: isCurrent ? "#059669" : "var(--text-muted)",
@@ -315,7 +331,7 @@ const NGORewards = () => {
         <div className="mt-12 flex flex-col md:flex-row items-center justify-between p-6 bg-emerald-50/50 rounded-sm border border-emerald-100 border-dashed">
           <div className="flex items-center gap-4 mb-4 md:mb-0">
             <div className="p-3 bg-white rounded-sm border border-emerald-100">
-              <Zap className="text-emerald-500" size={20} />
+              <Zap className="text-[#22c55e]" size={20} />
             </div>
             <div className="text-start">
               <p className="text-sm font-black text-gray-900 uppercase tracking-tight">
@@ -327,7 +343,7 @@ const NGORewards = () => {
               </p>
             </div>
           </div>
-          <button className="px-8 py-3 bg-emerald-600 text-white text-xs font-black uppercase tracking-widest rounded-sm hover:bg-emerald-700 transition-all flex items-center gap-2">
+          <button className="px-8 py-3 bg-[#22c55e] text-white text-xs font-black uppercase tracking-widest rounded-sm hover:bg-[#1eb054] transition-all flex items-center gap-2">
             View Grant Eligibility <ChevronRight size={16} />
           </button>
         </div>
@@ -338,7 +354,7 @@ const NGORewards = () => {
         <section className="lg:col-span-2 space-y-6">
           <div className="flex items-center gap-3">
             <div className="p-2.5 bg-emerald-50 border border-emerald-100 rounded-sm">
-              <IndianRupee className="text-emerald-600" size={20} />
+              <IndianRupee className="text-[#22c55e]" size={20} />
             </div>
             <h3
               className="text-xl font-black tracking-tight uppercase"
@@ -366,7 +382,7 @@ const NGORewards = () => {
                     >
                       {g.amount}
                     </span>
-                    <span className="text-[10px] font-black text-emerald-500 uppercase bg-emerald-50 px-2 py-0.5 rounded-sm">
+                    <span className="text-[10px] font-black text-[#22c55e] uppercase bg-emerald-50 px-2 py-0.5 rounded-sm">
                       Grant
                     </span>
                   </div>
@@ -381,7 +397,8 @@ const NGORewards = () => {
                   <span className="text-[10px] font-black text-gray-900 uppercase">
                     {g.points} PTS
                   </span>
-                  <div className="px-5 py-2 bg-emerald-600 text-white text-[10px] font-black uppercase tracking-widest rounded-sm group-hover:bg-emerald-700 transition-all">
+                  <div className="px-5 py-2 bg-[#22c55e] text-white text-[10px] font-black uppercase tracking-widest rounded-sm group-hover:bg-[#1eb054] transition-all">
+                    <div className="w-2 h-2 rounded-full bg-[#22c55e] animate-pulse" />
                     Apply
                   </div>
                 </button>
@@ -505,24 +522,27 @@ const NGORewards = () => {
 
         {/* Community Legacy */}
         <div className="space-y-8">
-          <section className="bg-emerald-900 text-white p-8 rounded-sm relative overflow-hidden">
-            <div className="absolute -top-10 -right-10 opacity-10">
+          <section
+            className="bg-white border p-8 rounded-sm relative overflow-hidden shadow-sm"
+            style={{ borderColor: "var(--border-color)" }}
+          >
+            <div className="absolute -top-10 -right-10 opacity-[0.03] text-emerald-900 pointer-events-none">
               <Sprout size={160} />
             </div>
             <div className="relative z-10 space-y-6">
               <div className="flex items-center gap-3">
-                <Sprout className="text-emerald-400" size={24} />
-                <h3 className="text-xl font-black uppercase tracking-tighter">
+                <Sprout className="text-[#22c55e]" size={24} />
+                <h3 className="text-xl font-black uppercase tracking-tighter text-slate-800">
                   Impact Forest
                 </h3>
               </div>
 
-              <div className="flex items-center gap-6 py-4 border-y border-white/10">
+              <div className="flex items-center gap-6 py-4 border-y border-slate-100">
                 <div className="text-start">
-                  <p className="text-[64px] font-black leading-none">
+                  <p className="text-[64px] font-black leading-none text-slate-900">
                     {userStats.treesPlanted}
                   </p>
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-400">
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#22c55e] mt-2">
                     Total Trees Planted
                   </p>
                 </div>
@@ -532,15 +552,17 @@ const NGORewards = () => {
                 {treeTiers.map((t) => (
                   <button
                     key={t.name}
-                    className="w-full flex items-center justify-between p-3 border border-white/20 hover:bg-white/10 transition-all rounded-sm"
+                    className="w-full flex items-center justify-between p-4 border border-slate-100 bg-slate-50 hover:bg-emerald-50 hover:border-emerald-100 transition-all rounded-sm group"
                   >
                     <div className="text-start">
-                      <p className="text-xs font-black">{t.name}</p>
-                      <p className="text-[9px] font-medium text-emerald-400">
+                      <p className="text-xs font-black text-slate-800 group-hover:text-emerald-700">
+                        {t.name}
+                      </p>
+                      <p className="text-[10px] font-medium text-slate-500 mt-0.5">
                         {t.trees} Tree • {t.impact}
                       </p>
                     </div>
-                    <span className="text-[10px] font-black bg-emerald-500 px-3 py-1 rounded-sm uppercase">
+                    <span className="text-[10px] font-black bg-[#22c55e] text-white px-3 py-1.5 rounded-sm uppercase shadow-sm">
                       {t.points} PTS
                     </span>
                   </button>
@@ -558,7 +580,7 @@ const NGORewards = () => {
           >
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-3">
-                <Award className="text-emerald-500" size={20} />
+                <Award className="text-[#22c55e]" size={20} />
                 <h3
                   className="text-sm font-black uppercase tracking-tighter"
                   style={{ color: "var(--text-primary)" }}
@@ -592,32 +614,6 @@ const NGORewards = () => {
           </section>
         </div>
       </div>
-
-      <section className="bg-emerald-800 p-10 rounded-sm text-white flex flex-col md:flex-row items-center justify-between gap-8">
-        <div className="text-start max-w-lg">
-          <h3 className="text-4xl font-black tracking-tighter uppercase mb-4">
-            Quarterly Top NGOs
-          </h3>
-          <p className="text-emerald-50 font-medium leading-relaxed">
-            The top 3 NGOs based on operational excellence will receive a{" "}
-            <span className="font-bold underline decoration-emerald-300 underline-offset-4">
-              ₹2,00,000 special grant
-            </span>{" "}
-            and a feature in the national newsletter.
-          </p>
-        </div>
-        <div className="flex flex-col items-center">
-          <div className="text-4xl font-black mb-2 tracking-[0.2em]">
-            Q1 2025
-          </div>
-          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-200 mb-6">
-            Current Challenge
-          </p>
-          <button className="px-10 py-4 bg-white text-emerald-800 text-xs font-black uppercase tracking-widest rounded-sm hover:bg-emerald-50 transition-all active:scale-95">
-            Submit Impact Report
-          </button>
-        </div>
-      </section>
     </div>
   );
 };

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Icon } from "../../../../global/components/resuable-components/Icon";
 import { ImpactCards } from "../../../../global/components/resuable-components/ImpactCards";
+import ResuableButton from "../../../../global/components/resuable-components/button";
+import ResuableInput from "../../../../global/components/resuable-components/input";
 
 const DonorProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -73,49 +75,61 @@ const DonorProfile = () => {
       className="min-h-screen"
       style={{ backgroundColor: "var(--bg-secondary)" }}
     >
-      {/* Hero Section */}
-      <div className="relative h-64 bg-[#15803d] overflow-hidden shadow-lg">
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-        <div className="relative max-w-7xl mx-auto px-8 h-full flex items-end pb-12">
-          <div className="flex flex-col md:flex-row items-center md:items-end gap-8 w-full text-white">
+      {/* Header Section */}
+      <div
+        className="bg-white border-b sticky top-0 z-20"
+        style={{ borderColor: "var(--border-color)" }}
+      >
+        <div className="max-w-7xl mx-auto px-8 py-8">
+          <div className="flex flex-col md:flex-row items-center md:items-end gap-10">
             <div className="relative group">
-              <div className="w-32 h-32 rounded-md overflow-hidden border-4 border-white/40 shadow-2xl group-hover:scale-105 transition-transform duration-500">
+              <div className="w-36 h-36 rounded-sm overflow-hidden border-4 border-white shadow-xl group-hover:scale-[1.02] transition-transform duration-500">
                 <img
                   src="https://mui.com/static/images/avatar/1.jpg"
                   alt="Profile"
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className="absolute -bottom-1 -right-1 bg-[#22c55e] text-white p-2 rounded-md border-2 border-white shadow-md">
+              <div className="absolute -bottom-1 -right-1 bg-[#22c55e] text-white p-2 rounded-sm border-2 border-white shadow-md">
                 <Icon name="verified" className="w-5 h-5" />
               </div>
             </div>
 
-            <div className="flex-1 text-center md:text-left mb-2">
-              <div className="flex items-center justify-center md:justify-start gap-3 mb-1.5">
-                <h1 className="text-3xl md:text-4xl font-black tracking-tighter">
+            <div className="flex-1 text-center md:text-left">
+              <div className="flex items-center justify-center md:justify-start gap-4 mb-2">
+                <h1 className="text-4xl font-black tracking-tighter text-slate-900">
                   {profile.name}
                 </h1>
-                <span className="px-3 py-1 bg-[#16a34a] rounded-md text-[10px] font-black uppercase tracking-widest border border-white/20 shadow-sm">
+                <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-sm text-[10px] font-black uppercase tracking-widest border border-emerald-100 shadow-sm">
                   Lvl 12
                 </span>
               </div>
-              <p className="text-[#ecfdf5]/80 font-medium text-xs flex items-center justify-center md:justify-start gap-1.5">
-                <Icon name="office" className="w-3.5 h-3.5" />
-                {profile.location} • Jan 2025
-              </p>
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-6 text-slate-500">
+                <p className="font-bold text-xs flex items-center gap-2">
+                  <Icon name="office" className="w-4 h-4 text-[#22c55e]" />
+                  {profile.location}
+                </p>
+                <p className="font-bold text-xs flex items-center gap-2">
+                  <Icon name="calendar" className="w-4 h-4 text-[#22c55e]" />
+                  Member since Jan 2025
+                </p>
+              </div>
             </div>
 
-            <div className="flex gap-4 mb-2">
-              <button
+            <div className="flex gap-4">
+              <ResuableButton
                 onClick={handleEditToggle}
-                className="px-8 py-3 bg-white text-emerald-900 rounded-md text-xs font-black hover:bg-[#ecfdf5] transition-all uppercase tracking-widest shadow-lg active:scale-95"
+                variant={isEditing ? "dark" : "dark"}
+                className="px-10 py-3.5 !rounded-sm text-xs font-black uppercase tracking-widest shadow-lg"
               >
-                {isEditing ? "Save" : "Edit Profile"}
-              </button>
-              <button className="p-3 bg-white/10 hover:bg-white/20 text-white rounded-md transition-all border border-white/20 backdrop-blur-sm active:scale-95">
-                <Icon name="settings" className="w-5 h-5" />
-              </button>
+                {isEditing ? "Save Selection" : "Edit Profile"}
+              </ResuableButton>
+              <ResuableButton
+                variant="secondary"
+                className="p-3.5 !rounded-sm border-slate-200"
+              >
+                <Icon name="settings" className="w-6 h-6" />
+              </ResuableButton>
             </div>
           </div>
         </div>
@@ -128,7 +142,7 @@ const DonorProfile = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Row 1: Personal Details & Recent Activity */}
           <section
-            className="lg:col-span-2 border p-8 transition-all h-full flex flex-col rounded-md bg-white shadow-sm"
+            className="lg:col-span-2 border p-8 transition-all h-full flex flex-col rounded-sm bg-white shadow-sm"
             style={{ borderColor: "var(--border-color)" }}
           >
             <div className="flex items-center justify-between mb-8">
@@ -166,7 +180,7 @@ const DonorProfile = () => {
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-4 group">
                   <div
-                    className="p-3.5 rounded-md border transition-all duration-300 group-hover:bg-[#ecfdf5] group-hover:border-[#d1fae5] group-hover:text-[#16a34a] shadow-sm"
+                    className="p-3.5 rounded-sm border transition-all duration-300 group-hover:bg-emerald-50 group-hover:border-emerald-100 group-hover:text-emerald-600 shadow-sm"
                     style={{
                       backgroundColor: "var(--bg-secondary)",
                       borderColor: "var(--border-color)",
@@ -182,13 +196,13 @@ const DonorProfile = () => {
                       {item.label}
                     </label>
                     {isEditing ? (
-                      <input
-                        type="text"
+                      <ResuableInput
                         value={item.value}
-                        onChange={(e) =>
-                          setProfile({ ...profile, [item.key]: e.target.value })
+                        onChange={(val) =>
+                          setProfile({ ...profile, [item.key]: val })
                         }
-                        className="text-xs font-bold text-gray-700 bg-white border border-gray-200 rounded-sm px-2 py-1 focus:outline-none focus:border-[#22c55e] transition-colors"
+                        align="left"
+                        className="!space-y-0"
                       />
                     ) : (
                       <span
@@ -205,14 +219,14 @@ const DonorProfile = () => {
           </section>
 
           <section
-            className="border p-8 h-full flex flex-col rounded-md bg-white shadow-sm"
+            className="border p-8 h-full flex flex-col rounded-sm bg-white shadow-sm"
             style={{ borderColor: "var(--border-color)" }}
           >
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-sm font-black tracking-tight uppercase">
                 Recent Activity
               </h3>
-              <span className="text-[10px] font-black text-[#16a34a] uppercase tracking-widest cursor-pointer hover:underline">
+              <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest cursor-pointer hover:underline">
                 View All
               </span>
             </div>
@@ -238,12 +252,12 @@ const DonorProfile = () => {
                             ? "donations"
                             : "trending"
                         }
-                        className="w-4 h-4 text-[#16a34a]"
+                        className="w-4 h-4 text-emerald-600"
                       />
                     </div>
                     <div>
                       <h4
-                        className="text-sm font-black group-hover:text-[#16a34a] transition-colors leading-tight"
+                        className="text-sm font-black group-hover:text-emerald-600 transition-colors leading-tight"
                         style={{ color: "var(--text-primary)" }}
                       >
                         {activity.title}
@@ -269,7 +283,7 @@ const DonorProfile = () => {
 
           {/* Row 2: Achievements & Status */}
           <section
-            className="lg:col-span-2 border p-8 h-full flex flex-col relative overflow-hidden group/ach bg-white rounded-md shadow-sm"
+            className="lg:col-span-2 border p-8 h-full flex flex-col relative overflow-hidden group/ach bg-white rounded-sm shadow-sm"
             style={{ borderColor: "var(--border-color)" }}
           >
             <div className="flex items-center justify-between mb-8 relative z-10">
@@ -322,7 +336,7 @@ const DonorProfile = () => {
               ].map((badge, i) => (
                 <div
                   key={i}
-                  className={`group relative p-6 rounded-md border transition-all duration-300 cursor-pointer flex flex-col justify-between bg-white text-start shadow-sm
+                  className={`group relative p-6 rounded-sm border transition-all duration-300 cursor-pointer flex flex-col justify-between bg-white text-start shadow-sm
                   ${
                     badge.color === "amber"
                       ? "border-amber-50 hover:border-amber-200 hover:shadow-md"
@@ -332,11 +346,11 @@ const DonorProfile = () => {
                 >
                   <div className="flex items-center gap-4 relative z-10 mb-3">
                     <div
-                      className={`w-12 h-12 rounded-md flex items-center justify-center transition-all duration-500 group-hover:scale-105 shadow-md
+                      className={`w-12 h-12 rounded-sm flex items-center justify-center transition-all duration-500 group-hover:scale-105 shadow-md
                       ${
                         badge.color === "amber"
                           ? "bg-amber-500 text-white shadow-amber-500/20"
-                          : "bg-[#22c55e] text-white shadow-emerald-500/20"
+                          : "bg-[#22c55e] text-white shadow-[#22c55e]/20"
                       }
                     `}
                     >
@@ -349,11 +363,11 @@ const DonorProfile = () => {
                       </h4>
                       <div className="flex items-center gap-2 mt-1">
                         <span
-                          className={`text-[8px] font-black uppercase tracking-[0.2em] px-2 py-0.5 rounded-md border
+                          className={`text-[8px] font-black uppercase tracking-[0.2em] px-2 py-0.5 rounded-sm border
                           ${
                             badge.color === "amber"
                               ? "bg-amber-50 text-amber-700 border-amber-100"
-                              : "bg-emerald-50 text-[#15803d] border-emerald-100"
+                              : "bg-emerald-50 text-emerald-700 border-emerald-100"
                           }
                         `}
                         >
@@ -371,12 +385,15 @@ const DonorProfile = () => {
             </div>
           </section>
 
-          <section className="bg-emerald-950 rounded-md p-8 text-white relative overflow-hidden group h-full flex flex-col shadow-xl">
+          <section
+            className="bg-white rounded-sm p-8 text-slate-800 relative overflow-hidden group h-full flex flex-col border shadow-sm"
+            style={{ borderColor: "var(--border-color)" }}
+          >
             <div className="flex items-center justify-between mb-8 relative z-10">
-              <h4 className="text-[#34d399] text-[10px] font-black uppercase tracking-[0.4em]">
+              <h4 className="text-emerald-600 text-[10px] font-black uppercase tracking-[0.4em]">
                 Current Status
               </h4>
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-md border border-white/5 group-hover:bg-[#34d399] group-hover:text-emerald-900 transition-all duration-500">
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 text-emerald-600 rounded-sm border border-emerald-100 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-500">
                 <Icon name="trending" className="w-4 h-4" />
                 <span className="text-[10px] font-black uppercase tracking-widest">
                   Top 5%
@@ -384,63 +401,63 @@ const DonorProfile = () => {
               </div>
             </div>
 
-            <div className="flex items-end gap-2.5 mb-6 relative z-10">
-              <span className="text-4xl font-black tracking-tighter">
+            <div className="flex items-end gap-2.5 mb-8 relative z-10">
+              <span className="text-5xl font-black tracking-tighter text-slate-900 leading-none">
                 Elite
               </span>
-              <span className="text-[#34d399] text-xs font-black pb-1.5 underline underline-offset-8 decoration-[#22c55e]/50">
+              <span className="text-[#22c55e] text-xs font-black pb-1 underline underline-offset-8 decoration-[#22c55e]/30">
                 Lvl 12
               </span>
             </div>
 
             {/* Extra Stats Grid */}
             <div className="grid grid-cols-2 gap-4 mb-8 flex-1 relative z-10">
-              <div className="bg-white/5 rounded-md p-5 border border-white/5 hover:bg-white/10 transition-colors shadow-inner">
-                <div className="flex items-center gap-2 mb-1.5">
-                  <Icon
-                    name="donations"
-                    className="w-3.5 h-3.5 text-[#34d399]"
-                  />
-                  <span className="text-[9px] font-black text-[#6ee7b7] uppercase tracking-[0.25em]">
+              <div className="bg-slate-50 rounded-sm p-5 border border-slate-100 hover:border-[#22c55e]/20 transition-colors shadow-sm">
+                <div className="flex items-center gap-2 mb-2">
+                  <Icon name="donations" className="w-4 h-4 text-[#22c55e]" />
+                  <span className="text-[9px] font-black text-slate-500 uppercase tracking-[0.25em]">
                     Streak
                   </span>
                 </div>
-                <div className="text-lg font-black">15 Weeks</div>
+                <div className="text-xl font-black text-slate-900">
+                  15 Weeks
+                </div>
               </div>
-              <div className="bg-white/5 rounded-md p-5 border border-white/5 hover:bg-white/10 transition-colors shadow-inner">
-                <div className="flex items-center gap-2 mb-1.5">
-                  <Icon
-                    name="verified"
-                    className="w-3.5 h-3.5 text-[#34d399]"
-                  />
-                  <span className="text-[9px] font-black text-[#6ee7b7] uppercase tracking-[0.25em]">
+              <div className="bg-slate-50 rounded-sm p-5 border border-slate-100 hover:border-[#22c55e]/20 transition-colors shadow-sm">
+                <div className="flex items-center gap-2 mb-2">
+                  <Icon name="verified" className="w-4 h-4 text-[#22c55e]" />
+                  <span className="text-[9px] font-black text-slate-500 uppercase tracking-[0.25em]">
                     Earned
                   </span>
                 </div>
-                <div className="text-lg font-black">12.5K pts</div>
+                <div className="text-xl font-black text-slate-900">
+                  12.5K pts
+                </div>
               </div>
             </div>
 
             {/* Next Perk Preview */}
-            <div className="bg-emerald-800/40 rounded-md p-5 mb-8 border border-white/5 group-hover:bg-emerald-800/60 transition-colors relative z-10 shadow-lg">
-              <div className="text-[10px] font-black text-[#34d399] uppercase tracking-[0.25em] mb-1.5">
+            <div className="bg-emerald-50 rounded-sm p-5 mb-8 border border-emerald-100 group-hover:border-[#22c55e]/20 transition-colors relative z-10 shadow-sm">
+              <div className="text-[10px] font-black text-emerald-600 uppercase tracking-[0.25em] mb-2">
                 Next: Lvl 13
               </div>
-              <div className="text-sm font-black flex items-center gap-3">
-                <div className="w-2 h-2 bg-[#34d399] rounded-full animate-pulse shadow-[0_0_10px_rgba(52,211,153,0.5)]" />
+              <div className="text-sm font-black flex items-center gap-3 text-slate-800">
+                <div className="w-2.5 h-2.5 bg-[#22c55e] rounded-full animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.3)]" />
                 Priority Support
               </div>
             </div>
 
             <div className="relative z-10 mt-auto">
-              <div className="flex justify-between items-end mb-2.5">
-                <p className="text-[10px] font-black text-[#6ee7b7] uppercase tracking-[0.2em]">
+              <div className="flex justify-between items-end mb-3">
+                <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">
                   280 pts to lvl 13
                 </p>
-                <span className="text-[10px] font-black">72%</span>
+                <span className="text-[11px] font-black text-emerald-600">
+                  72%
+                </span>
               </div>
-              <div className="w-full bg-emerald-800/50 h-2.5 rounded-full overflow-hidden shadow-inner">
-                <div className="bg-[#34d399] h-full w-[72%] transition-all duration-1000 shadow-[2px_0_10px_rgba(52,211,153,0.5)]" />
+              <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden shadow-inner">
+                <div className="bg-[#22c55e] h-full w-[72%] transition-all duration-1000 shadow-[2px_0_10px_rgba(16,185,129,0.2)]" />
               </div>
             </div>
           </section>

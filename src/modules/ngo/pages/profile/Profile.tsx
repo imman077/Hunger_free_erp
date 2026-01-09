@@ -1,8 +1,9 @@
 import { useState, useRef } from "react";
 import { Icon } from "../../../../global/components/resuable-components/Icon";
 import { ImpactCards } from "../../../../global/components/resuable-components/ImpactCards";
-import ReusableButton from "../../../../global/components/resuable-components/button";
+import ResuableButton from "../../../../global/components/resuable-components/button";
 import ResuableModal from "../../../../global/components/resuable-components/modal";
+import ResuableInput from "../../../../global/components/resuable-components/input";
 
 const NGOProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -135,58 +136,61 @@ const NGOProfile = () => {
       className="min-h-screen"
       style={{ backgroundColor: "var(--bg-secondary)" }}
     >
-      {/* Hero Section */}
-      <div className="relative h-64 bg-[#15803d] overflow-hidden">
-        <div className="relative max-w-7xl mx-auto px-6 h-full flex items-end pb-12">
-          <div className="flex flex-col md:flex-row items-center md:items-end gap-6 w-full text-white">
+      {/* Header Section */}
+      <div
+        className="bg-white border-b sticky top-0 z-20"
+        style={{ borderColor: "var(--border-color)" }}
+      >
+        <div className="max-w-7xl mx-auto px-8 py-8">
+          <div className="flex flex-col md:flex-row items-center md:items-end gap-10">
             <div className="relative group">
-              <div
-                className="w-32 h-32 rounded-sm overflow-hidden border-2 group-hover:scale-105 transition-transform duration-300 bg-[#22c55e] flex items-center justify-center"
-                style={{ borderColor: "var(--border-color)" }}
-              >
+              <div className="w-36 h-36 rounded-sm overflow-hidden border-4 border-white shadow-xl group-hover:scale-[1.02] transition-transform duration-500 bg-[#22c55e] flex items-center justify-center">
                 <span className="text-5xl font-black text-white">GH</span>
               </div>
-              <div
-                className="absolute -bottom-2 -right-2 bg-[#22c55e] text-white p-2 rounded-sm border-2"
-                style={{ borderColor: "var(--border-color)" }}
-              >
+              <div className="absolute -bottom-1 -right-1 bg-[#22c55e] text-white p-2 rounded-sm border-2 border-white shadow-md">
                 <Icon name="verified" className="w-5 h-5" />
               </div>
             </div>
 
-            <div className="flex-1 text-center md:text-left mb-2">
-              <div className="flex items-center justify-center md:justify-start gap-3 mb-1">
-                <h1 className="text-3xl font-black tracking-tight">
+            <div className="flex-1 text-center md:text-left">
+              <div className="flex items-center justify-center md:justify-start gap-4 mb-2">
+                <h1 className="text-4xl font-black tracking-tighter text-slate-900">
                   {profile.name}
                 </h1>
-                <span className="px-3 py-1 bg-[#16a34a] rounded-sm text-[10px] font-bold uppercase tracking-widest border border-white/20">
+                <span className="px-3 py-1 bg-emerald-50 text-[#22c55e] rounded-sm text-[10px] font-black uppercase tracking-widest border border-emerald-100 shadow-sm">
                   Certified Partner
                 </span>
               </div>
-              <p className="text-[#ecfdf5]/80 font-medium flex items-center justify-center md:justify-start gap-2">
-                <Icon name="office" className="w-4 h-4" />
-                {profile.location}
-              </p>
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-6 text-slate-500">
+                <p className="font-bold text-xs flex items-center gap-2">
+                  <Icon name="office" className="w-4 h-4 text-[#22c55e]" />
+                  {profile.location}
+                </p>
+                <p className="font-bold text-xs flex items-center gap-2">
+                  <Icon name="calendar" className="w-4 h-4 text-[#22c55e]" />
+                  Member since Jan 2025
+                </p>
+              </div>
             </div>
 
-            <ReusableButton
-              variant={isEditing ? "primary" : "ghost"}
-              size="md"
-              onClick={handleEditToggle}
-              className={
-                isEditing
-                  ? ""
-                  : "!bg-white/10 !text-white !border-white/20 hover:!bg-white/20"
-              }
-            >
-              {isEditing ? "Save Changes" : "Edit Profile"}
-            </ReusableButton>
+            <div className="flex gap-4">
+              <ResuableButton
+                onClick={handleEditToggle}
+                variant="dark"
+                className="px-10 py-3.5 !rounded-sm text-xs font-black uppercase tracking-widest shadow-lg"
+              >
+                {isEditing ? "Save Selection" : "Edit Profile"}
+              </ResuableButton>
+              <ResuableButton variant="secondary" className="p-3.5 !rounded-sm">
+                <Icon name="settings" className="w-6 h-6" />
+              </ResuableButton>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-6 -mt-8 pb-12">
+      <div className="max-w-7xl mx-auto px-8 mt-10 pb-12">
         {/* Impact Cards */}
         <div className="mb-8">
           <ImpactCards data={impactData} />
@@ -195,129 +199,112 @@ const NGOProfile = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Profile Info */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Personal Information Card */}
+            {/* Organization Information Card */}
             <div
-              className="border rounded-sm p-10"
+              className="border rounded-sm p-10 bg-white shadow-sm"
               style={{
-                backgroundColor: "var(--bg-primary)",
                 borderColor: "var(--border-color)",
               }}
             >
-              <h2
-                className="text-xl font-black tracking-tight mb-10 flex items-center justify-start gap-3"
-                style={{ color: "var(--text-primary)" }}
-              >
+              <h2 className="text-xl font-black tracking-tight mb-12 flex items-center justify-start gap-3 text-slate-800">
                 <Icon name="id-card" className="w-5 h-5 text-[#22c55e]" />
-                Organization Information
+                Organization Details
               </h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-y-10 gap-x-12">
-                <div className="text-center md:text-center flex flex-col items-center">
-                  <label
-                    className="block text-[10px] font-black uppercase tracking-[0.2em] mb-2"
-                    style={{ color: "var(--text-muted)" }}
-                  >
-                    Organization Name
-                  </label>
+                <div className="flex flex-col">
                   {isEditing ? (
-                    <input
-                      type="text"
+                    <ResuableInput
+                      label="Organization Name"
                       value={profile.name}
-                      onChange={(e) =>
-                        setProfile({ ...profile, name: e.target.value })
-                      }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-sm text-center focus:outline-none focus:ring-1 focus:ring-[#22c55e]"
+                      onChange={(val) => setProfile({ ...profile, name: val })}
+                      align="left"
                     />
                   ) : (
-                    <p
-                      className="font-black text-lg"
-                      style={{ color: "var(--text-primary)" }}
-                    >
-                      {profile.name}
-                    </p>
+                    <>
+                      <label className="text-[10px] font-black uppercase tracking-[0.2em] mb-2 text-slate-400">
+                        Organization Name
+                      </label>
+                      <p className="font-black text-lg text-slate-800">
+                        {profile.name}
+                      </p>
+                    </>
                   )}
                 </div>
 
-                <div className="text-center flex flex-col items-center">
-                  <label
-                    className="block text-[10px] font-black uppercase tracking-[0.2em] mb-2"
-                    style={{ color: "var(--text-muted)" }}
-                  >
+                <div className="flex flex-col">
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] mb-2 text-slate-400">
                     Registration ID
                   </label>
-                  <p
-                    className="font-bold text-sm"
-                    style={{ color: "var(--text-secondary)" }}
-                  >
+                  <p className="font-bold text-sm text-slate-600">
                     {profile.registrationId}
                   </p>
                 </div>
 
-                <div className="text-center flex flex-col items-center">
-                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2">
-                    Email Address
-                  </label>
+                <div className="flex flex-col">
                   {isEditing ? (
-                    <input
-                      type="email"
+                    <ResuableInput
+                      label="Email Address"
                       value={profile.email}
-                      onChange={(e) =>
-                        setProfile({ ...profile, email: e.target.value })
-                      }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-sm text-center focus:outline-none focus:ring-1 focus:ring-[#22c55e]"
+                      onChange={(val) => setProfile({ ...profile, email: val })}
+                      align="left"
                     />
                   ) : (
-                    <p className="text-gray-900 font-black text-lg">
-                      {profile.email}
-                    </p>
+                    <>
+                      <label className="text-[10px] font-black uppercase tracking-[0.2em] mb-2 text-slate-400">
+                        Email Address
+                      </label>
+                      <p className="font-black text-lg text-slate-800">
+                        {profile.email}
+                      </p>
+                    </>
                   )}
                 </div>
 
-                <div className="text-center flex flex-col items-center">
-                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2">
-                    Phone Number
-                  </label>
+                <div className="flex flex-col">
                   {isEditing ? (
-                    <input
-                      type="tel"
+                    <ResuableInput
+                      label="Phone Number"
                       value={profile.phone}
-                      onChange={(e) =>
-                        setProfile({ ...profile, phone: e.target.value })
-                      }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-none text-center focus:outline-none focus:ring-1 focus:ring-[#22c55e]"
+                      onChange={(val) => setProfile({ ...profile, phone: val })}
+                      align="left"
                     />
                   ) : (
-                    <p className="text-gray-900 font-black text-lg">
-                      {profile.phone}
-                    </p>
+                    <>
+                      <label className="text-[10px] font-black uppercase tracking-[0.2em] mb-2 text-slate-400">
+                        Phone Number
+                      </label>
+                      <p className="font-black text-lg text-slate-800">
+                        {profile.phone}
+                      </p>
+                    </>
                   )}
                 </div>
 
-                <div className="md:col-span-2 text-center flex flex-col items-center">
-                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2">
-                    Location
-                  </label>
+                <div className="md:col-span-2 flex flex-col">
                   {isEditing ? (
-                    <input
-                      type="text"
+                    <ResuableInput
+                      label="Location"
                       value={profile.location}
-                      onChange={(e) =>
-                        setProfile({ ...profile, location: e.target.value })
+                      onChange={(val) =>
+                        setProfile({ ...profile, location: val })
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-none text-center focus:outline-none focus:ring-1 focus:ring-[#22c55e]"
+                      align="left"
                     />
                   ) : (
-                    <p className="text-gray-900 font-black text-lg">
-                      {profile.location}
-                    </p>
+                    <>
+                      <label className="text-[10px] font-black uppercase tracking-[0.2em] mb-2 text-slate-400">
+                        Location
+                      </label>
+                      <p className="font-black text-lg text-slate-800">
+                        {profile.location}
+                      </p>
+                    </>
                   )}
                 </div>
 
-                <div className="md:col-span-2 text-center flex flex-col items-center">
-                  <label
-                    className="block text-[10px] font-black uppercase tracking-[0.2em] mb-2"
-                    style={{ color: "var(--text-muted)" }}
-                  >
+                <div className="md:col-span-2 flex flex-col">
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] mb-2 text-slate-400">
                     Organization Description
                   </label>
                   {isEditing ? (
@@ -327,13 +314,10 @@ const NGOProfile = () => {
                         setProfile({ ...profile, description: e.target.value })
                       }
                       rows={4}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-sm text-center focus:outline-none focus:ring-1 focus:ring-[#22c55e] resize-none"
+                      className="w-full px-4 py-3 border border-slate-200 rounded-sm text-left focus:outline-none focus:ring-1 focus:ring-[#22c55e] font-semibold text-sm transition-all resize-none"
                     />
                   ) : (
-                    <p
-                      className="font-black leading-relaxed max-w-2xl"
-                      style={{ color: "var(--text-primary)" }}
-                    >
+                    <p className="font-semibold text-sm leading-relaxed text-slate-600 max-w-2xl">
                       {profile.description}
                     </p>
                   )}
@@ -341,24 +325,20 @@ const NGOProfile = () => {
               </div>
             </div>
 
-            {/* Vault: Verification Documents UI */}
             <div
-              className="rounded-sm shadow-xl overflow-hidden border transition-all duration-500 mt-8"
+              className="rounded-sm shadow-sm overflow-hidden border transition-all duration-500 mt-8 bg-white"
               style={{
-                backgroundColor: "var(--bg-primary)",
                 borderColor: "var(--border-color)",
-                boxShadow: "var(--shadow-lg)",
               }}
             >
               <div
-                className="p-7 border-b flex items-center justify-between sticky top-0 z-10"
+                className="p-7 border-b flex items-center justify-between sticky top-0 z-10 bg-white"
                 style={{
-                  backgroundColor: "var(--bg-primary)",
                   borderColor: "var(--border-color)",
                 }}
               >
                 <div className="flex items-center space-x-3.5">
-                  <div className="w-10 h-10 rounded-sm bg-[#22c55e] flex items-center justify-center text-white shadow-md shadow-[#d1fae5]">
+                  <div className="w-10 h-10 rounded-sm bg-[#22c55e] flex items-center justify-center text-white shadow-md">
                     <svg
                       className="w-5 h-5"
                       fill="none"
@@ -389,7 +369,7 @@ const NGOProfile = () => {
                   </div>
                 </div>
 
-                <div className="hidden sm:flex items-center text-[9px] font-bold text-[#16a34a] bg-[#ecfdf5]/50 px-2.5 py-1.5 rounded-sm uppercase tracking-widest border border-[#d1fae5]/50">
+                <div className="hidden sm:flex items-center text-[9px] font-bold text-[#22c55e] bg-emerald-50 px-2.5 py-1.5 rounded-sm uppercase tracking-widest border border-emerald-100">
                   <span className="flex h-1.5 w-1.5 rounded-full bg-[#22c55e] mr-2 animate-pulse"></span>
                   Verified
                 </div>
@@ -436,7 +416,7 @@ const NGOProfile = () => {
                   <button
                     onClick={() => setIsModalOpen(true)}
                     disabled={isVerifying}
-                    className="group relative inline-flex items-center justify-center px-8 py-3.5 font-bold text-slate-500 bg-white border border-slate-200 rounded-sm transition-all duration-300 hover:text-[#16a34a] hover:bg-[#ecfdf5] hover:border-[#d1fae5] hover:shadow-lg hover:shadow-[#ecfdf5] disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="group relative inline-flex items-center justify-center px-8 py-3.5 font-bold text-slate-500 bg-white border border-slate-200 rounded-sm transition-all duration-300 hover:text-[#22c55e] hover:bg-emerald-50 hover:border-emerald-100 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <svg
                       className="w-4 h-4 mr-2.5 group-hover:rotate-90 transition-transform duration-500"
@@ -491,16 +471,12 @@ const NGOProfile = () => {
           {/* Right Column - Activity Timeline */}
           <div className="lg:col-span-1">
             <div
-              className="border rounded-sm p-10 sticky top-6"
+              className="border rounded-sm p-10 bg-white shadow-sm sticky top-6"
               style={{
-                backgroundColor: "var(--bg-primary)",
                 borderColor: "var(--border-color)",
               }}
             >
-              <h2
-                className="text-xl font-black tracking-tight mb-10"
-                style={{ color: "var(--text-primary)" }}
-              >
+              <h2 className="text-xl font-black tracking-tight mb-12 text-slate-800">
                 Recent Activity
               </h2>
 
@@ -552,7 +528,7 @@ const DocumentCard = ({
   const getStatusStyles = (status: string) => {
     switch (status) {
       case "VERIFIED":
-        return "bg-[#ecfdf5] text-[#16a34a] border-[#d1fae5]";
+        return "bg-emerald-50 text-[#22c55e] border-emerald-100";
       case "REJECTED":
         return "bg-rose-50 text-rose-600 border-rose-100";
       case "ANALYZING":

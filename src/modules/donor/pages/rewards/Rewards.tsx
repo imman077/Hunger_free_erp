@@ -64,7 +64,7 @@ const DonorRewards = () => {
       icon: <Heart size={24} />,
       unlocked: true,
       date: "Oct 12, 2024",
-      color: "bg-emerald-500",
+      color: "bg-[#22c55e]",
     },
     {
       id: 2,
@@ -82,7 +82,7 @@ const DonorRewards = () => {
       icon: <Package size={24} />,
       unlocked: true,
       date: "Nov 5, 2024",
-      color: "bg-emerald-600",
+      color: "bg-[#22c55e]",
     },
     {
       id: 4,
@@ -278,7 +278,7 @@ const DonorRewards = () => {
                     </div>
                     <button
                       onClick={() => setShowDrawModal(false)}
-                      className="w-full py-4 bg-[#22c55e] text-white text-[11px] font-black uppercase tracking-widest rounded-md hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-500/20"
+                      className="w-full py-4 bg-[#22c55e] text-white text-[11px] font-black uppercase tracking-widest rounded-md hover:bg-[#1eb054] transition-all shadow-lg shadow-[#22c55e]/20"
                     >
                       Collect Reward
                     </button>
@@ -361,7 +361,7 @@ const DonorRewards = () => {
               </div>
               <button
                 onClick={() => setShowDrawModal(true)}
-                className="px-5 py-2.5 bg-[#22c55e] text-white text-[10px] font-black uppercase tracking-widest rounded-sm hover:bg-emerald-600 transition-all active:scale-95 shadow-md shadow-emerald-500/20"
+                className="px-5 py-2.5 bg-[#22c55e] text-white text-[10px] font-black uppercase tracking-widest rounded-sm hover:bg-[#1eb054] transition-all active:scale-95 shadow-md shadow-[#22c55e]/20"
               >
                 Enter
               </button>
@@ -396,7 +396,7 @@ const DonorRewards = () => {
                   <div
                     className={`w-12 h-12 flex items-center justify-center border transition-all duration-500 rounded-md ${
                       isCurrent
-                        ? "bg-[#22c55e] border-white ring-4 ring-emerald-50 shadow-lg shadow-emerald-500/20"
+                        ? "bg-[#22c55e] border-white ring-4 ring-emerald-50 shadow-lg shadow-[#22c55e]/20"
                         : isPast
                         ? "border-[#22c55e] bg-emerald-50/30 shadow-sm"
                         : "border-gray-100 bg-white"
@@ -442,7 +442,7 @@ const DonorRewards = () => {
               </p>
             </div>
           </div>
-          <button className="px-8 py-3 bg-[#22c55e] text-white text-[11px] font-black uppercase tracking-widest rounded-md hover:bg-emerald-600 transition-all flex items-center gap-2.5 shadow-md shadow-emerald-500/20 active:scale-95">
+          <button className="px-8 py-3 bg-[#22c55e] text-white text-[11px] font-black uppercase tracking-widest rounded-md hover:bg-[#1eb054] transition-all flex items-center gap-2.5 shadow-md shadow-[#22c55e]/20 active:scale-95">
             View Benefits <ChevronRight size={16} />
           </button>
         </div>
@@ -484,7 +484,7 @@ const DonorRewards = () => {
                   <span className="text-[11px] font-black text-slate-800 mb-1.5 uppercase">
                     {c.points} PTS
                   </span>
-                  <div className="px-6 py-2 bg-[#22c55e] text-white text-[10px] font-black uppercase tracking-widest rounded-md group-hover:bg-emerald-600 transition-all shadow-sm">
+                  <div className="px-6 py-2 bg-[#22c55e] text-white text-[10px] font-black uppercase tracking-widest rounded-md group-hover:bg-[#1eb054] transition-all shadow-sm">
                     Claim
                   </div>
                 </button>

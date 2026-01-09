@@ -55,7 +55,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         ${
           isActive || isSubItemActive
             ? expanded
-              ? "w-full p-2.5 bg-emerald-50 text-emerald-700 font-semibold border-l-4 border-emerald-500 shadow-sm rounded-xl"
+              ? "w-full p-2.5 bg-emerald-50 text-emerald-700 font-semibold border-l-4 border-[#22c55e] shadow-sm rounded-xl"
               : "w-11 h-11 bg-emerald-50 text-emerald-700 font-semibold shadow-sm rounded-xl justify-center"
             : expanded
             ? "w-full p-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-800 rounded-xl"
@@ -118,12 +118,12 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
                   className={`w-full flex items-center justify-between px-3 py-1.5 text-sm rounded-lg transition-all duration-200 ${
                     isSubActive
                       ? "text-emerald-600 font-semibold bg-emerald-50/50"
-                      : "text-slate-500 hover:text-emerald-500 hover:translate-x-1"
+                      : "text-slate-500 hover:text-[#22c55e] hover:translate-x-1"
                   }`}
                 >
                   <span className="truncate">{item.label}</span>
                   {isSubActive && (
-                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#22c55e] shadow-[0_0_8px_rgba(34,197,94,0.4)]" />
                   )}
                 </Link>
               );
@@ -412,7 +412,7 @@ const SidebarIcons: React.FC = () => {
                     alt="Admin"
                   />
                   <div
-                    className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full shadow-sm"
+                    className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-[#22c55e] border-2 border-white rounded-full shadow-sm"
                     style={{ backgroundColor: "#22c55e" }}
                   />
                 </div>

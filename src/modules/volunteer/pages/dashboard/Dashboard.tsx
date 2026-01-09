@@ -20,13 +20,13 @@ const VolunteerDashboard = () => {
       title: "Impact Points",
       value: "24,500",
       change: "Diamond Tier",
-      changeColor: "text-emerald-600",
+      changeColor: "text-[#22c55e]",
     },
     {
       title: "Trees Planted",
       value: "45",
       change: "Your Forest",
-      changeColor: "text-emerald-600",
+      changeColor: "text-[#22c55e]",
     },
     {
       title: "Cash Earned",
@@ -87,7 +87,7 @@ const VolunteerDashboard = () => {
           </h3>
           <div className="w-full space-y-4">
             <div className="p-4 bg-[#ecfdf5]/50 rounded-xl border border-[#d1fae5] flex items-start gap-4 group cursor-pointer hover:bg-[#ecfdf5] transition-all">
-              <div className="p-3 bg-emerald-600 text-white rounded-xl shadow-lg shadow-emerald-100">
+              <div className="p-3 bg-[#22c55e] text-white rounded-xl shadow-lg shadow-[#22c55e]/20">
                 <MapPin size={24} />
               </div>
               <div className="flex flex-col items-start pt-0.5">
@@ -104,7 +104,7 @@ const VolunteerDashboard = () => {
                   5 Pickups Pending • Bonus: +300 PTS
                 </p>
                 <div className="flex gap-2 mt-3">
-                  <span className="text-[10px] px-2 py-0.5 bg-emerald-600 rounded-full text-white font-black uppercase tracking-widest">
+                  <span className="text-[10px] px-2 py-0.5 bg-[#22c55e] rounded-full text-white font-black uppercase tracking-widest">
                     Hot Route
                   </span>
                   <span
@@ -118,7 +118,7 @@ const VolunteerDashboard = () => {
             </div>
 
             <div className="p-4 bg-gray-50 rounded-xl border border-gray-100 flex items-start gap-4">
-              <div className="p-3 bg-emerald-600 text-white rounded-xl shadow-lg shadow-emerald-100">
+              <div className="p-3 bg-[#22c55e] text-white rounded-xl shadow-lg shadow-[#22c55e]/20">
                 <CheckCircle2 size={24} />
               </div>
               <div className="flex flex-col items-start pt-0.5">
@@ -135,7 +135,7 @@ const VolunteerDashboard = () => {
                   Completed in 14 mins • Bonus: +200 PTS earned
                 </p>
                 <div className="flex gap-2 mt-2">
-                  <span className="text-[10px] px-2 py-0.5 bg-emerald-50 rounded-full text-emerald-700 font-black uppercase tracking-widest">
+                  <span className="text-[10px] px-2 py-0.5 bg-emerald-50 rounded-full text-[#22c55e] font-black uppercase tracking-widest">
                     Ultra Fast
                   </span>
                 </div>
@@ -157,7 +157,7 @@ const VolunteerDashboard = () => {
               <Star className="text-[#22c55e]" size={40} fill="currentColor" />
             </div>
             <div
-              className="absolute -top-2 -right-2 px-3 py-1 bg-emerald-600 rounded-full border-2"
+              className="absolute -top-2 -right-2 px-3 py-1 bg-[#22c55e] rounded-full border-2"
               style={{ borderColor: "var(--bg-primary)" }}
             >
               <p className="text-[10px] font-black text-white uppercase tracking-tight">
@@ -219,7 +219,7 @@ const VolunteerDashboard = () => {
             <div className="relative">
               <div className="h-2 w-full bg-slate-50 rounded-full overflow-hidden border border-slate-100/50">
                 <div
-                  className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full transition-all duration-1000 ease-out"
+                  className="h-full bg-gradient-to-r from-[#22c55e] to-[#1eb054] rounded-full transition-all duration-1000 ease-out"
                   style={{ width: "82%" }}
                 />
               </div>
@@ -228,13 +228,13 @@ const VolunteerDashboard = () => {
                 style={{ color: "var(--text-muted)" }}
               >
                 <span>Platinum</span>
-                <span className="text-emerald-600">Diamond</span>
+                <span className="text-[#22c55e]">Diamond</span>
                 <span>Legend</span>
               </div>
             </div>
           </div>
 
-          <button className="w-full mt-10 py-4 bg-[#22c55e] text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-[#16a34a] transition-all active:scale-95 shadow-lg shadow-emerald-100">
+          <button className="w-full mt-10 py-4 bg-[#22c55e] text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-[#1eb054] transition-all active:scale-95 shadow-lg shadow-[#22c55e]/20">
             Redeem Cash Prizes
           </button>
         </div>

@@ -58,7 +58,10 @@ const PostNewNeed = () => {
   };
 
   return (
-    <div className="p-6 w-full mx-auto bg-gray-50/50 min-h-screen">
+    <div
+      className="p-8 w-full mx-auto min-h-screen"
+      style={{ backgroundColor: "var(--bg-secondary)" }}
+    >
       {/* Header Bar */}
       <div className="max-w-5xl mx-auto mb-10">
         <div className="flex items-center justify-between">
@@ -82,9 +85,9 @@ const PostNewNeed = () => {
               </h1>
             </div>
           </div>
-          <div className="bg-[#ecfdf5] border border-[#d1fae5] px-4 py-2 rounded-sm flex items-center gap-3">
+          <div className="bg-emerald-50 border border-emerald-100 px-4 py-2 rounded-sm flex items-center gap-3 shadow-sm">
             <div className="w-2 h-2 rounded-full bg-[#22c55e] animate-pulse" />
-            <span className="text-[10px] font-black text-[#16a34a] uppercase tracking-widest">
+            <span className="text-[10px] font-black text-[#22c55e] uppercase tracking-widest">
               Form Active
             </span>
           </div>
@@ -97,27 +100,26 @@ const PostNewNeed = () => {
       >
         {/* Card 01: Item Info */}
         <div
-          className="border rounded-sm"
+          className="border rounded-sm bg-white shadow-sm"
           style={{
-            backgroundColor: "var(--bg-primary)",
             borderColor: "var(--border-color)",
           }}
         >
-          <div className="border-b border-gray-100 p-6 flex items-center gap-4 rounded-t-none">
-            <div className="w-12 h-12 bg-[#ecfdf5] border border-[#d1fae5] rounded-sm flex items-center justify-center text-[#16a34a]">
-              <Package size={24} />
+          <div className="border-b border-gray-100 p-8 flex items-center gap-5">
+            <div className="w-14 h-14 bg-emerald-50 border border-emerald-100 rounded-sm flex items-center justify-center text-[#22c55e]">
+              <Package size={28} />
             </div>
             <div>
-              <h2 className="text-xl font-black text-gray-900 tracking-tight">
+              <h2 className="text-2xl font-black text-slate-800 tracking-tight">
                 Item Details
               </h2>
-              <p className="text-xs text-gray-500 font-medium">
+              <p className="text-xs text-slate-500 font-medium">
                 Specify what you need and how much
               </p>
             </div>
           </div>
 
-          <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
             <ResuableInput
               label="Item Name"
               placeholder="e.g., Baby Food & Formula"
@@ -167,27 +169,26 @@ const PostNewNeed = () => {
 
         {/* Card 02: Beneficiary Info */}
         <div
-          className="border rounded-sm"
+          className="border rounded-sm bg-white shadow-sm"
           style={{
-            backgroundColor: "var(--bg-primary)",
             borderColor: "var(--border-color)",
           }}
         >
-          <div className="border-b border-gray-100 p-6 flex items-center gap-4">
-            <div className="w-12 h-12 bg-blue-50 border border-blue-100 rounded-sm flex items-center justify-center text-blue-600">
-              <Users size={24} />
+          <div className="border-b border-gray-100 p-8 flex items-center gap-5">
+            <div className="w-14 h-14 bg-slate-50 border border-slate-100 rounded-sm flex items-center justify-center text-slate-600">
+              <Users size={28} />
             </div>
             <div>
-              <h2 className="text-xl font-black text-gray-900 tracking-tight">
+              <h2 className="text-2xl font-black text-slate-800 tracking-tight">
                 Beneficiary Information
               </h2>
-              <p className="text-xs text-gray-500 font-medium">
+              <p className="text-xs text-slate-500 font-medium">
                 Who will benefit from this donation
               </p>
             </div>
           </div>
 
-          <div className="p-6 grid grid-cols-1 gap-6">
+          <div className="p-8 grid grid-cols-1 gap-8">
             <ResuableInput
               label="Beneficiaries"
               placeholder="e.g., Children & Youth, Senior Citizens"
@@ -205,12 +206,15 @@ const PostNewNeed = () => {
             />
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-[10px] font-black uppercase tracking-[0.2em] mb-3 text-slate-400">
                 Additional Description
               </label>
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#22c55e] mt-2">
+                Total Trees Planted
+              </p>
               <textarea
-                className="w-full px-4 py-3 border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#22c55e] focus:border-transparent resize-none"
-                rows={4}
+                className="w-full px-5 py-4 border border-slate-200 rounded-sm focus:outline-none focus:ring-1 focus:ring-[#22c55e] bg-slate-50 font-semibold text-sm transition-all resize-none"
+                rows={5}
                 placeholder="Provide any additional details about this need..."
                 value={formData.description}
                 onChange={(e) =>

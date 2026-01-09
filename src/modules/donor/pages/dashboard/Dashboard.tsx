@@ -75,7 +75,7 @@ const DonorDashboard = () => {
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-4">
-            <div className="inline-flex items-center gap-2.5 px-4 py-1 rounded-md bg-[#22c55e]/5 border border-[#22c55e]/10">
+            <div className="inline-flex items-center gap-2.5 px-4 py-1 rounded-sm bg-[#22c55e]/5 border border-[#22c55e]/10">
               <span className="w-2 h-2 rounded-full bg-[#22c55e] animate-pulse" />
               <span className="text-[11px] font-black uppercase tracking-widest text-[#22c55e]">
                 Live Impact Status
@@ -95,7 +95,7 @@ const DonorDashboard = () => {
 
           <div className="shrink-0">
             <div className="group/hero-stat flex items-center gap-8 bg-slate-50/50 p-6 md:p-7 rounded-md border border-slate-100 min-w-[320px] shadow-inner transition-colors duration-300 hover:bg-emerald-50/30">
-              <div className="w-14 h-14 bg-gradient-to-br from-[#22c55e] to-[#16a34a] rounded-md flex items-center justify-center shadow-lg shadow-emerald-500/20 transition-transform duration-300 group-hover/hero-stat:-translate-y-1">
+              <div className="w-14 h-14 bg-gradient-to-br from-[#22c55e] to-[#16a34a] rounded-sm flex items-center justify-center shadow-lg shadow-[#22c55e]/20 transition-transform duration-300 group-hover/hero-stat:-translate-y-1">
                 <Award className="text-white w-7 h-7" />
               </div>
               <div className="text-start">
@@ -106,7 +106,7 @@ const DonorDashboard = () => {
                   <h3 className="text-xl font-black text-slate-800 tracking-tight">
                     Diamond Donor
                   </h3>
-                  <div className="p-1.5 rounded-md bg-[#22c55e]/10">
+                  <div className="p-1.5 rounded-sm bg-[#22c55e]/10">
                     <TrendingUp className="text-[#22c55e] w-3.5 h-3.5" />
                   </div>
                 </div>
@@ -165,9 +165,9 @@ const DonorDashboard = () => {
                 }`}
               >
                 <div
-                  className={`w-16 h-16 shrink-0 rounded-md flex items-center justify-center text-white transition-transform duration-500 group-hover:-translate-y-2 ${
+                  className={`w-16 h-16 shrink-0 rounded-sm flex items-center justify-center text-white transition-transform duration-500 group-hover:-translate-y-2 ${
                     badge.unlocked
-                      ? "bg-[#22c55e] shadow-lg shadow-emerald-500/20"
+                      ? "bg-[#22c55e] shadow-lg shadow-[#22c55e]/20"
                       : "bg-slate-300"
                   }`}
                 >

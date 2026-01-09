@@ -55,9 +55,9 @@ const TaskRow: React.FC<{ task: Task }> = ({ task }) => {
       case "IN PROGRESS":
         return "text-amber-600 bg-amber-50 border-amber-100";
       case "AVAILABLE":
-        return "text-emerald-700 bg-emerald-50 border-emerald-100";
+        return "text-[#22c55e] bg-emerald-50 border-[#22c55e]/10";
       case "COMPLETED":
-        return "text-emerald-600 bg-emerald-50 border-emerald-100";
+        return "text-[#22c55e] bg-emerald-50 border-[#22c55e]/10";
     }
   };
 
@@ -142,7 +142,7 @@ const TaskRow: React.FC<{ task: Task }> = ({ task }) => {
             Details
           </button>
           <button
-            className={`flex items-center gap-2 px-6 py-2.5 rounded-sm text-[13px] font-black text-white transition-all active:scale-95 bg-[#22c55e] hover:bg-[#16a34a]`}
+            className={`flex items-center gap-2 px-6 py-2.5 rounded-sm text-[13px] font-black text-white transition-all active:scale-95 bg-[#22c55e] hover:bg-[#1eb054]`}
           >
             {task.status === "AVAILABLE" ? "Claim Task" : "Update Status"}
             <ChevronRight size={16} />
@@ -271,7 +271,7 @@ const VolunteerTasks = () => {
                 <span
                   className={`text-[14px] font-black uppercase tracking-tight ${
                     activeTab === tab.id
-                      ? "text-emerald-600"
+                      ? "text-[#22c55e]"
                       : "group-hover:text-gray-600"
                   }`}
                   style={{
@@ -283,7 +283,7 @@ const VolunteerTasks = () => {
                 </span>
                 <span
                   className={`px-2 py-0.5 rounded-md text-[11px] font-black ${
-                    activeTab === tab.id ? "bg-emerald-50 text-emerald-600" : ""
+                    activeTab === tab.id ? "bg-emerald-50 text-[#22c55e]" : ""
                   }`}
                   style={{
                     backgroundColor:

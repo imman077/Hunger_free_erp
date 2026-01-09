@@ -63,19 +63,18 @@ const NGOInventory = () => {
 
   return (
     <div
-      className="p-6 space-y-6"
-      style={{ backgroundColor: "var(--bg-secondary)", minHeight: "100%" }}
+      className="p-8 min-h-screen space-y-8"
+      style={{ backgroundColor: "var(--bg-secondary)" }}
     >
-      <div className="text-left">
-        <h1
-          className="text-xl font-bold tracking-tight"
-          style={{ color: "var(--text-primary)" }}
-        >
-          Inventory Management
-        </h1>
-        <p className="mt-2" style={{ color: "var(--text-secondary)" }}>
-          Track your current stock and distributed items.
-        </p>
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="text-start">
+          <h1 className="text-5xl font-black tracking-tighter mb-3 uppercase text-slate-900">
+            Inventory Management
+          </h1>
+          <p className="font-medium text-lg text-slate-500">
+            Track your current stock and distributed items 📦
+          </p>
+        </div>
       </div>
 
       {/* Inventory Stats */}
@@ -94,28 +93,29 @@ const NGOInventory = () => {
           switch (columnKey) {
             case "item":
               return (
-                <span
-                  className="font-medium"
-                  style={{ color: "var(--text-primary)" }}
-                >
-                  {record.item}
-                </span>
+                <div className="text-left">
+                  <span className="font-black text-slate-800">
+                    {record.item}
+                  </span>
+                </div>
               );
             case "quantity":
               return (
-                <span style={{ color: "var(--text-secondary)" }}>
+                <span className="font-bold text-slate-500 text-xs uppercase tracking-wide">
                   {record.quantity}
                 </span>
               );
             case "location":
               return (
-                <span style={{ color: "var(--text-secondary)" }}>
-                  {record.location}
-                </span>
+                <div className="text-left">
+                  <span className="font-bold text-slate-500 text-xs uppercase tracking-wide">
+                    {record.location}
+                  </span>
+                </div>
               );
             case "date":
               return (
-                <span style={{ color: "var(--text-muted)" }}>
+                <span className="text-xs font-black text-[#22c55e] bg-emerald-50 px-3 py-1.5 rounded-sm border border-emerald-100">
                   {record.date}
                 </span>
               );

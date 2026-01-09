@@ -36,7 +36,7 @@ const variantClasses: Record<ButtonVariant, string> = {
   ghost:
     "hover:bg-hf-green/5 active:bg-hf-green/10 transition-all duration-200",
   danger: "bg-red-600 text-white hover:bg-red-700 active:bg-red-800",
-  success: "bg-[#22c55e] text-white hover:bg-emerald-600 active:bg-emerald-700",
+  success: "bg-[#22c55e] text-white hover:bg-[#1eb054] active:bg-[#198e44]",
   link: "text-blue-600 hover:underline active:opacity-70",
   dark: "bg-slate-900 text-white hover:bg-black active:scale-95 dark:bg-slate-800",
   "soft-success":
@@ -125,7 +125,7 @@ const ResuableButton: React.FC<ResuableButtonProps> = ({
         disabled:cursor-not-allowed
         focus:outline-none
         focus:ring-2
-        focus:ring-hf-green
+        focus:ring-[#22c55e]
         focus:ring-offset-2
         ${className}
       `

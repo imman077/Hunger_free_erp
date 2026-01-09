@@ -186,6 +186,7 @@ interface ERPGridTableProps {
   description?: string;
   actionConfig?: ActionConfig;
   topContent?: React.ReactNode;
+  variant?: "default" | "compact";
 }
 
 export function capitalize(s: string) {
@@ -206,6 +207,7 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
   description,
   actionConfig,
   topContent: customTopContent,
+  variant = "default",
 }) => {
   const [filterValue, setFilterValue] = useState("");
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
@@ -780,8 +782,12 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
         bottomContentPlacement="outside"
         classNames={{
           wrapper: "p-0 no-scrollbar rounded-none border-none shadow-none",
-          th: "bg-[#fcfdfe] text-[10px] font-bold uppercase tracking-[0.1em] text-slate-500 py-4 px-6 border-b border-slate-200 text-center first:rounded-tl-sm last:rounded-tr-sm",
-          td: "py-4 px-6 text-center border-b border-slate-100 group-hover:bg-slate-50/80 transition-all font-medium text-slate-700 text-sm",
+          th: `bg-[#fcfdfe] text-[10px] font-bold uppercase tracking-[0.1em] text-slate-500 ${
+            variant === "compact" ? "py-2.5 px-4" : "py-4 px-6"
+          } border-b border-slate-200 text-center first:rounded-tl-sm last:rounded-tr-sm`,
+          td: `${
+            variant === "compact" ? "py-2 px-4" : "py-4 px-6"
+          } text-center border-b border-slate-100 group-hover:bg-slate-50/80 transition-all font-medium text-slate-700 text-sm`,
           tr: "group cursor-pointer transition-colors duration-200",
           base: "border-collapse",
         }}

@@ -23,7 +23,7 @@ const NGODashboard = () => {
       label: "Trees Planted",
       val: "150",
       trend: "Impact Forest",
-      color: "bg-emerald-600",
+      color: "bg-[#22c55e]",
     },
     {
       label: "Grant Eligible",
@@ -49,63 +49,71 @@ const NGODashboard = () => {
   ];
 
   return (
-    <div className="w-full space-y-6 p-6">
-      <h1 className="text-2xl font-semibold text-black text-start">
-        NGO Operations Center
-      </h1>
+    <div
+      className="w-full space-y-10 p-8 min-h-screen"
+      style={{ backgroundColor: "var(--bg-secondary)" }}
+    >
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="text-start">
+          <h1 className="text-5xl font-black tracking-tighter uppercase text-slate-900">
+            NGO Operations Center
+          </h1>
+          <p className="font-medium text-lg text-slate-500 mt-2">
+            Managing impact and logistics in real-time ⚡
+          </p>
+        </div>
+      </div>
 
       <ImpactCards data={stats} />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Active Needs */}
         <div
-          className="rounded-sm p-5 border flex flex-col items-start min-h-[300px]"
+          className="rounded-sm p-8 border flex flex-col items-start min-h-[400px] bg-white shadow-sm"
           style={{
-            backgroundColor: "var(--bg-primary)",
             borderColor: "var(--border-color)",
           }}
         >
-          <div className="flex justify-between items-center w-full mb-4">
-            <h3
-              className="text-lg font-semibold"
-              style={{ color: "var(--text-primary)" }}
-            >
+          <div className="flex justify-between items-center w-full mb-8">
+            <h3 className="text-xl font-black text-slate-800 tracking-tight">
               Active Needs
             </h3>
             <ReusableButton
               variant="ghost"
               size="sm"
               onClick={() => navigate("/ngo/needs/post")}
-              className="!text-[#22c55e] !font-bold"
+              className="!text-[#22c55e] !font-black !rounded-sm uppercase text-[10px] tracking-widest hover:!bg-emerald-50"
             >
               Post New Need +
             </ReusableButton>
           </div>
 
-          <div className="w-full space-y-3">
-            <div className="p-3 bg-gray-50 rounded-lg border border-gray-100 text-start">
-              <p className="text-sm font-bold text-gray-900">
+          <div className="w-full space-y-4">
+            <div className="p-5 bg-slate-50 rounded-sm border border-slate-100 text-start group hover:border-emerald-100 hover:bg-emerald-50/30 transition-all">
+              <p className="text-sm font-black text-slate-800">
                 Baby Food & Formula
               </p>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-[11px] text-slate-500 mt-1 font-bold uppercase tracking-wide">
                 Quantity: 20 packs • Urgency: High
               </p>
-              <div className="w-full bg-gray-200 h-1.5 rounded-full mt-2 overflow-hidden">
-                <div className="bg-[#22c55e] h-full w-[65%]" />
+              <div className="w-full bg-slate-200 h-2 rounded-full mt-4 overflow-hidden border border-slate-100 shadow-inner">
+                <div className="bg-[#22c55e] h-full w-[65%] rounded-full shadow-[0_0_8px_rgba(34,197,94,0.3)]" />
               </div>
-              <p className="text-[10px] text-gray-400 mt-1 text-right">
+              <p className="text-[10px] font-black text-[#22c55e] mt-2 text-right uppercase tracking-widest">
                 65% fulfilled
               </p>
             </div>
-            <div className="p-3 bg-gray-50 rounded-lg border border-gray-100 text-start">
-              <p className="text-sm font-bold text-gray-900">Winter Blankets</p>
-              <p className="text-xs text-gray-500 mt-1">
+            <div className="p-5 bg-slate-50 rounded-sm border border-slate-100 text-start group hover:border-emerald-100 hover:bg-emerald-50/30 transition-all">
+              <p className="text-sm font-black text-slate-800">
+                Winter Blankets
+              </p>
+              <p className="text-[11px] text-slate-500 mt-1 font-bold uppercase tracking-wide">
                 Quantity: 50 units • Urgency: Medium
               </p>
-              <div className="w-full bg-gray-200 h-1.5 rounded-full mt-2 overflow-hidden">
-                <div className="bg-blue-500 h-full w-[30%]" />
+              <div className="w-full bg-slate-200 h-2 rounded-full mt-4 overflow-hidden border border-slate-100">
+                <div className="bg-blue-500 h-full w-[30%] rounded-full" />
               </div>
-              <p className="text-[10px] text-gray-400 mt-1 text-right">
+              <p className="text-[10px] font-black text-blue-600 mt-2 text-right uppercase tracking-widest">
                 30% fulfilled
               </p>
             </div>
@@ -114,42 +122,40 @@ const NGODashboard = () => {
 
         {/* Notifications */}
         <div
-          className="rounded-sm p-5 border flex flex-col items-start min-h-[300px]"
+          className="rounded-sm p-8 border flex flex-col items-start min-h-[400px] bg-white shadow-sm"
           style={{
-            backgroundColor: "var(--bg-primary)",
             borderColor: "var(--border-color)",
           }}
         >
-          <h3
-            className="text-lg font-semibold mb-4"
-            style={{ color: "var(--text-primary)" }}
-          >
+          <h3 className="text-xl font-black text-slate-800 tracking-tight mb-8">
             Recent Notifications
           </h3>
-          <div className="w-full space-y-4">
+          <div className="w-full space-y-6">
             {notifications.map((notif, index) => (
-              <div key={index} className="flex gap-4 items-start group">
+              <div key={index} className="flex gap-5 items-start group">
                 <div
-                  className={`w-10 h-10 rounded-sm flex items-center justify-center shrink-0 ${
+                  className={`w-12 h-12 rounded-sm flex items-center justify-center shrink-0 shadow-sm border ${
                     notif.type === "donation"
-                      ? "bg-emerald-50 text-[#22c55e]"
-                      : "bg-blue-50 text-blue-500"
+                      ? "bg-emerald-50 text-[#22c55e] border-emerald-100"
+                      : "bg-blue-50 text-blue-500 border-blue-100"
                   }`}
                 >
                   {notif.type === "donation" ? (
-                    <Package size={18} />
+                    <Package size={22} />
                   ) : (
-                    <TrendingUp size={18} />
+                    <TrendingUp size={22} />
                   )}
                 </div>
-                <div className="flex flex-col items-start border-b border-gray-50 pb-3 w-full">
-                  <p className="text-sm font-bold text-gray-900">
+                <div className="flex flex-col items-start border-b border-slate-50 pb-5 w-full last:border-0">
+                  <p className="text-sm font-black text-slate-800 group-hover:text-[#22c55e] transition-colors">
                     {notif.title}
                   </p>
-                  <p className="text-xs text-gray-500 text-start mt-0.5">
+                  <p className="text-xs font-medium text-slate-500 text-start mt-1 leading-relaxed">
                     {notif.desc}
                   </p>
-                  <p className="text-[10px] text-gray-400 mt-1">{notif.time}</p>
+                  <p className="text-[10px] font-black text-slate-400 mt-2 uppercase tracking-widest">
+                    {notif.time}
+                  </p>
                 </div>
               </div>
             ))}
