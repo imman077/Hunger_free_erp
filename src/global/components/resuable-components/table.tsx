@@ -26,31 +26,6 @@ import { Eye, Mail, CheckCircle, Ban } from "lucide-react";
 import ResuableButton from "./button";
 
 // --- Icons ---
-const PlusIcon = ({ size = 20, width, height, ...props }: any) => {
-  return (
-    <svg
-      aria-hidden="true"
-      fill="none"
-      focusable="false"
-      height={size || height}
-      role="presentation"
-      viewBox="0 0 24 24"
-      width={size || width}
-      {...props}
-    >
-      <g
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-      >
-        <path d="M12 5v14" />
-        <path d="M5 12h14" />
-      </g>
-    </svg>
-  );
-};
 
 const ChevronDownIconSvg = ({ strokeWidth = 1.5, ...otherProps }: any) => {
   return (
@@ -157,6 +132,7 @@ export interface ColumnDef {
   uid: string;
   name: string;
   sortable?: boolean;
+  align?: "start" | "center" | "end";
 }
 
 export interface ActionConfig<T = any> {
@@ -177,37 +153,43 @@ interface ERPGridTableProps {
   initialVisibleColumns?: string[];
   enableSearch?: boolean;
   enablePagination?: boolean;
+  enableFilters?: boolean;
   enableDateFilter?: boolean;
+  showColumnSettings?: boolean;
   onDateRangeChange?: (
     range: { start: string | null; end: string | null } | null
   ) => void;
-  onAddNew?: () => void;
   title?: string;
   description?: string;
   actionConfig?: ActionConfig;
   topContent?: React.ReactNode;
   variant?: "default" | "compact";
+  enableSorting?: boolean;
+  additionalFilters?: React.ReactNode;
 }
 
 export function capitalize(s: string) {
   return s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : "";
 }
 
-const ResuableTable: React.FC<ERPGridTableProps> = ({
+const ReusableTable: React.FC<ERPGridTableProps> = ({
   data,
   columns,
   renderCell,
   initialVisibleColumns,
   enableSearch = true,
   enablePagination = true,
+  enableFilters = true,
   enableDateFilter = false,
+  showColumnSettings = true,
   onDateRangeChange,
-  onAddNew,
   title,
   description,
   actionConfig,
   topContent: customTopContent,
-  variant = "default",
+  variant = "compact",
+  enableSorting = false,
+  additionalFilters,
 }) => {
   const [filterValue, setFilterValue] = useState("");
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
@@ -256,7 +238,7 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
   const filteredItems = useMemo(() => {
     let filteredData = [...data];
 
-    if (hasSearchFilter) {
+    if (enableSearch && hasSearchFilter) {
       filteredData = filteredData.filter((item) =>
         Object.values(item).some((val) =>
           String(val).toLowerCase().includes(filterValue.toLowerCase())
@@ -264,23 +246,36 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
       );
     }
 
-    if (selectedStatus !== "all" && data.length > 0 && data[0].status) {
+    if (
+      enableFilters &&
+      selectedStatus !== "all" &&
+      data.length > 0 &&
+      data[0].status
+    ) {
       filteredData = filteredData.filter(
         (item) => item.status === selectedStatus
       );
     }
 
     return filteredData;
-  }, [data, filterValue, selectedStatus]);
+  }, [
+    data,
+    filterValue,
+    selectedStatus,
+    enableSearch,
+    enableFilters,
+    hasSearchFilter,
+  ]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage) || 1;
 
   const items = useMemo(() => {
+    if (!enablePagination) return filteredItems;
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
 
     return filteredItems.slice(start, end);
-  }, [page, filteredItems, rowsPerPage]);
+  }, [page, filteredItems, rowsPerPage, enablePagination]);
 
   const sortedItems = useMemo(() => {
     return [...items].sort((a: any, b: any) => {
@@ -438,7 +433,7 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
           <div className="flex flex-col sm:flex-row items-end gap-3">
             <div className="flex flex-col sm:flex-row items-end gap-3 flex-1">
               {enableSearch && (
-                <div className="relative flex-1 w-full sm:w-auto">
+                <div className="relative w-full sm:max-w-xs">
                   <Input
                     isClearable
                     className="w-full"
@@ -469,8 +464,9 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
                   />
                 </div>
               )}
+              {additionalFilters}
 
-              {statusOptions.length > 1 && (
+              {enableFilters && statusOptions.length > 1 && (
                 <Dropdown placement="bottom-end">
                   <DropdownTrigger>
                     <Button
@@ -528,7 +524,7 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
                 </Dropdown>
               )}
 
-              {enableDateFilter && (
+              {enableFilters && enableDateFilter && (
                 <div className="flex gap-3 relative" ref={pickerRef}>
                   <button
                     type="button"
@@ -576,61 +572,52 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
             </div>
 
             <div className="flex gap-2 items-center">
-              <Dropdown placement="bottom-end">
-                <DropdownTrigger>
-                  <Button
-                    variant="flat"
-                    className="border border-slate-200 bg-white rounded-sm h-10 px-4 text-[11px] font-bold text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-all"
-                    style={{
-                      backgroundColor: "white",
+              {showColumnSettings && (
+                <Dropdown placement="bottom-end">
+                  <DropdownTrigger>
+                    <Button
+                      variant="flat"
+                      className="border border-slate-200 bg-white rounded-sm h-10 px-4 text-[11px] font-bold text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-all"
+                      style={{
+                        backgroundColor: "white",
+                      }}
+                      endContent={
+                        <ChevronDownIconSvg className="text-slate-400 text-[10px]" />
+                      }
+                    >
+                      COLUMNS
+                    </Button>
+                  </DropdownTrigger>
+                  <DropdownMenu
+                    disallowEmptySelection
+                    aria-label="Table Columns"
+                    closeOnSelect={false}
+                    selectedKeys={visibleColumns}
+                    selectionMode="multiple"
+                    onSelectionChange={setVisibleColumns}
+                    classNames={{
+                      base: "bg-white border border-slate-200 rounded-sm min-w-[180px] p-1",
                     }}
-                    endContent={
-                      <ChevronDownIconSvg className="text-slate-400 text-[10px]" />
-                    }
+                    itemClasses={{
+                      base: [
+                        "text-slate-600 text-[11px] font-bold uppercase tracking-tight",
+                        "data-[hover=true]:bg-slate-50 data-[hover=true]:text-hf-green",
+                        "data-[selected=true]:bg-white data-[selected=true]:text-slate-900",
+                        "rounded-sm",
+                        "px-3",
+                        "py-2.5",
+                        "transition-all duration-200",
+                      ].join(" "),
+                      selectedIcon: "text-hf-green w-4 h-4 ml-auto",
+                    }}
                   >
-                    COLUMNS
-                  </Button>
-                </DropdownTrigger>
-                <DropdownMenu
-                  disallowEmptySelection
-                  aria-label="Table Columns"
-                  closeOnSelect={false}
-                  selectedKeys={visibleColumns}
-                  selectionMode="multiple"
-                  onSelectionChange={setVisibleColumns}
-                  classNames={{
-                    base: "bg-white border border-slate-200 rounded-sm min-w-[180px] p-1",
-                  }}
-                  itemClasses={{
-                    base: [
-                      "text-slate-600 text-[11px] font-bold uppercase tracking-tight",
-                      "data-[hover=true]:bg-slate-50 data-[hover=true]:text-hf-green",
-                      "data-[selected=true]:bg-white data-[selected=true]:text-slate-900",
-                      "rounded-sm",
-                      "px-3",
-                      "py-2.5",
-                      "transition-all duration-200",
-                    ].join(" "),
-                    selectedIcon: "text-hf-green w-4 h-4 ml-auto",
-                  }}
-                >
-                  {columns.map((column) => (
-                    <DropdownItem key={column.uid} showDivider={false}>
-                      {column.name}
-                    </DropdownItem>
-                  ))}
-                </DropdownMenu>
-              </Dropdown>
-              {onAddNew && (
-                <Button
-                  color="primary"
-                  className="bg-hf-green text-white rounded-sm h-10 px-6 font-bold hover:bg-emerald-600 transition-all active:scale-95"
-                  style={{ backgroundColor: "#22c55e", color: "white" }}
-                  endContent={<PlusIcon size={18} />}
-                  onPress={onAddNew}
-                >
-                  Add New
-                </Button>
+                    {columns.map((column) => (
+                      <DropdownItem key={column.uid} showDivider={false}>
+                        {column.name}
+                      </DropdownItem>
+                    ))}
+                  </DropdownMenu>
+                </Dropdown>
               )}
             </div>
           </div>
@@ -655,21 +642,23 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
                 </div>
               )}
             </div>
-            <div className="flex items-center gap-3">
-              <label className="flex items-center text-gray-600 text-sm">
-                Rows per page:
-                <select
-                  className="bg-transparent outline-none text-gray-700 text-sm ml-2 cursor-pointer border border-gray-300 rounded-sm px-2 py-1 hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                  onChange={onRowsPerPageChange}
-                  value={rowsPerPage}
-                >
-                  <option value="5">5</option>
-                  <option value="10">10</option>
-                  <option value="15">15</option>
-                  <option value="20">20</option>
-                </select>
-              </label>
-            </div>
+            {enablePagination && (
+              <div className="flex items-center gap-3">
+                <label className="flex items-center text-gray-600 text-sm">
+                  Rows per page:
+                  <select
+                    className="bg-transparent outline-none text-gray-700 text-sm ml-2 cursor-pointer border border-gray-300 rounded-sm px-2 py-1 hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                    onChange={onRowsPerPageChange}
+                    value={rowsPerPage}
+                  >
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                  </select>
+                </label>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -683,7 +672,8 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
     onSearchChange,
     columns,
     enableSearch,
-    onAddNew,
+    enableFilters,
+    showColumnSettings,
     rowsPerPage,
     title,
     description,
@@ -693,6 +683,8 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
     dateRange,
     enableDateFilter,
     onDateRangeChange,
+    enablePagination,
+    onClear,
   ]);
 
   const finalTopContent = customTopContent || topContent;
@@ -782,28 +774,35 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
         bottomContentPlacement="outside"
         classNames={{
           wrapper: "p-0 no-scrollbar rounded-none border-none shadow-none",
-          th: `bg-[#fcfdfe] text-[10px] font-bold uppercase tracking-[0.1em] text-slate-500 ${
+          th: `bg-[#fcfdfe] text-[10px] font-bold uppercase tracking-[0.1em] text-slate-500 whitespace-nowrap ${
             variant === "compact" ? "py-2.5 px-4" : "py-4 px-6"
-          } border-b border-slate-200 text-center first:rounded-tl-sm last:rounded-tr-sm`,
+          } border-b border-slate-200 first:rounded-tl-sm last:rounded-tr-sm`,
           td: `${
             variant === "compact" ? "py-2 px-4" : "py-4 px-6"
-          } text-center border-b border-slate-100 group-hover:bg-slate-50/80 transition-all font-medium text-slate-700 text-sm`,
+          } border-b border-slate-100 group-hover:bg-slate-50/80 transition-all font-medium text-slate-700 text-sm whitespace-nowrap`,
           tr: "group cursor-pointer transition-colors duration-200",
           base: "border-collapse",
         }}
         selectedKeys={undefined}
         selectionMode="none"
-        sortDescriptor={sortDescriptor}
+        sortDescriptor={enableSorting ? sortDescriptor : undefined}
+        onSortChange={enableSorting ? setSortDescriptor : undefined}
         topContent={finalTopContent}
         topContentPlacement="outside"
-        onSortChange={setSortDescriptor}
       >
         <TableHeader columns={headerColumns}>
           {(column: ColumnDef) => (
             <TableColumn
               key={column.uid}
-              align="center"
-              allowsSorting={column.sortable}
+              align={column.align || "center"}
+              allowsSorting={enableSorting && column.sortable}
+              className={`${
+                column.align === "start"
+                  ? "text-start px-4"
+                  : column.align === "end"
+                  ? "text-end px-4"
+                  : "text-center px-4"
+              } whitespace-nowrap`}
             >
               {column.name}
             </TableColumn>
@@ -822,13 +821,24 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
         >
           {(item: any) => (
             <TableRow key={item.id ?? Math.random()}>
-              {(columnKey) => (
-                <TableCell>
-                  {columnKey === "actions" && actionConfig
-                    ? renderDefaultActions(item)
-                    : renderCell(item, columnKey)}
-                </TableCell>
-              )}
+              {(columnKey) => {
+                const column = headerColumns.find((c) => c.uid === columnKey);
+                const alignmentClass = `${
+                  column?.align === "start"
+                    ? "text-start px-4"
+                    : column?.align === "end"
+                    ? "text-end px-4"
+                    : "text-center px-4"
+                } whitespace-nowrap`;
+
+                return (
+                  <TableCell className={alignmentClass}>
+                    {columnKey === "actions" && actionConfig
+                      ? renderDefaultActions(item)
+                      : renderCell(item, columnKey)}
+                  </TableCell>
+                );
+              }}
             </TableRow>
           )}
         </TableBody>
@@ -838,4 +848,4 @@ const ResuableTable: React.FC<ERPGridTableProps> = ({
 };
 
 export { RowIcon };
-export default ResuableTable;
+export default ReusableTable;

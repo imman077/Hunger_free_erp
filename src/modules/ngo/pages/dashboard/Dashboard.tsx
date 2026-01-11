@@ -11,13 +11,13 @@ const NGODashboard = () => {
       label: "Impact Points",
       val: "45,000",
       trend: "Legend Tier",
-      color: "bg-blue-600",
+      color: "bg-indigo-600",
     },
     {
       label: "Total Beneficiaries",
       val: "12,500",
       trend: "+1,200 this month",
-      color: "bg-[#22c55e]",
+      color: "bg-indigo-500",
     },
     {
       label: "Trees Planted",
@@ -82,7 +82,7 @@ const NGODashboard = () => {
               variant="ghost"
               size="sm"
               onClick={() => navigate("/ngo/needs/post")}
-              className="!text-[#22c55e] !font-black !rounded-sm uppercase text-[10px] tracking-widest hover:!bg-emerald-50"
+              className="!text-indigo-600 !font-black !rounded-sm uppercase text-[10px] tracking-widest hover:!bg-indigo-50"
             >
               Post New Need +
             </ReusableButton>
@@ -97,9 +97,9 @@ const NGODashboard = () => {
                 Quantity: 20 packs • Urgency: High
               </p>
               <div className="w-full bg-slate-200 h-2 rounded-full mt-4 overflow-hidden border border-slate-100 shadow-inner">
-                <div className="bg-[#22c55e] h-full w-[65%] rounded-full shadow-[0_0_8px_rgba(34,197,94,0.3)]" />
+                <div className="bg-indigo-500 h-full w-[65%] rounded-full shadow-[0_0_8px_rgba(99,102,241,0.3)]" />
               </div>
-              <p className="text-[10px] font-black text-[#22c55e] mt-2 text-right uppercase tracking-widest">
+              <p className="text-[10px] font-black text-indigo-600 mt-2 text-right uppercase tracking-widest">
                 65% fulfilled
               </p>
             </div>
@@ -136,7 +136,7 @@ const NGODashboard = () => {
                 <div
                   className={`w-12 h-12 rounded-sm flex items-center justify-center shrink-0 shadow-sm border ${
                     notif.type === "donation"
-                      ? "bg-emerald-50 text-[#22c55e] border-emerald-100"
+                      ? "bg-indigo-50 text-indigo-600 border-indigo-100"
                       : "bg-blue-50 text-blue-500 border-blue-100"
                   }`}
                 >
@@ -147,7 +147,7 @@ const NGODashboard = () => {
                   )}
                 </div>
                 <div className="flex flex-col items-start border-b border-slate-50 pb-5 w-full last:border-0">
-                  <p className="text-sm font-black text-slate-800 group-hover:text-[#22c55e] transition-colors">
+                  <p className="text-sm font-black text-slate-800 group-hover:text-indigo-600 transition-colors">
                     {notif.title}
                   </p>
                   <p className="text-xs font-medium text-slate-500 text-start mt-1 leading-relaxed">

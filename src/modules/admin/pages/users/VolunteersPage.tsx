@@ -113,32 +113,6 @@ const VolunteersPage: React.FC = () => {
     setOnLeaveToggle((prev) => !prev);
   };
 
-  const renderAvatar = (vol: Volunteer) => {
-    const initials = vol.name
-      .split(" ")
-      .map((p) => p[0])
-      .join("");
-
-    const gradient =
-      vol.id === 0
-        ? "bg-gradient-to-br from-indigo-400 to-purple-600 text-white"
-        : vol.id === 1
-        ? "bg-gradient-to-br from-fuchsia-300 to-rose-500 text-white"
-        : vol.id === 2
-        ? "bg-gradient-to-br from-rose-400 to-amber-200 text-white"
-        : vol.id === 3
-        ? "bg-gradient-to-br from-cyan-400 to-indigo-900 text-white"
-        : "bg-gradient-to-br from-teal-100 to-rose-200 text-gray-800";
-
-    return (
-      <div
-        className={`inline-flex items-center justify-center w-10 h-10 rounded-full font-semibold text-base ${gradient}`}
-      >
-        {initials}
-      </div>
-    );
-  };
-
   const getStatusBadge = (status: VolunteerStatus): React.ReactElement => {
     const statusStyles: Record<
       VolunteerStatus,
@@ -224,26 +198,38 @@ const VolunteersPage: React.FC = () => {
       <ReusableTable
         data={volunteers}
         columns={[
-          { name: "Avatar", uid: "avatar", sortable: false },
-          { name: "Name", uid: "name", sortable: true },
-          { name: "Zone", uid: "zone", sortable: true },
-          { name: "Tasks Completed", uid: "tasksCompleted", sortable: true },
-          { name: "Rating", uid: "rating", sortable: true },
-          { name: "Availability", uid: "status", sortable: true },
+          { name: "Volunteer", uid: "name", sortable: true, align: "start" },
+          {
+            name: "Availability",
+            uid: "status",
+            sortable: false,
+            align: "center",
+          },
+          { name: "Email", uid: "email", sortable: true },
+          { name: "Phone", uid: "phone" },
           { name: "Actions", uid: "actions", sortable: false },
         ]}
         renderCell={(vol: Volunteer, columnKey: React.Key) => {
           switch (columnKey) {
-            case "avatar":
-              return renderAvatar(vol);
             case "name":
               return (
-                <span
-                  className="font-medium"
-                  style={{ color: "var(--text-primary)" }}
+                <div
+                  className="flex items-center gap-2 px-2 py-1 rounded-full bg-slate-50 border border-slate-200 hover:border-hf-green/50 hover:bg-white transition-all cursor-pointer group w-fit min-w-0"
+                  onClick={() => openDrawer(vol)}
                 >
-                  {vol.name}
-                </span>
+                  <div className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white bg-gradient-to-br from-emerald-400 to-teal-600 shadow-sm shrink-0">
+                    {vol.name
+                      .split(" ")
+                      .map((p) => p[0])
+                      .join("")}
+                  </div>
+                  <span
+                    className="font-bold text-xs whitespace-nowrap truncate max-w-[140px] pr-1 group-hover:text-hf-green transition-colors"
+                    style={{ color: "var(--text-primary)" }}
+                  >
+                    {vol.name}
+                  </span>
+                </div>
               );
             case "zone":
               return (
@@ -266,9 +252,30 @@ const VolunteersPage: React.FC = () => {
             case "rating":
               return renderStars(vol.rating);
             case "status":
-              return getStatusBadge(vol.status);
+              return (
+                <div className="flex justify-center w-full">
+                  {getStatusBadge(vol.status)}
+                </div>
+              );
+            case "email":
+            case "phone":
+              return (
+                <span
+                  className="text-xs whitespace-nowrap"
+                  style={{ color: "var(--text-secondary)" }}
+                >
+                  {String(vol[columnKey as keyof Volunteer])}
+                </span>
+              );
             default:
-              return <span>{String(vol[columnKey as keyof Volunteer])}</span>;
+              return (
+                <span
+                  className="text-xs font-medium"
+                  style={{ color: "var(--text-secondary)" }}
+                >
+                  {String(vol[columnKey as keyof Volunteer])}
+                </span>
+              );
           }
         }}
         // title="Volunteer List"

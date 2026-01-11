@@ -5,238 +5,248 @@ import {
   TrendingUp,
   Star,
   Zap,
+  Calendar,
 } from "lucide-react";
-import ImpactCards from "../../../../global/components/resuable-components/ImpactCards";
+import { ImpactCards } from "../../../../global/components/resuable-components/ImpactCards";
+import ResuableButton from "../../../../global/components/resuable-components/button";
 
 const VolunteerDashboard = () => {
   const stats = [
     {
-      title: "Deliveries Completed",
-      value: "842",
-      change: "+24 this month",
-      changeColor: "text-green-600",
+      label: "Deliveries Done",
+      val: "842",
+      trend: "+24 this month",
+      color: "bg-[#22c55e]",
     },
     {
-      title: "Impact Points",
-      value: "24,500",
-      change: "Diamond Tier",
-      changeColor: "text-[#22c55e]",
+      label: "Impact Points",
+      val: "24,500",
+      trend: "Diamond Tier",
+      color: "bg-[#22c55e]",
     },
     {
-      title: "Trees Planted",
-      value: "45",
-      change: "Your Forest",
-      changeColor: "text-[#22c55e]",
+      label: "Trees Planted",
+      val: "45",
+      trend: "Your Forest",
+      color: "bg-[#22c55e]",
     },
     {
-      title: "Cash Earned",
-      value: "₹8,500",
-      change: "Available: ₹2,500",
-      changeColor: "text-orange-600",
+      label: "Cash Earned",
+      val: "₹8,500",
+      trend: "Available: ₹2,500",
+      color: "bg-orange-500",
+    },
+  ];
+
+  const activeRoutes = [
+    {
+      id: 1,
+      title: "Multi-Stop Route - Area 7",
+      desc: "5 Pickups Pending • Bonus: +300 PTS",
+      tag: "Hot Route",
+      multiplier: "3X Multiplier Active",
+      icon: <MapPin size={24} />,
+      status: "pending",
+    },
+    {
+      id: 2,
+      title: "Express Delivery",
+      desc: "Completed in 14 mins • Bonus: +200 PTS earned",
+      tag: "Ultra Fast",
+      multiplier: null,
+      icon: <CheckCircle2 size={24} />,
+      status: "completed",
     },
   ];
 
   return (
-    <div className="w-full space-y-6 p-6">
-      <div className="flex justify-between items-center">
-        <h1
-          className="text-2xl font-semibold text-start uppercase tracking-tighter"
-          style={{ color: "var(--text-primary)" }}
-        >
-          Volunteer Dashboard
-        </h1>
-        <div className="flex items-center gap-2 px-3 py-1.5 bg-[#ecfdf5] rounded-full border border-[#d1fae5]">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#22c55e] opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#22c55e]"></span>
-          </span>
-          <span className="text-xs font-bold text-[#16a34a]">
-            Active - Earning 3X Points 🔥
-          </span>
+    <div
+      className="min-h-screen"
+      style={{ backgroundColor: "var(--bg-secondary)" }}
+    >
+      {/* Header Section */}
+      <div
+        className="bg-white border-b sticky top-0 z-20"
+        style={{ borderColor: "var(--border-color)" }}
+      >
+        <div className="max-w-7xl mx-auto px-8 py-8">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="text-center md:text-left">
+              <h1
+                className="text-4xl font-black tracking-tighter uppercase mb-2"
+                style={{ color: "var(--text-primary)" }}
+              >
+                Volunteer Dashboard
+              </h1>
+              <div className="flex items-center justify-center md:justify-start gap-3">
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 rounded-sm border border-emerald-100">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#22c55e] opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#22c55e]"></span>
+                  </span>
+                  <span className="text-[10px] font-black text-[#22c55e] uppercase tracking-widest">
+                    Active - Earning 3X Points 🔥
+                  </span>
+                </div>
+                <p
+                  className="text-xs font-bold flex items-center gap-2"
+                  style={{ color: "var(--text-secondary)" }}
+                >
+                  <Calendar className="w-4 h-4 text-[#22c55e]" />
+                  Today: Jan 10, 2026
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-4">
+              <ResuableButton
+                variant="primary"
+                className="px-10 py-3.5 !rounded-sm text-xs font-black uppercase tracking-widest shadow-lg shadow-[#22c55e]/20"
+              >
+                Find New Tasks
+              </ResuableButton>
+            </div>
+          </div>
         </div>
       </div>
 
-      <ImpactCards
-        data={stats.map((item) => ({
-          label: item.title,
-          val: item.value,
-          trend: item.change,
-          color:
-            item.changeColor.includes("green") ||
-            item.changeColor.includes("emerald") ||
-            item.changeColor.includes("blue")
-              ? "bg-[#22c55e]"
-              : "bg-orange-500",
-        }))}
-      />
+      <div className="max-w-7xl mx-auto px-8 mt-10 pb-16">
+        {/* Impact Cards */}
+        <ImpactCards data={stats} className="mb-8" />
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Today's Schedule */}
-        <div
-          className="md:col-span-2 rounded-md p-5 border flex flex-col items-start min-h-[300px]"
-          style={{
-            backgroundColor: "var(--bg-primary)",
-            borderColor: "var(--border-color)",
-          }}
-        >
-          <h3
-            className="text-lg font-semibold mb-4 uppercase tracking-tight"
-            style={{ color: "var(--text-primary)" }}
-          >
-            Active Routes
-          </h3>
-          <div className="w-full space-y-4">
-            <div className="p-4 bg-[#ecfdf5]/50 rounded-xl border border-[#d1fae5] flex items-start gap-4 group cursor-pointer hover:bg-[#ecfdf5] transition-all">
-              <div className="p-3 bg-[#22c55e] text-white rounded-xl shadow-lg shadow-[#22c55e]/20">
-                <MapPin size={24} />
-              </div>
-              <div className="flex flex-col items-start pt-0.5">
-                <h4
-                  className="font-bold tracking-tight"
-                  style={{ color: "var(--text-primary)" }}
-                >
-                  Multi-Stop Route - Area 7
-                </h4>
-                <p
-                  className="text-xs mt-1"
-                  style={{ color: "var(--text-secondary)" }}
-                >
-                  5 Pickups Pending • Bonus: +300 PTS
-                </p>
-                <div className="flex gap-2 mt-3">
-                  <span className="text-[10px] px-2 py-0.5 bg-[#22c55e] rounded-full text-white font-black uppercase tracking-widest">
-                    Hot Route
-                  </span>
-                  <span
-                    className="text-[10px] py-0.5 flex items-center gap-1 font-bold uppercase"
-                    style={{ color: "var(--text-muted)" }}
-                  >
-                    <Clock size={10} /> 3X Multiplier Active
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-4 bg-gray-50 rounded-xl border border-gray-100 flex items-start gap-4">
-              <div className="p-3 bg-[#22c55e] text-white rounded-xl shadow-lg shadow-[#22c55e]/20">
-                <CheckCircle2 size={24} />
-              </div>
-              <div className="flex flex-col items-start pt-0.5">
-                <h4
-                  className="font-bold tracking-tight"
-                  style={{ color: "var(--text-primary)" }}
-                >
-                  Express Delivery
-                </h4>
-                <p
-                  className="text-xs mt-1"
-                  style={{ color: "var(--text-secondary)" }}
-                >
-                  Completed in 14 mins • Bonus: +200 PTS earned
-                </p>
-                <div className="flex gap-2 mt-2">
-                  <span className="text-[10px] px-2 py-0.5 bg-emerald-50 rounded-full text-[#22c55e] font-black uppercase tracking-widest">
-                    Ultra Fast
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* ULTRA Rewards Progress */}
-        <div
-          className="rounded-[32px] p-8 border flex flex-col items-center text-center shadow-sm"
-          style={{
-            backgroundColor: "var(--bg-primary)",
-            borderColor: "var(--border-color)",
-          }}
-        >
-          <div className="relative mb-6">
-            <div className="w-24 h-24 rounded-3xl bg-emerald-50 border border-emerald-100 flex items-center justify-center">
-              <Star className="text-[#22c55e]" size={40} fill="currentColor" />
-            </div>
-            <div
-              className="absolute -top-2 -right-2 px-3 py-1 bg-[#22c55e] rounded-full border-2"
-              style={{ borderColor: "var(--bg-primary)" }}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* Main Content Area (8 cols) */}
+          <div className="lg:col-span-8 space-y-8">
+            <section
+              className="border p-8 rounded-sm bg-white shadow-sm"
+              style={{ borderColor: "var(--border-color)" }}
             >
-              <p className="text-[10px] font-black text-white uppercase tracking-tight">
-                Rank 6
-              </p>
-            </div>
-          </div>
+              <h3 className="text-sm font-black tracking-tight uppercase text-slate-800 mb-8 flex items-center gap-3">
+                <TrendingUp size={18} className="text-[#22c55e]" />
+                Active Routes & Recent missions
+              </h3>
 
-          <h4
-            className="text-3xl font-black uppercase tracking-tighter"
-            style={{ color: "var(--text-primary)" }}
-          >
-            Diamond
-          </h4>
-
-          <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-50 border border-emerald-100 rounded-full">
-            <Zap className="text-[#22c55e]" size={12} fill="currentColor" />
-            <span className="text-[10px] font-black text-[#16a34a] uppercase tracking-widest">
-              30% Bonus Active
-            </span>
-          </div>
-
-          <div className="w-full mt-10 space-y-6">
-            <div className="flex justify-between items-end">
-              <div className="text-start">
-                <div className="flex items-center gap-1.5 mb-1">
-                  <TrendingUp size={14} className="text-[#22c55e]" />
-                  <span className="text-[10px] font-black text-[#16a34a] uppercase tracking-widest">
-                    Next Tier: Legend
-                  </span>
-                </div>
-                <p
-                  className="text-[11px] font-medium"
-                  style={{ color: "var(--text-secondary)" }}
-                >
-                  Earn{" "}
-                  <span
-                    className="font-black"
-                    style={{ color: "var(--text-primary)" }}
+              <div className="space-y-4">
+                {activeRoutes.map((route) => (
+                  <div
+                    key={route.id}
+                    className="p-8 bg-white rounded-sm border flex items-start gap-6 group cursor-pointer hover:border-[#22c55e]/30 transition-all shadow-sm"
+                    style={{ borderColor: "var(--border-color)" }}
                   >
-                    5,500 more
-                  </span>{" "}
-                  points
-                </p>
+                    <div
+                      className={`p-4 rounded-sm border flex items-center justify-center text-white shrink-0 group-hover:scale-105 transition-transform ${
+                        route.status === "completed"
+                          ? "bg-slate-100 border-slate-200 !text-slate-400"
+                          : "bg-[#22c55e] border-white shadow-lg shadow-[#22c55e]/20"
+                      }`}
+                    >
+                      {route.icon}
+                    </div>
+                    <div className="flex-1 text-left pt-0.5">
+                      <div className="flex items-center justify-between mb-1">
+                        <h4 className="font-black text-lg tracking-tight text-slate-800 group-hover:text-[#22c55e] transition-colors">
+                          {route.title}
+                        </h4>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-[#22c55e] bg-emerald-50 px-2 py-0.5 rounded-sm border border-emerald-100">
+                          {route.tag}
+                        </span>
+                      </div>
+                      <p className="text-xs font-semibold text-slate-500 mb-4">
+                        {route.desc}
+                      </p>
+                      {route.multiplier && (
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] py-1 flex items-center gap-1.5 font-black uppercase tracking-widest text-orange-500">
+                            <Clock size={12} /> {route.multiplier}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
               </div>
-              <div className="flex items-end gap-0.5">
-                <span
-                  className="text-3xl font-black leading-none"
-                  style={{ color: "var(--text-primary)" }}
-                >
-                  82
-                </span>
-                <span className="text-sm font-black text-[#16a34a] mb-0.5">
-                  %
-                </span>
-              </div>
-            </div>
-
-            <div className="relative">
-              <div className="h-2 w-full bg-slate-50 rounded-full overflow-hidden border border-slate-100/50">
-                <div
-                  className="h-full bg-gradient-to-r from-[#22c55e] to-[#1eb054] rounded-full transition-all duration-1000 ease-out"
-                  style={{ width: "82%" }}
-                />
-              </div>
-              <div
-                className="flex justify-between items-center text-[9px] font-black uppercase tracking-widest mt-3 px-1"
-                style={{ color: "var(--text-muted)" }}
-              >
-                <span>Platinum</span>
-                <span className="text-[#22c55e]">Diamond</span>
-                <span>Legend</span>
-              </div>
-            </div>
+            </section>
           </div>
 
-          <button className="w-full mt-10 py-4 bg-[#22c55e] text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-[#1eb054] transition-all active:scale-95 shadow-lg shadow-[#22c55e]/20">
-            Redeem Cash Prizes
-          </button>
+          {/* Right Sidebar Area (4 cols) */}
+          <div className="lg:col-span-4 space-y-8">
+            {/* Rewards Progress Sidebar */}
+            <section
+              className="border p-8 rounded-sm bg-white shadow-sm flex flex-col items-center text-center"
+              style={{ borderColor: "var(--border-color)" }}
+            >
+              <div className="relative mb-8">
+                <div className="w-24 h-24 rounded-sm bg-emerald-50 border border-emerald-100 flex items-center justify-center shadow-inner">
+                  <Star
+                    className="text-[#22c55e]"
+                    size={40}
+                    fill="currentColor"
+                  />
+                </div>
+                <div className="absolute -top-2 -right-2 px-3 py-1 bg-[#22c55e] text-white rounded-sm border-2 border-white shadow-md">
+                  <p className="text-[10px] font-black uppercase tracking-tight">
+                    Rank 6
+                  </p>
+                </div>
+              </div>
+
+              <h4 className="text-3xl font-black uppercase tracking-tighter text-slate-800 mb-2">
+                Diamond
+              </h4>
+
+              <div className="mb-8 inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-50 border border-emerald-100 rounded-sm">
+                <Zap className="text-[#22c55e]" size={12} fill="currentColor" />
+                <span className="text-[10px] font-black text-[#22c55e] uppercase tracking-widest">
+                  30% Bonus Active
+                </span>
+              </div>
+
+              <div className="w-full space-y-6">
+                <div className="flex justify-between items-end">
+                  <div className="text-left">
+                    <p className="text-[10px] font-black text-[#22c55e] uppercase tracking-[0.2em] mb-1">
+                      Next Tier: Legend
+                    </p>
+                    <p className="text-xs font-semibold text-slate-400 leading-tight">
+                      Earn{" "}
+                      <span className="font-black text-slate-800">
+                        5,500 more
+                      </span>{" "}
+                      points
+                    </p>
+                  </div>
+                  <div className="flex items-end gap-0.5">
+                    <span className="text-3xl font-black text-slate-800 leading-none">
+                      82
+                    </span>
+                    <span className="text-sm font-black text-[#22c55e] mb-0.5">
+                      %
+                    </span>
+                  </div>
+                </div>
+
+                <div className="relative">
+                  <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-[#22c55e] to-[#1eb054] rounded-full transition-all duration-1000 ease-out"
+                      style={{ width: "82%" }}
+                    />
+                  </div>
+                  <div className="flex justify-between items-center text-[9px] font-black uppercase tracking-widest mt-3 px-1 text-slate-400">
+                    <span>Platinum</span>
+                    <span className="text-[#22c55e]">Diamond</span>
+                    <span>Legend</span>
+                  </div>
+                </div>
+              </div>
+
+              <ResuableButton
+                variant="primary"
+                className="w-full mt-10 py-4 !rounded-sm text-[11px] font-black uppercase tracking-[0.2em] shadow-lg shadow-[#22c55e]/20"
+              >
+                Redeem Cash Prizes
+              </ResuableButton>
+            </section>
+          </div>
         </div>
       </div>
     </div>

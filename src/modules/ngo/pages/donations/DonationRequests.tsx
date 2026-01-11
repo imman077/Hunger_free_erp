@@ -65,7 +65,7 @@ const DonationRequests = () => {
         columns={[
           { name: "Icon", uid: "icon", sortable: false },
           { name: "Donation Details", uid: "title", sortable: true },
-          { name: "Donor", uid: "donor", sortable: true },
+          { name: "Donor", uid: "donor", sortable: true, align: "start" },
           { name: "Distance", uid: "distance", sortable: false },
           { name: "Actions", uid: "actions", sortable: false },
         ]}
@@ -73,7 +73,7 @@ const DonationRequests = () => {
           switch (columnKey) {
             case "icon":
               return (
-                <div className="flex justify-center">
+                <div className="flex">
                   <div
                     className="w-12 h-12 rounded-sm flex items-center justify-center text-xl shadow-sm border border-slate-100"
                     style={{ backgroundColor: "var(--bg-primary)" }}
@@ -84,16 +84,25 @@ const DonationRequests = () => {
               );
             case "title":
               return (
-                <div className="text-left">
-                  <span className="font-black text-slate-800 text-sm">
+                <div className="text-left min-w-0">
+                  <span className="font-bold text-slate-800 text-xs whitespace-nowrap truncate max-w-[180px] px-1 block">
                     {donation.title}
                   </span>
                 </div>
               );
             case "donor":
               return (
-                <div className="text-left">
-                  <span className="font-bold text-slate-500 text-xs uppercase tracking-wide">
+                <div className="flex items-center gap-2 px-2 py-1 rounded-full bg-slate-50 border border-slate-200 hover:border-hf-green/50 hover:bg-white transition-all cursor-pointer group w-fit min-w-0">
+                  <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold text-white bg-slate-400 shadow-sm shrink-0">
+                    {donation.donor
+                      .split(" ")
+                      .map((n: string) => n[0])
+                      .join("")}
+                  </div>
+                  <span
+                    className="font-bold text-[11px] whitespace-nowrap truncate max-w-[140px] pr-1 group-hover:text-hf-green transition-colors"
+                    style={{ color: "var(--text-primary)" }}
+                  >
                     {donation.donor}
                   </span>
                 </div>
@@ -106,7 +115,7 @@ const DonationRequests = () => {
               );
             default:
               return (
-                <span className="text-slate-700 font-medium">
+                <span className="text-slate-700 text-[11px] font-medium whitespace-nowrap px-1">
                   {String(donation[columnKey as keyof DonationRequest])}
                 </span>
               );

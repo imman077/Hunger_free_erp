@@ -1,6 +1,6 @@
 import React from "react";
 import ImpactCards from "../../../../global/components/resuable-components/ImpactCards";
-import ResuableTable from "../../../../global/components/resuable-components/table";
+import ReusableTable from "../../../../global/components/resuable-components/table";
 import type { ColumnDef } from "../../../../global/components/resuable-components/table";
 import {
   CheckCircle,
@@ -12,6 +12,7 @@ import {
   MapPin,
 } from "lucide-react";
 import { Button, Tooltip, Chip } from "@heroui/react";
+import { Plus } from "lucide-react";
 
 const PendingDonationsPage: React.FC = () => {
   const stats = [
@@ -43,11 +44,11 @@ const PendingDonationsPage: React.FC = () => {
 
   const columns: ColumnDef[] = [
     { uid: "id", name: "ID", sortable: true },
-    { uid: "donor", name: "DONOR", sortable: true },
+    { uid: "donor", name: "DONOR", sortable: true, align: "start" },
     { uid: "type", name: "FOOD TYPE", sortable: true },
     { uid: "quantity", name: "QUANTITY", sortable: true },
     { uid: "location", name: "LOCATION", sortable: true },
-    { uid: "status", name: "STATUS", sortable: true },
+    { uid: "status", name: "STATUS", sortable: false, align: "center" },
     { uid: "expiry", name: "EXPIRY", sortable: true },
     { uid: "actions", name: "ACTIONS" },
   ];
@@ -112,10 +113,16 @@ const PendingDonationsPage: React.FC = () => {
         );
       case "donor":
         return (
-          <div className="flex flex-col items-center">
+          <div className="flex items-center gap-2 px-2 py-1 rounded-full bg-slate-100/50 border border-slate-200 hover:border-hf-green/50 hover:bg-white transition-all cursor-pointer group w-fit min-w-0">
+            <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-black text-white bg-hf-green shadow-sm shrink-0">
+              {value
+                .split(" ")
+                .map((n: string) => n[0])
+                .join("")}
+            </div>
             <span
-              className="font-bold"
-              style={{ color: "var(--text-secondary)" }}
+              className="font-bold text-xs whitespace-nowrap truncate max-w-[140px] pr-1 group-hover:text-hf-green transition-colors"
+              style={{ color: "var(--text-primary)" }}
             >
               {value}
             </span>
@@ -123,21 +130,23 @@ const PendingDonationsPage: React.FC = () => {
         );
       case "status":
         return (
-          <Chip
-            className="capitalize border-none gap-1 h-6 text-[10px] font-black"
-            color={value === "urgent" ? "danger" : "warning"}
-            size="sm"
-            variant="flat"
-            startContent={
-              value === "urgent" ? (
-                <AlertTriangle size={12} />
-              ) : (
-                <Clock size={12} />
-              )
-            }
-          >
-            {value}
-          </Chip>
+          <div className="flex justify-center w-full">
+            <Chip
+              className="capitalize border-none gap-1 h-6 text-[10px] font-black"
+              color={value === "urgent" ? "danger" : "warning"}
+              size="sm"
+              variant="flat"
+              startContent={
+                value === "urgent" ? (
+                  <AlertTriangle size={12} />
+                ) : (
+                  <Clock size={12} />
+                )
+              }
+            >
+              {value}
+            </Chip>
+          </div>
         );
       case "quantity":
         return (
@@ -153,10 +162,10 @@ const PendingDonationsPage: React.FC = () => {
         );
       case "location":
         return (
-          <div className="flex items-center justify-center gap-1">
-            <MapPin size={14} style={{ color: "var(--text-muted)" }} />
+          <div className="flex items-center gap-1.5 px-2">
+            <MapPin size={12} style={{ color: "var(--text-muted)" }} />
             <span
-              className="truncate max-w-[150px]"
+              className="text-xs font-medium whitespace-nowrap"
               style={{ color: "var(--text-secondary)" }}
             >
               {value}
@@ -217,27 +226,37 @@ const PendingDonationsPage: React.FC = () => {
 
   return (
     <div className="p-6 space-y-6">
-      <div>
-        <h1
-          className="text-xl font-bold tracking-tight"
-          style={{ color: "var(--text-primary)" }}
+      <div className="flex items-center justify-between w-full">
+        <div>
+          <h1
+            className="text-xl font-bold tracking-tight"
+            style={{ color: "var(--text-primary)" }}
+          >
+            Pending Donations
+          </h1>
+          <p className="text-sm mt-1" style={{ color: "var(--text-muted)" }}>
+            Review and approve incoming food donations for distribution
+          </p>
+        </div>
+        <Button
+          color="primary"
+          className="bg-hf-green text-white rounded-sm h-10 px-6 font-bold hover:bg-emerald-600 transition-all active:scale-95"
+          style={{ backgroundColor: "#22c55e", color: "white" }}
+          endContent={<Plus size={18} />}
+          onPress={() => console.log("Add new donation")}
         >
-          Pending Donations
-        </h1>
-        <p className="text-sm mt-1" style={{ color: "var(--text-muted)" }}>
-          Review and approve incoming food donations for distribution
-        </p>
+          Add New Donation
+        </Button>
       </div>
 
       <ImpactCards data={stats} />
 
-      <ResuableTable
+      <ReusableTable
         // title="Incoming Requests"
         // description="All donations awaiting verification from administrative staff"
         columns={columns}
         data={sampleData}
         renderCell={renderCell}
-        onAddNew={() => console.log("Add new donation")}
         actionConfig={{
           showView: true,
           showMessage: true,

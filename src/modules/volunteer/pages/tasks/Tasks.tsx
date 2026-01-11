@@ -9,7 +9,9 @@ import {
   Weight,
   ChefHat,
   Heart,
+  Calendar,
 } from "lucide-react";
+import ResuableButton from "../../../../global/components/resuable-components/button";
 
 interface Task {
   id: string;
@@ -40,13 +42,13 @@ const TaskRow: React.FC<{ task: Task }> = ({ task }) => {
   const getIconBg = () => {
     switch (task.type) {
       case "delivery":
-        return "bg-emerald-50";
+        return "bg-emerald-50 border-emerald-100";
       case "kitchen":
-        return "bg-orange-50";
+        return "bg-orange-50 border-orange-100";
       case "shelter":
-        return "bg-rose-50";
+        return "bg-rose-50 border-rose-100";
       default:
-        return "bg-emerald-50";
+        return "bg-emerald-50 border-emerald-100";
     }
   };
 
@@ -63,90 +65,67 @@ const TaskRow: React.FC<{ task: Task }> = ({ task }) => {
 
   return (
     <div
-      className="border p-6 flex flex-col md:flex-row items-center justify-between gap-6 transition-all"
+      className="border p-6 flex flex-col md:flex-row items-center justify-between gap-6 transition-all hover:bg-white group rounded-sm shadow-sm"
       style={{
         backgroundColor: "var(--bg-primary)",
         borderColor: "var(--border-color)",
       }}
     >
-      <div className="flex items-center gap-5 flex-1 min-w-0">
-        {/* Icon Container */}
+      <div className="flex items-center gap-6 flex-1 min-w-0">
         <div
-          className={`w-14 h-14 ${getIconBg()} rounded-sm flex items-center justify-center shrink-0 border`}
-          style={{ borderColor: "var(--border-color)" }}
+          className={`w-16 h-16 ${getIconBg()} rounded-sm flex items-center justify-center shrink-0 border shadow-sm group-hover:scale-105 transition-transform duration-300`}
         >
           {getIcon()}
         </div>
 
-        {/* Task Info */}
-        <div className="space-y-1.5">
-          <div className="flex items-baseline gap-2">
-            <h4
-              className="text-[17px] font-black tracking-tight"
-              style={{ color: "var(--text-primary)" }}
-            >
+        <div className="space-y-2 text-left">
+          <div className="flex items-center gap-3">
+            <h4 className="text-xl font-black tracking-tight text-slate-800">
               {task.title}
             </h4>
-            <span
-              className="font-medium text-sm"
-              style={{ color: "var(--text-muted)" }}
-            >
-              — Route #{task.routeNumber}
+            <span className="text-[10px] font-black uppercase tracking-widest bg-slate-50 px-2 py-0.5 rounded-sm border">
+              Route #{task.routeNumber}
             </span>
           </div>
-          <div className="flex flex-wrap items-center gap-4">
-            <div
-              className="flex items-center gap-1.5 text-[13px] font-bold"
-              style={{ color: "var(--text-muted)" }}
-            >
-              <MapPin size={14} style={{ color: "var(--text-muted)" }} />
+          <div className="flex flex-wrap items-center gap-6">
+            <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-slate-400 group-hover:text-slate-600 transition-colors">
+              <MapPin size={14} className="text-[#22c55e]" />
               <span>{task.stops} Stop Points</span>
             </div>
-            <div
-              className="flex items-center gap-1.5 text-[13px] font-bold"
-              style={{ color: "var(--text-muted)" }}
-            >
-              <Clock size={14} style={{ color: "var(--text-muted)" }} />
+            <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-slate-400 group-hover:text-slate-600 transition-colors">
+              <Clock size={14} className="text-[#22c55e]" />
               <span>{task.duration} Est.</span>
             </div>
-            <div
-              className="flex items-center gap-1.5 text-[13px] font-bold"
-              style={{ color: "var(--text-muted)" }}
-            >
-              <Weight size={14} style={{ color: "var(--text-muted)" }} />
+            <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-slate-400 group-hover:text-slate-600 transition-colors">
+              <Weight size={14} className="text-[#22c55e]" />
               <span>{task.load} Load</span>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="flex flex-col items-end gap-4 shrink-0">
-        {/* Status Badge */}
+      <div className="flex flex-col md:flex-row items-center gap-6 shrink-0 w-full md:w-auto">
         <span
-          className={`text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full border ${getStatusStyle()}`}
+          className={`text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-sm border shadow-sm ${getStatusStyle()}`}
         >
           {task.status}
         </span>
 
-        {/* Action Buttons */}
-        <div className="flex items-center gap-3">
-          <button
-            className="flex items-center gap-2 px-5 py-2.5 border rounded-sm text-[13px] font-black transition-colors"
-            style={{
-              backgroundColor: "var(--bg-primary)",
-              borderColor: "var(--border-color)",
-              color: "var(--text-primary)",
-            }}
+        <div className="flex items-center gap-4 w-full md:w-auto">
+          <ResuableButton
+            variant="secondary"
+            className="flex-1 md:flex-none px-6 py-3 !rounded-sm text-[11px] font-black uppercase tracking-widest border-slate-200"
           >
             <Info size={16} />
             Details
-          </button>
-          <button
-            className={`flex items-center gap-2 px-6 py-2.5 rounded-sm text-[13px] font-black text-white transition-all active:scale-95 bg-[#22c55e] hover:bg-[#1eb054]`}
+          </ResuableButton>
+          <ResuableButton
+            variant="primary"
+            className={`flex-1 md:flex-none px-8 py-3 !rounded-sm text-[11px] font-black uppercase tracking-widest text-white shadow-lg shadow-[#22c55e]/20`}
           >
             {task.status === "AVAILABLE" ? "Claim Task" : "Update Status"}
             <ChevronRight size={16} />
-          </button>
+          </ResuableButton>
         </div>
       </div>
     </div>
@@ -229,100 +208,117 @@ const VolunteerTasks = () => {
   };
 
   return (
-    <div className="p-8" style={{ backgroundColor: "var(--bg-secondary)" }}>
-      <div className="max-w-6xl mx-auto space-y-8">
-        {/* Page Heading */}
-        <div className="text-start">
-          <h1
-            className="text-4xl font-black tracking-tighter mb-2"
-            style={{ color: "var(--text-primary)" }}
-          >
-            MY TASKS
-          </h1>
-          <p className="font-medium" style={{ color: "var(--text-secondary)" }}>
-            Manage your delivery assignments and track progress
-          </p>
-        </div>
-
-        {/* Header Section with Tabs and Filter */}
-        <div
-          className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-1"
-          style={{ borderBottom: "1px solid var(--border-color)" }}
-        >
-          <div className="flex items-center gap-10">
-            {[
-              {
-                id: "active",
-                label: "Active Tasks",
-                count: activeTasks.length,
-              },
-              {
-                id: "opps",
-                label: "Opportunities",
-                count: opportunityTasks.length,
-              },
-              { id: "past", label: "Past Tasks", count: pastTasks.length },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
-                className={`relative pb-4 flex items-center gap-2 group transition-all`}
+    <div
+      className="min-h-screen"
+      style={{ backgroundColor: "var(--bg-secondary)" }}
+    >
+      {/* Header Section */}
+      <div
+        className="bg-white border-b sticky top-0 z-20"
+        style={{ borderColor: "var(--border-color)" }}
+      >
+        <div className="max-w-7xl mx-auto px-8 py-8">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-10">
+            <div className="text-center md:text-left">
+              <h1
+                className="text-4xl font-black tracking-tighter uppercase mb-2"
+                style={{ color: "var(--text-primary)" }}
               >
-                <span
-                  className={`text-[14px] font-black uppercase tracking-tight ${
-                    activeTab === tab.id
-                      ? "text-[#22c55e]"
-                      : "group-hover:text-gray-600"
-                  }`}
-                  style={{
-                    color:
-                      activeTab === tab.id ? "#22c55e" : "var(--text-muted)",
-                  }}
+                Volunteer Missions
+              </h1>
+              <div className="flex items-center justify-center md:justify-start gap-3">
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 rounded-sm border border-slate-200">
+                  <Package className="w-4 h-4 text-[#22c55e]" />
+                  <span className="text-[10px] font-black text-slate-800 uppercase tracking-widest">
+                    Manage Assignments
+                  </span>
+                </div>
+                <p
+                  className="text-xs font-bold flex items-center gap-2"
+                  style={{ color: "var(--text-secondary)" }}
                 >
-                  {tab.label}
-                </span>
-                <span
-                  className={`px-2 py-0.5 rounded-md text-[11px] font-black ${
-                    activeTab === tab.id ? "bg-emerald-50 text-[#22c55e]" : ""
-                  }`}
-                  style={{
-                    backgroundColor:
-                      activeTab === tab.id ? "#ecfdf5" : "var(--bg-secondary)",
-                    color:
+                  <Calendar className="w-4 h-4 text-[#22c55e]" />
+                  Jan 10, 2026
+                </p>
+              </div>
+            </div>
+
+            {/* Tabs Integrated into Header */}
+            <div className="flex items-center gap-8 self-end">
+              {[
+                {
+                  id: "active",
+                  label: "Active",
+                  count: activeTasks.length,
+                },
+                {
+                  id: "opps",
+                  label: "Available",
+                  count: opportunityTasks.length,
+                },
+                { id: "past", label: "History", count: pastTasks.length },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id as any)}
+                  className={`relative pb-2 flex items-center gap-2 group transition-all`}
+                >
+                  <span
+                    className={`text-[12px] font-black uppercase tracking-[0.2em] ${
                       activeTab === tab.id
-                        ? "#16a34a"
-                        : "var(--text-secondary)",
-                  }}
-                >
-                  {tab.count}
-                </span>
-                {activeTab === tab.id && (
-                  <div className="absolute bottom-0 left-0 w-full h-1 bg-[#22c55e] rounded-full" />
-                )}
-              </button>
-            ))}
+                        ? "text-[#22c55e]"
+                        : "text-slate-400 group-hover:text-slate-600"
+                    }`}
+                  >
+                    {tab.label}
+                  </span>
+                  <span
+                    className={`px-2 py-0.5 rounded-sm text-[10px] font-black ${
+                      activeTab === tab.id
+                        ? "bg-emerald-50 text-[#22c55e] border border-emerald-100"
+                        : "bg-slate-50 text-slate-400 border border-slate-100"
+                    }`}
+                  >
+                    {tab.count}
+                  </span>
+                  {activeTab === tab.id && (
+                    <div className="absolute -bottom-0 left-0 w-full h-1 bg-[#22c55e] rounded-t-full" />
+                  )}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
+      </div>
 
+      <div className="max-w-7xl mx-auto px-8 mt-10 pb-16">
         {/* Task List Container */}
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 gap-4">
           {getCurrentTasks().length > 0 ? (
             getCurrentTasks().map((task) => (
               <TaskRow key={task.id} task={task} />
             ))
           ) : (
             <div
-              className="py-20 rounded-sm border border-dashed flex flex-col items-center justify-center gap-3"
+              className="py-32 rounded-sm border border-dashed flex flex-col items-center justify-center gap-4 bg-white"
               style={{
-                backgroundColor: "var(--bg-primary)",
                 borderColor: "var(--border-color)",
                 color: "var(--text-muted)",
               }}
             >
-              <Package className="w-12 h-12 opacity-10" />
-              <p className="font-black text-xs uppercase tracking-[0.2em]">
-                No tasks available
+              <div className="w-16 h-16 bg-slate-50 rounded-sm flex items-center justify-center border border-slate-100">
+                <Package className="w-8 h-8 opacity-20" />
+              </div>
+              <p className="font-black text-xs uppercase tracking-[0.3em] text-slate-400">
+                No missions found in this category
               </p>
+              <ResuableButton
+                variant="secondary"
+                className="px-6 py-2.5 !rounded-sm text-[10px] font-black uppercase tracking-widest"
+                onClick={() => setActiveTab("opps")}
+              >
+                Browse Available Tasks
+              </ResuableButton>
             </div>
           )}
         </div>

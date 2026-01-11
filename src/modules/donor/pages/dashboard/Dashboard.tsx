@@ -18,28 +18,28 @@ const DonorDashboard = () => {
       value: "342",
       change: "+12 this week",
       icon: <Heart className="w-5 h-5" />,
-      color: "#22c55e",
+      color: "#f59e0b",
     },
     {
       title: "Impact Points",
       value: "24,500",
       change: "Diamond Tier",
       icon: <Star className="w-5 h-5" />,
-      color: "#22c55e",
+      color: "#f59e0b",
     },
     {
       title: "Trees Planted",
       value: "45",
       change: "Your Forest",
       icon: <Zap className="w-5 h-5" />,
-      color: "#22c55e",
+      color: "#f59e0b",
     },
     {
       title: "Available Points",
       value: "8,200",
       change: "Redeem for Cash",
       icon: <ShieldCheck className="w-5 h-5" />,
-      color: "#22c55e",
+      color: "#f59e0b",
     },
   ];
 
@@ -71,22 +71,22 @@ const DonorDashboard = () => {
     <div className="w-full space-y-8 p-6 max-w-[1700px] mx-auto bg-transparent">
       {/* Hero / Header Section */}
       <div className="relative overflow-hidden rounded-md bg-white p-8 md:p-10 border border-slate-100">
-        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[450px] h-[450px] bg-[#22c55e] opacity-[0.03] blur-[110px] rounded-full" />
+        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[450px] h-[450px] bg-amber-500 opacity-[0.03] blur-[110px] rounded-full" />
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-4">
-            <div className="inline-flex items-center gap-2.5 px-4 py-1 rounded-sm bg-[#22c55e]/5 border border-[#22c55e]/10">
-              <span className="w-2 h-2 rounded-full bg-[#22c55e] animate-pulse" />
-              <span className="text-[11px] font-black uppercase tracking-widest text-[#22c55e]">
+            <div className="inline-flex items-center gap-2.5 px-4 py-1 rounded-sm bg-amber-500/5 border border-amber-500/10">
+              <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+              <span className="text-[11px] font-black uppercase tracking-widest text-amber-600">
                 Live Impact Status
               </span>
             </div>
             <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-slate-800">
-              Welcome back, <span className="text-[#22c55e]">Anish!</span>
+              Welcome back, <span className="text-amber-500">Anish!</span>
             </h1>
             <p className="text-slate-500 font-medium text-base max-w-lg text-start leading-relaxed">
               Your kindness has touched over{" "}
-              <span className="text-slate-800 font-black underline decoration-[#22c55e] decoration-2 underline-offset-4">
+              <span className="text-slate-800 font-black underline decoration-amber-500 decoration-2 underline-offset-4">
                 1,200 lives
               </span>{" "}
               this month alone.
@@ -94,8 +94,8 @@ const DonorDashboard = () => {
           </div>
 
           <div className="shrink-0">
-            <div className="group/hero-stat flex items-center gap-8 bg-slate-50/50 p-6 md:p-7 rounded-md border border-slate-100 min-w-[320px] shadow-inner transition-colors duration-300 hover:bg-emerald-50/30">
-              <div className="w-14 h-14 bg-gradient-to-br from-[#22c55e] to-[#16a34a] rounded-sm flex items-center justify-center shadow-lg shadow-[#22c55e]/20 transition-transform duration-300 group-hover/hero-stat:-translate-y-1">
+            <div className="group/hero-stat flex items-center gap-8 bg-slate-50/50 p-6 md:p-7 rounded-md border border-slate-100 min-w-[320px] shadow-inner transition-colors duration-300 hover:bg-amber-50/30">
+              <div className="w-14 h-14 bg-gradient-to-br from-amber-400 to-amber-600 rounded-sm flex items-center justify-center shadow-lg shadow-amber-500/20 transition-transform duration-300 group-hover/hero-stat:-translate-y-1">
                 <Award className="text-white w-7 h-7" />
               </div>
               <div className="text-start">
@@ -106,8 +106,8 @@ const DonorDashboard = () => {
                   <h3 className="text-xl font-black text-slate-800 tracking-tight">
                     Diamond Donor
                   </h3>
-                  <div className="p-1.5 rounded-sm bg-[#22c55e]/10">
-                    <TrendingUp className="text-[#22c55e] w-3.5 h-3.5" />
+                  <div className="p-1.5 rounded-sm bg-amber-500/10">
+                    <TrendingUp className="text-amber-500 w-3.5 h-3.5" />
                   </div>
                 </div>
               </div>
@@ -122,7 +122,7 @@ const DonorDashboard = () => {
           label: stat.title,
           val: stat.value,
           trend: stat.change,
-          color: stat.color === "#22c55e" ? "bg-[#22c55e]" : "bg-slate-300",
+          color: stat.color === "#f59e0b" ? "bg-amber-500" : "bg-slate-300",
         }))}
       />
 
@@ -133,7 +133,7 @@ const DonorDashboard = () => {
             <h2 className="text-xl font-black text-slate-800 uppercase tracking-tight">
               Impact Milestones
             </h2>
-            <button className="text-[10px] font-black text-[#22c55e] hover:underline uppercase tracking-widest">
+            <button className="text-[10px] font-black text-amber-600 hover:underline uppercase tracking-widest">
               View all
             </button>
           </div>
@@ -160,14 +160,14 @@ const DonorDashboard = () => {
                 key={i}
                 className={`group relative p-8 rounded-md border flex flex-col items-center text-center gap-5 transition-all duration-300 aspect-square justify-center ${
                   badge.unlocked
-                    ? "bg-slate-50/50 border-slate-100 hover:border-[#22c55e]/30 hover:bg-white"
+                    ? "bg-slate-50/50 border-slate-100 hover:border-amber-500/30 hover:bg-white"
                     : "bg-slate-50/20 border-slate-100 opacity-50 grayscale"
                 }`}
               >
                 <div
                   className={`w-16 h-16 shrink-0 rounded-sm flex items-center justify-center text-white transition-transform duration-500 group-hover:-translate-y-2 ${
                     badge.unlocked
-                      ? "bg-[#22c55e] shadow-lg shadow-[#22c55e]/20"
+                      ? "bg-amber-500 shadow-lg shadow-amber-500/20"
                       : "bg-slate-300"
                   }`}
                 >
@@ -179,7 +179,7 @@ const DonorDashboard = () => {
                   )}
                 </div>
                 <div className="space-y-2">
-                  <h3 className="text-lg font-black text-slate-800 tracking-tighter transition-colors duration-300 group-hover:text-[#22c55e]">
+                  <h3 className="text-lg font-black text-slate-800 tracking-tighter transition-colors duration-300 group-hover:text-amber-600">
                     {badge.name}
                   </h3>
                   <p className="text-[11px] text-slate-400 font-bold leading-relaxed max-w-[140px]">
@@ -187,7 +187,7 @@ const DonorDashboard = () => {
                   </p>
                   <div className="pt-2">
                     {badge.unlocked ? (
-                      <span className="text-[9px] font-black uppercase tracking-[0.2em] text-[#22c55e] bg-emerald-50 px-2 py-1 rounded-md border border-emerald-100/50">
+                      <span className="text-[9px] font-black uppercase tracking-[0.2em] text-amber-600 bg-amber-50 px-2 py-1 rounded-md border border-amber-100/50">
                         {badge.status}
                       </span>
                     ) : (
@@ -213,7 +213,7 @@ const DonorDashboard = () => {
             <h2 className="text-xl font-black text-slate-800 uppercase tracking-tight">
               Recent Activity
             </h2>
-            <button className="text-[10px] font-black uppercase tracking-widest text-[#22c55e] hover:underline underline-offset-4 transition-all">
+            <button className="text-[10px] font-black uppercase tracking-widest text-amber-600 hover:underline underline-offset-4 transition-all">
               Details
             </button>
           </div>
@@ -232,7 +232,7 @@ const DonorDashboard = () => {
                     <div
                       className={`w-12 h-12 rounded-md shrink-0 flex items-center justify-center transition-all duration-300 group-hover:scale-105 ${
                         isCollected
-                          ? "bg-emerald-50 text-[#22c55e] border border-emerald-100/50"
+                          ? "bg-amber-50 text-amber-600 border border-amber-100/50"
                           : "bg-blue-50 text-blue-500 border border-blue-100/50"
                       }`}
                     >
@@ -243,7 +243,7 @@ const DonorDashboard = () => {
                     </div>
 
                     <div className="min-w-0">
-                      <h3 className="text-[13px] font-black text-slate-800 tracking-tight truncate group-hover:text-[#22c55e] transition-colors mb-1">
+                      <h3 className="text-[13px] font-black text-slate-800 tracking-tight truncate group-hover:text-amber-600 transition-colors mb-1">
                         {activity.title}
                       </h3>
                       <div className="flex items-center gap-2">
@@ -261,7 +261,7 @@ const DonorDashboard = () => {
                     <span
                       className={`px-2 py-0.5 rounded-sm text-[8px] font-black uppercase tracking-widest border ${
                         isCollected
-                          ? "text-[#22c55e] bg-emerald-50/50 border-emerald-100/50"
+                          ? "text-amber-600 bg-amber-50/50 border-amber-100/50"
                           : "text-blue-500 bg-blue-50/50 border-blue-100/50"
                       }`}
                     >

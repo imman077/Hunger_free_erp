@@ -10,7 +10,7 @@ import {
   Sprout,
 } from "lucide-react";
 import type { ColumnDef } from "../../../../../global/components/resuable-components/table";
-import ResuableTable from "../../../../../global/components/resuable-components/table";
+import ReusableTable from "../../../../../global/components/resuable-components/table";
 import ResuableButton from "../../../../../global/components/resuable-components/button";
 
 const REDEMPTION_REQUESTS = [
@@ -73,7 +73,7 @@ const REDEMPTION_REQUESTS = [
 
 const redemptionColumns: ColumnDef[] = [
   { name: "REQ ID", uid: "id", sortable: true },
-  { name: "USER/ENTITY", uid: "user", sortable: true },
+  { name: "USER/ENTITY", uid: "user", sortable: true, align: "start" },
   { name: "CATEGORY", uid: "category", sortable: true },
   { name: "REWARD ITEM", uid: "item", sortable: true },
   { name: "VALUE", uid: "amount", sortable: true },
@@ -88,6 +88,12 @@ const RedemptionsView: React.FC = () => {
   const renderRedemptionCell = (req: any, columnKey: React.Key) => {
     const value = req[columnKey as string];
     switch (columnKey) {
+      case "item":
+        return (
+          <span className="font-bold text-slate-700 text-xs whitespace-nowrap truncate max-w-[150px] block">
+            {req.item}
+          </span>
+        );
       case "id":
         return (
           <span className="font-black text-slate-400 text-[10px] tracking-widest">
@@ -96,19 +102,24 @@ const RedemptionsView: React.FC = () => {
         );
       case "user":
         return (
-          <div className="flex flex-col text-start">
-            <span
-              className="font-black leading-tight"
-              style={{ color: "var(--text-primary)" }}
-            >
-              {value}
-            </span>
-            <span
-              className="text-[9px] font-black uppercase tracking-widest"
-              style={{ color: "var(--text-muted)" }}
-            >
-              {req.role}
-            </span>
+          <div className="flex items-center gap-2 px-2 py-1 rounded-full bg-slate-50 border border-slate-200 hover:border-hf-green/50 hover:bg-white transition-all cursor-pointer group w-fit min-w-0">
+            <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold text-white bg-slate-400 shadow-sm shrink-0">
+              {req.user
+                .split(" ")
+                .map((n: string) => n[0])
+                .join("")}
+            </div>
+            <div className="flex flex-col text-start pr-1 min-w-0">
+              <span
+                className="font-bold text-xs whitespace-nowrap truncate max-w-[140px] group-hover:text-hf-green transition-colors leading-tight"
+                style={{ color: "var(--text-primary)" }}
+              >
+                {req.user}
+              </span>
+              <span className="text-[8px] font-black uppercase tracking-widest text-slate-400 leading-none">
+                {req.role}
+              </span>
+            </div>
           </div>
         );
       case "category":
@@ -133,27 +144,36 @@ const RedemptionsView: React.FC = () => {
         );
       case "status":
         return (
-          <span
-            className={`px-3 py-1 rounded-sm text-[9px] font-black uppercase tracking-wider
+          <div
+            className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border text-[9px] font-black uppercase tracking-wider
             ${
               req.status === "Pending"
-                ? "bg-amber-50 text-amber-600 border border-amber-100"
+                ? "bg-amber-50 text-amber-600 border-amber-100"
                 : ""
             }
             ${
               req.status === "Approved"
-                ? "bg-emerald-50 text-emerald-600 border border-emerald-100"
+                ? "bg-emerald-50 text-emerald-600 border-emerald-100"
                 : ""
             }
             ${
               req.status === "Rejected"
-                ? "bg-red-50 text-red-600 border border-red-100"
+                ? "bg-red-50 text-red-600 border-red-100"
                 : ""
             }
           `}
           >
+            <div
+              className={`w-1 h-1 rounded-full ${
+                req.status === "Pending"
+                  ? "bg-amber-600"
+                  : req.status === "Approved"
+                  ? "bg-emerald-600"
+                  : "bg-red-600"
+              }`}
+            />
             {req.status}
-          </span>
+          </div>
         );
       case "actions":
         return (
@@ -228,7 +248,7 @@ const RedemptionsView: React.FC = () => {
           </div>
         </div>
 
-        <ResuableTable
+        <ReusableTable
           data={
             filter === "All"
               ? REDEMPTION_REQUESTS

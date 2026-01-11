@@ -84,9 +84,9 @@ const NGOInventory = () => {
       <ReusableTable
         data={distributionData}
         columns={[
-          { name: "Item", uid: "item", sortable: true },
+          { name: "Item", uid: "item", sortable: true, align: "start" },
           { name: "Quantity", uid: "quantity", sortable: false },
-          { name: "Location", uid: "location", sortable: true },
+          { name: "Location", uid: "location", sortable: true, align: "start" },
           { name: "Date", uid: "date", sortable: true },
         ]}
         renderCell={(record: DistributionRecord, columnKey: React.Key) => {
@@ -94,7 +94,7 @@ const NGOInventory = () => {
             case "item":
               return (
                 <div className="text-left">
-                  <span className="font-black text-slate-800">
+                  <span className="font-bold text-slate-800 text-xs whitespace-nowrap px-1">
                     {record.item}
                   </span>
                 </div>
@@ -108,20 +108,20 @@ const NGOInventory = () => {
             case "location":
               return (
                 <div className="text-left">
-                  <span className="font-bold text-slate-500 text-xs uppercase tracking-wide">
+                  <span className="font-bold text-slate-500 text-[11px] uppercase tracking-wide whitespace-nowrap px-1">
                     {record.location}
                   </span>
                 </div>
               );
             case "date":
               return (
-                <span className="text-xs font-black text-[#22c55e] bg-emerald-50 px-3 py-1.5 rounded-sm border border-emerald-100">
-                  {record.date}
+                <span className="text-[10px] font-black text-[#22c55e] bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100 whitespace-nowrap">
+                  {record.date.toUpperCase()}
                 </span>
               );
             default:
               return (
-                <span>
+                <span className="text-xs font-medium text-slate-700 whitespace-nowrap px-1">
                   {String(record[columnKey as keyof DistributionRecord])}
                 </span>
               );

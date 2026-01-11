@@ -1,7 +1,7 @@
 import React from "react";
 import { Download, FileText } from "lucide-react";
 
-import ResuableTable, {
+import ReusableTable, {
   type ColumnDef,
 } from "../../../../global/components/resuable-components/table";
 
@@ -55,7 +55,7 @@ const reports = [
 
 const columns: ColumnDef[] = [
   { name: "REPORT ID", uid: "id", sortable: true },
-  { name: "ENTITY", uid: "entity", sortable: true },
+  { name: "ENTITY", uid: "entity", sortable: true, align: "start" },
   { name: "CATEGORY", uid: "category", sortable: true },
   { name: "LOSS REASON", uid: "reason", sortable: true },
   { name: "IMPACT", uid: "weight", sortable: true },
@@ -102,19 +102,30 @@ const AnalyticsReportsPage: React.FC = () => {
         );
       case "entity":
         return (
-          <span className="font-bold text-slate-600 text-sm">
-            {report.entity}
-          </span>
+          <div className="flex items-center gap-2 px-2 py-1 rounded-full bg-slate-50 border border-slate-200 hover:border-hf-green/50 hover:bg-white transition-all cursor-pointer group w-fit min-w-0">
+            <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold text-white bg-slate-400 shadow-sm shrink-0">
+              {report.entity
+                .split(" ")
+                .map((n: string) => n[0])
+                .join("")}
+            </div>
+            <span
+              className="font-bold text-xs whitespace-nowrap truncate max-w-[140px] pr-1 group-hover:text-hf-green transition-colors"
+              style={{ color: "var(--text-primary)" }}
+            >
+              {report.entity}
+            </span>
+          </div>
         );
       case "category":
         return (
-          <span className="px-4 py-1.5 bg-slate-100 rounded-xl text-[10px] font-black text-slate-400 uppercase tracking-widest border border-slate-200/50">
+          <span className="px-2 py-0.5 bg-slate-50 rounded-full text-[9px] font-bold text-slate-400 uppercase tracking-widest border border-slate-200/50 whitespace-nowrap">
             {report.category}
           </span>
         );
       case "reason":
         return (
-          <span className="font-semibold text-slate-500 text-sm">
+          <span className="font-semibold text-slate-500 text-xs whitespace-nowrap truncate max-w-[200px] px-1 block">
             {report.reason}
           </span>
         );
@@ -126,17 +137,17 @@ const AnalyticsReportsPage: React.FC = () => {
         );
       case "status":
         return (
-          <div className="flex items-center justify-center gap-2">
+          <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full border border-slate-100 bg-slate-50/50 w-fit">
             <div
-              className={`w-2 h-2 rounded-full ${
+              className={`w-1.5 h-1.5 rounded-full ${
                 report.status === "Audited"
                   ? "bg-emerald-500"
                   : report.status === "Pending Review"
                   ? "bg-amber-500"
-                  : "bg-emerald-600"
+                  : "bg-blue-500"
               }`}
             />
-            <span className="text-xs font-black text-slate-600 uppercase tracking-wider">
+            <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider whitespace-nowrap">
               {report.status}
             </span>
           </div>
@@ -166,7 +177,7 @@ const AnalyticsReportsPage: React.FC = () => {
       </header>
 
       {/* Analytics Reports Table */}
-      <ResuableTable
+      <ReusableTable
         data={filteredReports}
         columns={columns}
         renderCell={renderCell}

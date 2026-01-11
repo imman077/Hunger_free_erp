@@ -6,10 +6,12 @@ import {
   BarChart,
   Settings,
   RotateCcw,
+  Plus,
 } from "lucide-react";
+import { Button } from "@heroui/react";
 
 import type { ColumnDef } from "../../../../../global/components/resuable-components/table";
-import ResuableTable from "../../../../../global/components/resuable-components/table";
+import ReusableTable from "../../../../../global/components/resuable-components/table";
 import { StatCardGrid } from "../../../../../global/components/resuable-components/cards";
 import ResuableInput from "../../../../../global/components/resuable-components/input";
 import ResuableButton from "../../../../../global/components/resuable-components/button";
@@ -60,7 +62,7 @@ const TIERS = [
 ];
 
 const tierColumns: ColumnDef[] = [
-  { name: "TIER NAME", uid: "name", sortable: true },
+  { name: "TIER NAME", uid: "name", sortable: true, align: "start" },
   { name: "POINT RANGE", uid: "range", sortable: true },
   { name: "EARNING BONUS", uid: "bonus", sortable: true },
   { name: "PERKS", uid: "perks", sortable: false },
@@ -103,40 +105,75 @@ const PointsTiersView: React.FC = () => {
     switch (columnKey) {
       case "name":
         return (
-          <span
-            className="font-black uppercase tracking-tighter"
-            style={{ color: "var(--text-primary)" }}
-          >
-            {value}
-          </span>
+          <div className="flex items-center gap-2 px-2 py-0.5 rounded-full bg-slate-50 border border-slate-200 w-fit min-w-0">
+            <div
+              className={`w-2 h-2 rounded-full shrink-0 ${
+                tier.name === "Legend"
+                  ? "bg-emerald-500 animate-pulse"
+                  : tier.name === "Platinum" || tier.name === "Diamond"
+                  ? "bg-blue-500"
+                  : "bg-slate-400"
+              }`}
+            />
+            <span
+              className="font-bold text-[11px] whitespace-nowrap truncate max-w-[140px] pr-1"
+              style={{ color: "var(--text-primary)" }}
+            >
+              {tier.name}
+            </span>
+          </div>
         );
       case "bonus":
         return (
-          <span className="font-black text-emerald-600 tabular-nums">
+          <span className="font-bold text-hf-green text-xs tabular-nums">
             {value}
           </span>
         );
       default:
         return (
-          <span className="text-slate-500 font-bold text-xs">{value}</span>
+          <span className="text-slate-500 font-bold text-[11px] whitespace-nowrap px-1">
+            {value}
+          </span>
         );
     }
   };
 
   return (
     <div className="space-y-10 pb-10">
+      <div className="flex items-center justify-between w-full">
+        <div>
+          <h2
+            className="text-2xl font-black tracking-tight uppercase"
+            style={{ color: "var(--text-primary)" }}
+          >
+            Points & Tiers Configuration
+          </h2>
+          <p className="text-slate-500 text-xs font-medium uppercase tracking-widest mt-1">
+            Configure the 7-tier ULTRA system and reward multipliers
+          </p>
+        </div>
+        <Button
+          color="primary"
+          className="bg-hf-green text-white rounded-sm h-10 px-6 font-bold hover:bg-emerald-600 transition-all active:scale-95"
+          style={{ backgroundColor: "#22c55e", color: "white" }}
+          endContent={<Plus size={18} />}
+          onPress={() => console.log("Add New Tier")}
+        >
+          Add New Tier
+        </Button>
+      </div>
+
       <StatCardGrid cards={stats} />
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-10">
         {/* Tier Management Table */}
         <div className="space-y-6">
-          <ResuableTable
+          <ReusableTable
             data={TIERS}
             columns={tierColumns}
             renderCell={renderTierCell}
             title="Operational Tiers"
             description="Manage the 7-tier ULTRA system thresholds"
-            onAddNew={() => console.log("Add New Tier")}
           />
         </div>
 

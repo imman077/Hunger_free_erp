@@ -1,10 +1,21 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerBody,
+  useDisclosure,
+  Button,
+} from "@heroui/react";
 import Tabs, {
   type Tab,
 } from "../../../../global/components/resuable-components/tabs";
-import ResuableModal from "../../../../global/components/resuable-components/modal";
 import { ImpactCards } from "../../../../global/components/resuable-components/ImpactCards";
-import ResuableTable from "../../../../global/components/resuable-components/table";
+import ReusableTable from "../../../../global/components/resuable-components/table";
+import ReusableButton from "../../../../global/components/resuable-components/button";
+import { Plus, Eye } from "lucide-react";
+import FilePreviewModal from "../../../../global/components/resuable-components/FilePreviewModal";
 
 interface DonationHistory {
   event: string;
@@ -26,8 +37,11 @@ interface Donor {
 }
 
 const DonorPage = () => {
+  const navigate = useNavigate();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [activeTab, setActiveTab] = useState("All");
   const [selectedDonor, setSelectedDonor] = useState<Donor | null>(null);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [donors] = useState<Donor[]>([
     {
       id: 1,
@@ -120,12 +134,16 @@ const DonorPage = () => {
     switch (status) {
       case "Active":
         return {
-          backgroundColor: "rgba(34, 197, 94, 0.1)",
-          color: "#22c55e",
-          border: "1px solid rgba(34, 197, 94, 0.2)",
+          backgroundColor: "rgba(245, 158, 11, 0.1)",
+          color: "#f59e0b",
+          border: "1px solid rgba(245, 158, 11, 0.2)",
         };
       case "Pending":
-        return { backgroundColor: "rgba(234, 179, 8, 0.1)", color: "#ca8a04" };
+        return {
+          backgroundColor: "rgba(245, 158, 11, 0.05)",
+          color: "#d97706",
+          border: "1px solid rgba(245, 158, 11, 0.1)",
+        };
       case "Inactive":
         return {
           backgroundColor: "rgba(100, 116, 139, 0.1)",
@@ -139,6 +157,23 @@ const DonorPage = () => {
     }
   };
 
+  const getStatusBadge = (status: string): React.ReactElement => {
+    const style = getStatusColor(status);
+
+    return (
+      <span
+        className="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider"
+        style={{
+          backgroundColor: style.backgroundColor,
+          color: style.color,
+          border: style.border || `1px solid ${style.color}20`,
+        }}
+      >
+        {status}
+      </span>
+    );
+  };
+
   const formatCurrency = (amount: number): string => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
@@ -149,10 +184,12 @@ const DonorPage = () => {
 
   const handleViewProfile = (donor: Donor): void => {
     setSelectedDonor(donor);
+    onOpen();
   };
 
-  const closeModal = () => {
-    setSelectedDonor(null);
+  const closeDrawer = () => {
+    onClose();
+    // setTimeout(() => setSelectedDonor(null), 300);
   };
 
   const filteredDonors =
@@ -168,16 +205,27 @@ const DonorPage = () => {
       >
         <div className="w-full">
           {/* Header */}
-          <div className="mb-5 flex flex-col items-start">
-            <h1
-              className="text-xl font-bold tracking-tight"
-              style={{ color: "var(--text-primary)" }}
+          <div className="mb-5 flex items-center justify-between w-full">
+            <div className="text-left">
+              <h1
+                className="text-xl font-bold tracking-tight"
+                style={{ color: "var(--text-primary)" }}
+              >
+                Donor Management
+              </h1>
+              <p className="mt-2" style={{ color: "var(--text-muted)" }}>
+                Manage your donors and their contributions
+              </p>
+            </div>
+            <Button
+              color="primary"
+              className="bg-hf-green text-white rounded-sm h-10 px-6 font-bold hover:bg-[#1ea34a] transition-all active:scale-95"
+              style={{ backgroundColor: "#22c55e", color: "white" }}
+              endContent={<Plus size={18} />}
+              onPress={() => navigate("/admin/users/donors/create")}
             >
-              Donor Management
-            </h1>
-            <p className="mt-2" style={{ color: "var(--text-muted)" }}>
-              Manage your donors and their contributions
-            </p>
+              Add New Donor
+            </Button>
           </div>
 
           {/* Stats Summary */}
@@ -192,7 +240,10 @@ const DonorPage = () => {
               {
                 label: "Total Donations",
                 val: formatCurrency(
-                  donors.reduce((sum, donor) => sum + donor.totalDonations, 0)
+                  donors.reduce(
+                    (sum: number, donor: Donor) => sum + donor.totalDonations,
+                    0
+                  )
                 ),
                 trend: "Cumulative contributions",
                 color: "bg-[#22c55e]",
@@ -200,7 +251,7 @@ const DonorPage = () => {
               {
                 label: "Total Points",
                 val: donors
-                  .reduce((sum, donor) => sum + donor.points, 0)
+                  .reduce((sum: number, donor: Donor) => sum + donor.points, 0)
                   .toLocaleString(),
                 trend: "Reward points earned",
                 color: "bg-[#22c55e]",
@@ -208,7 +259,7 @@ const DonorPage = () => {
               {
                 label: "Active Donors",
                 val: donors
-                  .filter((donor) => donor.status === "Active")
+                  .filter((donor: Donor) => donor.status === "Active")
                   .length.toString(),
                 trend: "Currently active",
                 color: "bg-[#22c55e]",
@@ -225,18 +276,28 @@ const DonorPage = () => {
           />
 
           {/* Table */}
-          <ResuableTable
+          <ReusableTable
             data={filteredDonors}
             columns={[
-              { name: "Business Name", uid: "businessName", sortable: true },
-              { name: "Type", uid: "type", sortable: true },
+              {
+                name: "Business Name",
+                uid: "businessName",
+                sortable: true,
+                align: "start",
+              },
+              { name: "Type", uid: "type", sortable: false, align: "center" },
               {
                 name: "Total Donations",
                 uid: "totalDonations",
-                sortable: true,
+                sortable: false,
               },
               { name: "Points", uid: "points", sortable: true },
-              { name: "Status", uid: "status", sortable: true },
+              {
+                name: "Status",
+                uid: "status",
+                sortable: false,
+                align: "center",
+              },
               { name: "Actions", uid: "actions", sortable: false },
             ]}
             renderCell={(donor: Donor, columnKey: React.Key) => {
@@ -244,11 +305,21 @@ const DonorPage = () => {
                 case "businessName":
                   return (
                     <div
-                      className="font-medium cursor-pointer"
-                      style={{ color: "var(--text-primary)" }}
+                      className="flex items-center gap-2 px-2 py-1 rounded-full bg-slate-50 border border-slate-200 hover:border-hf-green/50 hover:bg-white transition-all cursor-pointer group w-fit min-w-0"
                       onClick={() => handleViewProfile(donor)}
                     >
-                      {donor.businessName}
+                      <div className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white bg-gradient-to-br from-amber-400 to-orange-600 shadow-sm shrink-0">
+                        {donor.businessName
+                          .split(" ")
+                          .map((n: string) => n[0])
+                          .join("")}
+                      </div>
+                      <span
+                        className="font-bold text-xs whitespace-nowrap truncate max-w-[140px] pr-1 group-hover:text-hf-green transition-colors"
+                        style={{ color: "var(--text-primary)" }}
+                      >
+                        {donor.businessName}
+                      </span>
                     </div>
                   );
                 case "type":
@@ -271,28 +342,27 @@ const DonorPage = () => {
                   );
                 case "points":
                   return (
-                    <div
-                      className="text-sm font-medium"
-                      style={{ color: "var(--text-primary)" }}
-                    >
+                    <div className="text-xs font-bold text-amber-600 whitespace-nowrap">
                       {donor.points.toLocaleString()}
                     </div>
                   );
                 case "status":
                   const statusStyle = getStatusColor(donor.status);
                   return (
-                    <span
-                      className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border"
-                      style={{
-                        backgroundColor: statusStyle.backgroundColor,
-                        color: statusStyle.color,
-                        borderColor: statusStyle.border
-                          ? "transparent"
-                          : statusStyle.color + "20",
-                      }}
-                    >
-                      {donor.status}
-                    </span>
+                    <div className="flex justify-center w-full">
+                      <span
+                        className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold border"
+                        style={{
+                          backgroundColor: statusStyle.backgroundColor,
+                          color: statusStyle.color,
+                          borderColor: statusStyle.border
+                            ? "transparent"
+                            : statusStyle.color + "20",
+                        }}
+                      >
+                        {donor.status.toUpperCase()}
+                      </span>
+                    </div>
                   );
                 default:
                   return <span>{String(donor[columnKey as keyof Donor])}</span>;
@@ -306,60 +376,321 @@ const DonorPage = () => {
               showApprove: true,
               showDeactivate: true,
               onView: handleViewProfile,
-              onMessage: (donor) => console.log("Message", donor),
-              onApprove: (donor) => console.log("Approve", donor),
-              onDeactivate: (donor) => console.log("Deactivate", donor),
+              onMessage: (donor: Donor) => console.log("Message", donor),
+              onApprove: (donor: Donor) => console.log("Approve", donor),
+              onDeactivate: (donor: Donor) => console.log("Deactivate", donor),
             }}
           />
         </div>
       </div>
 
-      {/* Profile Modal */}
-      <ResuableModal
-        isOpen={!!selectedDonor}
-        onOpenChange={(open) => !open && closeModal()}
-        showTrendingLayout={true}
-        backdrop="blur"
-        data={
-          selectedDonor
-            ? {
-                partner: selectedDonor.businessName,
-                id: `DON-${selectedDonor.id.toString().padStart(5, "0")}`,
-                date: new Date().toLocaleDateString(),
-                email: selectedDonor.email,
-                phone: selectedDonor.contactPerson,
-                activeLedgers: 7, // Sample count for donor
-                logEvents: [
-                  { title: "Partner Verified", date: "Jan 2025" },
-                  { title: "Donation Cycle Started", date: "Feb 2025" },
-                  { title: "Active Status Confirmed", date: "Present" },
-                ],
-                history: [
-                  {
-                    id: "DON-1001",
-                    date: "Oct 20, 2024",
-                    amount: formatCurrency(12400),
-                    type: "Food Bulk",
-                    status: "Verified",
-                  },
-                  {
-                    id: "DON-1002",
-                    date: "Sep 12, 2024",
-                    amount: formatCurrency(8200),
-                    type: "Groceries",
-                    status: "Verified",
-                  },
-                  {
-                    id: "DON-1003",
-                    date: "Aug 05, 2024",
-                    amount: formatCurrency(15000),
-                    type: "Dry Goods",
-                    status: "Verified",
-                  },
-                ],
-              }
-            : undefined
-        }
+      {/* Donor Details Drawer */}
+      <Drawer
+        isOpen={isOpen}
+        onClose={closeDrawer}
+        hideCloseButton={true}
+        placement="right"
+        classNames={{
+          base: "w-[400px] !max-w-[400px] overflow-y-scroll scrollbar-hide",
+          backdrop: "bg-black/50",
+        }}
+      >
+        <DrawerContent
+          className="no-scrollbar"
+          style={{ backgroundColor: "var(--bg-primary)" }}
+        >
+          {() => (
+            <>
+              <DrawerHeader
+                className="flex flex-col gap-1 no-scrollbar border-b px-6 py-4"
+                style={{ borderBottomColor: "var(--border-color)" }}
+              >
+                <div className="flex items-center justify-between">
+                  <h2
+                    className="text-xl font-bold"
+                    style={{ color: "var(--text-primary)" }}
+                  >
+                    Donor Details
+                  </h2>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span
+                    className="text-sm font-medium"
+                    style={{ color: "var(--text-muted)" }}
+                  >
+                    Account Overview
+                  </span>
+                  {selectedDonor && getStatusBadge(selectedDonor.status)}
+                </div>
+              </DrawerHeader>
+
+              <DrawerBody className="px-6 py-4 space-y-6 overflow-y-auto no-scrollbar">
+                {selectedDonor && (
+                  <>
+                    {/* Business Overview */}
+                    <div
+                      className="p-4 rounded-lg border"
+                      style={{
+                        background:
+                          "linear-gradient(to right, rgba(245, 158, 11, 0.1), rgba(251, 191, 36, 0.1))",
+                        borderColor: "rgba(245, 158, 11, 0.2)",
+                      }}
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold text-white bg-gradient-to-br from-amber-400 to-orange-600 shadow-md">
+                          {selectedDonor.businessName
+                            .split(" ")
+                            .map((n: string) => n[0])
+                            .join("")}
+                        </div>
+                        <div>
+                          <h3
+                            className="font-bold text-lg leading-tight"
+                            style={{ color: "var(--text-primary)" }}
+                          >
+                            {selectedDonor.businessName}
+                          </h3>
+                          <p className="text-xs font-semibold text-amber-600 uppercase tracking-widest mt-1">
+                            {selectedDonor.type}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Quick Stats */}
+                    <div className="grid grid-cols-2 gap-3">
+                      <div
+                        className="p-3 rounded-lg border text-center"
+                        style={{
+                          backgroundColor: "var(--bg-secondary)",
+                          borderColor: "var(--border-color)",
+                        }}
+                      >
+                        <p
+                          className="text-[10px] font-black uppercase tracking-widest mb-1"
+                          style={{ color: "var(--text-muted)" }}
+                        >
+                          Total Donated
+                        </p>
+                        <p
+                          className="text-lg font-black"
+                          style={{ color: "var(--text-primary)" }}
+                        >
+                          {formatCurrency(selectedDonor.totalDonations)}
+                        </p>
+                      </div>
+                      <div
+                        className="p-3 rounded-lg border text-center"
+                        style={{
+                          backgroundColor: "var(--bg-secondary)",
+                          borderColor: "var(--border-color)",
+                        }}
+                      >
+                        <p
+                          className="text-[10px] font-black uppercase tracking-widest mb-1"
+                          style={{ color: "var(--text-muted)" }}
+                        >
+                          Reward Points
+                        </p>
+                        <p className="text-lg font-black text-amber-600">
+                          {selectedDonor.points.toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Contact Information */}
+                    <div>
+                      <h3
+                        className="text-sm font-semibold uppercase tracking-wider mb-3"
+                        style={{ color: "var(--text-primary)" }}
+                      >
+                        Contact Information
+                      </h3>
+                      <div className="space-y-3">
+                        <div className="flex items-start space-x-3">
+                          <div className="w-8 h-8 rounded bg-amber-50 border border-amber-100 flex items-center justify-center flex-shrink-0">
+                            <span className="text-amber-600 text-sm">👤</span>
+                          </div>
+                          <div>
+                            <div
+                              className="text-[10px] font-black uppercase tracking-widest"
+                              style={{ color: "var(--text-muted)" }}
+                            >
+                              Contact Person
+                            </div>
+                            <div
+                              className="text-sm font-bold"
+                              style={{ color: "var(--text-secondary)" }}
+                            >
+                              {selectedDonor.contactPerson}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-start space-x-3">
+                          <div className="w-8 h-8 rounded bg-amber-50 border border-amber-100 flex items-center justify-center flex-shrink-0">
+                            <span className="text-amber-600 text-sm">📧</span>
+                          </div>
+                          <div>
+                            <div
+                              className="text-[10px] font-black uppercase tracking-widest"
+                              style={{ color: "var(--text-muted)" }}
+                            >
+                              Email Address
+                            </div>
+                            <div
+                              className="text-sm font-bold break-all"
+                              style={{ color: "var(--text-secondary)" }}
+                            >
+                              {selectedDonor.email}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-start space-x-3">
+                          <div className="w-8 h-8 rounded bg-amber-50 border border-amber-100 flex items-center justify-center flex-shrink-0">
+                            <span className="text-amber-600 text-sm">📍</span>
+                          </div>
+                          <div>
+                            <div
+                              className="text-[10px] font-black uppercase tracking-widest"
+                              style={{ color: "var(--text-muted)" }}
+                            >
+                              Office Address
+                            </div>
+                            <div
+                              className="text-sm font-bold leading-relaxed"
+                              style={{ color: "var(--text-secondary)" }}
+                            >
+                              {selectedDonor.address}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Recent Donation History */}
+                    <div>
+                      <h3
+                        className="text-sm font-semibold uppercase tracking-wider mb-3"
+                        style={{ color: "var(--text-primary)" }}
+                      >
+                        Recent Donations
+                      </h3>
+                      <div className="space-y-2">
+                        {selectedDonor.donationHistory.map(
+                          (item: DonationHistory, index: number) => (
+                            <div
+                              key={index}
+                              className="p-3 rounded border flex items-center justify-between group hover:border-amber-200 transition-colors"
+                              style={{
+                                backgroundColor: "var(--bg-secondary)",
+                                borderColor: "var(--border-color)",
+                              }}
+                            >
+                              <div className="min-w-0">
+                                <p
+                                  className="text-xs font-bold truncate pr-2"
+                                  style={{ color: "var(--text-primary)" }}
+                                >
+                                  {item.event}
+                                </p>
+                                <p
+                                  className="text-[10px] font-medium"
+                                  style={{ color: "var(--text-muted)" }}
+                                >
+                                  {item.date}
+                                </p>
+                              </div>
+                              <div className="text-right shrink-0">
+                                <p className="text-xs font-black text-amber-600">
+                                  {formatCurrency(item.amount)}
+                                </p>
+                              </div>
+                            </div>
+                          )
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Verification Documents */}
+                    <div>
+                      <h3
+                        className="text-sm font-semibold uppercase tracking-wider mb-3"
+                        style={{ color: "var(--text-primary)" }}
+                      >
+                        Verification Documents
+                      </h3>
+                      <div className="space-y-3">
+                        <div
+                          onClick={() => setIsPreviewOpen(true)}
+                          className="p-3 rounded border flex items-center justify-between group hover:border-amber-200 transition-colors cursor-pointer"
+                          style={{
+                            backgroundColor: "var(--bg-secondary)",
+                            borderColor: "var(--border-color)",
+                          }}
+                        >
+                          <div className="flex items-center gap-3 min-w-0">
+                            <div className="w-8 h-8 rounded bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 shrink-0">
+                              <svg
+                                className="w-4 h-4"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                />
+                              </svg>
+                            </div>
+                            <div className="min-w-0">
+                              <p
+                                className="text-xs font-bold truncate pr-2"
+                                style={{ color: "var(--text-primary)" }}
+                              >
+                                Business_License.pdf
+                              </p>
+                              <div className="flex items-center gap-1.5">
+                                <span className="text-[9px] font-black text-amber-600 uppercase">
+                                  Verified
+                                </span>
+                                <span className="text-[9px] text-slate-400 font-bold">
+                                  • 1.2 MB
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="text-slate-400 group-hover:text-[#22c55e] transition-colors shrink-0">
+                            <Eye size={16} />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Actions Area */}
+                    <div className="pt-4 flex gap-2">
+                      <ReusableButton
+                        variant="primary"
+                        className="flex-1 !bg-amber-500 hover:!bg-amber-600 !text-white !font-black !px-4 !py-6 !text-xs uppercase tracking-widest !rounded-sm shadow-lg shadow-amber-500/20"
+                      >
+                        Message Donor
+                      </ReusableButton>
+                    </div>
+                  </>
+                )}
+              </DrawerBody>
+            </>
+          )}
+        </DrawerContent>
+      </Drawer>
+      <FilePreviewModal
+        isOpen={isPreviewOpen}
+        onOpenChange={setIsPreviewOpen}
+        file="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+        fileName="Business_License.pdf"
       />
     </>
   );

@@ -5,10 +5,12 @@ import {
   DrawerHeader,
   DrawerBody,
   useDisclosure,
+  Button,
 } from "@heroui/react";
 import { ImpactCards } from "../../../../global/components/resuable-components/ImpactCards";
 import ReusableTable from "../../../../global/components/resuable-components/table";
 import ReusableButton from "../../../../global/components/resuable-components/button";
+import { Plus } from "lucide-react";
 
 type NgoStatus = "Active" | "Pending" | "Deactivated";
 
@@ -143,16 +145,27 @@ const NgoPage = () => {
       style={{ backgroundColor: "var(--bg-primary)" }}
     >
       {/* Header */}
-      <div className="text-left">
-        <h1
-          className="text-xl font-bold tracking-tight"
-          style={{ color: "var(--text-primary)" }}
+      <div className="flex items-center justify-between w-full">
+        <div className="text-left">
+          <h1
+            className="text-xl font-bold tracking-tight"
+            style={{ color: "var(--text-primary)" }}
+          >
+            NGO Management
+          </h1>
+          <p className="mt-2" style={{ color: "var(--text-muted)" }}>
+            Monitor and manage NGO registrations
+          </p>
+        </div>
+        <Button
+          color="primary"
+          className="bg-hf-green text-white rounded-sm h-10 px-6 font-bold hover:bg-emerald-600 transition-all active:scale-95"
+          style={{ backgroundColor: "#22c55e", color: "white" }}
+          endContent={<Plus size={18} />}
+          onPress={() => console.log("Add new NGO")}
         >
-          NGO Management
-        </h1>
-        <p className="mt-2" style={{ color: "var(--text-muted)" }}>
-          Monitor and manage NGO registrations
-        </p>
+          Add New NGO
+        </Button>
       </div>
 
       {/* Pending Status Banner */}
@@ -238,11 +251,11 @@ const NgoPage = () => {
       <ReusableTable
         data={ngoData}
         columns={[
-          { name: "Organization", uid: "name", sortable: true },
+          { name: "Organization", uid: "name", sortable: true, align: "start" },
           { name: "Registration No", uid: "registrationNo", sortable: true },
           { name: "Service Areas", uid: "serviceAreas", sortable: false },
           { name: "Beneficiaries", uid: "beneficiaries", sortable: true },
-          { name: "Status", uid: "status", sortable: true },
+          { name: "Status", uid: "status", sortable: false, align: "center" },
           { name: "Actions", uid: "actions", sortable: false },
         ]}
         renderCell={(ngo: Ngo, columnKey: React.Key) => {
@@ -250,34 +263,51 @@ const NgoPage = () => {
             case "name":
               return (
                 <div
-                  className="font-semibold"
-                  style={{ color: "var(--text-primary)" }}
+                  className="flex items-center gap-2 px-2 py-1 rounded-full bg-slate-50 border border-slate-200 hover:border-hf-green/50 hover:bg-white transition-all cursor-pointer group w-fit min-w-0"
+                  onClick={() => handleViewNgo(ngo)}
                 >
-                  {ngo.name}
+                  <div className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white bg-gradient-to-br from-indigo-400 to-blue-600 shadow-sm shrink-0">
+                    {ngo.name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")}
+                  </div>
+                  <span
+                    className="font-bold text-xs whitespace-nowrap truncate max-w-[140px] pr-1 group-hover:text-hf-green transition-colors"
+                    style={{ color: "var(--text-primary)" }}
+                  >
+                    {ngo.name}
+                  </span>
                 </div>
               );
             case "registrationNo":
               return (
                 <div
-                  className="text-sm font-mono"
+                  className="text-xs font-mono whitespace-nowrap"
                   style={{ color: "var(--text-muted)" }}
                 >
                   {ngo.registrationNo}
                 </div>
               );
+            case "status":
+              return (
+                <div className="flex justify-center w-full">
+                  {getStatusBadge(ngo.status)}
+                </div>
+              );
             case "serviceAreas":
               return (
-                <div className="flex flex-wrap gap-1 justify-center">
+                <div className="flex flex-wrap gap-1">
                   {ngo.serviceAreas.slice(0, 2).map((area, index) => (
                     <span
                       key={index}
-                      className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                      className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-600 border border-indigo-100"
                     >
-                      {area}
+                      {area.toUpperCase()}
                     </span>
                   ))}
                   {ngo.serviceAreas.length > 2 && (
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-gray-50 text-gray-400 border border-gray-100">
                       +{ngo.serviceAreas.length - 2}
                     </span>
                   )}
@@ -286,16 +316,22 @@ const NgoPage = () => {
             case "beneficiaries":
               return (
                 <span
-                  className="text-sm"
+                  className="text-xs font-medium whitespace-nowrap"
                   style={{ color: "var(--text-secondary)" }}
                 >
                   {ngo.beneficiaries}
                 </span>
               );
-            case "status":
-              return getStatusBadge(ngo.status);
+
             default:
-              return <span>{String(ngo[columnKey as keyof Ngo])}</span>;
+              return (
+                <span
+                  className="text-xs font-medium"
+                  style={{ color: "var(--text-secondary)" }}
+                >
+                  {String(ngo[columnKey as keyof Ngo])}
+                </span>
+              );
           }
         }}
         // title="NGO Directory"

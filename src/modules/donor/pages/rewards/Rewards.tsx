@@ -252,24 +252,24 @@ const DonorRewards = () => {
                       {isSpinning ? (
                         <Loader2
                           size={32}
-                          className="text-[#22c55e] animate-spin"
+                          className="text-amber-500 animate-spin"
                         />
                       ) : (
-                        <Gift size={32} className="text-[#22c55e]" />
+                        <Gift size={32} className="text-amber-500" />
                       )}
                     </div>
                   </div>
                   {/* Pointer */}
                   <div
-                    className="absolute top-8 left-1/2 -translate-x-1/2 w-4 h-6 bg-[#22c55e] shadow-md z-20"
+                    className="absolute top-8 left-1/2 -translate-x-1/2 w-4 h-6 bg-amber-500 shadow-md z-20"
                     style={{ clipPath: "polygon(50% 100%, 0 0, 100% 0)" }}
                   />
                 </div>
 
                 {wonReward ? (
                   <div className="space-y-6 animate-in fade-in zoom-in duration-500">
-                    <div className="p-6 bg-emerald-50 border border-emerald-100 rounded-md">
-                      <p className="text-[10px] font-black text-[#22c55e] uppercase tracking-widest mb-2">
+                    <div className="p-6 bg-amber-50 border border-amber-100 rounded-md">
+                      <p className="text-[10px] font-black text-amber-600 uppercase tracking-widest mb-2">
                         You Won!
                       </p>
                       <h4 className="text-2xl font-black text-slate-800 tracking-tight">
@@ -278,7 +278,7 @@ const DonorRewards = () => {
                     </div>
                     <button
                       onClick={() => setShowDrawModal(false)}
-                      className="w-full py-4 bg-[#22c55e] text-white text-[11px] font-black uppercase tracking-widest rounded-md hover:bg-[#1eb054] transition-all shadow-lg shadow-[#22c55e]/20"
+                      className="w-full py-4 bg-amber-500 text-white text-[11px] font-black uppercase tracking-widest rounded-md hover:bg-amber-600 transition-all shadow-lg shadow-amber-500/20"
                     >
                       Collect Reward
                     </button>
@@ -318,8 +318,8 @@ const DonorRewards = () => {
         <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4">
           {/* Impact Points Card */}
           <div className="flex items-center gap-4 bg-white border border-slate-100 p-4 rounded-md shadow-sm min-w-48">
-            <div className="w-12 h-12 bg-emerald-50 border border-emerald-100 flex items-center justify-center rounded-md">
-              <Star className="text-[#22c55e]" size={24} fill="currentColor" />
+            <div className="w-12 h-12 bg-amber-50 border border-amber-100 flex items-center justify-center rounded-md">
+              <Star className="text-amber-500" size={24} fill="currentColor" />
             </div>
             <div className="text-start">
               <p className="text-[10px] font-black uppercase tracking-[0.2em] mb-1 text-slate-400">
@@ -329,7 +329,7 @@ const DonorRewards = () => {
                 <span className="text-2xl font-black text-slate-800 tabular-nums leading-none">
                   {userStats.totalPoints.toLocaleString()}
                 </span>
-                <span className="text-[10px] font-black text-[#22c55e] uppercase">
+                <span className="text-[10px] font-black text-amber-500 uppercase">
                   PTS
                 </span>
               </div>
@@ -340,7 +340,7 @@ const DonorRewards = () => {
           <div className="bg-white p-5 rounded-md flex items-center gap-8 relative overflow-hidden shadow-sm border border-slate-100">
             <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-50 rounded-full blur-2xl -mr-12 -mt-12" />
             <div className="relative z-10 shrink-0">
-              <p className="text-[8px] font-black uppercase tracking-[0.2em] text-[#22c55e] mb-1.5">
+              <p className="text-[8px] font-black uppercase tracking-[0.2em] text-amber-500 mb-1.5">
                 Grand Draw
               </p>
               <h3 className="text-lg font-black tracking-tight uppercase leading-none text-slate-800">
@@ -361,7 +361,7 @@ const DonorRewards = () => {
               </div>
               <button
                 onClick={() => setShowDrawModal(true)}
-                className="px-5 py-2.5 bg-[#22c55e] text-white text-[10px] font-black uppercase tracking-widest rounded-sm hover:bg-[#1eb054] transition-all active:scale-95 shadow-md shadow-[#22c55e]/20"
+                className="px-5 py-2.5 bg-amber-500 text-white text-[10px] font-black uppercase tracking-widest rounded-sm hover:bg-amber-600 transition-all active:scale-95 shadow-md shadow-amber-500/20"
               >
                 Enter
               </button>
@@ -396,14 +396,14 @@ const DonorRewards = () => {
                   <div
                     className={`w-12 h-12 flex items-center justify-center border transition-all duration-500 rounded-md ${
                       isCurrent
-                        ? "bg-[#22c55e] border-white ring-4 ring-emerald-50 shadow-lg shadow-[#22c55e]/20"
+                        ? "bg-amber-500 border-white ring-4 ring-amber-50 shadow-lg shadow-amber-500/20"
                         : isPast
-                        ? "border-[#22c55e] bg-emerald-50/30 shadow-sm"
+                        ? "border-amber-500 bg-amber-50/30 shadow-sm"
                         : "border-gray-100 bg-white"
                     }`}
                   >
                     {isPast ? (
-                      <CheckCircle className="text-[#22c55e]" size={20} />
+                      <CheckCircle className="text-amber-500" size={20} />
                     ) : isCurrent ? (
                       <Star
                         className="text-white"
@@ -416,7 +416,7 @@ const DonorRewards = () => {
                   </div>
                   <p
                     className={`text-[10px] font-black uppercase tracking-widest mt-3 ${
-                      isCurrent ? "text-[#22c55e]" : "text-slate-400"
+                      isCurrent ? "text-amber-500" : "text-slate-400"
                     }`}
                   >
                     {tier.name}
@@ -427,10 +427,10 @@ const DonorRewards = () => {
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row items-center justify-between p-6 bg-emerald-50/30 rounded-md border border-emerald-100 border-dashed mt-8">
+        <div className="flex flex-col md:flex-row items-center justify-between p-6 bg-amber-50/30 rounded-md border border-amber-100 border-dashed mt-8">
           <div className="flex items-center gap-4 mb-4 md:mb-0">
-            <div className="p-3 bg-white rounded-md border border-emerald-100 shadow-sm">
-              <Sparkles className="text-[#22c55e]" size={20} />
+            <div className="p-3 bg-white rounded-md border border-amber-100 shadow-sm">
+              <Sparkles className="text-amber-500" size={20} />
             </div>
             <div className="text-start">
               <p className="text-xs font-black uppercase tracking-tight text-slate-800">
@@ -438,11 +438,11 @@ const DonorRewards = () => {
               </p>
               <p className="text-[11px] font-semibold text-slate-500 italic leading-none mt-1.5">
                 {userStats.pointsToNextTier.toLocaleString()} points left to{" "}
-                <span className="text-[#15803d] font-black">Legend</span>
+                <span className="text-amber-700 font-black">Legend</span>
               </p>
             </div>
           </div>
-          <button className="px-8 py-3 bg-[#22c55e] text-white text-[11px] font-black uppercase tracking-widest rounded-md hover:bg-[#1eb054] transition-all flex items-center gap-2.5 shadow-md shadow-[#22c55e]/20 active:scale-95">
+          <button className="px-8 py-3 bg-amber-500 text-white text-[11px] font-black uppercase tracking-widest rounded-md hover:bg-amber-600 transition-all flex items-center gap-2.5 shadow-md shadow-amber-500/20 active:scale-95">
             View Benefits <ChevronRight size={16} />
           </button>
         </div>
@@ -452,8 +452,8 @@ const DonorRewards = () => {
         {/* Rewards Center */}
         <section className="lg:col-span-2 space-y-6">
           <div className="flex items-center gap-3 text-start">
-            <div className="p-2.5 bg-emerald-50 border border-emerald-100 rounded-md shadow-sm">
-              <IndianRupee className="text-[#22c55e]" size={20} />
+            <div className="p-2.5 bg-amber-50 border border-amber-100 rounded-md shadow-sm">
+              <IndianRupee className="text-amber-500" size={20} />
             </div>
             <h3 className="text-lg font-black tracking-tight uppercase text-slate-800">
               Mega Cash Rewards
@@ -464,7 +464,7 @@ const DonorRewards = () => {
             {rewards.cash.map((c) => (
               <div
                 key={c.id}
-                className="border p-6 flex items-center justify-between group hover:border-[#22c55e]/30 transition-all rounded-md bg-white shadow-sm hover:shadow-md"
+                className="border p-6 flex items-center justify-between group hover:border-amber-500/30 transition-all rounded-md bg-white shadow-sm hover:shadow-md"
                 style={{ borderColor: "var(--border-color)" }}
               >
                 <div className="text-start">
@@ -472,7 +472,7 @@ const DonorRewards = () => {
                     <span className="text-3xl font-black text-slate-800 tabular-nums">
                       {c.amount}
                     </span>
-                    <span className="text-[10px] font-black text-[#22c55e] uppercase bg-emerald-50 px-2 py-1 rounded-md border border-emerald-100">
+                    <span className="text-[10px] font-black text-amber-600 uppercase bg-amber-50 px-2 py-1 rounded-md border border-amber-100">
                       Winner
                     </span>
                   </div>
@@ -484,7 +484,7 @@ const DonorRewards = () => {
                   <span className="text-[11px] font-black text-slate-800 mb-1.5 uppercase">
                     {c.points} PTS
                   </span>
-                  <div className="px-6 py-2 bg-[#22c55e] text-white text-[10px] font-black uppercase tracking-widest rounded-md group-hover:bg-[#1eb054] transition-all shadow-sm">
+                  <div className="px-6 py-2 bg-amber-500 text-white text-[10px] font-black uppercase tracking-widest rounded-md group-hover:bg-amber-600 transition-all shadow-sm">
                     Claim
                   </div>
                 </button>
@@ -495,7 +495,7 @@ const DonorRewards = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
             <div className="space-y-4">
               <div className="flex items-center gap-3 mb-2">
-                <Plane className="text-[#22c55e]" size={20} />
+                <Plane className="text-amber-500" size={20} />
                 <h4 className="text-xs font-black uppercase tracking-widest text-slate-800">
                   Global Travel
                 </h4>
@@ -516,7 +516,7 @@ const DonorRewards = () => {
                   <div
                     className={`p-2 rounded-md ${
                       t.available
-                        ? "bg-emerald-50 text-[#22c55e] shadow-sm"
+                        ? "bg-amber-50 text-amber-500 shadow-sm"
                         : "bg-gray-100 text-gray-400"
                     }`}
                   >
@@ -549,7 +549,7 @@ const DonorRewards = () => {
 
             <div className="space-y-4">
               <div className="flex items-center gap-3 mb-2">
-                <Smartphone className="text-[#22c55e]" size={20} />
+                <Smartphone className="text-amber-500" size={20} />
                 <h4 className="text-xs font-black uppercase tracking-widest text-slate-800">
                   Luxury Tech
                 </h4>
@@ -570,7 +570,7 @@ const DonorRewards = () => {
                   <div
                     className={`p-2 rounded-md ${
                       y.available
-                        ? "bg-emerald-50 text-[#22c55e] shadow-sm"
+                        ? "bg-amber-50 text-amber-500 shadow-sm"
                         : "bg-gray-100 text-gray-400"
                     }`}
                   >
@@ -611,8 +611,8 @@ const DonorRewards = () => {
           >
             <div className="space-y-6">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-emerald-50 rounded-md flex items-center justify-center border border-emerald-100">
-                  <Leaf className="text-[#22c55e]" size={20} />
+                <div className="w-10 h-10 bg-amber-50 rounded-md flex items-center justify-center border border-amber-100">
+                  <Leaf className="text-amber-500" size={20} />
                 </div>
                 <h3 className="text-sm font-black uppercase tracking-[0.2em] text-slate-800">
                   Your Legacy
@@ -653,7 +653,7 @@ const DonorRewards = () => {
                         {t.trees} Tree • {t.impact}
                       </p>
                     </div>
-                    <span className="text-[9px] font-black bg-emerald-50 text-[#22c55e] px-3 py-1.5 rounded-md border border-emerald-100 group-hover:bg-[#22c55e] group-hover:text-white transition-all shadow-sm">
+                    <span className="text-[9px] font-black bg-amber-50 text-amber-500 px-3 py-1.5 rounded-md border border-amber-100 group-hover:bg-amber-500 group-hover:text-white transition-all shadow-sm">
                       {t.points} PTS
                     </span>
                   </button>
@@ -670,7 +670,7 @@ const DonorRewards = () => {
               <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-800">
                 Recent Badges
               </h3>
-              <button className="text-[10px] font-black uppercase text-[#22c55e] hover:underline tracking-widest">
+              <button className="text-[10px] font-black uppercase text-amber-600 hover:underline tracking-widest">
                 Gallery
               </button>
             </div>

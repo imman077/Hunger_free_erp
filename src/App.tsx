@@ -16,6 +16,7 @@ import PointsTiersView from "./modules/admin/pages/rewards/components/PointsTier
 import RedemptionsView from "./modules/admin/pages/rewards/components/RedemptionsView";
 import RewardsConfig from "./modules/admin/pages/rewards/components/RewardsConfig";
 import RewardsPage from "./modules/admin/pages/rewards/RewardsPage";
+import CreateDonor from "./modules/admin/pages/users/CreateDonor";
 
 // Donor Imports
 import DonorDashboard from "./modules/donor/pages/dashboard/Dashboard";
@@ -54,6 +55,7 @@ function App() {
             {/* Users Section */}
             <Route path="users" element={<UsersPage />} />
             <Route path="users/donors" element={<DonorPage />} />
+            <Route path="users/donors/create" element={<CreateDonor />} />
             <Route path="users/ngos" element={<NGOsPage />} />
             <Route path="users/volunteers" element={<VolunteersPage />} />
 

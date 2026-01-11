@@ -5,7 +5,7 @@ import Tabs, {
 import ResuableButton from "../../../../global/components/resuable-components/button";
 import ResuableDropdown from "../../../../global/components/resuable-components/dropdown";
 import ResuableDatePicker from "../../../../global/components/resuable-components/datepicker";
-import ResuableTable, {
+import ReusableTable, {
   type ColumnDef,
 } from "../../../../global/components/resuable-components/table";
 
@@ -118,11 +118,11 @@ const DonationOverview = () => {
 
   const columns: ColumnDef[] = [
     { uid: "id", name: "#", sortable: true },
-    { uid: "donor", name: "Donor", sortable: true },
+    { uid: "donor", name: "Donor", sortable: true, align: "start" },
     { uid: "foodType", name: "Food Type", sortable: true },
     { uid: "quantity", name: "Qty", sortable: true },
     { uid: "pickupTime", name: "Pickup Time", sortable: true },
-    { uid: "status", name: "Status", sortable: true },
+    { uid: "status", name: "Status", sortable: false, align: "center" },
   ];
 
   const getStatusColor = (status: any) => {
@@ -143,21 +143,65 @@ const DonationOverview = () => {
   const renderCell = (item: any, columnKey: React.Key) => {
     const cellValue = item[columnKey as string];
 
-    if (columnKey === "status") {
-      return (
-        <span
-          className="text-sm font-medium"
-          style={{ color: getStatusColor(cellValue) }}
-        >
-          {cellValue}
-        </span>
-      );
+    switch (columnKey) {
+      case "donor":
+        return (
+          <div className="flex items-center gap-2 px-2 py-1 rounded-full bg-slate-50 border border-slate-200 hover:border-amber-500/50 hover:bg-white transition-all cursor-pointer group w-fit min-w-0">
+            <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold text-white bg-gradient-to-br from-amber-400 to-orange-600 shadow-sm shrink-0">
+              {cellValue
+                .split(" ")
+                .map((n: string) => n[0])
+                .join("")}
+            </div>
+            <span
+              className="font-bold text-xs whitespace-nowrap truncate max-w-[140px] pr-1 group-hover:text-amber-600 transition-colors"
+              style={{ color: "var(--text-primary)" }}
+            >
+              {cellValue}
+            </span>
+          </div>
+        );
+      case "status":
+        const color = getStatusColor(cellValue);
+        return (
+          <div className="flex justify-center w-full">
+            <div
+              className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border text-[10px] font-bold uppercase tracking-wider"
+              style={{
+                backgroundColor: `${color}10`,
+                color: color,
+                borderColor: `${color}20`,
+              }}
+            >
+              <div
+                className="w-1 h-1 rounded-full"
+                style={{ backgroundColor: color }}
+              />
+              {cellValue}
+            </div>
+          </div>
+        );
+      case "foodType":
+      case "pickupTime":
+        return (
+          <span
+            className="text-xs font-medium whitespace-nowrap"
+            style={{ color: "var(--text-secondary)" }}
+          >
+            {cellValue}
+          </span>
+        );
+      case "quantity":
+        return (
+          <span className="text-xs font-bold text-amber-600">{cellValue}</span>
+        );
+      default:
+        return (
+          <span className="text-xs" style={{ color: "var(--text-primary)" }}>
+            {cellValue}
+          </span>
+        );
     }
-    return (
-      <span className="text-sm" style={{ color: "var(--text-primary)" }}>
-        {cellValue}
-      </span>
-    );
   };
 
   return (
@@ -258,7 +302,7 @@ const DonationOverview = () => {
       </div>
 
       {/* Donations Table */}
-      <ResuableTable
+      <ReusableTable
         data={filteredDonations}
         columns={columns}
         renderCell={renderCell}

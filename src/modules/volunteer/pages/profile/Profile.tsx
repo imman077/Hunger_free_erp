@@ -1,5 +1,5 @@
+import { useState } from "react";
 import {
-  Star,
   Clock,
   CheckCircle,
   TrendingUp,
@@ -8,293 +8,261 @@ import {
   MapPin,
   User,
   Calendar,
+  Settings,
 } from "lucide-react";
+import ResuableInput from "../../../../global/components/resuable-components/input";
+import { ImpactCards } from "../../../../global/components/resuable-components/ImpactCards";
+import ResuableButton from "../../../../global/components/resuable-components/button";
 
 const VolunteerProfile = () => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [profile, setProfile] = useState({
+    name: "Sam Volunteer",
+    email: "sam.v@hungerfree.org",
+    phone: "+1 (555) 123-4567",
+    location: "Downtown Hub, Sector 4",
+  });
+
+  const handleEditToggle = () => {
+    if (isEditing) {
+      setIsEditing(false);
+    } else {
+      setIsEditing(true);
+    }
+  };
+
+  const impactData = [
+    {
+      label: "Quality Rating",
+      val: "4.9",
+      trend: "Top 1% rated",
+      color: "bg-[#22c55e]",
+    },
+    {
+      label: "On-time Rate",
+      val: "98%",
+      trend: "Excellence streak",
+      color: "bg-[#22c55e]",
+    },
+    {
+      label: "Total Missions",
+      val: "124",
+      trend: "Highly active",
+      color: "bg-[#22c55e]",
+    },
+    {
+      label: "Impact Score",
+      val: "940",
+      trend: "Level 12",
+      color: "bg-[#22c55e]",
+    },
+  ];
+
+  const activities = [
+    {
+      title: "Delivery Completed",
+      time: "2 hours ago",
+      desc: "Successfully delivered 15kg food bundle to Sector 4 Community Center.",
+    },
+    {
+      title: "Profile Verified",
+      time: "Yesterday",
+      desc: "Vehicle insurance and registration documents verified by NGO.",
+    },
+    {
+      title: "Badge Earned",
+      time: "3 days ago",
+      desc: "Awarded 'Master Courier' badge for 100+ successful deliveries.",
+    },
+  ];
+
   return (
     <div
-      className="p-8 min-h-screen"
+      className="min-h-screen"
       style={{ backgroundColor: "var(--bg-secondary)" }}
     >
-      <div className="max-w-6xl mx-auto space-y-8">
-        {/* Page Heading */}
-        <div className="text-start">
-          <h1
-            className="text-4xl font-black tracking-tighter mb-2"
-            style={{ color: "var(--text-primary)" }}
-          >
-            VOLUNTEER PROFILE
-          </h1>
-          <p className="font-medium" style={{ color: "var(--text-secondary)" }}>
-            Manage your credentials, availability and showcase your
-            contributions
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* Left Column - Profile Overview & Info (4 cols) */}
-          <div className="lg:col-span-4 space-y-6">
-            {/* Main Profile Card */}
-            <div
-              className="p-8 rounded-sm border text-center"
-              style={{
-                backgroundColor: "var(--bg-primary)",
-                borderColor: "var(--border-color)",
-              }}
-            >
-              <div className="relative inline-block mb-6">
-                <div
-                  className="w-32 h-32 rounded-sm border flex items-center justify-center text-6xl overflow-hidden"
-                  style={{
-                    backgroundColor: "var(--bg-secondary)",
-                    borderColor: "var(--border-color)",
-                  }}
-                >
-                  🚴
-                </div>
-                <div
-                  className="absolute -bottom-2 -right-2 p-1 rounded-sm border"
-                  style={{
-                    backgroundColor: "var(--bg-primary)",
-                    borderColor: "var(--border-color)",
-                  }}
-                >
-                  <div className="bg-emerald-50 p-1.5 rounded-sm border border-emerald-100">
-                    <CheckCircle className="w-4 h-4 text-[#22c55e]" />
-                  </div>
-                </div>
+      {/* Header Section */}
+      <div
+        className="bg-white border-b sticky top-0 z-20"
+        style={{ borderColor: "var(--border-color)" }}
+      >
+        <div className="max-w-7xl mx-auto px-8 py-8">
+          <div className="flex flex-col md:flex-row items-center md:items-end gap-10">
+            <div className="relative group">
+              <div
+                className="w-36 h-36 rounded-sm border-4 border-white shadow-xl group-hover:scale-[1.02] transition-transform duration-500 flex items-center justify-center text-6xl"
+                style={{ backgroundColor: "var(--bg-secondary)" }}
+              >
+                🚴
               </div>
-              <h3
-                className="text-2xl font-black tracking-tight"
-                style={{ color: "var(--text-primary)" }}
-              >
-                Sam Volunteer
-              </h3>
-              <p
-                className="font-bold text-xs uppercase tracking-[0.2em] mt-2 mb-6"
-                style={{ color: "var(--text-muted)" }}
-              >
-                Active Member since 2024
-              </p>
-
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#ecfdf5] border border-[#d1fae5] rounded-sm">
-                <Star className="w-4 h-4 text-[#22c55e]" fill="currentColor" />
-                <span className="text-[11px] text-[#22c55e] font-black uppercase tracking-[0.15em]">
-                  Master Courier
-                </span>
+              <div className="absolute -bottom-1 -right-1 bg-[#22c55e] text-white p-2 rounded-sm border-2 border-white shadow-md">
+                <CheckCircle className="w-5 h-5" />
               </div>
             </div>
 
-            {/* Personal Information */}
-            <div
-              className="p-6 rounded-sm border"
-              style={{
-                backgroundColor: "var(--bg-primary)",
-                borderColor: "var(--border-color)",
-              }}
-            >
-              <h4
-                className="text-[11px] font-black uppercase tracking-[0.2em] mb-6 flex items-center gap-2"
-                style={{ color: "var(--text-muted)" }}
+            <div className="flex-1 text-center md:text-left">
+              <div className="flex items-center justify-center md:justify-start gap-4 mb-3">
+                <h1
+                  className="text-4xl font-black tracking-tighter"
+                  style={{ color: "var(--text-primary)" }}
+                >
+                  {profile.name}
+                </h1>
+                <span className="px-3 py-1 bg-emerald-50 text-[#22c55e] rounded-sm text-[10px] font-black uppercase tracking-widest border border-emerald-100 shadow-sm">
+                  Lvl 12
+                </span>
+              </div>
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-6">
+                <p
+                  className="font-bold text-xs flex items-center gap-2"
+                  style={{ color: "var(--text-secondary)" }}
+                >
+                  <MapPin className="w-4 h-4 text-[#22c55e]" />
+                  {profile.location}
+                </p>
+                <p
+                  className="font-bold text-xs flex items-center gap-2"
+                  style={{ color: "var(--text-secondary)" }}
+                >
+                  <Calendar className="w-4 h-4 text-[#22c55e]" />
+                  Member since Jan 2024
+                </p>
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              <ResuableButton
+                onClick={handleEditToggle}
+                variant="primary"
+                className="px-10 py-3.5 !rounded-sm text-xs font-black uppercase tracking-widest shadow-lg shadow-[#22c55e]/20"
               >
-                <User size={14} /> Personal Information
-              </h4>
-              <div className="space-y-5">
+                {isEditing ? "Save Selection" : "Edit Profile"}
+              </ResuableButton>
+              <ResuableButton
+                variant="secondary"
+                className="p-3.5 !rounded-sm border-slate-200"
+              >
+                <Settings className="w-6 h-6" />
+              </ResuableButton>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-8 mt-10 pb-16">
+        {/* Impact Cards */}
+        <ImpactCards data={impactData} className="mb-8" />
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* Main Content Area (8 cols) */}
+          <div className="lg:col-span-8 space-y-8">
+            {/* Personal Details Section */}
+            <section
+              className="border p-8 rounded-sm bg-white shadow-sm"
+              style={{ borderColor: "var(--border-color)" }}
+            >
+              <div className="flex items-center justify-between mb-8">
+                <h3 className="text-sm font-black tracking-tight uppercase text-slate-800 flex items-center gap-3">
+                  <User size={18} className="text-[#22c55e]" />
+                  Contact Information
+                </h3>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
                 {[
                   {
-                    icon: <Mail size={16} />,
+                    icon: <Mail size={18} />,
                     label: "Email Address",
-                    value: "sam.v@hungerfree.org",
+                    value: profile.email,
+                    key: "email",
                   },
                   {
-                    icon: <Phone size={16} />,
+                    icon: <Phone size={18} />,
                     label: "Phone Number",
-                    value: "+1 (555) 123-4567",
+                    value: profile.phone,
+                    key: "phone",
                   },
-                  {
-                    icon: <MapPin size={16} />,
-                    label: "Base Location",
-                    value: "Downtown Hub, Sector 4",
-                  },
-                ].map((info, idx) => (
-                  <div key={idx} className="flex items-start gap-4">
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-4 group">
                     <div
-                      className="p-2 border rounded-sm shrink-0"
+                      className="p-4 rounded-sm border transition-all duration-300 group-hover:bg-emerald-50 group-hover:border-emerald-100 group-hover:text-[#22c55e] shadow-sm"
                       style={{
                         backgroundColor: "var(--bg-secondary)",
                         borderColor: "var(--border-color)",
                         color: "var(--text-muted)",
                       }}
                     >
-                      {info.icon}
+                      {item.icon}
                     </div>
-                    <div className="text-start">
-                      <p
-                        className="text-[10px] font-black uppercase tracking-widest leading-none mb-1"
-                        style={{ color: "var(--text-muted)" }}
-                      >
-                        {info.label}
-                      </p>
-                      <p
-                        className="text-sm font-bold leading-tight"
-                        style={{ color: "var(--text-primary)" }}
-                      >
-                        {info.value}
-                      </p>
+                    <div className="flex flex-col min-w-0 flex-1">
+                      <label className="text-[10px] font-black uppercase tracking-[0.25em] mb-1 text-slate-400">
+                        {item.label}
+                      </label>
+                      {isEditing ? (
+                        <ResuableInput
+                          value={item.value}
+                          onChange={(val) =>
+                            setProfile({ ...profile, [item.key]: val })
+                          }
+                          align="left"
+                          className="!space-y-0"
+                        />
+                      ) : (
+                        <span className="text-sm font-bold truncate text-slate-700">
+                          {item.value}
+                        </span>
+                      )}
                     </div>
                   </div>
                 ))}
-              </div>
-            </div>
-
-            {/* Availability Grid */}
-            <div
-              className="p-6 rounded-sm border"
-              style={{
-                backgroundColor: "var(--bg-primary)",
-                borderColor: "var(--border-color)",
-              }}
-            >
-              <h4
-                className="text-[11px] font-black uppercase tracking-[0.2em] mb-6 flex items-center gap-2"
-                style={{ color: "var(--text-muted)" }}
-              >
-                <Calendar size={14} /> Weekly Availability
-              </h4>
-              <div className="grid grid-cols-4 gap-2">
-                {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(
-                  (day) => {
-                    const isActive = ["Mon", "Wed", "Fri", "Sat"].includes(day);
-                    return (
-                      <div
-                        key={day}
-                        className={`p-2 rounded-sm border text-center transition-all ${
-                          isActive
-                            ? "bg-emerald-50 border-[#22c55e]/10"
-                            : "opacity-50"
-                        }`}
-                        style={{
-                          backgroundColor: isActive
-                            ? "#ecfdf5"
-                            : "var(--bg-secondary)",
-                          borderColor: isActive
-                            ? "#d1fae5"
-                            : "var(--border-color)",
-                        }}
-                      >
-                        <p
-                          className={`text-[10px] font-black uppercase ${
-                            isActive ? "text-emerald-600" : ""
-                          }`}
-                          style={{
-                            color: isActive ? "#22c55e" : "var(--text-muted)",
-                          }}
-                        >
-                          {day}
-                        </p>
-                        <div
-                          className={`w-1 h-1 rounded-full mx-auto mt-1 ${
-                            isActive ? "bg-[#22c55e]" : "bg-gray-200"
-                          }`}
-                        ></div>
-                      </div>
-                    );
-                  }
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Right Column - Stats & Vehicle (8 cols) */}
-          <div className="lg:col-span-8 space-y-8">
-            {/* Impact & Achievements Record */}
-            <div
-              className="p-8 rounded-sm border"
-              style={{
-                backgroundColor: "var(--bg-primary)",
-                borderColor: "var(--border-color)",
-              }}
-            >
-              <div className="flex items-center justify-between mb-8">
-                <h4
-                  className="text-lg font-black uppercase tracking-tight flex items-center gap-3"
-                  style={{ color: "var(--text-primary)" }}
-                >
-                  <Star className="w-6 h-6 text-[#22c55e]" />
-                  Impact & Achievement Record
-                </h4>
-                <div
-                  className="px-3 py-1 border rounded-sm text-[10px] font-black uppercase tracking-widest"
-                  style={{
-                    backgroundColor: "var(--bg-secondary)",
-                    borderColor: "var(--border-color)",
-                    color: "var(--text-muted)",
-                  }}
-                >
-                  Updated Today
+                <div className="md:col-span-2 flex items-center gap-4 group">
+                  <div
+                    className="p-4 rounded-sm border transition-all duration-300 group-hover:bg-emerald-50 group-hover:border-emerald-100 group-hover:text-[#22c55e] shadow-sm"
+                    style={{
+                      backgroundColor: "var(--bg-secondary)",
+                      borderColor: "var(--border-color)",
+                      color: "var(--text-muted)",
+                    }}
+                  >
+                    <MapPin size={18} />
+                  </div>
+                  <div className="flex flex-col min-w-0 flex-1">
+                    <label className="text-[10px] font-black uppercase tracking-[0.25em] mb-1 text-slate-400">
+                      Base Location
+                    </label>
+                    {isEditing ? (
+                      <ResuableInput
+                        value={profile.location}
+                        onChange={(val) =>
+                          setProfile({ ...profile, location: val })
+                        }
+                        align="left"
+                        className="!space-y-0"
+                      />
+                    ) : (
+                      <span className="text-sm font-bold truncate text-slate-700">
+                        {profile.location}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
+            </section>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {[
-                  {
-                    icon: <Star />,
-                    value: "4.9",
-                    unit: "/5",
-                    label: "Quality Rating",
-                    color: "bg-emerald-50 text-[#22c55e] border-[#22c55e]/10",
-                  },
-                  {
-                    icon: <Clock />,
-                    value: "98",
-                    unit: "%",
-                    label: "On-time Delivery",
-                    color: "bg-emerald-50 text-[#22c55e] border-[#22c55e]/10",
-                  },
-                  {
-                    icon: <CheckCircle />,
-                    value: "0",
-                    unit: "Issues",
-                    label: "Reliability Score",
-                    color: "bg-emerald-50 text-emerald-600 border-emerald-100",
-                  },
-                ].map((stat, idx) => (
-                  <div
-                    key={idx}
-                    className={`h-full p-6 rounded-sm border flex flex-col items-center justify-center text-center ${stat.color}`}
-                  >
-                    <div className="mb-4 bg-white/50 p-2 rounded-sm">
-                      {stat.icon}
-                    </div>
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-4xl font-black">{stat.value}</span>
-                      <span className="text-xs font-black uppercase opacity-70">
-                        {stat.unit}
-                      </span>
-                    </div>
-                    <div className="text-[10px] font-black uppercase tracking-[0.2em] mt-2 opacity-60">
-                      {stat.label}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Registered Vehicle Section */}
-            <div
-              className="p-8 rounded-sm border"
-              style={{
-                backgroundColor: "var(--bg-primary)",
-                borderColor: "var(--border-color)",
-              }}
+            {/* Vehicle Section */}
+            <section
+              className="border p-8 rounded-sm bg-white shadow-sm"
+              style={{ borderColor: "var(--border-color)" }}
             >
-              <h4
-                className="text-lg font-black mb-8 uppercase tracking-tight flex items-center gap-3"
-                style={{ color: "var(--text-primary)" }}
-              >
-                <TrendingUp className="w-5 h-5 text-[#22c55e]" />
-                Primary Transport Vehicle
-              </h4>
+              <div className="flex items-center justify-between mb-8">
+                <h3 className="text-sm font-black tracking-tight uppercase text-slate-800 flex items-center gap-3">
+                  <TrendingUp size={18} className="text-[#22c55e]" />
+                  Active Transport Vehicle
+                </h3>
+                <span className="px-3 py-1 bg-emerald-50 text-[#22c55e] rounded-sm text-[10px] font-black uppercase tracking-widest border border-emerald-100">
+                  Verified
+                </span>
+              </div>
 
               <div
                 className="p-8 rounded-sm border flex flex-col md:flex-row justify-between items-center gap-8 group transition-all hover:bg-opacity-50"
@@ -305,7 +273,7 @@ const VolunteerProfile = () => {
               >
                 <div className="flex items-center gap-8">
                   <div
-                    className="w-24 h-24 border rounded-sm flex items-center justify-center text-5xl shrink-0 transition-colors"
+                    className="w-24 h-24 border rounded-sm flex items-center justify-center text-5xl shrink-0 transition-colors shadow-sm"
                     style={{
                       backgroundColor: "var(--bg-primary)",
                       borderColor: "var(--border-color)",
@@ -313,61 +281,151 @@ const VolunteerProfile = () => {
                   >
                     🚲
                   </div>
-                  <div>
-                    <h5
-                      className="text-xl font-black tracking-tight"
-                      style={{ color: "var(--text-primary)" }}
-                    >
+                  <div className="text-left">
+                    <h5 className="text-xl font-black tracking-tight text-slate-800">
                       Electric Bicycle
                     </h5>
-                    <p
-                      className="font-bold text-sm mt-1 mb-4 uppercase tracking-widest"
-                      style={{ color: "var(--text-muted)" }}
-                    >
+                    <p className="font-bold text-xs mt-1 mb-4 uppercase tracking-[0.2em] text-slate-400">
                       Model: EcoRider 3000
                     </p>
-                    <div className="flex items-center gap-4">
-                      <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#ecfdf5] border border-[#d1fae5] rounded-sm">
-                        <CheckCircle className="w-3 h-3 text-[#22c55e]" />
-                        <span className="text-[9px] text-[#22c55e] font-black uppercase tracking-widest">
-                          Verified
-                        </span>
-                      </div>
-                      <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-50 border border-emerald-100 rounded-sm">
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#ecfdf5] border border-[#d1fae5] rounded-sm">
                         <Clock className="w-3 h-3 text-[#22c55e]" />
                         <span className="text-[9px] text-[#22c55e] font-black uppercase tracking-widest">
-                          Last Service: Dec 2025
+                          Service: Dec 2025
                         </span>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div className="w-full md:w-auto">
-                  <button className="w-full md:w-auto px-10 py-3 bg-[#0f172a] text-white rounded-sm text-xs font-black uppercase tracking-[0.2em] hover:bg-gray-800 transition-all active:scale-95">
-                    Service Logs
-                  </button>
-                </div>
+                <ResuableButton
+                  variant="primary"
+                  className="w-full md:w-auto px-8 py-3 !rounded-sm text-[10px] font-black uppercase tracking-widest shadow-lg shadow-[#22c55e]/10"
+                >
+                  Service Logs
+                </ResuableButton>
+              </div>
+            </section>
+
+            {/* Weekly Availability */}
+            <section
+              className="border p-8 rounded-sm bg-white shadow-sm"
+              style={{ borderColor: "var(--border-color)" }}
+            >
+              <h3 className="text-sm font-black tracking-tight uppercase text-slate-800 mb-8 flex items-center gap-3">
+                <Calendar size={18} className="text-[#22c55e]" />
+                Weekly Availability
+              </h3>
+              <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-3">
+                {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(
+                  (day) => {
+                    const isActive = ["Mon", "Wed", "Fri", "Sat"].includes(day);
+                    return (
+                      <div
+                        key={day}
+                        className={`p-4 rounded-sm border text-center transition-all duration-300 ${
+                          isActive
+                            ? "bg-emerald-50 border-[#22c55e]/20"
+                            : "opacity-40 hover:opacity-100"
+                        }`}
+                        style={{
+                          borderColor: isActive
+                            ? "#d1fae5"
+                            : "var(--border-color)",
+                          backgroundColor: isActive ? "#ecfdf5" : "transparent",
+                        }}
+                      >
+                        <p
+                          className={`text-[10px] font-black uppercase tracking-widest ${
+                            isActive ? "text-[#22c55e]" : "text-slate-400"
+                          }`}
+                        >
+                          {day}
+                        </p>
+                        <div
+                          className={`w-1.5 h-1.5 rounded-full mx-auto mt-2 ${
+                            isActive ? "bg-[#22c55e]" : "bg-slate-200"
+                          }`}
+                        ></div>
+                      </div>
+                    );
+                  }
+                )}
+              </div>
+            </section>
+          </div>
+
+          {/* Right Sidebar Area (4 cols) */}
+          <div className="lg:col-span-4 space-y-8">
+            {/* Recent Activity Card */}
+            <section
+              className="border p-8 rounded-sm bg-white shadow-sm h-full"
+              style={{ borderColor: "var(--border-color)" }}
+            >
+              <div className="flex items-center justify-between mb-8">
+                <h3 className="text-sm font-black tracking-tight uppercase text-slate-800">
+                  Recent Activity
+                </h3>
               </div>
 
-              <div
-                className="mt-8 pt-8 flex justify-end gap-4"
-                style={{ borderTop: "1px solid var(--border-color)" }}
-              >
-                <button
-                  className="px-8 py-3 border rounded-sm text-xs font-black uppercase tracking-[0.15em] transition-colors"
-                  style={{
-                    backgroundColor: "var(--bg-primary)",
-                    borderColor: "var(--border-color)",
-                    color: "var(--text-secondary)",
-                  }}
-                >
-                  Request Change
-                </button>
-                <button className="px-8 py-3 bg-[#22c55e] text-white rounded-sm text-xs font-black uppercase tracking-[0.15em] hover:bg-[#1eb054] transition-all shadow-none">
-                  Edit Profile
-                </button>
+              <div className="relative space-y-8">
+                <div
+                  className="absolute left-[13px] top-2 bottom-2 w-px"
+                  style={{ backgroundColor: "var(--border-color)" }}
+                />
+                {activities.map((activity, i) => (
+                  <div key={i} className="relative pl-10 group">
+                    <div
+                      className="absolute left-0 top-0 w-7 h-7 rounded-sm border flex items-center justify-center transition-all group-hover:border-[#22c55e] bg-white z-10 shadow-sm"
+                      style={{ borderColor: "var(--border-color)" }}
+                    >
+                      <div className="w-1.5 h-1.5 rounded-full bg-[#22c55e]" />
+                    </div>
+                    <div className="text-left">
+                      <h4 className="text-sm font-black text-slate-800 leading-tight group-hover:text-[#22c55e] transition-colors">
+                        {activity.title}
+                      </h4>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-1 mb-2">
+                        {activity.time}
+                      </p>
+                      <p className="text-xs font-semibold text-slate-500 leading-relaxed">
+                        {activity.desc}
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
-            </div>
+            </section>
+
+            {/* Account Status / Rank */}
+            <section
+              className="border p-8 rounded-sm bg-white shadow-sm"
+              style={{ borderColor: "var(--border-color)" }}
+            >
+              <h4 className="text-[#22c55e] text-[10px] font-black uppercase tracking-[0.3em] mb-4">
+                Volunteer Rank
+              </h4>
+              <div className="flex items-end gap-2 mb-8">
+                <span className="text-4xl font-black tracking-tighter text-slate-800 leading-none">
+                  Master
+                </span>
+                <span className="text-[#22c55e] text-xs font-black pb-1">
+                  Courier
+                </span>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex justify-between items-end">
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    Next Level: 1,000 Pts
+                  </p>
+                  <span className="text-xs font-black text-[#22c55e]">94%</span>
+                </div>
+                <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div className="bg-[#22c55e] h-full w-[94%] transition-all duration-1000" />
+                </div>
+              </div>
+            </section>
           </div>
         </div>
       </div>
