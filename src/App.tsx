@@ -17,6 +17,8 @@ import RedemptionsView from "./modules/admin/pages/rewards/components/Redemption
 import RewardsConfig from "./modules/admin/pages/rewards/components/RewardsConfig";
 import RewardsPage from "./modules/admin/pages/rewards/RewardsPage";
 import CreateDonor from "./modules/admin/pages/users/CreateDonor";
+import CreateNgo from "./modules/admin/pages/users/CreateNgo";
+import CreateVolunteer from "./modules/admin/pages/users/CreateVolunteer";
 
 // Donor Imports
 import DonorDashboard from "./modules/donor/pages/dashboard/Dashboard";
@@ -57,7 +59,12 @@ function App() {
             <Route path="users/donors" element={<DonorPage />} />
             <Route path="users/donors/create" element={<CreateDonor />} />
             <Route path="users/ngos" element={<NGOsPage />} />
+            <Route path="users/ngos/create" element={<CreateNgo />} />
             <Route path="users/volunteers" element={<VolunteersPage />} />
+            <Route
+              path="users/volunteers/create"
+              element={<CreateVolunteer />}
+            />
 
             {/* Donations Section */}
             <Route path="donations" element={<DonationsPage />} />

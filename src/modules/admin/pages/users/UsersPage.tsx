@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
-import { Building, Calendar, Sparkles, RotateCcw } from "lucide-react";
+import { Building, Sparkles, RotateCcw } from "lucide-react";
 import { Avatar } from "@heroui/react";
 import {
   Dropdown,
@@ -206,7 +206,6 @@ const STATUS_OPTIONS = ["Active", "New", "Pending"];
 const UsersPage = () => {
   const [selectedUser, setSelectedUser] = useState<UserItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalTab, setModalTab] = useState("Profile Details");
 
   // Filter States
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
@@ -642,7 +641,7 @@ const UsersPage = () => {
           className="no-scrollbar"
           style={{ backgroundColor: "var(--bg-primary)" }}
         >
-          {(onClose) => (
+          {() => (
             <>
               {selectedUser && (
                 <>
@@ -719,8 +718,7 @@ const UsersPage = () => {
                         Volunteer: "rgba(16, 185, 129, 0.2)",
                       };
                       const roleAvatarColors: Record<string, string> = {
-                        Donor:
-                          "bg-gradient-to-br from-amber-400 to-orange-600",
+                        Donor: "bg-gradient-to-br from-amber-400 to-orange-600",
                         NGO: "bg-gradient-to-br from-indigo-400 to-blue-600",
                         Volunteer:
                           "bg-gradient-to-br from-emerald-400 to-green-600",

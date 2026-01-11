@@ -1,12 +1,15 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Drawer,
   DrawerContent,
   DrawerBody,
   useDisclosure,
+  Button,
 } from "@heroui/react";
 import ReusableTable from "../../../../global/components/resuable-components/table";
 import ReusableButton from "../../../../global/components/resuable-components/button";
+import { Plus } from "lucide-react";
 
 type VolunteerStatus = "available" | "on-leave" | "busy";
 
@@ -93,6 +96,7 @@ const volunteers: Volunteer[] = [
 ];
 
 const VolunteersPage: React.FC = () => {
+  const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [activeVolunteer, setActiveVolunteer] = useState<Volunteer | null>(
     volunteers[0]
@@ -110,7 +114,7 @@ const VolunteersPage: React.FC = () => {
   };
 
   const toggleOnLeave = () => {
-    setOnLeaveToggle((prev) => !prev);
+    setOnLeaveToggle((prev: boolean) => !prev);
   };
 
   const getStatusBadge = (status: VolunteerStatus): React.ReactElement => {
@@ -182,16 +186,27 @@ const VolunteersPage: React.FC = () => {
       style={{ backgroundColor: "var(--bg-primary)" }}
     >
       {/* Header */}
-      <div className="text-left">
-        <h1
-          className="text-xl font-bold tracking-tight"
-          style={{ color: "var(--text-primary)" }}
+      <div className="flex items-center justify-between w-full">
+        <div className="text-left">
+          <h1
+            className="text-xl font-bold tracking-tight"
+            style={{ color: "var(--text-primary)" }}
+          >
+            Volunteer Management
+          </h1>
+          <p className="mt-2" style={{ color: "var(--text-muted)" }}>
+            Manage and track volunteer profiles
+          </p>
+        </div>
+        <Button
+          color="primary"
+          className="bg-hf-green text-white rounded-sm h-10 px-6 font-bold hover:bg-emerald-600 transition-all active:scale-95"
+          style={{ backgroundColor: "#22c55e", color: "white" }}
+          endContent={<Plus size={18} />}
+          onPress={() => navigate("/admin/users/volunteers/create")}
         >
-          Volunteer Management
-        </h1>
-        <p className="mt-2" style={{ color: "var(--text-muted)" }}>
-          Manage and track volunteer profiles
-        </p>
+          Add New Volunteer
+        </Button>
       </div>
 
       {/* Volunteer Table */}

@@ -113,7 +113,7 @@ const FileUploadSlot: React.FC<FileUploadSlotProps> = ({
           <p className="text-[11px] font-black uppercase tracking-tight text-slate-800">
             {label} {mandatory && <span className="text-red-500">*</span>}
           </p>
-          <p className="text-[9px] font-bold text-slate-400 mt-1 uppercase tracking-widest leading-none truncate max-w-[140px]">
+          <p className="text-[9px] font-bold text-slate-400 mt-1 uppercase tracking-widest leading-none truncate max-w-[140px] mx-auto">
             {value
               ? value.name
               : subtitle || (mandatory ? "Mandatory" : "Optional")}

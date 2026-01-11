@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Drawer,
   DrawerContent,
@@ -28,6 +29,7 @@ interface Ngo {
 }
 
 const NgoPage = () => {
+  const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedNgo, setSelectedNgo] = useState<Ngo | null>(null);
 
@@ -85,7 +87,7 @@ const NgoPage = () => {
       name: "Global Aid Initiative",
       registrationNo: "REG-1005-JKL",
       serviceAreas: ["Poverty Alleviation", "Disaster Relief"],
-      beneficiaries: "Impoverished Regions",
+      beneficiaries: "Low-Income Communities",
       status: "Active",
       email: "aid@globalinitiative.org",
       phone: "+1-555-567-8901",
@@ -162,7 +164,7 @@ const NgoPage = () => {
           className="bg-hf-green text-white rounded-sm h-10 px-6 font-bold hover:bg-emerald-600 transition-all active:scale-95"
           style={{ backgroundColor: "#22c55e", color: "white" }}
           endContent={<Plus size={18} />}
-          onPress={() => console.log("Add new NGO")}
+          onPress={() => navigate("/admin/users/ngos/create")}
         >
           Add New NGO
         </Button>
