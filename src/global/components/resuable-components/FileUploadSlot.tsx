@@ -6,6 +6,7 @@ import {
   Eye,
   ShieldCheck,
   FileText,
+  Download,
 } from "lucide-react";
 import FilePreviewModal from "./FilePreviewModal";
 
@@ -17,6 +18,7 @@ interface FileUploadSlotProps {
   accept?: string;
   subtitle?: string;
   icon?: "shield" | "file";
+  showActions?: boolean; // Show view/download buttons
 }
 
 const FileUploadSlot: React.FC<FileUploadSlotProps> = ({
@@ -27,9 +29,11 @@ const FileUploadSlot: React.FC<FileUploadSlotProps> = ({
   accept = ".pdf,.jpg,.jpeg,.png",
   subtitle,
   icon = "file",
+  showActions = true,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
 
   const handleSlotClick = () => {
     if (!value && fileInputRef.current) {
@@ -55,22 +59,31 @@ const FileUploadSlot: React.FC<FileUploadSlotProps> = ({
     setIsPreviewOpen(true);
   };
 
+  const handleDownload = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (value && downloadUrl) {
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = value.name;
+      link.click();
+    }
+  };
+
   const isImage = value?.type?.startsWith("image/");
 
-  const previewUrl = React.useMemo(() => {
-    if (value && isImage) {
-      return URL.createObjectURL(value);
-    }
-    return null;
-  }, [value, isImage]);
-
+  // Create download URL and cleanup
   React.useEffect(() => {
-    return () => {
-      if (previewUrl) {
-        URL.revokeObjectURL(previewUrl);
-      }
-    };
-  }, [previewUrl]);
+    if (value) {
+      const url = URL.createObjectURL(value);
+      setDownloadUrl(url);
+      return () => {
+        URL.revokeObjectURL(url);
+        setDownloadUrl(null);
+      };
+    } else {
+      setDownloadUrl(null);
+    }
+  }, [value]);
 
   return (
     <>
@@ -83,10 +96,10 @@ const FileUploadSlot: React.FC<FileUploadSlotProps> = ({
         }`}
       >
         {/* Background Preview for Images */}
-        {value && isImage && (
+        {value && isImage && downloadUrl && (
           <div
             className="absolute inset-2 rounded bg-cover bg-center opacity-10 group-hover:opacity-20 transition-opacity"
-            style={{ backgroundImage: `url(${previewUrl})` }}
+            style={{ backgroundImage: `url(${downloadUrl})` }}
           />
         )}
 
@@ -121,7 +134,7 @@ const FileUploadSlot: React.FC<FileUploadSlotProps> = ({
         </div>
 
         {/* Actions Overlay when filled */}
-        {value && (
+        {value && showActions && (
           <div className="absolute top-2 right-2 flex items-center gap-1.5 z-20">
             <button
               type="button"
@@ -131,6 +144,28 @@ const FileUploadSlot: React.FC<FileUploadSlotProps> = ({
             >
               <Eye size={12} />
             </button>
+            <button
+              type="button"
+              onClick={handleDownload}
+              className="p-1.5 bg-white border border-slate-100 rounded-full text-slate-400 hover:text-blue-500 hover:border-blue-200 shadow-sm transition-all"
+              title="Download File"
+            >
+              <Download size={12} />
+            </button>
+            <button
+              type="button"
+              onClick={handleRemove}
+              className="p-1.5 bg-white border border-slate-100 rounded-full text-slate-400 hover:text-red-600 hover:border-red-200 shadow-sm transition-all"
+              title="Remove File"
+            >
+              <X size={12} />
+            </button>
+          </div>
+        )}
+
+        {/* Actions Overlay when filled (no actions mode) */}
+        {value && !showActions && (
+          <div className="absolute top-2 right-2 flex items-center gap-1.5 z-20">
             <button
               type="button"
               onClick={handleRemove}

@@ -6,17 +6,25 @@ import {
   DrawerBody,
   useDisclosure,
   Button,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
 } from "@heroui/react";
 import ReusableTable from "../../../../global/components/resuable-components/table";
 import ReusableButton from "../../../../global/components/resuable-components/button";
-import { Plus } from "lucide-react";
+import { Plus, Filter, ChevronDown, X } from "lucide-react";
 
 type VolunteerStatus = "available" | "on-leave" | "busy";
+
+const STATUS_OPTIONS: VolunteerStatus[] = ["available", "on-leave", "busy"];
+const ZONE_OPTIONS = ["North", "East", "South", "West", "Central"];
 
 interface Volunteer {
   id: number;
   name: string;
   zone: string;
+  volunteerAreas: string[];
   tasksCompleted: number;
   rating: string;
   status: VolunteerStatus;
@@ -27,71 +35,76 @@ interface Volunteer {
   license: string;
 }
 
-const volunteers: Volunteer[] = [
+const volunteersData: Volunteer[] = [
   {
     id: 0,
-    name: "Aisha Sharma",
+    name: "Arun Vijay",
     zone: "North",
+    volunteerAreas: ["Anna Nagar", "Ambattur"],
     tasksCompleted: 45,
     rating: "4.8",
     status: "available",
-    email: "aisha@example.com",
-    phone: "+1 234 567 8901",
-    address: "123 Maple St, Northwood, ON",
-    vehicle: "Car",
-    license: "ABC 123",
+    email: "arun.v@example.in",
+    phone: "+91-98765-43210",
+    address: "West Main Road, Anna Nagar, Chennai, TN, 600040",
+    vehicle: "Swift (Car)",
+    license: "TN 01 AB 1234",
   },
   {
     id: 1,
-    name: "Ben Carter",
+    name: "Sowmya Rajan",
     zone: "East",
+    volunteerAreas: ["Besant Nagar", "Adyar"],
     tasksCompleted: 30,
     rating: "4.5",
     status: "on-leave",
-    email: "ben@example.com",
-    phone: "+1 234 567 8902",
-    address: "456 Oak Ave, Eastville, ON",
-    vehicle: "SUV",
-    license: "XYZ 789",
+    email: "sowmya.r@example.in",
+    phone: "+91-98765-43211",
+    address: "Elliot's Beach Road, Besant Nagar, Chennai, TN, 600090",
+    vehicle: "Jupiter (Two-wheeler)",
+    license: "TN 02 CD 5678",
   },
   {
     id: 2,
-    name: "Chloe Davis",
+    name: "Manikandan",
     zone: "South",
+    volunteerAreas: ["S.S. Colony", "K.Pudur"],
     tasksCompleted: 60,
     rating: "4.9",
     status: "available",
-    email: "chloe@example.com",
-    phone: "+1 234 567 8903",
-    address: "789 Pine Rd, Southtown, ON",
-    vehicle: "Sedan",
-    license: "DEF 456",
+    email: "mani.k@example.in",
+    phone: "+91-98765-43212",
+    address: "Talaikulam, Madurai, TN, 625002",
+    vehicle: "Xpulse (Two-wheeler)",
+    license: "TN 59 XY 9012",
   },
   {
     id: 3,
-    name: "David Lee",
+    name: "Siddarth",
     zone: "West",
+    volunteerAreas: ["RS Puram", "Gandhipuram"],
     tasksCompleted: 22,
     rating: "4.2",
     status: "available",
-    email: "david@example.com",
-    phone: "+1 234 567 8904",
-    address: "321 Elm St, Westfield, ON",
-    vehicle: "Van",
-    license: "GHI 123",
+    email: "sid.v@example.in",
+    phone: "+91-98765-43213",
+    address: "DB Road, RS Puram, Coimbatore, TN, 641002",
+    vehicle: "Thar (SUV)",
+    license: "TN 37 AB 3456",
   },
   {
     id: 4,
-    name: "Emily Chen",
-    zone: "North",
+    name: "Janani Iyer",
+    zone: "Central",
+    volunteerAreas: ["Thillai Nagar", "Woraiyur"],
     tasksCompleted: 50,
     rating: "4.7",
     status: "busy",
-    email: "emily@example.com",
-    phone: "+1 234 567 8905",
-    address: "654 Birch Ln, Northside, ON",
-    vehicle: "Car",
-    license: "JKL 789",
+    email: "janani.i@example.in",
+    phone: "+91-98765-43214",
+    address: "Main Road, Thillai Nagar, Trichy, TN, 620018",
+    vehicle: "Baleno (Car)",
+    license: "TN 45 AB 7890",
   },
 ];
 
@@ -99,10 +112,37 @@ const VolunteersPage: React.FC = () => {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [activeVolunteer, setActiveVolunteer] = useState<Volunteer | null>(
-    volunteers[0]
+    volunteersData[0]
   );
   const [weeklyHours, setWeeklyHours] = useState(45);
   const [onLeaveToggle, setOnLeaveToggle] = useState(false);
+
+  // Filter States
+  const [filterStatus, setFilterStatus] = useState("All");
+  const [filterZone, setFilterZone] = useState("All");
+  const [activeFilters, setActiveFilters] = useState<string[]>([]);
+
+  const toggleFilter = (filterType: string) => {
+    setActiveFilters((prev) =>
+      prev.includes(filterType)
+        ? prev.filter((f) => f !== filterType)
+        : [...prev, filterType]
+    );
+    if (filterType === "status") setFilterStatus("All");
+    if (filterType === "zone") setFilterZone("All");
+  };
+
+  const filteredVolunteers = volunteersData.filter((vol) => {
+    const matchStatus =
+      !activeFilters.includes("status") ||
+      filterStatus === "All" ||
+      vol.status === filterStatus.toLowerCase();
+    const matchZone =
+      !activeFilters.includes("zone") ||
+      filterZone === "All" ||
+      vol.zone === filterZone;
+    return matchStatus && matchZone;
+  });
 
   const openDrawer = (vol: Volunteer) => {
     setActiveVolunteer(vol);
@@ -211,9 +251,181 @@ const VolunteersPage: React.FC = () => {
 
       {/* Volunteer Table */}
       <ReusableTable
-        data={volunteers}
+        data={filteredVolunteers}
+        enableFilters={false}
+        additionalFilters={
+          <div className="flex items-center gap-2 flex-wrap">
+            <Dropdown placement="bottom-end">
+              <DropdownTrigger>
+                <Button
+                  variant="flat"
+                  className="border border-slate-200 bg-white rounded-sm h-10 px-4 text-[11px] font-bold text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-none"
+                  style={{ backgroundColor: "white" }}
+                  startContent={<Filter size={14} className="text-slate-400" />}
+                  endContent={<Plus size={14} className="text-slate-400" />}
+                >
+                  ADD FILTER
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu
+                aria-label="Add Filter Options"
+                onAction={(key) => toggleFilter(key as string)}
+                classNames={{
+                  base: "bg-white border border-slate-200 rounded-sm min-w-[180px] p-1",
+                }}
+                itemClasses={{
+                  base: [
+                    "text-slate-600 text-[11px] font-bold uppercase tracking-tight",
+                    "data-[hover=true]:bg-slate-50 data-[hover=true]:text-[#22c55e]",
+                    "rounded-sm",
+                    "px-3",
+                    "py-2.5",
+                    "transition-colors duration-200",
+                  ].join(" "),
+                }}
+              >
+                <DropdownItem
+                  key="status"
+                  isDisabled={activeFilters.includes("status")}
+                  startContent={<Filter size={14} />}
+                >
+                  STATUS
+                </DropdownItem>
+                <DropdownItem
+                  key="zone"
+                  isDisabled={activeFilters.includes("zone")}
+                  startContent={<Filter size={14} />}
+                >
+                  ZONE
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+
+            {activeFilters.includes("status") && (
+              <Dropdown>
+                <DropdownTrigger>
+                  <Button
+                    variant="flat"
+                    className="border border-emerald-100 bg-emerald-50/50 rounded-sm h-10 px-3 text-[11px] font-bold text-[#22c55e] hover:bg-emerald-100 transition-all shadow-none"
+                    endContent={<ChevronDown size={14} />}
+                  >
+                    STATUS: {filterStatus.toUpperCase()}
+                    <div
+                      className="ml-2 hover:bg-emerald-200 rounded-full p-0.5 cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleFilter("status");
+                      }}
+                    >
+                      <X size={12} />
+                    </div>
+                  </Button>
+                </DropdownTrigger>
+                <DropdownMenu
+                  aria-label="Filter by Status"
+                  selectionMode="single"
+                  selectedKeys={[filterStatus]}
+                  onSelectionChange={(keys) => {
+                    const selected = Array.from(keys)[0] as string;
+                    setFilterStatus(selected || "All");
+                  }}
+                  items={[
+                    { key: "All", label: "All Status" },
+                    ...STATUS_OPTIONS.map((status) => ({
+                      key: status,
+                      label: status.toUpperCase(),
+                    })),
+                  ]}
+                  classNames={{
+                    base: "bg-white border border-slate-200 rounded-sm min-w-[160px] p-1",
+                  }}
+                  itemClasses={{
+                    base: [
+                      "text-slate-600 text-[11px] font-bold uppercase tracking-tight",
+                      "data-[hover=true]:bg-slate-50 data-[hover=true]:text-[#22c55e]",
+                      "data-[selected=true]:bg-emerald-50 data-[selected=true]:text-[#22c55e]",
+                      "rounded-sm",
+                      "px-3",
+                      "py-2.5",
+                      "transition-colors duration-200",
+                    ].join(" "),
+                    selectedIcon: "text-[#22c55e] w-4 h-4 ml-auto",
+                  }}
+                >
+                  {(item: any) => (
+                    <DropdownItem key={item.key}>{item.label}</DropdownItem>
+                  )}
+                </DropdownMenu>
+              </Dropdown>
+            )}
+
+            {activeFilters.includes("zone") && (
+              <Dropdown>
+                <DropdownTrigger>
+                  <Button
+                    variant="flat"
+                    className="border border-blue-100 bg-blue-50/50 rounded-sm h-10 px-3 text-[11px] font-bold text-blue-600 hover:bg-blue-100 transition-all shadow-none"
+                    endContent={<ChevronDown size={14} />}
+                  >
+                    ZONE: {filterZone.toUpperCase()}
+                    <div
+                      className="ml-2 hover:bg-blue-200 rounded-full p-0.5 cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleFilter("zone");
+                      }}
+                    >
+                      <X size={12} />
+                    </div>
+                  </Button>
+                </DropdownTrigger>
+                <DropdownMenu
+                  aria-label="Filter by Zone"
+                  selectionMode="single"
+                  selectedKeys={[filterZone]}
+                  onSelectionChange={(keys) => {
+                    const selected = Array.from(keys)[0] as string;
+                    setFilterZone(selected || "All");
+                  }}
+                  items={[
+                    { key: "All", label: "All Zones" },
+                    ...ZONE_OPTIONS.map((zone) => ({
+                      key: zone,
+                      label: zone.toUpperCase(),
+                    })),
+                  ]}
+                  classNames={{
+                    base: "bg-white border border-slate-200 rounded-sm min-w-[160px] p-1",
+                  }}
+                  itemClasses={{
+                    base: [
+                      "text-slate-600 text-[11px] font-bold uppercase tracking-tight",
+                      "data-[hover=true]:bg-slate-50 data-[hover=true]:text-[#22c55e]",
+                      "data-[selected=true]:bg-emerald-50 data-[selected=true]:text-[#22c55e]",
+                      "rounded-sm",
+                      "px-3",
+                      "py-2.5",
+                      "transition-colors duration-200",
+                    ].join(" "),
+                    selectedIcon: "text-[#22c55e] w-4 h-4 ml-auto",
+                  }}
+                >
+                  {(item: any) => (
+                    <DropdownItem key={item.key}>{item.label}</DropdownItem>
+                  )}
+                </DropdownMenu>
+              </Dropdown>
+            )}
+          </div>
+        }
         columns={[
           { name: "Volunteer", uid: "name", sortable: true, align: "start" },
+          {
+            name: "Volunteer Areas",
+            uid: "volunteerAreas",
+            sortable: false,
+            align: "center",
+          },
           {
             name: "Availability",
             uid: "status",
@@ -244,6 +456,19 @@ const VolunteersPage: React.FC = () => {
                   >
                     {vol.name}
                   </span>
+                </div>
+              );
+            case "volunteerAreas":
+              return (
+                <div className="flex flex-wrap gap-1 justify-center">
+                  {vol.volunteerAreas.map((area, index) => (
+                    <span
+                      key={index}
+                      className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-[#22c55e] border border-emerald-100"
+                    >
+                      {area.toUpperCase()}
+                    </span>
+                  ))}
                 </div>
               );
             case "zone":
@@ -293,15 +518,11 @@ const VolunteersPage: React.FC = () => {
               );
           }
         }}
-        // title="Volunteer List"
-        // description="Manage and track volunteer profiles"
         actionConfig={{
           showView: true,
-          showMessage: true,
           showApprove: true,
           showDeactivate: true,
           onView: openDrawer,
-          onMessage: (vol) => console.log("Message", vol),
           onApprove: (vol) => console.log("Approve", vol),
           onDeactivate: (vol) => console.log("Deactivate", vol),
         }}

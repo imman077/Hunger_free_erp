@@ -25,31 +25,25 @@ const FilePreviewModal: React.FC<FilePreviewModalProps> = ({
   fileName,
   fileType,
 }) => {
+  const [url, setUrl] = React.useState<string>("");
   const [scale, setScale] = React.useState(1);
 
-  // Memoize the URL and handle memory cleanup
-  const url = React.useMemo(() => {
-    if (!file) return "";
-    if (file instanceof File) {
-      return URL.createObjectURL(file);
-    }
-    return file;
-  }, [file]);
-
-  // Cleanup blob URLs to prevent memory leaks and potential blank pages
+  // Create URL with proper cleanup
   React.useEffect(() => {
-    return () => {
-      if (url && url.startsWith("blob:")) {
-        URL.revokeObjectURL(url);
-      }
-    };
-  }, [url]);
-
-  if (!file) return null;
-
-  const handleZoomIn = () => setScale((prev) => Math.min(prev + 0.25, 4));
-  const handleZoomOut = () => setScale((prev) => Math.max(prev - 0.25, 0.5));
-  const handleResetZoom = () => setScale(1);
+    if (!file) {
+      setUrl("");
+      return;
+    }
+    if (file instanceof File) {
+      const blobUrl = URL.createObjectURL(file);
+      setUrl(blobUrl);
+      return () => {
+        URL.revokeObjectURL(blobUrl);
+      };
+    } else {
+      setUrl(file);
+    }
+  }, [file]);
 
   // Reset scale when file changes or modal closes
   React.useEffect(() => {
@@ -57,6 +51,13 @@ const FilePreviewModal: React.FC<FilePreviewModalProps> = ({
       setScale(1);
     }
   }, [isOpen]);
+
+  // Early return AFTER all hooks to satisfy Rules of Hooks
+  if (!file) return null;
+
+  const handleZoomIn = () => setScale((prev) => Math.min(prev + 0.25, 4));
+  const handleZoomOut = () => setScale((prev) => Math.max(prev - 0.25, 0.5));
+  const handleResetZoom = () => setScale(1);
 
   const getFileType = () => {
     if (fileType) return fileType;
@@ -176,13 +177,13 @@ const FilePreviewModal: React.FC<FilePreviewModalProps> = ({
               <div className="min-h-full w-full flex items-center justify-center p-4 md:p-12 relative">
                 {isImage ? (
                   <div
-                    className="relative transition-transform duration-300 ease-out will-change-transform"
+                    className="relative transition-transform duration-300 ease-out will-change-transform max-w-full max-h-full flex items-center justify-center"
                     style={{ transform: `scale(${scale})` }}
                   >
                     <img
                       src={url}
                       alt={name}
-                      className="max-w-full max-h-full object-contain rounded shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] ring-8 ring-white animate-in fade-in zoom-in duration-500"
+                      className="max-w-full max-h-[calc(100vh-200px)] w-auto h-auto object-contain rounded shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] ring-8 ring-white animate-in fade-in zoom-in duration-500"
                     />
                     <div className="absolute inset-0 ring-1 ring-inset ring-black/5 pointer-events-none" />
                   </div>

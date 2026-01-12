@@ -327,14 +327,12 @@ const SidebarIcons: React.FC = () => {
           }`}
         >
           <div className="space-y-1">
-            <Link to="/admin/dashboard">
-              <SidebarItem
-                icon={<Icon name="dashboard" />}
-                label="Dashboard"
-                to="/admin/dashboard"
-                expanded={expanded}
-              />
-            </Link>
+            <SidebarItem
+              icon={<Icon name="dashboard" />}
+              label="Dashboard"
+              to="/admin/dashboard"
+              expanded={expanded}
+            />
 
             <SidebarItem
               icon={<Icon name="users" />}

@@ -7,11 +7,23 @@ import {
   DrawerBody,
   useDisclosure,
   Button,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
 } from "@heroui/react";
 import { ImpactCards } from "../../../../global/components/resuable-components/ImpactCards";
 import ReusableTable from "../../../../global/components/resuable-components/table";
-import ReusableButton from "../../../../global/components/resuable-components/button";
-import { Plus } from "lucide-react";
+import { Plus, Filter, ChevronDown, X } from "lucide-react";
+
+const STATUS_OPTIONS: NgoStatus[] = ["Active", "Pending", "Deactivated"];
+const BENEFICIARY_OPTIONS = [
+  "Children & Youth",
+  "Local Communities",
+  "Senior Citizens",
+  "Stray Animals",
+  "Low-Income Communities",
+];
 
 type NgoStatus = "Active" | "Pending" | "Deactivated";
 
@@ -32,67 +44,70 @@ const NgoPage = () => {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedNgo, setSelectedNgo] = useState<Ngo | null>(null);
+  const [filterStatus, setFilterStatus] = useState("All");
+  const [filterBeneficiaries, setFilterBeneficiaries] = useState("All");
+  const [activeFilters, setActiveFilters] = useState<string[]>([]);
 
   const ngoData: Ngo[] = [
     {
       id: 1,
-      name: "Hope Foundation",
-      registrationNo: "REG-1001-XYZ",
-      serviceAreas: ["Education", "Health"],
+      name: "Agaram Foundation",
+      registrationNo: "REG-TN-2006-112",
+      serviceAreas: ["Education", "Youth Development"],
       beneficiaries: "Children & Youth",
       status: "Active",
-      email: "contact@hopefoundation.org",
-      phone: "+1-555-123-4567",
-      address: "123 Charity Lane, Metropole, County",
-      volunteers: ["Sarah Connor", "John Do"],
+      email: "info@agaram.foundation",
+      phone: "+91-44-2431-1515",
+      address: "T. Nagar, Chennai, Tamil Nadu",
+      volunteers: ["Suriya Sivakumar", "Jyothika"],
     },
     {
       id: 2,
-      name: "Green Future Initiative",
-      registrationNo: "REG-1002-ABC",
-      serviceAreas: ["Environment", "Sustainability"],
+      name: "Siruthuli",
+      registrationNo: "NGO-TN-2003-045",
+      serviceAreas: ["Water Conservation", "Afforestation"],
       beneficiaries: "Local Communities",
       status: "Pending",
-      email: "info@greenfuture.org",
-      phone: "+1-555-234-5678",
-      address: "456 Eco Street, Greenville, County",
-      volunteers: ["Michael Green", "Lisa Brown"],
+      email: "contact@siruthuli.com",
+      phone: "+91-422-230-1122",
+      address: "Ettimadai, Coimbatore, Tamil Nadu",
+      volunteers: ["Vanitha Mohan", "Ravi Sam"],
     },
     {
       id: 3,
-      name: "Community Care Alliance",
-      registrationNo: "REG-1003-DEF",
-      serviceAreas: ["Elderly Care", "Social Welfare"],
-      beneficiaries: "Senior Citizens",
+      name: "Udhavum Ullangal",
+      registrationNo: "REG-TN-2000-882",
+      serviceAreas: ["Cancer Care", "Education Support"],
+      beneficiaries: "Low-Income Communities",
       status: "Active",
-      email: "care@communityalliance.org",
-      phone: "+1-555-345-6789",
-      address: "789 Care Avenue, Community Town, County",
-      volunteers: ["Robert Wilson", "Maria Garcia"],
+      email: "care@udhavumullangal.org",
+      phone: "+91-44-2222-3333",
+      address: "Purasawalkam, Chennai, Tamil Nadu",
+      volunteers: ["Bankar Sankar", "Kavitha"],
     },
     {
       id: 4,
-      name: "Animal Rescue Squad",
-      registrationNo: "REG-1004-GHI",
-      serviceAreas: ["Animal Welfare"],
+      name: "Blue Cross of India",
+      registrationNo: "AWB-TN-1964-001",
+      serviceAreas: ["Animal Welfare", "Shelter"],
       beneficiaries: "Stray Animals",
-      status: "Deactivated",
-      email: "rescue@animalsquad.org",
-      phone: "+1-555-456-7890",
-      address: "321 Rescue Road, Animal City, County",
-      volunteers: ["David Thompson", "Emma Davis"],
+      status: "Active",
+      email: "rescue@bluecross.org.in",
+      phone: "+91-44-2235-4959",
+      address: "Velachery, Chennai, Tamil Nadu",
+      volunteers: ["Chinny Krishna", "Amala Akkineni"],
     },
     {
       id: 5,
-      name: "Global Aid Initiative",
-      registrationNo: "REG-1005-JKL",
-      serviceAreas: ["Poverty Alleviation", "Disaster Relief"],
-      beneficiaries: "Low-Income Communities",
+      name: "Madurai Seed",
+      registrationNo: "REG-TN-2010-441",
+      serviceAreas: ["After-school Education", "Arts"],
+      beneficiaries: "Children & Youth",
       status: "Active",
-      email: "aid@globalinitiative.org",
-      phone: "+1-555-567-8901",
-      address: "654 Global Lane, Worldwide City, County",
-      volunteers: ["James Miller", "Sophia Chen"],
+      email: "seed@maduraiseed.org",
+      phone: "+91-452-251-1111",
+      address: "Karumbalai, Madurai, Tamil Nadu",
+      volunteers: ["Karthik", "Sangeetha"],
     },
   ];
 
@@ -100,6 +115,28 @@ const NgoPage = () => {
     setSelectedNgo(ngo);
     onOpen();
   };
+
+  const toggleFilter = (filterType: string) => {
+    setActiveFilters((prev) =>
+      prev.includes(filterType)
+        ? prev.filter((f) => f !== filterType)
+        : [...prev, filterType]
+    );
+    if (filterType === "status") setFilterStatus("All");
+    if (filterType === "beneficiaries") setFilterBeneficiaries("All");
+  };
+
+  const filteredNgos = ngoData.filter((ngo) => {
+    const matchStatus =
+      !activeFilters.includes("status") ||
+      filterStatus === "All" ||
+      ngo.status === filterStatus;
+    const matchBeneficiaries =
+      !activeFilters.includes("beneficiaries") ||
+      filterBeneficiaries === "All" ||
+      ngo.beneficiaries === filterBeneficiaries;
+    return matchStatus && matchBeneficiaries;
+  });
 
   const getStatusBadge = (status: NgoStatus): React.ReactElement => {
     const statusStyles: Record<
@@ -139,8 +176,6 @@ const NgoPage = () => {
     );
   };
 
-  const pendingCount = ngoData.filter((ngo) => ngo.status === "Pending").length;
-
   return (
     <div
       className="p-6 space-y-6 min-h-screen"
@@ -170,61 +205,6 @@ const NgoPage = () => {
         </Button>
       </div>
 
-      {/* Pending Status Banner */}
-      {pendingCount > 0 && (
-        <div
-          className="flex items-center justify-between px-4 py-3 rounded-lg border"
-          style={{
-            backgroundColor: "rgba(59, 130, 246, 0.1)",
-            borderColor: "rgba(59, 130, 246, 0.2)",
-          }}
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
-              <svg
-                className="w-5 h-5 text-white"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </div>
-            <div>
-              <div
-                className="text-sm font-semibold"
-                style={{ color: "var(--text-primary)" }}
-              >
-                {pendingCount} Pending Registration
-                {pendingCount !== 1 ? "s" : ""}
-              </div>
-              <div className="text-xs" style={{ color: "var(--text-muted)" }}>
-                NGOs awaiting approval
-              </div>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <ReusableButton
-              variant="ghost"
-              size="md"
-              onClick={() => console.log("Review Applications")}
-            >
-              Review Applications
-            </ReusableButton>
-            <ReusableButton
-              variant="primary"
-              size="md"
-              onClick={() => console.log("Bulk Approve")}
-            >
-              Bulk Approve
-            </ReusableButton>
-          </div>
-        </div>
-      )}
-
       {/* Performance Metrics */}
       <ImpactCards
         data={[
@@ -242,8 +222,8 @@ const NgoPage = () => {
           },
           {
             label: "Total NGOs",
-            val: ngoData.length.toString(),
-            trend: "Registered organizations",
+            val: filteredNgos.length.toString(),
+            trend: "Current view results",
             color: "bg-purple-500",
           },
         ]}
@@ -251,11 +231,182 @@ const NgoPage = () => {
 
       {/* NGO Table */}
       <ReusableTable
-        data={ngoData}
+        data={filteredNgos}
+        enableFilters={false}
+        additionalFilters={
+          <div className="flex items-center gap-2 flex-wrap">
+            <Dropdown placement="bottom-end">
+              <DropdownTrigger>
+                <Button
+                  variant="flat"
+                  className="border border-slate-200 bg-white rounded-sm h-10 px-4 text-[11px] font-bold text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-none"
+                  style={{ backgroundColor: "white" }}
+                  startContent={<Filter size={14} className="text-slate-400" />}
+                  endContent={<Plus size={14} className="text-slate-400" />}
+                >
+                  ADD FILTER
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu
+                aria-label="Add Filter Options"
+                onAction={(key) => toggleFilter(key as string)}
+                classNames={{
+                  base: "bg-white border border-slate-200 rounded-sm min-w-[180px] p-1",
+                }}
+                itemClasses={{
+                  base: [
+                    "text-slate-600 text-[11px] font-bold uppercase tracking-tight",
+                    "data-[hover=true]:bg-slate-50 data-[hover=true]:text-[#22c55e]",
+                    "rounded-sm",
+                    "px-3",
+                    "py-2.5",
+                    "transition-colors duration-200",
+                  ].join(" "),
+                }}
+              >
+                <DropdownItem
+                  key="status"
+                  isDisabled={activeFilters.includes("status")}
+                  startContent={<Filter size={14} />}
+                >
+                  STATUS
+                </DropdownItem>
+                <DropdownItem
+                  key="beneficiaries"
+                  isDisabled={activeFilters.includes("beneficiaries")}
+                  startContent={<Filter size={14} />}
+                >
+                  BENEFICIARIES
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+
+            {activeFilters.includes("status") && (
+              <Dropdown>
+                <DropdownTrigger>
+                  <Button
+                    variant="flat"
+                    className="border border-emerald-100 bg-emerald-50/50 rounded-sm h-10 px-3 text-[11px] font-bold text-[#22c55e] hover:bg-emerald-100 transition-all shadow-none"
+                    endContent={<ChevronDown size={14} />}
+                  >
+                    STATUS: {filterStatus.toUpperCase()}
+                    <div
+                      className="ml-2 hover:bg-emerald-200 rounded-full p-0.5 cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleFilter("status");
+                      }}
+                    >
+                      <X size={12} />
+                    </div>
+                  </Button>
+                </DropdownTrigger>
+                <DropdownMenu
+                  aria-label="Filter by Status"
+                  selectionMode="single"
+                  selectedKeys={[filterStatus]}
+                  onSelectionChange={(keys) => {
+                    const selected = Array.from(keys)[0] as string;
+                    setFilterStatus(selected || "All");
+                  }}
+                  items={[
+                    { key: "All", label: "All Status" },
+                    ...STATUS_OPTIONS.map((status) => ({
+                      key: status,
+                      label: status,
+                    })),
+                  ]}
+                  classNames={{
+                    base: "bg-white border border-slate-200 rounded-sm min-w-[160px] p-1",
+                  }}
+                  itemClasses={{
+                    base: [
+                      "text-slate-600 text-[11px] font-bold uppercase tracking-tight",
+                      "data-[hover=true]:bg-slate-50 data-[hover=true]:text-[#22c55e]",
+                      "data-[selected=true]:bg-emerald-50 data-[selected=true]:text-[#22c55e]",
+                      "rounded-sm",
+                      "px-3",
+                      "py-2.5",
+                      "transition-colors duration-200",
+                    ].join(" "),
+                    selectedIcon: "text-[#22c55e] w-4 h-4 ml-auto",
+                  }}
+                >
+                  {(item: any) => (
+                    <DropdownItem key={item.key}>{item.label}</DropdownItem>
+                  )}
+                </DropdownMenu>
+              </Dropdown>
+            )}
+
+            {activeFilters.includes("beneficiaries") && (
+              <Dropdown>
+                <DropdownTrigger>
+                  <Button
+                    variant="flat"
+                    className="border border-blue-100 bg-blue-50/50 rounded-sm h-10 px-3 text-[11px] font-bold text-blue-600 hover:bg-blue-100 transition-all shadow-none"
+                    endContent={<ChevronDown size={14} />}
+                  >
+                    BENEFICIARIES: {filterBeneficiaries.toUpperCase()}
+                    <div
+                      className="ml-2 hover:bg-blue-200 rounded-full p-0.5 cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleFilter("beneficiaries");
+                      }}
+                    >
+                      <X size={12} />
+                    </div>
+                  </Button>
+                </DropdownTrigger>
+                <DropdownMenu
+                  aria-label="Filter by Beneficiaries"
+                  selectionMode="single"
+                  selectedKeys={[filterBeneficiaries]}
+                  onSelectionChange={(keys) => {
+                    const selected = Array.from(keys)[0] as string;
+                    setFilterBeneficiaries(selected || "All");
+                  }}
+                  items={[
+                    { key: "All", label: "All Beneficiaries" },
+                    ...BENEFICIARY_OPTIONS.map((opt) => ({
+                      key: opt,
+                      label: opt,
+                    })),
+                  ]}
+                  classNames={{
+                    base: "bg-white border border-slate-200 rounded-sm min-w-[200px] p-1",
+                  }}
+                  itemClasses={{
+                    base: [
+                      "text-slate-600 text-[11px] font-bold uppercase tracking-tight",
+                      "data-[hover=true]:bg-slate-50 data-[hover=true]:text-[#22c55e]",
+                      "data-[selected=true]:bg-emerald-50 data-[selected=true]:text-[#22c55e]",
+                      "rounded-sm",
+                      "px-3",
+                      "py-2.5",
+                      "transition-colors duration-200",
+                    ].join(" "),
+                    selectedIcon: "text-[#22c55e] w-4 h-4 ml-auto",
+                  }}
+                >
+                  {(item: any) => (
+                    <DropdownItem key={item.key}>{item.label}</DropdownItem>
+                  )}
+                </DropdownMenu>
+              </Dropdown>
+            )}
+          </div>
+        }
         columns={[
           { name: "Organization", uid: "name", sortable: true, align: "start" },
           { name: "Registration No", uid: "registrationNo", sortable: true },
-          { name: "Service Areas", uid: "serviceAreas", sortable: false },
+          {
+            name: "Service Areas",
+            uid: "serviceAreas",
+            sortable: false,
+            align: "center",
+          },
           { name: "Beneficiaries", uid: "beneficiaries", sortable: true },
           { name: "Status", uid: "status", sortable: false, align: "center" },
           { name: "Actions", uid: "actions", sortable: false },
@@ -299,7 +450,7 @@ const NgoPage = () => {
               );
             case "serviceAreas":
               return (
-                <div className="flex flex-wrap gap-1">
+                <div className="flex flex-wrap gap-1 justify-center">
                   {ngo.serviceAreas.slice(0, 2).map((area, index) => (
                     <span
                       key={index}
@@ -340,11 +491,9 @@ const NgoPage = () => {
         // description={`${ngoData.length} registered organizations`}
         actionConfig={{
           showView: true,
-          showMessage: true,
           showApprove: true,
           showDeactivate: true,
           onView: handleViewNgo,
-          onMessage: (ngo) => console.log("Message", ngo),
           onApprove: (ngo) => console.log("Approve", ngo),
           onDeactivate: (ngo) => console.log("Deactivate", ngo),
         }}

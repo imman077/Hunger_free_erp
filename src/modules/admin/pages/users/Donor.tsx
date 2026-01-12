@@ -7,14 +7,15 @@ import {
   DrawerBody,
   useDisclosure,
   Button,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
 } from "@heroui/react";
-import Tabs, {
-  type Tab,
-} from "../../../../global/components/resuable-components/tabs";
 import { ImpactCards } from "../../../../global/components/resuable-components/ImpactCards";
 import ReusableTable from "../../../../global/components/resuable-components/table";
 import ReusableButton from "../../../../global/components/resuable-components/button";
-import { Plus, Eye } from "lucide-react";
+import { Plus, Eye, ChevronDown, Filter, X } from "lucide-react";
 import FilePreviewModal from "../../../../global/components/resuable-components/FilePreviewModal";
 
 interface DonationHistory {
@@ -39,94 +40,104 @@ interface Donor {
 const DonorPage = () => {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [activeTab, setActiveTab] = useState("All");
+  const [filterType, setFilterType] = useState("All");
+  const [filterStatus, setFilterStatus] = useState("All");
+  const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const [selectedDonor, setSelectedDonor] = useState<Donor | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [donors] = useState<Donor[]>([
     {
       id: 1,
-      businessName: "Gourmet Bistro",
+      businessName: "Saravana Bhavan",
       type: "Restaurant",
-      totalDonations: 7500,
-      points: 1500,
+      totalDonations: 8500,
+      points: 1700,
       status: "Active",
-      contactPerson: "Chef Antoine",
-      email: "contact@gourmetbistro.com",
-      address: "123 Main St, City, State, 12345",
+      contactPerson: "Sathish Kumar",
+      email: "contact@saravanabhavan.in",
+      address: "Mylapore, Chennai, Tamil Nadu, 600004",
       donationHistory: [
-        { event: "Food for Homeless", date: "2023-11-01", amount: 2000 },
-        { event: "Culinary Workshop", date: "2023-08-20", amount: 1500 },
-        { event: "Local Charity Gala", date: "2023-05-10", amount: 4000 },
+        { event: "Margazhi Food Drive", date: "2023-12-15", amount: 3000 },
+        { event: "Flood Relief Support", date: "2023-11-20", amount: 2500 },
+        {
+          event: "Temple Feast Contribution",
+          date: "2023-05-10",
+          amount: 3000,
+        },
       ],
     },
     {
       id: 2,
-      businessName: "Grand Lux Hotel",
+      businessName: "ITC Grand Chola",
       type: "Hotel",
-      totalDonations: 12000,
-      points: 2400,
+      totalDonations: 15000,
+      points: 3000,
       status: "Active",
-      contactPerson: "Sarah Johnson",
-      email: "sarah.johnson@grandlux.com",
-      address: "456 Oak Avenue, Metropolis, State, 67890",
+      contactPerson: "Rema Devi",
+      email: "rema.d@itchotels.in",
+      address: "Guindy, Chennai, Tamil Nadu, 600032",
       donationHistory: [
-        { event: "Annual Gala", date: "2023-10-15", amount: 5000 },
-        { event: "Winter Shelter", date: "2023-01-20", amount: 4000 },
-        { event: "Community Kitchen", date: "2022-11-05", amount: 3000 },
+        { event: "Heritage Charity Ball", date: "2023-10-15", amount: 6000 },
+        { event: "Education For All", date: "2023-07-20", amount: 5000 },
+        {
+          event: "Youth Skill Program",
+          date: "2022-11-05",
+          amount: 4000,
+        },
       ],
     },
     {
       id: 3,
-      businessName: "Smith Family",
+      businessName: "Meenakshi Family",
       type: "Household",
-      totalDonations: 800,
-      points: 160,
+      totalDonations: 1200,
+      points: 240,
       status: "Pending",
-      contactPerson: "John Smith",
-      email: "john.smith@email.com",
-      address: "789 Pine Road, Suburbia, State, 45678",
+      contactPerson: "Muralitharan",
+      email: "murali.m@gmail.com",
+      address: "Near S.S. Colony, Madurai, Tamil Nadu, 625010",
       donationHistory: [
-        { event: "Initial Donation", date: "2023-09-10", amount: 800 },
+        { event: "Annadhanam Donation", date: "2023-09-10", amount: 1200 },
       ],
     },
     {
       id: 4,
-      businessName: "Annual Charity Ball",
+      businessName: "Coimbatore Textile Expo",
       type: "Event",
-      totalDonations: 25000,
-      points: 5000,
+      totalDonations: 30000,
+      points: 6000,
       status: "Active",
-      contactPerson: "Emily Chen",
-      email: "emily@charityball.org",
-      address: "321 Event Plaza, Downtown, State, 98765",
+      contactPerson: "Arunachalam",
+      email: "arun.tex@coimbatoreexpo.org",
+      address: "Avinashi Road, Coimbatore, Tamil Nadu, 641018",
       donationHistory: [
-        { event: "2023 Gala Proceeds", date: "2023-12-01", amount: 15000 },
-        { event: "2022 Gala Proceeds", date: "2022-12-01", amount: 10000 },
+        {
+          event: "Textiles For Charity 2023",
+          date: "2023-12-01",
+          amount: 20000,
+        },
+        { event: "Rural Welfare Fund", date: "2022-06-01", amount: 10000 },
       ],
     },
     {
       id: 5,
-      businessName: "Tech Innovations Inc.",
+      businessName: "Lakshmi Mills",
       type: "Corporate",
-      totalDonations: 3000,
-      points: 600,
+      totalDonations: 5000,
+      points: 1000,
       status: "Inactive",
-      contactPerson: "Michael Rodriguez",
-      email: "m.rodriguez@techinnovations.com",
-      address: "159 Tech Park, Innovation District, State, 75319",
+      contactPerson: "Pandi Durai",
+      email: "pandi.d@lakshmimills.com",
+      address: "Pappanaickenpalayam, Coimbatore, Tamil Nadu, 641037",
       donationHistory: [
-        { event: "STEM Education Fund", date: "2023-02-14", amount: 3000 },
+        {
+          event: "Worker Welfare Fund",
+          date: "2023-02-14",
+          amount: 5000,
+        },
       ],
     },
   ]);
-
-  const tabs: Tab[] = [
-    { label: "All", value: "All", count: donors.length, showCount: true },
-    { label: "Restaurant", value: "Restaurant" },
-    { label: "Hotel", value: "Hotel" },
-    { label: "Household", value: "Household" },
-    { label: "Event", value: "Event" },
-  ];
 
   const getStatusColor = (
     status: string
@@ -187,15 +198,32 @@ const DonorPage = () => {
     onOpen();
   };
 
+  const toggleFilter = (filter: string) => {
+    setActiveFilters((prev) =>
+      prev.includes(filter)
+        ? prev.filter((f) => f !== filter)
+        : [...prev, filter]
+    );
+    if (filter === "type") setFilterType("All");
+    if (filter === "status") setFilterStatus("All");
+  };
+
   const closeDrawer = () => {
     onClose();
     // setTimeout(() => setSelectedDonor(null), 300);
   };
 
-  const filteredDonors =
-    activeTab === "All"
-      ? donors
-      : donors.filter((donor) => donor.type === activeTab);
+  const filteredDonors = donors.filter((donor) => {
+    const matchType =
+      !activeFilters.includes("type") ||
+      filterType === "All" ||
+      donor.type === filterType;
+    const matchStatus =
+      !activeFilters.includes("status") ||
+      filterStatus === "All" ||
+      donor.status === filterStatus;
+    return matchType && matchStatus;
+  });
 
   return (
     <>
@@ -267,16 +295,166 @@ const DonorPage = () => {
             ]}
           />
 
-          {/* Tabs */}
-          <Tabs
-            tabs={tabs}
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-            className="mb-6"
-          />
-
           {/* Table */}
           <ReusableTable
+            enableFilters={false}
+            additionalFilters={
+              <div className="flex items-center gap-2 flex-wrap">
+                <Dropdown placement="bottom-end">
+                  <DropdownTrigger>
+                    <Button
+                      variant="flat"
+                      className="border border-slate-200 bg-white rounded-sm h-10 px-4 text-[11px] font-bold text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-none"
+                      style={{ backgroundColor: "white" }}
+                      startContent={
+                        <Filter size={14} className="text-slate-400" />
+                      }
+                      endContent={<Plus size={14} className="text-slate-400" />}
+                    >
+                      ADD FILTER
+                    </Button>
+                  </DropdownTrigger>
+                  <DropdownMenu
+                    aria-label="Add Filter Options"
+                    onAction={(key) => toggleFilter(key as string)}
+                    classNames={{
+                      base: "bg-white border border-slate-200 rounded-sm min-w-[180px] p-1",
+                    }}
+                    itemClasses={{
+                      base: [
+                        "text-slate-600 text-[11px] font-bold uppercase tracking-tight",
+                        "data-[hover=true]:bg-slate-50 data-[hover=true]:text-[#22c55e]",
+                        "rounded-sm",
+                        "px-3",
+                        "py-2.5",
+                        "transition-colors duration-200",
+                      ].join(" "),
+                    }}
+                  >
+                    <DropdownItem
+                      key="type"
+                      isDisabled={activeFilters.includes("type")}
+                      startContent={<Filter size={14} />}
+                    >
+                      TYPE
+                    </DropdownItem>
+                    <DropdownItem
+                      key="status"
+                      isDisabled={activeFilters.includes("status")}
+                      startContent={<Filter size={14} />}
+                    >
+                      STATUS
+                    </DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
+
+                {activeFilters.includes("type") && (
+                  <Dropdown>
+                    <DropdownTrigger>
+                      <Button
+                        variant="flat"
+                        className="border border-emerald-100 bg-emerald-50/50 rounded-sm h-10 px-3 text-[11px] font-bold text-[#22c55e] hover:bg-emerald-100 transition-all shadow-none"
+                        endContent={<ChevronDown size={14} />}
+                      >
+                        TYPE: {filterType.toUpperCase()}
+                        <div
+                          className="ml-2 hover:bg-emerald-200 rounded-full p-0.5 cursor-pointer"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleFilter("type");
+                          }}
+                        >
+                          <X size={12} />
+                        </div>
+                      </Button>
+                    </DropdownTrigger>
+                    <DropdownMenu
+                      aria-label="Filter by Type"
+                      selectionMode="single"
+                      selectedKeys={[filterType]}
+                      onSelectionChange={(keys) => {
+                        const selected = Array.from(keys)[0] as string;
+                        setFilterType(selected || "All");
+                      }}
+                      classNames={{
+                        base: "bg-white border border-slate-200 rounded-sm min-w-[160px] p-1",
+                      }}
+                      itemClasses={{
+                        base: [
+                          "text-slate-600 text-[11px] font-bold uppercase tracking-tight",
+                          "data-[hover=true]:bg-slate-50 data-[hover=true]:text-[#22c55e]",
+                          "data-[selected=true]:bg-emerald-50 data-[selected=true]:text-[#22c55e]",
+                          "rounded-sm",
+                          "px-3",
+                          "py-2.5",
+                          "transition-colors duration-200",
+                        ].join(" "),
+                        selectedIcon: "text-[#22c55e] w-4 h-4 ml-auto",
+                      }}
+                    >
+                      <DropdownItem key="All">All Types</DropdownItem>
+                      <DropdownItem key="Restaurant">Restaurant</DropdownItem>
+                      <DropdownItem key="Hotel">Hotel</DropdownItem>
+                      <DropdownItem key="Household">Household</DropdownItem>
+                      <DropdownItem key="Event">Event</DropdownItem>
+                      <DropdownItem key="Corporate">Corporate</DropdownItem>
+                    </DropdownMenu>
+                  </Dropdown>
+                )}
+
+                {activeFilters.includes("status") && (
+                  <Dropdown>
+                    <DropdownTrigger>
+                      <Button
+                        variant="flat"
+                        className="border border-blue-100 bg-blue-50/50 rounded-sm h-10 px-3 text-[11px] font-bold text-blue-600 hover:bg-blue-100 transition-all shadow-none"
+                        endContent={<ChevronDown size={14} />}
+                      >
+                        STATUS: {filterStatus.toUpperCase()}
+                        <div
+                          className="ml-2 hover:bg-blue-200 rounded-full p-0.5 cursor-pointer"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleFilter("status");
+                          }}
+                        >
+                          <X size={12} />
+                        </div>
+                      </Button>
+                    </DropdownTrigger>
+                    <DropdownMenu
+                      aria-label="Filter by Status"
+                      selectionMode="single"
+                      selectedKeys={[filterStatus]}
+                      onSelectionChange={(keys) => {
+                        const selected = Array.from(keys)[0] as string;
+                        setFilterStatus(selected || "All");
+                      }}
+                      classNames={{
+                        base: "bg-white border border-slate-200 rounded-sm min-w-[160px] p-1",
+                      }}
+                      itemClasses={{
+                        base: [
+                          "text-slate-600 text-[11px] font-bold uppercase tracking-tight",
+                          "data-[hover=true]:bg-slate-50 data-[hover=true]:text-[#22c55e]",
+                          "data-[selected=true]:bg-emerald-50 data-[selected=true]:text-[#22c55e]",
+                          "rounded-sm",
+                          "px-3",
+                          "py-2.5",
+                          "transition-colors duration-200",
+                        ].join(" "),
+                        selectedIcon: "text-[#22c55e] w-4 h-4 ml-auto",
+                      }}
+                    >
+                      <DropdownItem key="All">All Status</DropdownItem>
+                      <DropdownItem key="Active">Active</DropdownItem>
+                      <DropdownItem key="Pending">Pending</DropdownItem>
+                      <DropdownItem key="Inactive">Inactive</DropdownItem>
+                    </DropdownMenu>
+                  </Dropdown>
+                )}
+              </div>
+            }
             data={filteredDonors}
             columns={[
               {
@@ -372,11 +550,9 @@ const DonorPage = () => {
             // description="Manage your donors and their contributions"
             actionConfig={{
               showView: true,
-              showMessage: true,
               showApprove: true,
               showDeactivate: true,
               onView: handleViewProfile,
-              onMessage: (donor: Donor) => console.log("Message", donor),
               onApprove: (donor: Donor) => console.log("Approve", donor),
               onDeactivate: (donor: Donor) => console.log("Deactivate", donor),
             }}

@@ -8,16 +8,20 @@ import {
   ShieldCheck,
   Users,
   X,
+  Eye,
+  Download,
 } from "lucide-react";
 import ResuableInput from "../../../../global/components/resuable-components/input";
 import ResuableButton from "../../../../global/components/resuable-components/button";
 import ResuableDropdown from "../../../../global/components/resuable-components/dropdown";
 import FileUploadSlot from "../../../../global/components/resuable-components/FileUploadSlot";
+import FilePreviewModal from "../../../../global/components/resuable-components/FilePreviewModal";
 
 interface CategoryField {
   label: string;
   type: "text" | "dropdown";
   options?: { value: string; label: string }[];
+  placeholder?: string;
 }
 
 interface CategoryConfig {
@@ -40,7 +44,9 @@ const NGO_CONFIG: Record<string, CategoryConfig> = {
         },
         { label: "Approximate Number of Children", type: "text" },
       ],
-      optional: [{ label: "Age Group", type: "text" }],
+      optional: [
+        { label: "Age Group", type: "text", placeholder: "eg: 0 - 18 years" },
+      ],
     },
     proofs: {
       mandatory: ["Child Care Institution / School Registration Certificate"],
@@ -60,7 +66,9 @@ const NGO_CONFIG: Record<string, CategoryConfig> = {
         },
         { label: "Approximate Number of Seniors", type: "text" },
       ],
-      optional: [{ label: "Age Group", type: "text" }],
+      optional: [
+        { label: "Age Group", type: "text", placeholder: "eg: 60+ years" },
+      ],
     },
     proofs: {
       mandatory: ["Old Age Home Registration Certificate"],
@@ -171,6 +179,27 @@ const CreateNgo = () => {
   const [attachments, setAttachments] = useState<
     Record<string, File | File[] | null>
   >({});
+
+  const [previewFile, setPreviewFile] = useState<{
+    file: File | string | null;
+    name: string;
+  } | null>(null);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+
+  const handlePreview = (file: File | string, name: string) => {
+    setPreviewFile({ file, name });
+    setIsPreviewOpen(true);
+  };
+
+  const handleDownloadFile = (file: File) => {
+    const url = URL.createObjectURL(file);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = file.name;
+    link.click();
+    // Cleanup immediately after download
+    setTimeout(() => URL.revokeObjectURL(url), 100);
+  };
 
   const handleAttachmentChange = (
     slot: string,
@@ -700,28 +729,47 @@ const CreateNgo = () => {
                         ).map((f, i) => (
                           <div
                             key={i}
-                            className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100"
+                            className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100 group/photo"
                           >
                             <span className="text-[9px] font-bold text-slate-500 truncate max-w-[80px]">
                               {f.name}
                             </span>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const next = (
-                                  attachments[
-                                    "NGO Activity / Facility Photos"
-                                  ] as File[]
-                                ).filter((_, idx) => idx !== i);
-                                handleAttachmentChange(
-                                  "NGO Activity / Facility Photos",
-                                  next
-                                );
-                              }}
-                              className="text-red-400 hover:text-red-600"
-                            >
-                              <X size={10} />
-                            </button>
+                            <div className="flex items-center gap-1 opacity-0 group-hover/photo:opacity-100 transition-opacity">
+                              <button
+                                type="button"
+                                onClick={() => handlePreview(f, f.name)}
+                                className="text-slate-400 hover:text-[#22c55e] transition-colors"
+                                title="View Photo"
+                              >
+                                <Eye size={10} />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleDownloadFile(f)}
+                                className="text-slate-400 hover:text-blue-500 transition-colors"
+                                title="Download Photo"
+                              >
+                                <Download size={10} />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const next = (
+                                    attachments[
+                                      "NGO Activity / Facility Photos"
+                                    ] as File[]
+                                  ).filter((_, idx) => idx !== i);
+                                  handleAttachmentChange(
+                                    "NGO Activity / Facility Photos",
+                                    next
+                                  );
+                                }}
+                                className="text-slate-400 hover:text-red-500 transition-colors"
+                                title="Remove Photo"
+                              >
+                                <X size={10} />
+                              </button>
+                            </div>
                           </div>
                         ))}
                       </div>
@@ -788,7 +836,9 @@ const CreateNgo = () => {
                               handleValueChange(field.label, val)
                             }
                             options={field.options || []}
-                            placeholder={`Select ${field.label}`}
+                            placeholder={
+                              field.placeholder || `Select ${field.label}`
+                            }
                             required
                             align="left"
                           />
@@ -799,6 +849,9 @@ const CreateNgo = () => {
                             value={formData[field.label] || ""}
                             onChange={(val) =>
                               handleValueChange(field.label, val)
+                            }
+                            placeholder={
+                              field.placeholder || `Enter ${field.label}`
                             }
                             required
                             align="left"
@@ -838,7 +891,9 @@ const CreateNgo = () => {
                                 handleValueChange(field.label, val)
                               }
                               options={field.options || []}
-                              placeholder={`Select ${field.label}`}
+                              placeholder={
+                                field.placeholder || `Select ${field.label}`
+                              }
                               align="left"
                             />
                           ) : (
@@ -848,6 +903,9 @@ const CreateNgo = () => {
                               value={formData[field.label] || ""}
                               onChange={(val) =>
                                 handleValueChange(field.label, val)
+                              }
+                              placeholder={
+                                field.placeholder || `Enter ${field.label}`
                               }
                               align="left"
                             />
@@ -946,26 +1004,49 @@ const CreateNgo = () => {
                                       (f, i) => (
                                         <div
                                           key={i}
-                                          className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100 font-bold text-slate-500 text-[9px]"
+                                          className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100 group/photo"
                                         >
-                                          <span className="truncate max-w-[80px]">
+                                          <span className="text-[9px] font-bold text-slate-500 truncate max-w-[80px]">
                                             {f.name}
                                           </span>
-                                          <button
-                                            type="button"
-                                            onClick={() => {
-                                              const next = (
-                                                attachments[label] as File[]
-                                              ).filter((_, idx) => idx !== i);
-                                              handleAttachmentChange(
-                                                label,
-                                                next
-                                              );
-                                            }}
-                                            className="text-red-400 hover:text-red-600"
-                                          >
-                                            <X size={10} />
-                                          </button>
+                                          <div className="flex items-center gap-1 opacity-0 group-hover/photo:opacity-100 transition-opacity">
+                                            <button
+                                              type="button"
+                                              onClick={() =>
+                                                handlePreview(f, f.name)
+                                              }
+                                              className="text-slate-400 hover:text-[#22c55e] transition-colors"
+                                              title="View Photo"
+                                            >
+                                              <Eye size={10} />
+                                            </button>
+                                            <button
+                                              type="button"
+                                              onClick={() =>
+                                                handleDownloadFile(f)
+                                              }
+                                              className="text-slate-400 hover:text-blue-500 transition-colors"
+                                              title="Download Photo"
+                                            >
+                                              <Download size={10} />
+                                            </button>
+                                            <button
+                                              type="button"
+                                              onClick={() => {
+                                                const next = (
+                                                  attachments[label] as File[]
+                                                ).filter((_, idx) => idx !== i);
+                                                handleAttachmentChange(
+                                                  label,
+                                                  next
+                                                );
+                                              }}
+                                              className="text-slate-400 hover:text-red-500 transition-colors"
+                                              title="Remove Photo"
+                                            >
+                                              <X size={10} />
+                                            </button>
+                                          </div>
                                         </div>
                                       )
                                     )}
@@ -1011,6 +1092,12 @@ const CreateNgo = () => {
           </div>
         </div>
       </form>
+      <FilePreviewModal
+        isOpen={isPreviewOpen}
+        onOpenChange={setIsPreviewOpen}
+        file={previewFile?.file || null}
+        fileName={previewFile?.name}
+      />
     </div>
   );
 };
