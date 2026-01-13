@@ -18,6 +18,7 @@ export interface ResuableDropdownProps {
   required?: boolean;
   minWidth?: number | string;
   align?: "left" | "center" | "right";
+  info?: string | React.ReactNode;
 }
 
 // --- ResuableDropdown Component ---
@@ -31,7 +32,8 @@ const ResuableDropdown: React.FC<ResuableDropdownProps> = ({
   disabled = false,
   required = false,
   minWidth,
-  align = "center",
+  align = "left",
+  info,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -66,12 +68,30 @@ const ResuableDropdown: React.FC<ResuableDropdownProps> = ({
   return (
     <div className={`w-full ${alignClass} ${className}`}>
       {label && (
-        <label
-          className="text-[10px] font-bold uppercase tracking-widest block mb-1 px-1"
-          style={{ color: "var(--text-muted)" }}
+        <div
+          className={`flex items-center gap-1.5 mb-1 px-1 ${
+            align === "center" ? "justify-center" : ""
+          } ${align === "right" ? "justify-end" : ""}`}
         >
-          {label} {required && <span style={{ color: "#ef4444" }}>*</span>}
-        </label>
+          <label
+            className="text-[10px] font-bold uppercase tracking-widest block"
+            style={{ color: "var(--text-muted)" }}
+          >
+            {label} {required && <span style={{ color: "#ef4444" }}>*</span>}
+          </label>
+          {info && (
+            <div className="group/info relative flex items-center">
+              <Icon
+                name="info"
+                className="w-3.5 h-3.5 text-slate-300 hover:text-[#22c55e] transition-colors cursor-help"
+              />
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 min-w-[200px] max-w-[280px] p-3 bg-slate-900/95 backdrop-blur-sm text-white text-[10px] font-medium leading-relaxed rounded-lg shadow-2xl opacity-0 invisible group-hover/info:opacity-100 group-hover/info:visible transition-all z-[10000] pointer-events-none whitespace-pre-line border border-white/10 text-left">
+                {info}
+                <div className="absolute top-full left-1/2 -translate-x-1/2 border-[5px] border-transparent border-t-slate-900/95" />
+              </div>
+            </div>
+          )}
+        </div>
       )}
 
       <div className="relative" ref={dropdownRef}>
@@ -117,7 +137,7 @@ const ResuableDropdown: React.FC<ResuableDropdownProps> = ({
                 key={opt.value}
                 type="button"
                 onClick={() => handleSelect(opt.value)}
-                className={`w-full px-4 py-3 text-xs font-semibold transition-all border-b last:border-none flex items-center justify-center gap-3 group ${alignClass}`}
+                className={`relative w-full px-4 py-3 text-xs font-semibold transition-all border-b last:border-none flex items-center justify-center group ${alignClass}`}
                 style={{
                   borderBottomColor: "var(--border-color)",
                   backgroundColor:
@@ -126,12 +146,14 @@ const ResuableDropdown: React.FC<ResuableDropdownProps> = ({
                     value === opt.value ? "white" : "var(--text-secondary)",
                 }}
               >
-                <span className="flex-1 truncate">{opt.label}</span>
+                <span className="truncate">{opt.label}</span>
                 {value === opt.value && (
-                  <Icon
-                    name="check-circle"
-                    className="w-3.5 h-3.5 text-white"
-                  />
+                  <div className="absolute right-4 flex items-center h-full top-0">
+                    <Icon
+                      name="check-circle"
+                      className="w-3.5 h-3.5 text-white"
+                    />
+                  </div>
                 )}
               </button>
             ))}

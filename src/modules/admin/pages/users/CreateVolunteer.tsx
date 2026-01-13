@@ -8,12 +8,13 @@ import {
   Car,
   ShieldCheck,
   Clock,
-  Utensils,
   Smartphone,
   Info,
   Briefcase,
   HelpCircle,
+  Navigation,
 } from "lucide-react";
+import { Modal, ModalContent, ModalBody } from "@heroui/react";
 import ResuableInput from "../../../../global/components/resuable-components/input";
 import ResuableButton from "../../../../global/components/resuable-components/button";
 import ResuableDropdown from "../../../../global/components/resuable-components/dropdown";
@@ -45,7 +46,7 @@ const CreateVolunteer = () => {
 
     // 3. Area Details
     areaName: "",
-    wardNo: "",
+    streetName: "",
     landmark: "",
     areaType: "",
 
@@ -81,6 +82,7 @@ const CreateVolunteer = () => {
     nightHours: "No",
     firstAid: "No",
   });
+  const [showSuccess, setShowSuccess] = useState(false);
 
   // Fetch States and Districts data from GitHub (CORS-free)
   useEffect(() => {
@@ -92,7 +94,6 @@ const CreateVolunteer = () => {
         );
         const data = await response.json();
         if (data && data.states) {
-          // Map states with their IDs
           const mappedStates = data.states.map((s: any, index: number) => ({
             value: s.state,
             label: s.state,
@@ -215,13 +216,25 @@ const CreateVolunteer = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.followSafetyGuidelines) {
-      alert("Please agree to follow food safety guidelines.");
+
+    // Validate Mandatory Attachments
+    if (!attachments["Address Proof"]) {
+      alert("Please upload your Address Proof.");
       return;
     }
+    if (!attachments["Government ID Proof"]) {
+      alert("Please upload your Government ID Proof.");
+      return;
+    }
+
+    // Validate Consent
+    if (!formData.followSafetyGuidelines) {
+      alert("Please agree to follow all safety and hygiene protocols.");
+      return;
+    }
+
     console.log("Submitting Volunteer Form:", { formData, attachments });
-    alert("Volunteer Registration Completed Successfully!");
-    navigate("/admin/users/volunteers");
+    setShowSuccess(true);
   };
 
   const SectionHeader = ({
@@ -229,38 +242,28 @@ const CreateVolunteer = () => {
     number,
     title,
     subtitle,
-    isMandatory = true,
+    rightContent,
   }: any) => (
     <div
-      className={`p-6 border-b flex items-center gap-4 ${
-        isMandatory ? "bg-slate-50/50" : "bg-gray-50/30"
-      }`}
+      className="p-6 border-b flex items-start gap-4 bg-white"
       style={{ borderColor: "var(--border-color)" }}
     >
-      <div
-        className={`w-12 h-12 rounded-lg flex items-center justify-center shadow-sm ${
-          isMandatory
-            ? "bg-white text-[#22c55e] border border-emerald-100"
-            : "bg-white text-slate-400 border border-slate-100"
-        }`}
-      >
-        <Icon size={24} />
-      </div>
-      <div>
-        <div className="flex items-center gap-2">
-          <h2 className="text-sm font-black uppercase tracking-tight text-slate-800">
-            {number}. {title}
-          </h2>
-          {isMandatory && (
-            <span className="text-[8px] font-bold bg-red-50 text-red-500 px-1.5 py-0.5 rounded border border-red-100 uppercase tracking-widest">
-              Mandatory
-            </span>
-          )}
+      <div className="flex items-start gap-6 flex-1">
+        <div className="w-14 h-14 rounded-xl flex items-center justify-center shadow-sm shrink-0 bg-white text-[#22c55e] border border-emerald-100">
+          <Icon size={28} />
         </div>
-        <p className="text-[10px] font-bold uppercase tracking-widest mt-1 text-slate-400">
-          {subtitle}
-        </p>
+        <div className="flex-1 flex flex-col items-start text-left">
+          <div className="flex items-center gap-3">
+            <h2 className="text-sm font-black uppercase tracking-tight text-slate-800 text-left">
+              {number}. {title}
+            </h2>
+          </div>
+          <p className="text-[10px] font-bold text-left uppercase tracking-widest mt-1.5 text-slate-400">
+            {subtitle}
+          </p>
+        </div>
       </div>
+      {rightContent && <div className="shrink-0">{rightContent}</div>}
     </div>
   );
 
@@ -268,7 +271,7 @@ const CreateVolunteer = () => {
     <div className="p-6 md:p-10 w-full min-h-screen bg-[#f8fafc]">
       <div className="max-w-5xl mx-auto space-y-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center justify-between mb-10">
           <div className="flex items-center gap-6">
             <button
               onClick={() => navigate("/admin/users/volunteers")}
@@ -279,12 +282,15 @@ const CreateVolunteer = () => {
                 className="group-hover:-translate-x-1 transition-transform"
               />
             </button>
-            <div>
-              <h1 className="text-4xl font-black tracking-tighter italic text-slate-900">
-                Volunteer Enrollment
+            <div className="text-left">
+              <h1 className="text-3xl font-black text-slate-800 tracking-tight flex items-center gap-3">
+                Volunteer Registration
+                <span className="bg-emerald-50 text-[#22c55e] text-[10px] uppercase tracking-[0.2em] px-3 py-1 rounded-full border border-emerald-100">
+                  New Entry
+                </span>
               </h1>
-              <p className="text-[10px] font-bold text-slate-400 mt-2 uppercase tracking-[0.3em]">
-                Operational Assignment Protocol
+              <p className="text-[11px] font-bold text-slate-400 mt-1 uppercase tracking-[0.15em]">
+                Onboard new community heroes for distribution network
               </p>
             </div>
           </div>
@@ -296,441 +302,441 @@ const CreateVolunteer = () => {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6 pb-32">
-          {/* --- MANDATORY SECTIONS --- */}
-          <div className="space-y-1">
-            <p className="text-[10px] font-black text-emerald-600 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-              <CheckCircle size={14} /> Mandatory Operational Details
-            </p>
+        <form onSubmit={handleSubmit} className="space-y-8 pb-32">
+          <div className="grid grid-cols-1 gap-8">
+            {/* 1. Basic Identity */}
+            <div className="bg-white rounded-xl border border-emerald-100 shadow-sm">
+              <SectionHeader
+                icon={User}
+                number="01"
+                title="Basic Identity"
+                subtitle="Primary contact and role assignment"
+              />
+              <div className="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-6">
+                <ResuableInput
+                  label="Name"
+                  value={formData.name}
+                  onChange={(v) => handleValueChange("name", v)}
+                  required
+                  placeholder="e.g. Rahul Sharma"
+                />
+                <ResuableInput
+                  label="Mobile"
+                  value={formData.phone}
+                  onChange={(v) => handleValueChange("phone", v)}
+                  required
+                  placeholder="+91-XXXXX-XXXXX"
+                />
+                <ResuableDropdown
+                  label="Role"
+                  value={formData.role}
+                  onChange={(v) => handleValueChange("role", v)}
+                  options={dropOptions.roles}
+                  required
+                  placeholder="Select Role"
+                />
+                <ResuableInput
+                  label="Email"
+                  value={formData.email}
+                  onChange={(v) => handleValueChange("email", v)}
+                  type="email"
+                  placeholder="name@example.com"
+                />
+              </div>
+            </div>
 
-            <div className="grid grid-cols-1 gap-6">
-              {/* 1. Basic Details */}
+            {/* 2. Base Location */}
+            <div className="bg-white rounded-xl border border-emerald-100 shadow-sm">
+              <SectionHeader
+                icon={MapPin}
+                number="02"
+                title="Base Location"
+                subtitle="Permanent residential address"
+              />
+              <div className="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-6">
+                <ResuableDropdown
+                  label="State"
+                  value={formData.state}
+                  onChange={(v) => handleValueChange("state", v)}
+                  options={dropOptions.states}
+                  required
+                  placeholder={loadingStates ? "Loading..." : "Select State"}
+                  disabled={loadingStates}
+                />
+                {dropOptions.districts.length > 0 ? (
+                  <ResuableDropdown
+                    label="District"
+                    value={formData.district}
+                    onChange={(v) => handleValueChange("district", v)}
+                    options={dropOptions.districts}
+                    required
+                    placeholder="Select District"
+                  />
+                ) : (
+                  <ResuableInput
+                    label="District"
+                    value={formData.district}
+                    onChange={(v) => handleValueChange("district", v)}
+                    required
+                    placeholder={
+                      formData.state ? "Enter District" : "Select State First"
+                    }
+                    disabled={!formData.state}
+                  />
+                )}
+                <ResuableInput
+                  label="City / Town"
+                  value={formData.city}
+                  onChange={(v) => handleValueChange("city", v)}
+                  required
+                  placeholder="e.g. Chennai"
+                />
+                <ResuableInput
+                  label="Pincode"
+                  value={formData.pincode}
+                  onChange={(v) => handleValueChange("pincode", v)}
+                  required
+                  placeholder="600XXX"
+                />
+              </div>
+            </div>
+
+            {/* 3. Area Logistics */}
+            <div className="bg-white rounded-xl border border-emerald-100 shadow-sm">
+              <SectionHeader
+                icon={Navigation}
+                number="03"
+                title="Area Logistics"
+                subtitle="Specific door-to-door navigation"
+              />
+              <div className="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-6">
+                <ResuableInput
+                  label="Street / Door"
+                  value={formData.streetName}
+                  onChange={(v) => handleValueChange("streetName", v)}
+                  placeholder="e.g. 22, Rainbow Nagar"
+                />
+                <ResuableInput
+                  label="Area"
+                  value={formData.areaName}
+                  onChange={(v) => handleValueChange("areaName", v)}
+                  required
+                  placeholder="e.g. Anna Nagar"
+                />
+                <ResuableInput
+                  label="Landmark"
+                  value={formData.landmark}
+                  onChange={(v) => handleValueChange("landmark", v)}
+                  placeholder="e.g. Near Metro"
+                />
+                <ResuableDropdown
+                  label="Area Type"
+                  value={formData.areaType}
+                  onChange={(v) => handleValueChange("areaType", v)}
+                  options={dropOptions.areaTypes}
+                  required
+                  info={
+                    <div className="space-y-2">
+                      <div className="flex flex-col gap-1.5 text-[9.5px]">
+                        <div>
+                          <span className="font-black text-white active:text-emerald-400">
+                            Residential
+                          </span>
+                          <p className="text-slate-300 font-medium">
+                            Mostly houses or apartments
+                          </p>
+                        </div>
+                        <div>
+                          <span className="font-black text-white active:text-emerald-400">
+                            Commercial
+                          </span>
+                          <p className="text-slate-300 font-medium">
+                            Shops, hotels, offices, businesses
+                          </p>
+                        </div>
+                        <div>
+                          <span className="font-black text-white active:text-emerald-400">
+                            Mixed
+                          </span>
+                          <p className="text-slate-300 font-medium">
+                            Both houses and shops together
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  }
+                />
+              </div>
+            </div>
+
+            {/* Side-by-Side (4 & 5) */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <div className="bg-white rounded-xl border border-emerald-100 shadow-sm">
                 <SectionHeader
-                  icon={User}
-                  number="01"
-                  title="Basic Identity"
-                  subtitle="Primary contact and role assignment"
+                  icon={Briefcase}
+                  number="04"
+                  title="Field Assignment"
+                  subtitle="Operational boundary settings"
                 />
-                <div className="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="p-8 grid grid-cols-1 xl:grid-cols-2 gap-x-8 gap-y-6">
                   <ResuableInput
-                    label="Full Name"
-                    value={formData.name}
-                    onChange={(v) => handleValueChange("name", v)}
+                    label="Area"
+                    value={formData.assignedArea}
+                    onChange={(v) => handleValueChange("assignedArea", v)}
                     required
-                    placeholder="e.g. Rahul Sharma"
+                    placeholder="e.g. Anna Nagar West"
                   />
-                  <div className="relative">
-                    <ResuableInput
-                      label="Mobile Number"
-                      value={formData.phone}
-                      onChange={(v) => handleValueChange("phone", v)}
-                      required
-                      placeholder="+91-XXXXX-XXXXX"
-                    />
-                    <span className="absolute -top-1 right-0 text-[7px] font-bold bg-emerald-50 text-emerald-600 px-1 rounded-sm border border-emerald-100">
-                      OTP VERIFIED
-                    </span>
-                  </div>
                   <ResuableDropdown
-                    label="Role"
-                    value={formData.role}
-                    onChange={(v) => handleValueChange("role", v)}
-                    options={dropOptions.roles}
+                    label="Willing nearby?"
+                    value={formData.coverNearby}
+                    onChange={(v) => handleValueChange("coverNearby", v)}
+                    options={dropOptions.yesNo}
                     required
-                    placeholder="Select Role"
+                  />
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl border border-emerald-100 shadow-sm">
+                <SectionHeader
+                  icon={Clock}
+                  number="05"
+                  title="Execution Timing"
+                  subtitle="Availability windows"
+                />
+                <div className="p-8 grid grid-cols-1 xl:grid-cols-2 gap-x-8 gap-y-6">
+                  <ResuableDropdown
+                    label="Days"
+                    value={formData.availableDays}
+                    onChange={(v) => handleValueChange("availableDays", v)}
+                    options={dropOptions.availableDays}
+                    required
+                  />
+                  <ResuableDropdown
+                    label="Shift"
+                    value={formData.availableTime}
+                    onChange={(v) => handleValueChange("availableTime", v)}
+                    options={dropOptions.timeSlots}
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* 6. Personal Profile */}
+            <div className="bg-white rounded-xl border border-emerald-100 shadow-sm">
+              <SectionHeader
+                icon={Smartphone}
+                number="06"
+                title="Personal Profile"
+                subtitle="Background information"
+                rightContent={
+                  <FileUploadSlot
+                    label="Profile Photo"
+                    value={attachments["Profile Photo"]}
+                    onChange={(f) => handleAttachmentChange("Profile Photo", f)}
+                    icon="camera"
+                    variant="circle"
+                  />
+                }
+              />
+              <div className="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-6">
+                <ResuableDropdown
+                  label="Gender"
+                  value={formData.gender}
+                  onChange={(v) => handleValueChange("gender", v)}
+                  options={dropOptions.gender}
+                />
+                <ResuableDropdown
+                  label="Age Group"
+                  value={formData.ageGroup}
+                  onChange={(v) => handleValueChange("ageGroup", v)}
+                  options={dropOptions.ageGroups}
+                />
+              </div>
+            </div>
+
+            {/* Side-by-Side (7 & 8) */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="bg-white rounded-xl border border-emerald-100 shadow-sm">
+                <SectionHeader
+                  icon={HelpCircle}
+                  number="07"
+                  title="Area Familiarity"
+                  subtitle="Local knowledge assessment"
+                />
+                <div className="p-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-3 gap-x-6 gap-y-6">
+                  <ResuableInput
+                    label="Years in Area"
+                    value={formData.yearsInArea}
+                    onChange={(v) => handleValueChange("yearsInArea", v)}
+                    type="number"
+                    placeholder="0"
+                  />
+                  <ResuableDropdown
+                    label="Familiarity"
+                    value={formData.familiarityLevel}
+                    onChange={(v) => handleValueChange("familiarityLevel", v)}
+                    options={dropOptions.familiarity}
                   />
                   <ResuableInput
-                    label="Emergency Contact"
+                    label="Languages"
+                    value={formData.languages}
+                    onChange={(v) => handleValueChange("languages", v)}
+                    placeholder="e.g. Tamil, English"
+                  />
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl border border-emerald-100 shadow-sm">
+                <SectionHeader
+                  icon={Car}
+                  number="08"
+                  title="Mobility & Logistics"
+                  subtitle="Transport mode for efficiency"
+                />
+                <div className="p-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-3 gap-x-6 gap-y-6">
+                  <ResuableDropdown
+                    label="Transport"
+                    value={formData.transportMode}
+                    onChange={(v) => handleValueChange("transportMode", v)}
+                    options={dropOptions.transport}
+                  />
+                  <ResuableInput
+                    label="Distance"
+                    value={formData.maxDistance}
+                    onChange={(v) => handleValueChange("maxDistance", v)}
+                    placeholder="e.g. 10km"
+                  />
+                  <ResuableDropdown
+                    label="Fuel Refund"
+                    value={formData.fuelReimbursement}
+                    onChange={(v) => handleValueChange("fuelReimbursement", v)}
+                    options={dropOptions.yesNo}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* 9. Extended Support & Proofs */}
+            <div className="bg-white rounded-xl border border-emerald-100 shadow-sm">
+              <SectionHeader
+                icon={ShieldCheck}
+                number="09"
+                title="Extended Support & Proofs"
+                subtitle="Emergency readiness and verification"
+              />
+              <div className="p-8 space-y-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-6">
+                  <ResuableDropdown
+                    label="Emergency"
+                    value={formData.emergencyAvailable}
+                    onChange={(v) => handleValueChange("emergencyAvailable", v)}
+                    options={dropOptions.yesNo}
+                    info="Available for emergency food distribution calls?"
+                  />
+                  <ResuableDropdown
+                    label="Late Night"
+                    value={formData.nightHours}
+                    onChange={(v) => handleValueChange("nightHours", v)}
+                    options={dropOptions.yesNo}
+                    info="Can work during late night hours (after 9 PM)?"
+                  />
+                  <ResuableDropdown
+                    label="First Aid"
+                    value={formData.firstAid}
+                    onChange={(v) => handleValueChange("firstAid", v)}
+                    options={dropOptions.yesNo}
+                    info="Do you have first aid training or certification?"
+                  />
+                  <ResuableInput
+                    label="Emergency"
                     value={formData.emergencyPhone}
                     onChange={(v) => handleValueChange("emergencyPhone", v)}
                     required
                     placeholder="+91-XXXXX-XXXXX"
+                    info="Alternate contact number for emergencies"
                   />
                 </div>
-              </div>
-
-              {/* 2. Place Details */}
-              <div className="bg-white rounded-xl border border-emerald-100 shadow-sm">
-                <SectionHeader
-                  icon={MapPin}
-                  number="02"
-                  title="Base Location"
-                  subtitle="City and District verification"
-                />
-                <div className="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  <div className="lg:col-span-1">
-                    <ResuableDropdown
-                      label="State"
-                      value={formData.state}
-                      onChange={(v) => handleValueChange("state", v)}
-                      options={dropOptions.states}
-                      required
-                      placeholder={
-                        loadingStates ? "Loading States..." : "Select State"
-                      }
-                      disabled={loadingStates}
-                    />
-                  </div>
-                  <div className="lg:col-span-1">
-                    {dropOptions.districts.length > 0 ? (
-                      <ResuableDropdown
-                        label="District"
-                        value={formData.district}
-                        onChange={(v) => handleValueChange("district", v)}
-                        options={dropOptions.districts}
-                        required
-                        placeholder="Select District"
-                      />
-                    ) : (
-                      <ResuableInput
-                        label="District"
-                        value={formData.district}
-                        onChange={(v) => handleValueChange("district", v)}
-                        required
-                        placeholder={
-                          formData.state
-                            ? "Enter District Name"
-                            : "Select State First"
-                        }
-                        disabled={!formData.state}
-                      />
-                    )}
-                  </div>
-                  <ResuableInput
-                    label="City / Town"
-                    value={formData.city}
-                    onChange={(v) => handleValueChange("city", v)}
-                    required
-                    placeholder="e.g. Mumbai"
+                <div className="h-px bg-slate-100" />
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-10">
+                  <FileUploadSlot
+                    label="Address Proof"
+                    value={attachments["Address Proof"]}
+                    onChange={(f) => handleAttachmentChange("Address Proof", f)}
+                    icon="file"
+                    mandatory={true}
                   />
-                  <ResuableInput
-                    label="Pincode"
-                    value={formData.pincode}
-                    onChange={(v) => handleValueChange("pincode", v)}
-                    required
-                    placeholder="XXXXXX"
+                  <FileUploadSlot
+                    label="ID Proof"
+                    value={attachments["Government ID Proof"]}
+                    onChange={(f) =>
+                      handleAttachmentChange("Government ID Proof", f)
+                    }
+                    icon="shield"
+                    mandatory={true}
                   />
-                </div>
-              </div>
-
-              {/* 3. Area Specifics */}
-              <div className="bg-white rounded-xl border border-emerald-100 shadow-sm">
-                <SectionHeader
-                  icon={Info}
-                  number="03"
-                  title="Area Logistics"
-                  subtitle="Granular locality data for routing"
-                />
-                <div className="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  <ResuableInput
-                    label="Area / Locality Name"
-                    value={formData.areaName}
-                    onChange={(v) => handleValueChange("areaName", v)}
-                    required
-                    placeholder="e.g. Anna Nagar"
+                  <FileUploadSlot
+                    label="Organization ID"
+                    value={attachments["NGO ID"]}
+                    onChange={(f) => handleAttachmentChange("NGO ID", f)}
+                    icon="file"
                   />
-                  <ResuableInput
-                    label="Ward / Zone / Block"
-                    value={formData.wardNo}
-                    onChange={(v) => handleValueChange("wardNo", v)}
-                    placeholder="e.g. Ward 12"
-                  />
-                  <ResuableInput
-                    label="Landmark"
-                    value={formData.landmark}
-                    onChange={(v) => handleValueChange("landmark", v)}
-                    placeholder="e.g. Near Post Office"
-                  />
-                  <ResuableDropdown
-                    label="Area Type"
-                    value={formData.areaType}
-                    onChange={(v) => handleValueChange("areaType", v)}
-                    options={dropOptions.areaTypes}
-                    required
-                    placeholder="Select Type"
-                  />
-                </div>
-              </div>
-
-              {/* 4. Area Assignment & 5. Availability */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-white rounded-xl border border-emerald-100 shadow-sm">
-                  <SectionHeader
-                    icon={Briefcase}
-                    number="04"
-                    title="Field Assignment"
-                    subtitle="Operational boundary settings"
-                  />
-                  <div className="p-8 space-y-6">
-                    <ResuableInput
-                      label="Assigned Area (Primary)"
-                      value={formData.assignedArea}
-                      onChange={(v) => handleValueChange("assignedArea", v)}
-                      required
-                      placeholder="e.g. Anna Nagar West"
-                    />
-                    <ResuableDropdown
-                      label="Willing to cover nearby areas?"
-                      value={formData.coverNearby}
-                      onChange={(v) => handleValueChange("coverNearby", v)}
-                      options={dropOptions.yesNo}
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="bg-white rounded-xl border border-emerald-100 shadow-sm">
-                  <SectionHeader
-                    icon={Clock}
-                    number="05"
-                    title="Execution Timing"
-                    subtitle="Availability windows"
-                  />
-                  <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <ResuableDropdown
-                      label="Available Days"
-                      value={formData.availableDays}
-                      onChange={(v) => handleValueChange("availableDays", v)}
-                      options={dropOptions.availableDays}
-                      required
-                    />
-                    <ResuableDropdown
-                      label="Time Slot"
-                      value={formData.availableTime}
-                      onChange={(v) => handleValueChange("availableTime", v)}
-                      options={dropOptions.timeSlots}
-                      required
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* 6. Food Handling Consent */}
-              <div className="bg-white rounded-xl border border-emerald-100 shadow-sm">
-                <SectionHeader
-                  icon={Utensils}
-                  number="06"
-                  title="Safety & Consent"
-                  subtitle="Food handling and safety protocols"
-                />
-                <div className="p-8 flex flex-col md:flex-row gap-10 items-center justify-between">
-                  <div className="w-full md:w-1/3">
-                    <ResuableDropdown
-                      label="Willing to handle food?"
-                      value={formData.willingToHandleFood}
-                      onChange={(v) =>
-                        handleValueChange("willingToHandleFood", v)
-                      }
-                      options={dropOptions.yesNo}
-                      required
-                    />
-                  </div>
-                  <div
-                    className={`flex-1 p-4 rounded-lg border-2 border-dashed flex items-start gap-4 transition-all ${
-                      formData.followSafetyGuidelines
-                        ? "border-emerald-200 bg-emerald-50/30"
-                        : "border-slate-200"
-                    }`}
-                  >
-                    <input
-                      type="checkbox"
-                      id="safety"
-                      className="mt-1 w-5 h-5 accent-emerald-500 cursor-pointer"
-                      checked={formData.followSafetyGuidelines}
-                      onChange={(e) =>
-                        handleValueChange(
-                          "followSafetyGuidelines",
-                          e.target.checked
-                        )
-                      }
-                    />
-                    <label
-                      htmlFor="safety"
-                      className="text-xs font-bold text-slate-600 cursor-pointer leading-relaxed"
-                    >
-                      I hereby agree to strictly follow all Food Safety &
-                      Hygiene Guidelines provided by the Hunger Free
-                      organization during collection and distribution.
-                    </label>
-                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* --- NON-MANDATORY SECTIONS --- */}
-          <div className="pt-10 space-y-1">
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-              <Info size={14} /> Optional Coordination Details (Helpful)
-            </p>
-
-            <div className="grid grid-cols-1 gap-6">
-              {/* 7. Additional Info */}
-              <div className="bg-white rounded-xl border border-slate-200 border-dashed shadow-sm">
-                <SectionHeader
-                  icon={Smartphone}
-                  number="07"
-                  title="Personal Profile"
-                  subtitle="Background information"
-                  isMandatory={false}
-                />
-                <div className="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  <ResuableInput
-                    label="Email Address"
-                    value={formData.email}
-                    onChange={(v) => handleValueChange("email", v)}
-                    type="email"
-                    placeholder="example@mail.com"
-                  />
+            {/* 10. Safety & Consent */}
+            <div className="bg-white rounded-xl border border-emerald-100 shadow-sm">
+              <SectionHeader
+                icon={ShieldCheck}
+                number="10"
+                title="Safety & Consent"
+                subtitle="Hygiene and food handling protocols"
+              />
+              <div className="p-8 flex flex-col md:flex-row gap-10 items-center justify-between">
+                <div className="w-full md:w-1/3">
                   <ResuableDropdown
-                    label="Gender"
-                    value={formData.gender}
-                    onChange={(v) => handleValueChange("gender", v)}
-                    options={dropOptions.gender}
+                    label="Handle food?"
+                    value={formData.willingToHandleFood}
+                    onChange={(v) =>
+                      handleValueChange("willingToHandleFood", v)
+                    }
+                    options={dropOptions.yesNo}
+                    required
                   />
-                  <ResuableDropdown
-                    label="Age Group"
-                    value={formData.ageGroup}
-                    onChange={(v) => handleValueChange("ageGroup", v)}
-                    options={dropOptions.ageGroups}
-                  />
-                  <div className="flex items-center justify-center p-2 border-2 border-dashed border-slate-100 rounded-lg">
-                    <p className="text-[10px] font-bold text-slate-300">
-                      Profile Photo Upload
+                </div>
+                <div
+                  className={`flex-1 p-5 rounded-xl border-2 border-dashed flex items-start gap-4 transition-all cursor-pointer group/consent ${
+                    formData.followSafetyGuidelines
+                      ? "border-emerald-200 bg-emerald-50/40 shadow-inner"
+                      : "border-slate-200 bg-white hover:border-emerald-100 hover:bg-slate-50/30"
+                  }`}
+                  onClick={() =>
+                    handleValueChange(
+                      "followSafetyGuidelines",
+                      !formData.followSafetyGuidelines
+                    )
+                  }
+                >
+                  <div
+                    className={`mt-0.5 w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all duration-300 ${
+                      formData.followSafetyGuidelines
+                        ? "bg-[#22c55e] border-[#22c55e] scale-110 shadow-lg shadow-emerald-100"
+                        : "bg-white border-slate-200 group-hover/consent:border-emerald-300"
+                    }`}
+                  >
+                    {formData.followSafetyGuidelines && (
+                      <CheckCircle size={14} className="text-white" />
+                    )}
+                  </div>
+                  <div className="flex-1 text-left">
+                    <label className="text-[11px] font-black text-slate-700 cursor-pointer leading-relaxed block uppercase tracking-tight">
+                      Confirm Safety Protocol Compliance
+                    </label>
+                    <p className="text-[10px] font-bold text-slate-400 mt-1">
+                      I agree to strictly follow all hygiene guidelines during
+                      food collection and distribution.
                     </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* 8. Familiarity & 9. Transport */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-white rounded-xl border border-slate-200 border-dashed shadow-sm">
-                  <SectionHeader
-                    icon={HelpCircle}
-                    number="08"
-                    title="Area Familiarity"
-                    subtitle="Local knowledge assessment"
-                    isMandatory={false}
-                  />
-                  <div className="p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <ResuableInput
-                      label="Years in Area"
-                      value={formData.yearsInArea}
-                      onChange={(v) => handleValueChange("yearsInArea", v)}
-                      type="number"
-                      placeholder="0"
-                    />
-                    <ResuableDropdown
-                      label="Familiarity"
-                      value={formData.familiarityLevel}
-                      onChange={(v) => handleValueChange("familiarityLevel", v)}
-                      options={dropOptions.familiarity}
-                    />
-                    <ResuableInput
-                      label="Languages"
-                      value={formData.languages}
-                      onChange={(v) => handleValueChange("languages", v)}
-                      placeholder="e.g. Tamil, English"
-                    />
-                  </div>
-                </div>
-                <div className="bg-white rounded-xl border border-slate-200 border-dashed shadow-sm">
-                  <SectionHeader
-                    icon={Car}
-                    number="09"
-                    title="Mobility & Logistics"
-                    subtitle="Transport mode for efficiency"
-                    isMandatory={false}
-                  />
-                  <div className="p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <ResuableDropdown
-                      label="Mode of Transport"
-                      value={formData.transportMode}
-                      onChange={(v) => handleValueChange("transportMode", v)}
-                      options={dropOptions.transport}
-                    />
-                    <ResuableInput
-                      label="Max Distance"
-                      value={formData.maxDistance}
-                      onChange={(v) => handleValueChange("maxDistance", v)}
-                      placeholder="e.g. 10km"
-                    />
-                    <ResuableDropdown
-                      label="Fuel Reimbursement"
-                      value={formData.fuelReimbursement}
-                      onChange={(v) =>
-                        handleValueChange("fuelReimbursement", v)
-                      }
-                      options={dropOptions.yesNo}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* 10. Emergency & Documents */}
-              <div className="bg-white rounded-xl border border-slate-200 border-dashed shadow-sm">
-                <SectionHeader
-                  icon={ShieldCheck}
-                  number="10"
-                  title="Extended Support & Proofs"
-                  subtitle="Emergency readiness and verification"
-                  isMandatory={false}
-                />
-                <div className="p-8 space-y-8">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <ResuableDropdown
-                      label="Emergency Availability?"
-                      value={formData.emergencyAvailable}
-                      onChange={(v) =>
-                        handleValueChange("emergencyAvailable", v)
-                      }
-                      options={dropOptions.yesNo}
-                    />
-                    <ResuableDropdown
-                      label="Late Hours?"
-                      value={formData.nightHours}
-                      onChange={(v) => handleValueChange("nightHours", v)}
-                      options={dropOptions.yesNo}
-                    />
-                    <ResuableDropdown
-                      label="First Aid Knowledge?"
-                      value={formData.firstAid}
-                      onChange={(v) => handleValueChange("firstAid", v)}
-                      options={dropOptions.yesNo}
-                    />
-                  </div>
-                  <div className="h-px bg-slate-100" />
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                    <FileUploadSlot
-                      label="Profile Photo"
-                      value={attachments["Profile Photo"]}
-                      onChange={(f) =>
-                        handleAttachmentChange("Profile Photo", f)
-                      }
-                      icon="file"
-                    />
-                    <FileUploadSlot
-                      label="Address Proof"
-                      value={attachments["Address Proof"]}
-                      onChange={(f) =>
-                        handleAttachmentChange("Address Proof", f)
-                      }
-                      icon="file"
-                    />
-                    <FileUploadSlot
-                      label="ID Proof"
-                      value={attachments["Government ID Proof"]}
-                      onChange={(f) =>
-                        handleAttachmentChange("Government ID Proof", f)
-                      }
-                      icon="shield"
-                    />
-                    <FileUploadSlot
-                      label="Organization ID"
-                      value={attachments["NGO ID"]}
-                      onChange={(f) => handleAttachmentChange("NGO ID", f)}
-                      icon="file"
-                    />
                   </div>
                 </div>
               </div>
@@ -739,38 +745,83 @@ const CreateVolunteer = () => {
         </form>
 
         {/* Footer Actions */}
-        <div className="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-md border-t p-6 z-[200]">
-          <div className="max-w-5xl mx-auto flex items-center justify-between">
-            <div className="hidden md:flex items-center gap-2 text-slate-400">
-              <Info size={16} />
-              <span className="text-[10px] font-bold uppercase tracking-widest pt-0.5">
-                Please ensure all mandatory sections are populated
-              </span>
-            </div>
-            <div className="flex items-center gap-6 ml-auto">
-              <ResuableButton
-                variant="ghost"
-                onClick={() => navigate("/admin/users/volunteers")}
-                className="text-slate-400 font-black text-[11px] uppercase tracking-[0.2em] hover:text-red-500"
-              >
-                Cancel Entry
-              </ResuableButton>
-              <ResuableButton
-                onClick={() =>
-                  (
-                    document.querySelector("form") as HTMLFormElement
-                  ).requestSubmit()
-                }
-                variant="primary"
-                className="min-w-[240px] h-[54px] !bg-[#22c55e] hover:!bg-[#1ea34a] !rounded-xl shadow-lg shadow-emerald-200 transition-all font-black text-[11px] uppercase tracking-[0.2em]"
-                startContent={<CheckCircle size={20} />}
-              >
-                Confirm Registration
-              </ResuableButton>
-            </div>
+        <div className="fixed bottom-0 left-0 right-0 bg-white p-6 z-[200]">
+          <div className="flex items-center justify-end gap-6 pr-8">
+            <ResuableButton
+              variant="ghost"
+              onClick={() => navigate("/admin/users/volunteers")}
+              className="text-slate-400 font-black text-[11px] uppercase tracking-[0.2em] hover:text-red-500"
+            >
+              Cancel Entry
+            </ResuableButton>
+            <ResuableButton
+              onClick={() =>
+                (
+                  document.querySelector("form") as HTMLFormElement
+                ).requestSubmit()
+              }
+              variant="primary"
+              className="min-w-[240px] h-[54px] !bg-[#22c55e] hover:!bg-[#1ea34a] !rounded-xl shadow-lg shadow-emerald-200 transition-all font-black text-[11px] uppercase tracking-[0.2em]"
+              startContent={<CheckCircle size={20} />}
+            >
+              Confirm Registration
+            </ResuableButton>
           </div>
         </div>
       </div>
+
+      {/* Success Modal */}
+      <Modal
+        isOpen={showSuccess}
+        onOpenChange={(open) => {
+          if (!open) navigate("/admin/users/volunteers");
+        }}
+        backdrop="blur"
+        placement="center"
+        hideCloseButton
+        className="max-w-sm"
+        classNames={{
+          base: "rounded-[2.5rem] bg-white shadow-2xl overflow-visible",
+          backdrop: "bg-slate-900/40 backdrop-blur-md",
+        }}
+      >
+        <ModalContent>
+          {(onClose) => (
+            <ModalBody className="p-10 flex flex-col items-center text-center">
+              <div className="w-24 h-24 rounded-full bg-emerald-50 flex items-center justify-center mb-10 shadow-inner border border-emerald-100/50 relative">
+                <div className="absolute inset-0 bg-emerald-400/20 rounded-full animate-ping duration-[2000ms]" />
+                <div className="w-16 h-16 rounded-full bg-[#22c55e] flex items-center justify-center shadow-xl shadow-emerald-200 relative z-10 transition-transform duration-500 hover:scale-110">
+                  <CheckCircle size={36} className="text-white" />
+                </div>
+              </div>
+
+              <h3 className="text-2xl font-black text-slate-800 tracking-tight leading-tight mb-4">
+                Registration Received!
+              </h3>
+
+              <p className="text-[13px] font-semibold text-slate-500 leading-relaxed mb-10 px-4">
+                Your details have been successfully submitted for verification.
+                We'll notify you once our team completes the review.
+              </p>
+
+              <ResuableButton
+                onClick={() => {
+                  onClose();
+                  navigate("/admin/users/volunteers");
+                }}
+                variant="primary"
+                className="w-full h-14 !bg-[#22c55e] hover:!bg-[#1ea34a] !rounded-2xl shadow-xl shadow-emerald-200 transition-all font-black text-[11px] uppercase tracking-[0.2em] active:scale-[0.98]"
+              >
+                Return to Directory
+              </ResuableButton>
+
+              <p className="text-[10px] font-bold text-slate-400 mt-8 uppercase tracking-widest bg-slate-50/50 px-4 py-1.5 rounded-full border border-slate-100">
+                Thank you for your interest
+              </p>
+            </ModalBody>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   );
 };

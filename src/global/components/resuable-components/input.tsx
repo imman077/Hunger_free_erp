@@ -1,4 +1,5 @@
 import React from "react";
+import { Icon } from "./Icon";
 
 interface ResuableInputProps {
   label?: string;
@@ -10,6 +11,7 @@ interface ResuableInputProps {
   disabled?: boolean;
   required?: boolean;
   align?: "left" | "center" | "right";
+  info?: string | React.ReactNode;
 }
 
 const ResuableInput: React.FC<ResuableInputProps> = ({
@@ -21,7 +23,8 @@ const ResuableInput: React.FC<ResuableInputProps> = ({
   className = "",
   disabled = false,
   required = false,
-  align = "center",
+  align = "left",
+  info,
 }) => {
   const alignClass =
     align === "left"
@@ -31,14 +34,32 @@ const ResuableInput: React.FC<ResuableInputProps> = ({
       : "text-center";
 
   return (
-    <div className={`space-y-1.5 ${alignClass} ${className}`}>
+    <div className={`w-full ${alignClass} ${className}`}>
       {label && (
-        <label
-          className="text-[10px] font-bold uppercase tracking-widest block px-1"
-          style={{ color: "var(--text-muted)" }}
+        <div
+          className={`flex items-center gap-1.5 mb-1 px-1 ${
+            align === "center" ? "justify-center" : ""
+          } ${align === "right" ? "justify-end" : ""}`}
         >
-          {label} {required && <span style={{ color: "#ef4444" }}>*</span>}
-        </label>
+          <label
+            className="text-[10px] font-bold uppercase tracking-widest block"
+            style={{ color: "var(--text-muted)" }}
+          >
+            {label} {required && <span style={{ color: "#ef4444" }}>*</span>}
+          </label>
+          {info && (
+            <div className="group/info relative flex items-center">
+              <Icon
+                name="info"
+                className="w-3.5 h-3.5 text-slate-300 hover:text-[#22c55e] transition-colors cursor-help"
+              />
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 min-w-[200px] max-w-[280px] p-3 bg-slate-900/95 backdrop-blur-sm text-white text-[10px] font-medium leading-relaxed rounded-lg shadow-2xl opacity-0 invisible group-hover/info:opacity-100 group-hover/info:visible transition-all z-[10000] pointer-events-none whitespace-pre-line border border-white/10 text-left">
+                {info}
+                <div className="absolute top-full left-1/2 -translate-x-1/2 border-[5px] border-transparent border-t-slate-900/95" />
+              </div>
+            </div>
+          )}
+        </div>
       )}
       <input
         type={type}
