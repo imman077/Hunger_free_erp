@@ -15,7 +15,21 @@ import {
 import { ImpactCards } from "../../../../global/components/resuable-components/ImpactCards";
 import ReusableTable from "../../../../global/components/resuable-components/table";
 import ReusableButton from "../../../../global/components/resuable-components/button";
-import { Plus, Eye, ChevronDown, Filter, X } from "lucide-react";
+import {
+  Plus,
+  Eye,
+  ChevronDown,
+  Filter,
+  X,
+  Phone,
+  User,
+  Mail,
+  MapPin,
+  History as HistoryIcon,
+  DollarSign,
+  FileText,
+  ShieldCheck,
+} from "lucide-react";
 import FilePreviewModal from "../../../../global/components/resuable-components/FilePreviewModal";
 
 interface DonationHistory {
@@ -140,7 +154,7 @@ const DonorPage = () => {
   ]);
 
   const getStatusColor = (
-    status: string
+    status: string,
   ): { backgroundColor: string; color: string; border?: string } => {
     switch (status) {
       case "Active":
@@ -202,7 +216,7 @@ const DonorPage = () => {
     setActiveFilters((prev) =>
       prev.includes(filter)
         ? prev.filter((f) => f !== filter)
-        : [...prev, filter]
+        : [...prev, filter],
     );
     if (filter === "type") setFilterType("All");
     if (filter === "status") setFilterStatus("All");
@@ -270,8 +284,8 @@ const DonorPage = () => {
                 val: formatCurrency(
                   donors.reduce(
                     (sum: number, donor: Donor) => sum + donor.totalDonations,
-                    0
-                  )
+                    0,
+                  ),
                 ),
                 trend: "Cumulative contributions",
                 color: "bg-[#22c55e]",
@@ -578,279 +592,276 @@ const DonorPage = () => {
           {() => (
             <>
               <DrawerHeader
-                className="flex flex-col gap-1 no-scrollbar border-b px-6 py-4"
+                className="flex flex-col gap-1 no-scrollbar border-b px-6 py-3"
                 style={{ borderBottomColor: "var(--border-color)" }}
               >
                 <div className="flex items-center justify-between">
                   <h2
-                    className="text-xl font-bold"
+                    className="text-xl font-black tracking-tight"
                     style={{ color: "var(--text-primary)" }}
                   >
                     Donor Details
                   </h2>
+                  <button
+                    onClick={closeDrawer}
+                    className="p-1.5 hover:bg-slate-100 rounded-sm transition-colors text-slate-400"
+                  >
+                    <X size={18} />
+                  </button>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span
-                    className="text-sm font-medium"
-                    style={{ color: "var(--text-muted)" }}
-                  >
-                    Account Overview
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    System Profile Identifier
                   </span>
                   {selectedDonor && getStatusBadge(selectedDonor.status)}
                 </div>
               </DrawerHeader>
 
-              <DrawerBody className="px-6 py-4 space-y-6 overflow-y-auto no-scrollbar">
+              <DrawerBody className="px-6 py-3 space-y-4 overflow-y-auto no-scrollbar">
                 {selectedDonor && (
                   <>
-                    {/* Business Overview */}
-                    <div
-                      className="p-4 rounded-lg border"
-                      style={{
-                        background:
-                          "linear-gradient(to right, rgba(245, 158, 11, 0.1), rgba(251, 191, 36, 0.1))",
-                        borderColor: "rgba(245, 158, 11, 0.2)",
-                      }}
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold text-white bg-gradient-to-br from-amber-400 to-orange-600 shadow-md">
-                          {selectedDonor.businessName
-                            .split(" ")
-                            .map((n: string) => n[0])
-                            .join("")}
+                    {/* Hero Section - NGO Style */}
+                    <div className="relative pb-6 border-b border-slate-100">
+                      <div className="flex flex-col items-center gap-4">
+                        {/* Avatar with Badge - Literal NGO Style */}
+                        <div className="relative w-24 h-24 mb-4 group transition-transform duration-500 hover:scale-105">
+                          {/* Inner Avatar Box */}
+                          <div className="w-full h-full p-1.5 rounded-sm bg-amber-50 border border-amber-100/50">
+                            <div className="w-full h-full rounded-sm bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center text-3xl font-black text-white shadow-sm overflow-hidden uppercase italic">
+                              {selectedDonor.businessName
+                                .split(" ")
+                                .map((n: string) => n[0])
+                                .slice(0, 3)
+                                .join("")}
+                            </div>
+                          </div>
+
+                          {/* Status Float - Centered Bottom (NGO Reference) */}
+                          <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 bg-white p-1 rounded-sm border border-slate-100 ring-2 ring-slate-50 shadow-sm z-20 whitespace-nowrap">
+                            <div className="flex items-center gap-1.5 px-2 py-0.5 bg-amber-500/10 rounded-sm">
+                              <div className="w-1.5 h-1.5 rounded-sm bg-amber-500 animate-pulse" />
+                              <span className="text-[9px] font-black text-amber-600 uppercase tracking-tighter">
+                                Corporate Donor
+                              </span>
+                            </div>
+                          </div>
                         </div>
-                        <div>
-                          <h3
-                            className="font-bold text-lg leading-tight"
-                            style={{ color: "var(--text-primary)" }}
-                          >
-                            {selectedDonor.businessName}
-                          </h3>
-                          <p className="text-xs font-semibold text-amber-600 uppercase tracking-widest mt-1">
-                            {selectedDonor.type}
+
+                        {/* Business Info */}
+                        <div className="text-center space-y-3 max-w-sm">
+                          <div className="space-y-0.5 w-full flex flex-col items-center">
+                            <h3 className="text-2xl font-black text-slate-900 leading-[1.05] tracking-tight">
+                              {selectedDonor.businessName}
+                            </h3>
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
+                              Global Identifier: #
+                              {selectedDonor.id.toString().padStart(4, "0")}
+                            </p>
+                          </div>
+
+                          {/* Badges Row */}
+                          <div className="flex flex-wrap items-center justify-center gap-2">
+                            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-sm bg-white/80 backdrop-blur-md border border-slate-200/50 transition-all hover:border-amber-500">
+                              <span className="text-[9px] font-black text-amber-600/80 uppercase">
+                                Type
+                              </span>
+                              <div className="w-1 h-3 bg-amber-100 rounded-full" />
+                              <span className="text-xs font-mono font-bold text-slate-700">
+                                {selectedDonor.type}
+                              </span>
+                            </div>
+                            {getStatusBadge(selectedDonor.status)}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Stats Grid */}
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="bg-gradient-to-br from-amber-50 to-orange-50 p-3 rounded-sm border border-amber-100 shadow-sm">
+                        <div className="text-[9px] font-black text-amber-600/70 uppercase tracking-[0.2em] mb-1">
+                          Total Donations
+                        </div>
+                        <div className="text-sm font-black text-amber-700">
+                          {formatCurrency(selectedDonor.totalDonations)}
+                        </div>
+                      </div>
+                      <div className="bg-gradient-to-br from-amber-50 to-orange-50 p-3 rounded-sm border border-amber-100 shadow-sm">
+                        <div className="text-[9px] font-black text-amber-600/70 uppercase tracking-[0.2em] mb-1">
+                          Loyalty Points
+                        </div>
+                        <div className="text-sm font-black text-amber-700">
+                          {selectedDonor.points.toLocaleString()} pts
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Contact & Connectivity Section */}
+                    <section className="space-y-3">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-sm bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 shadow-sm shrink-0">
+                          <Phone size={16} strokeWidth={2.5} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest leading-none">
+                            Connectivity
+                          </h4>
+                          <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight mt-1 leading-none">
+                            Communication Channels
                           </p>
                         </div>
                       </div>
-                    </div>
 
-                    {/* Quick Stats */}
-                    <div className="grid grid-cols-2 gap-3">
-                      <div
-                        className="p-3 rounded-lg border text-center"
-                        style={{
-                          backgroundColor: "var(--bg-secondary)",
-                          borderColor: "var(--border-color)",
-                        }}
-                      >
-                        <p
-                          className="text-[10px] font-black uppercase tracking-widest mb-1"
-                          style={{ color: "var(--text-muted)" }}
-                        >
-                          Total Donated
-                        </p>
-                        <p
-                          className="text-lg font-black"
-                          style={{ color: "var(--text-primary)" }}
-                        >
-                          {formatCurrency(selectedDonor.totalDonations)}
-                        </p>
+                      <div className="grid grid-cols-2 gap-2">
+                        {[
+                          {
+                            Icon: User,
+                            label: "Contact Person",
+                            value: selectedDonor.contactPerson,
+                            color: "amber",
+                            bg: "bg-amber-50/50",
+                          },
+                          {
+                            Icon: Mail,
+                            label: "Verified Email",
+                            value: selectedDonor.email,
+                            color: "blue",
+                            bg: "bg-blue-50/50",
+                          },
+                          {
+                            Icon: MapPin,
+                            label: "Physical Address",
+                            value: selectedDonor.address,
+                            color: "purple",
+                            bg: "bg-purple-50/50",
+                            full: true,
+                          },
+                        ].map((item, i) => (
+                          <div
+                            key={i}
+                            className={`group bg-white p-3 rounded-sm border border-slate-200 transition-all duration-500 border-b-2 border-b-transparent hover:border-b-hf-green hover:bg-slate-50/30 shadow-sm ${item.full ? "col-span-2" : ""}`}
+                          >
+                            <div className="flex items-center gap-3">
+                              <div
+                                className={`w-10 h-10 rounded-sm ${item.bg} flex items-center justify-center text-${item.color}-600 group-hover:scale-110 transition-transform duration-500`}
+                              >
+                                <item.Icon size={18} strokeWidth={2.5} />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">
+                                  {item.label}
+                                </p>
+                                <p className="text-xs font-bold text-slate-900 leading-tight truncate group-hover:text-hf-green transition-colors uppercase tracking-tight">
+                                  {item.value}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                      <div
-                        className="p-3 rounded-lg border text-center"
-                        style={{
-                          backgroundColor: "var(--bg-secondary)",
-                          borderColor: "var(--border-color)",
-                        }}
-                      >
-                        <p
-                          className="text-[10px] font-black uppercase tracking-widest mb-1"
-                          style={{ color: "var(--text-muted)" }}
-                        >
-                          Reward Points
-                        </p>
-                        <p className="text-lg font-black text-amber-600">
-                          {selectedDonor.points.toLocaleString()}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Contact Information */}
-                    <div>
-                      <h3
-                        className="text-sm font-semibold uppercase tracking-wider mb-3"
-                        style={{ color: "var(--text-primary)" }}
-                      >
-                        Contact Information
-                      </h3>
-                      <div className="space-y-3">
-                        <div className="flex items-start space-x-3">
-                          <div className="w-8 h-8 rounded bg-amber-50 border border-amber-100 flex items-center justify-center flex-shrink-0">
-                            <span className="text-amber-600 text-sm">👤</span>
-                          </div>
-                          <div>
-                            <div
-                              className="text-[10px] font-black uppercase tracking-widest"
-                              style={{ color: "var(--text-muted)" }}
-                            >
-                              Contact Person
-                            </div>
-                            <div
-                              className="text-sm font-bold"
-                              style={{ color: "var(--text-secondary)" }}
-                            >
-                              {selectedDonor.contactPerson}
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="flex items-start space-x-3">
-                          <div className="w-8 h-8 rounded bg-amber-50 border border-amber-100 flex items-center justify-center flex-shrink-0">
-                            <span className="text-amber-600 text-sm">📧</span>
-                          </div>
-                          <div>
-                            <div
-                              className="text-[10px] font-black uppercase tracking-widest"
-                              style={{ color: "var(--text-muted)" }}
-                            >
-                              Email Address
-                            </div>
-                            <div
-                              className="text-sm font-bold break-all"
-                              style={{ color: "var(--text-secondary)" }}
-                            >
-                              {selectedDonor.email}
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="flex items-start space-x-3">
-                          <div className="w-8 h-8 rounded bg-amber-50 border border-amber-100 flex items-center justify-center flex-shrink-0">
-                            <span className="text-amber-600 text-sm">📍</span>
-                          </div>
-                          <div>
-                            <div
-                              className="text-[10px] font-black uppercase tracking-widest"
-                              style={{ color: "var(--text-muted)" }}
-                            >
-                              Office Address
-                            </div>
-                            <div
-                              className="text-sm font-bold leading-relaxed"
-                              style={{ color: "var(--text-secondary)" }}
-                            >
-                              {selectedDonor.address}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    </section>
 
                     {/* Recent Donation History */}
-                    <div>
-                      <h3
-                        className="text-sm font-semibold uppercase tracking-wider mb-3"
-                        style={{ color: "var(--text-primary)" }}
-                      >
-                        Recent Donations
-                      </h3>
-                      <div className="space-y-2">
+                    <section className="space-y-3">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-sm bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm shrink-0">
+                          <HistoryIcon size={16} strokeWidth={2.5} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest leading-none">
+                            Transaction History
+                          </h4>
+                          <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight mt-1 leading-none">
+                            Recent Contributions
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-1.5">
                         {selectedDonor.donationHistory.map(
                           (item: DonationHistory, index: number) => (
                             <div
                               key={index}
-                              className="p-3 rounded border flex items-center justify-between group hover:border-amber-200 transition-colors"
-                              style={{
-                                backgroundColor: "var(--bg-secondary)",
-                                borderColor: "var(--border-color)",
-                              }}
+                              className="group flex items-center gap-3 p-3 rounded-sm bg-white border border-slate-200 hover:border-hf-green/40 hover:bg-slate-50/30 transition-all duration-500 relative overflow-hidden shadow-sm"
                             >
-                              <div className="min-w-0">
-                                <p
-                                  className="text-xs font-bold truncate pr-2"
-                                  style={{ color: "var(--text-primary)" }}
-                                >
+                              <div className="absolute top-0 right-0 w-24 h-full bg-gradient-to-l from-emerald-50/0 to-transparent group-hover:from-emerald-50/50 transition-colors" />
+                              <div className="w-10 h-10 rounded-sm bg-slate-100 flex items-center justify-center shrink-0 group-hover:bg-hf-green/10 group-hover:text-hf-green transition-colors">
+                                <DollarSign size={18} strokeWidth={2.5} />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-xs font-bold text-slate-900 leading-tight truncate">
                                   {item.event}
                                 </p>
-                                <p
-                                  className="text-[10px] font-medium"
-                                  style={{ color: "var(--text-muted)" }}
-                                >
+                                <p className="text-[10px] font-medium text-slate-500 uppercase tracking-tight">
                                   {item.date}
                                 </p>
                               </div>
                               <div className="text-right shrink-0">
-                                <p className="text-xs font-black text-amber-600">
+                                <p className="text-xs font-black text-hf-green">
                                   {formatCurrency(item.amount)}
+                                </p>
+                                <p className="text-[8px] font-black text-slate-400 uppercase tracking-tighter">
+                                  Allocated
                                 </p>
                               </div>
                             </div>
-                          )
+                          ),
                         )}
                       </div>
-                    </div>
+                    </section>
 
                     {/* Verification Documents */}
-                    <div>
-                      <h3
-                        className="text-sm font-semibold uppercase tracking-wider mb-3"
-                        style={{ color: "var(--text-primary)" }}
-                      >
-                        Verification Documents
-                      </h3>
-                      <div className="space-y-3">
+                    <section className="space-y-3">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-sm bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shadow-sm shrink-0">
+                          <FileText size={16} strokeWidth={2.5} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest leading-none">
+                            Legal & Compliance
+                          </h4>
+                          <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight mt-1 leading-none">
+                            Identity Verification
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
                         <div
                           onClick={() => setIsPreviewOpen(true)}
-                          className="p-3 rounded border flex items-center justify-between group hover:border-amber-200 transition-colors cursor-pointer"
-                          style={{
-                            backgroundColor: "var(--bg-secondary)",
-                            borderColor: "var(--border-color)",
-                          }}
+                          className="p-3 rounded-sm bg-white border border-slate-200 transition-all duration-500 border-b-2 border-b-transparent hover:border-b-hf-green hover:bg-slate-50/30 shadow-sm flex items-center justify-between group cursor-pointer"
                         >
                           <div className="flex items-center gap-3 min-w-0">
-                            <div className="w-8 h-8 rounded bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 shrink-0">
-                              <svg
-                                className="w-4 h-4"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                                />
-                              </svg>
+                            <div className="w-10 h-10 rounded-sm bg-emerald-50 border border-emerald-100 flex items-center justify-center text-hf-green shrink-0 group-hover:scale-110 transition-transform">
+                              <ShieldCheck size={18} strokeWidth={2.5} />
                             </div>
                             <div className="min-w-0">
-                              <p
-                                className="text-xs font-bold truncate pr-2"
-                                style={{ color: "var(--text-primary)" }}
-                              >
+                              <p className="text-xs font-bold text-slate-900 leading-tight truncate">
                                 Business_License.pdf
                               </p>
                               <div className="flex items-center gap-1.5">
-                                <span className="text-[9px] font-black text-amber-600 uppercase">
+                                <div className="w-1.5 h-1.5 rounded-full bg-hf-green" />
+                                <span className="text-[9px] font-black text-hf-green uppercase tracking-widest">
                                   Verified
                                 </span>
-                                <span className="text-[9px] text-slate-400 font-bold">
+                                <span className="text-[9px] text-slate-400 font-bold ml-1">
                                   • 1.2 MB
                                 </span>
                               </div>
                             </div>
                           </div>
-                          <div className="text-slate-400 group-hover:text-[#22c55e] transition-colors shrink-0">
-                            <Eye size={16} />
+                          <div className="text-slate-300 group-hover:text-hf-green transition-colors shrink-0">
+                            <Eye size={16} strokeWidth={2.5} />
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </section>
 
                     {/* Actions Area */}
-                    <div className="pt-4 flex gap-2">
+                    <div className="pt-2 flex gap-2">
                       <ReusableButton
                         variant="primary"
-                        className="flex-1 !bg-amber-500 hover:!bg-amber-600 !text-white !font-black !px-4 !py-6 !text-xs uppercase tracking-widest !rounded-sm shadow-lg shadow-amber-500/20"
+                        className="flex-1 !bg-amber-500 hover:!bg-amber-600 !text-white !font-black !px-4 !py-5 !text-[10px] uppercase tracking-widest !rounded-sm shadow-lg shadow-amber-500/20"
                       >
                         Message Donor
                       </ReusableButton>

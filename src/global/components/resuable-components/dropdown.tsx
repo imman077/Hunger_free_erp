@@ -36,9 +36,29 @@ const ResuableDropdown: React.FC<ResuableDropdownProps> = ({
   info,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [openUpward, setOpenUpward] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const selectedOption = options.find((opt) => opt.value === value);
+
+  // Check if dropdown should open upward based on available space
+  useEffect(() => {
+    if (isOpen && dropdownRef.current && menuRef.current) {
+      const buttonRect = dropdownRef.current.getBoundingClientRect();
+      const menuHeight = menuRef.current.scrollHeight;
+      const viewportHeight = window.innerHeight;
+      const spaceBelow = viewportHeight - buttonRect.bottom;
+      const spaceAbove = buttonRect.top;
+
+      // Open upward if there's not enough space below but enough space above
+      if (spaceBelow < menuHeight && spaceAbove > menuHeight) {
+        setOpenUpward(true);
+      } else {
+        setOpenUpward(false);
+      }
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -62,8 +82,8 @@ const ResuableDropdown: React.FC<ResuableDropdownProps> = ({
     align === "left"
       ? "text-left"
       : align === "right"
-      ? "text-right"
-      : "text-center";
+        ? "text-right"
+        : "text-center";
 
   return (
     <div className={`w-full ${alignClass} ${className}`}>
@@ -116,7 +136,11 @@ const ResuableDropdown: React.FC<ResuableDropdownProps> = ({
           </span>
           <span
             className={`transition-transform duration-200 ${
-              isOpen ? "rotate-180" : ""
+              isOpen && !openUpward
+                ? "rotate-180"
+                : isOpen && openUpward
+                  ? ""
+                  : ""
             }`}
             style={{ color: isOpen ? "#22c55e" : "var(--text-muted)" }}
           >
@@ -126,7 +150,10 @@ const ResuableDropdown: React.FC<ResuableDropdownProps> = ({
 
         {isOpen && (
           <div
-            className="absolute top-full left-0 right-0 mt-1 border rounded-none z-[9999] max-h-60 overflow-y-auto no-scrollbar animate-in fade-in zoom-in-95 duration-200"
+            ref={menuRef}
+            className={`absolute left-0 right-0 border rounded-none z-[9999] max-h-60 overflow-y-auto no-scrollbar animate-in fade-in zoom-in-95 duration-200 ${
+              openUpward ? "bottom-full mb-1" : "top-full mt-1"
+            }`}
             style={{
               backgroundColor: "var(--bg-primary)",
               borderColor: "var(--border-color)",

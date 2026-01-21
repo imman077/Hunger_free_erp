@@ -30,8 +30,8 @@ const ResuableInput: React.FC<ResuableInputProps> = ({
     align === "left"
       ? "text-left"
       : align === "right"
-      ? "text-right"
-      : "text-center";
+        ? "text-right"
+        : "text-center";
 
   return (
     <div className={`w-full ${alignClass} ${className}`}>
@@ -42,7 +42,7 @@ const ResuableInput: React.FC<ResuableInputProps> = ({
           } ${align === "right" ? "justify-end" : ""}`}
         >
           <label
-            className="text-[10px] font-bold uppercase tracking-widest block"
+            className="text-[8px] font-black uppercase tracking-widest block"
             style={{ color: "var(--text-muted)" }}
           >
             {label} {required && <span style={{ color: "#ef4444" }}>*</span>}
@@ -73,7 +73,7 @@ const ResuableInput: React.FC<ResuableInputProps> = ({
           borderColor: "var(--border-color)",
           color: "var(--text-primary)",
         }}
-        className={`w-full border px-3 py-2.5 rounded-none text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#22c55e]/50 focus:border-[#22c55e] transition-all placeholder:text-neutral-500 ${alignClass}`}
+        className={`w-full border px-2.5 py-2 rounded-none text-[11px] font-bold focus:outline-none focus:ring-1 focus:ring-[#22c55e]/50 focus:border-[#22c55e] transition-all placeholder:text-neutral-500 ${alignClass}`}
       />
     </div>
   );

@@ -61,7 +61,7 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
     <div className={`w-full ${className}`} ref={dropdownRef}>
       {label && (
         <label
-          className="text-[10px] font-black uppercase tracking-widest block mb-2 px-1"
+          className="text-[8px] font-black uppercase tracking-widest block mb-1.5 px-0.5"
           style={{ color: "var(--text-muted)" }}
         >
           {label}
@@ -77,7 +77,7 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
               setIsOpen(!isOpen);
             }
           }}
-          className="w-full border p-2.5 rounded-none transition-all cursor-pointer"
+          className="w-full border p-2 rounded-none transition-all cursor-pointer"
           style={{
             backgroundColor: "var(--bg-secondary)",
             borderColor: isOpen ? "#22c55e" : "var(--border-color)",
@@ -88,7 +88,7 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
               value.map((val) => (
                 <div
                   key={val}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold bg-emerald-50 text-[#22c55e] border border-emerald-200 hover:bg-emerald-100 transition-all"
+                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[8.5px] font-black bg-emerald-50 text-[#22c55e] border border-emerald-200 hover:bg-emerald-100 transition-all"
                 >
                   <span>{getLabel(val)}</span>
                   <button
