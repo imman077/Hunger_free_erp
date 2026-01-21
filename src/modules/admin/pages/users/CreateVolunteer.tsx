@@ -9,7 +9,6 @@ import {
   ShieldCheck,
   Clock,
   Smartphone,
-  Info,
   Briefcase,
   HelpCircle,
   Navigation,
@@ -90,7 +89,7 @@ const CreateVolunteer = () => {
       setLoadingStates(true);
       try {
         const response = await fetch(
-          "https://raw.githubusercontent.com/sab99r/Indian-States-And-Districts/master/states-and-districts.json"
+          "https://raw.githubusercontent.com/sab99r/Indian-States-And-Districts/master/states-and-districts.json",
         );
         const data = await response.json();
         if (data && data.states) {
@@ -124,7 +123,7 @@ const CreateVolunteer = () => {
         (d: string) => ({
           value: d,
           label: d,
-        })
+        }),
       );
       setDistrictsList(mappedDistricts);
     } else {
@@ -714,7 +713,7 @@ const CreateVolunteer = () => {
                   onClick={() =>
                     handleValueChange(
                       "followSafetyGuidelines",
-                      !formData.followSafetyGuidelines
+                      !formData.followSafetyGuidelines,
                     )
                   }
                 >
@@ -788,9 +787,9 @@ const CreateVolunteer = () => {
         <ModalContent>
           {(onClose) => (
             <ModalBody className="p-10 flex flex-col items-center text-center">
-              <div className="w-24 h-24 rounded-full bg-emerald-50 flex items-center justify-center mb-10 shadow-inner border border-emerald-100/50 relative">
-                <div className="absolute inset-0 bg-emerald-400/20 rounded-full animate-ping duration-[2000ms]" />
-                <div className="w-16 h-16 rounded-full bg-[#22c55e] flex items-center justify-center shadow-xl shadow-emerald-200 relative z-10 transition-transform duration-500 hover:scale-110">
+              <div className="w-24 h-24 rounded-full bg-[#ecfdf5] flex items-center justify-center mb-10 shadow-inner border border-[#22c55e]/20 relative">
+                <div className="absolute inset-0 bg-[#22c55e]/20 rounded-full animate-ping duration-[2000ms]" />
+                <div className="w-16 h-16 rounded-full bg-[#22c55e] flex items-center justify-center shadow-xl shadow-[#22c55e]/20 relative z-10 transition-transform duration-500 hover:scale-110">
                   <CheckCircle size={36} className="text-white" />
                 </div>
               </div>

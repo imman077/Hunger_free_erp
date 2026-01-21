@@ -157,13 +157,13 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
                       {displayName}
                     </h2>
                     {(badge || (showTrendingLayout && !badge)) && (
-                      <span className="px-2 py-0.5 bg-emerald-500 text-white text-[9px] font-bold rounded-sm uppercase">
+                      <span className="px-2 py-0.5 bg-[#22c55e] text-white text-[9px] font-bold rounded-sm uppercase">
                         {badge || "Partner"}
                       </span>
                     )}
                     {(status || (showTrendingLayout && !status)) && (
                       <div className="flex items-center gap-1.5 ml-1">
-                        <div className="w-2 h-2 bg-emerald-500 rounded-sm" />
+                        <div className="w-2 h-2 bg-[#22c55e] rounded-sm" />
                         <span
                           className="text-[10px] font-bold uppercase tracking-widest"
                           style={{ color: "var(--text-muted)" }}
@@ -387,7 +387,7 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
                               {(data?.logEvents || []).map(
                                 (event: any, idx: number) => (
                                   <div key={idx} className="relative">
-                                    <div className="absolute -left-[19px] top-1 w-2 h-2 rounded-sm bg-emerald-500" />
+                                    <div className="absolute -left-[19px] top-1 w-2 h-2 rounded-sm bg-[#22c55e]" />
                                     <p
                                       className="text-[11px] font-bold leading-none"
                                       style={{ color: "var(--text-primary)" }}
@@ -401,7 +401,7 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
                                       {event.date}
                                     </p>
                                   </div>
-                                )
+                                ),
                               )}
                             </div>
                           </div>
@@ -495,7 +495,7 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
                                   <div
                                     className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[8px] font-black uppercase border ${
                                       item.status === "Verified"
-                                        ? "bg-emerald-50 text-emerald-600 border-emerald-100"
+                                        ? "border-[#22c55e] bg-[#ecfdf5] text-[#15803d] shadow-sm shadow-[#22c55e]/10"
                                         : "bg-rose-50 text-rose-700 border-rose-100"
                                     }`}
                                   >
@@ -606,7 +606,7 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
                         onCloseInternal();
                       }}
                       className="px-8 py-2 text-white rounded-sm text-[9px] font-bold uppercase tracking-widest hover:opacity-90 transition-all shadow-md active:scale-95"
-                      style={{ backgroundColor: "var(--text-primary)" }}
+                      style={{ backgroundColor: "#22c55e" }}
                     >
                       {showTrendingLayout ? "Close Portal" : "Close"}
                     </button>
