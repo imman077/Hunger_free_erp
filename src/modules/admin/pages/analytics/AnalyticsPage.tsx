@@ -11,46 +11,54 @@ import {
   Bar,
   Cell,
 } from "recharts";
-import { Leaf, AlertTriangle } from "lucide-react";
+import { Leaf, TrendingUp, Users, Building2, Heart } from "lucide-react";
 
 import { ImpactCards } from "../../../../global/components/resuable-components/ImpactCards";
 
-const wasteData = [
-  { day: "Mon", rescued: 450, wasted: 45 },
-  { day: "Tue", rescued: 520, wasted: 30 },
-  { day: "Wed", rescued: 480, wasted: 60 },
-  { day: "Thu", rescued: 610, wasted: 25 },
-  { day: "Fri", rescued: 750, wasted: 40 },
-  { day: "Sat", rescued: 820, wasted: 15 },
-  { day: "Sun", rescued: 900, wasted: 10 },
+// Weekly donation trends - mock data for UI
+const donationTrends = [
+  { day: "Mon", donations: 12, distributed: 10 },
+  { day: "Tue", donations: 18, distributed: 15 },
+  { day: "Wed", donations: 15, distributed: 14 },
+  { day: "Thu", donations: 22, distributed: 20 },
+  { day: "Fri", donations: 28, distributed: 25 },
+  { day: "Sat", donations: 35, distributed: 32 },
+  { day: "Sun", donations: 20, distributed: 18 },
 ];
 
+// Donation categories distribution - mock data for UI
 const categoryData = [
-  { name: "Produce", value: 45, color: "#22c55e" },
-  { name: "Dairy", value: 25, color: "#3b82f6" },
-  { name: "Prepared", value: 20, color: "#f59e0b" },
-  { name: "Bakery", value: 10, color: "#8b5cf6" },
+  { name: "Cooked Food", value: 40, color: "#22c55e" },
+  { name: "Fresh Produce", value: 25, color: "#3b82f6" },
+  { name: "Packaged Items", value: 20, color: "#f59e0b" },
+  { name: "Beverages", value: 15, color: "#8b5cf6" },
 ];
 
 const AnalyticsPage: React.FC = () => {
   const impactMetrics = [
     {
-      label: "Meals Provided",
-      val: "12,482",
-      trend: "+15.2% from last month",
+      label: "Total Donations",
+      val: "1,248",
+      trend: "+18% from last month",
       color: "bg-[#22c55e]",
     },
     {
-      label: "CO2 Offset (kg)",
-      val: "4,120.5",
-      trend: "Equivalent to 182 trees",
+      label: "Meals Distributed",
+      val: "8,420",
+      trend: "Across 24 NGOs",
       color: "bg-emerald-500",
     },
     {
-      label: "Wastage Rate",
-      val: "4.2%",
-      trend: "-2.1% improvement",
-      color: "bg-[#22c55e]",
+      label: "Active Volunteers",
+      val: "156",
+      trend: "+12 this week",
+      color: "bg-blue-500",
+    },
+    {
+      label: "Partner NGOs",
+      val: "24",
+      trend: "3 pending approval",
+      color: "bg-amber-500",
     },
   ];
 
@@ -62,17 +70,17 @@ const AnalyticsPage: React.FC = () => {
             className="text-4xl font-black tracking-tight"
             style={{ color: "var(--text-primary)" }}
           >
-            Food Rescue Intelligence
+            Impact Analytics
           </h1>
           <p className="text-slate-500 font-semibold mt-2">
-            Monitoring waste diversion and environmental impact metrics.
+            Track donations, distribution, and community impact metrics.
           </p>
         </div>
         <div className="flex gap-4">
-          <div className="flex items-center gap-2 bg-[#ecfdf5] px-4 py-2 rounded-2xl border border-[#d1fae5]">
+          <div className="flex items-center gap-2 bg-[#ecfdf5] px-4 py-2 rounded-sm border border-[#d1fae5]">
             <Leaf size={18} className="text-[#22c55e]" />
-            <span className="text-sm font-black text-[#16a34a]">
-              92% DIVERTED
+            <span className="text-sm font-black text-[#16a34a] uppercase tracking-tight">
+              95% Distribution Rate
             </span>
           </div>
         </div>
@@ -84,7 +92,7 @@ const AnalyticsPage: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 text-start">
-        {/* Main Graph */}
+        {/* Main Graph - Donation Trends */}
         <div
           className="lg:col-span-8 p-6 rounded-sm border shadow-sm"
           style={{
@@ -94,24 +102,43 @@ const AnalyticsPage: React.FC = () => {
         >
           <div className="flex justify-between items-center mb-8">
             <div>
-              <h3
-                className="font-black text-xl tracking-tight"
-                style={{ color: "var(--text-primary)" }}
-              >
-                Rescue Velocity
-              </h3>
+              <div className="flex items-center gap-2 mb-1">
+                <TrendingUp size={20} className="text-[#22c55e]" />
+                <h3
+                  className="font-black text-xl tracking-tight"
+                  style={{ color: "var(--text-primary)" }}
+                >
+                  Donation Flow
+                </h3>
+              </div>
               <p className="text-sm text-slate-400 font-medium">
-                Daily comparison of rescued vs. wasted inventory (kg)
+                Weekly comparison of donations received vs. distributed
               </p>
             </div>
           </div>
           <div className="h-[400px]">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={wasteData}>
+              <AreaChart data={donationTrends}>
                 <defs>
-                  <linearGradient id="colorRescued" x1="0" y1="0" x2="0" y2="1">
+                  <linearGradient
+                    id="colorDonations"
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="1"
+                  >
                     <stop offset="5%" stopColor="#22c55e" stopOpacity={0.1} />
                     <stop offset="95%" stopColor="#22c55e" stopOpacity={0} />
+                  </linearGradient>
+                  <linearGradient
+                    id="colorDistributed"
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="1"
+                  >
+                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.1} />
+                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid
@@ -133,28 +160,29 @@ const AnalyticsPage: React.FC = () => {
                 />
                 <Tooltip
                   contentStyle={{
-                    borderRadius: "12px",
-                    border: "none",
-                    boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.1)",
-                    padding: "16px",
+                    borderRadius: "8px",
+                    border: "1px solid #e2e8f0",
+                    boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                    padding: "12px",
                   }}
                 />
                 <Area
                   type="monotone"
-                  dataKey="rescued"
+                  dataKey="donations"
                   stroke="#22c55e"
-                  strokeWidth={4}
+                  strokeWidth={3}
                   fillOpacity={1}
-                  fill="url(#colorRescued)"
-                  name="Rescued (kg)"
+                  fill="url(#colorDonations)"
+                  name="Donations Received"
                 />
                 <Area
                   type="monotone"
-                  dataKey="wasted"
-                  stroke="#f43f5e"
+                  dataKey="distributed"
+                  stroke="#3b82f6"
                   strokeWidth={2}
-                  fill="transparent"
-                  name="Wasted (kg)"
+                  fillOpacity={1}
+                  fill="url(#colorDistributed)"
+                  name="Distributed"
                 />
               </AreaChart>
             </ResponsiveContainer>
@@ -169,14 +197,17 @@ const AnalyticsPage: React.FC = () => {
             borderColor: "var(--border-color)",
           }}
         >
-          <h3
-            className="font-black text-xl tracking-tight mb-2"
-            style={{ color: "var(--text-primary)" }}
-          >
-            Loss by Category
-          </h3>
+          <div className="flex items-center gap-2 mb-2">
+            <Heart size={20} className="text-amber-500" />
+            <h3
+              className="font-black text-xl tracking-tight"
+              style={{ color: "var(--text-primary)" }}
+            >
+              Food Categories
+            </h3>
+          </div>
           <p className="text-sm text-slate-400 font-medium mb-8">
-            Percentage of total wastage per food group
+            Distribution of donation types this month
           </p>
 
           <div className="flex-grow flex items-end h-[300px]">
@@ -189,7 +220,7 @@ const AnalyticsPage: React.FC = () => {
                   axisLine={false}
                   tickLine={false}
                   tick={{ fill: "#475569", fontWeight: 800, fontSize: 11 }}
-                  width={80}
+                  width={100}
                 />
                 <Tooltip cursor={{ fill: "transparent" }} />
                 <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={24}>
@@ -201,17 +232,26 @@ const AnalyticsPage: React.FC = () => {
             </ResponsiveContainer>
           </div>
 
-          <div className="mt-8 p-6 bg-slate-900 rounded-sm text-white">
-            <div className="flex items-center gap-2 mb-3">
-              <AlertTriangle size={18} className="text-amber-400" />
-              <span className="text-xs font-black uppercase tracking-widest text-amber-400">
-                Optimization Alert
-              </span>
+          {/* Quick Stats */}
+          <div className="mt-8 grid grid-cols-2 gap-3">
+            <div className="p-4 bg-slate-50 rounded-sm border border-slate-100">
+              <div className="flex items-center gap-2 mb-2">
+                <Users size={14} className="text-blue-500" />
+                <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">
+                  Volunteers
+                </span>
+              </div>
+              <p className="text-lg font-black text-slate-800">156</p>
             </div>
-            <p className="text-xs text-slate-300 leading-relaxed">
-              Produce loss is 15% higher in the Northern District. Consider
-              re-routing cold-chain transport by 2 hours earlier.
-            </p>
+            <div className="p-4 bg-slate-50 rounded-sm border border-slate-100">
+              <div className="flex items-center gap-2 mb-2">
+                <Building2 size={14} className="text-amber-500" />
+                <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">
+                  NGOs
+                </span>
+              </div>
+              <p className="text-lg font-black text-slate-800">24</p>
+            </div>
           </div>
         </div>
       </div>

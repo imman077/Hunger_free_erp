@@ -622,42 +622,29 @@ const ReusableTable: React.FC<ERPGridTableProps> = ({
             </div>
           </div>
 
-          <div className="flex justify-between items-center bg-slate-50/50 rounded-sm p-1.5 border border-slate-100">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 px-2 py-1">
-                <span className="text-slate-500 text-[10px] font-black uppercase tracking-widest">
-                  TOTAL RECORDS:
-                </span>
-                <span className="text-slate-900 text-[11px] font-black bg-white px-2 py-0.5 rounded-sm border border-slate-200 shadow-sm">
-                  {data.length}
-                </span>
-              </div>
-              {filteredItems.length !== data.length && (
-                <div className="flex items-center gap-2 bg-amber-50 border border-amber-100 rounded-full px-3 py-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-                  <span className="text-amber-700 text-[10px] font-bold uppercase tracking-tight">
-                    {filteredItems.length} Result
-                    {filteredItems.length !== 1 ? "s" : ""} Found
-                  </span>
-                </div>
-              )}
+          <div className="flex items-center justify-between px-3 py-1.5 bg-slate-50/50 rounded-sm border border-slate-100">
+            <div className="flex items-center gap-2">
+              <span className="text-slate-500 text-[10px] font-black uppercase tracking-widest">
+                TOTAL RECORDS:
+              </span>
+              <span className="text-slate-900 text-[11px] font-black bg-white px-2 py-0.5 rounded-sm border border-slate-200 shadow-sm">
+                {data.length}
+              </span>
             </div>
             {enablePagination && (
-              <div className="flex items-center gap-3 pr-2">
-                <label className="flex items-center text-slate-500 text-[11px] font-bold">
-                  Rows per page:
-                  <select
-                    className="bg-white outline-none text-slate-800 text-[11px] font-black ml-2 cursor-pointer border border-slate-200 rounded-sm px-2 py-0.5 hover:border-slate-300 focus:ring-1 focus:ring-hf-green/30 transition-all shadow-sm"
-                    onChange={onRowsPerPageChange}
-                    value={rowsPerPage}
-                  >
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="15">15</option>
-                    <option value="20">20</option>
-                  </select>
-                </label>
-              </div>
+              <label className="flex items-center gap-2 text-slate-500 text-[10px] font-black uppercase tracking-widest">
+                SHOW ROWS:
+                <select
+                  className="bg-white outline-none text-slate-800 text-[11px] font-black cursor-pointer border border-slate-200 rounded-sm px-2 py-0.5 hover:border-slate-300 focus:ring-1 focus:ring-hf-green/30 transition-all shadow-sm"
+                  onChange={onRowsPerPageChange}
+                  value={rowsPerPage}
+                >
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="15">15</option>
+                  <option value="20">20</option>
+                </select>
+              </label>
             )}
           </div>
         </div>
@@ -693,26 +680,8 @@ const ReusableTable: React.FC<ERPGridTableProps> = ({
     if (!enablePagination) return null;
 
     return (
-      <div className="px-6 py-4 bg-slate-50/30 border-t border-slate-100 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
-              SHOW ROWS:
-            </span>
-            <select
-              className="bg-white border border-slate-200 rounded-sm text-[11px] font-black px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-hf-green/20 focus:border-hf-green/50 cursor-pointer transition-all shadow-sm text-slate-800"
-              onChange={onRowsPerPageChange}
-              value={rowsPerPage}
-            >
-              {[5, 10, 15, 20, 25, 50].map((num) => (
-                <option key={num} value={num}>
-                  {num}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
+      <div className="px-6 py-4 bg-slate-50/30 border-t border-slate-100 flex items-center justify-end">
+        {" "}
         <div className="flex items-center gap-2">
           <button
             onClick={onPreviousPage}

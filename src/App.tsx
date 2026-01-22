@@ -19,6 +19,7 @@ import RewardsPage from "./modules/admin/pages/rewards/RewardsPage";
 import CreateDonor from "./modules/admin/pages/users/CreateDonor";
 import CreateNgo from "./modules/admin/pages/users/CreateNgo";
 import CreateVolunteer from "./modules/admin/pages/users/CreateVolunteer";
+import ConfigurationPage from "./modules/admin/pages/settings/ConfigurationPage";
 
 // Donor Imports
 import DonorDashboard from "./modules/donor/pages/dashboard/Dashboard";
@@ -96,8 +97,11 @@ function App() {
               <Route path="catalog" element={<RewardsConfig />} />
             </Route>
 
-            {/* Settings */}
-            {/* <Route path="settings" element={<SettingsPage />} /> */}
+            {/* Settings Section */}
+            <Route
+              path="settings/configuration"
+              element={<ConfigurationPage />}
+            />
           </Route>
 
           {/* Donor Section */}

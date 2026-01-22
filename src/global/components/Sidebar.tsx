@@ -29,7 +29,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   const location = useLocation();
   const isActive = to ? location.pathname === to : false;
   const isSubItemActive = subItems?.some(
-    (item) => location.pathname === item.to
+    (item) => location.pathname === item.to,
   );
 
   const handleClick = () => {
@@ -58,8 +58,8 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
               ? "w-full p-2.5 bg-emerald-50 text-emerald-700 font-semibold border-l-4 border-[#22c55e] shadow-sm rounded-xl"
               : "w-11 h-11 bg-emerald-50 text-emerald-700 font-semibold shadow-sm rounded-xl justify-center"
             : expanded
-            ? "w-full p-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-800 rounded-xl"
-            : "w-11 h-11 text-slate-500 hover:bg-slate-50 hover:text-slate-800 rounded-xl justify-center"
+              ? "w-full p-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-800 rounded-xl"
+              : "w-11 h-11 text-slate-500 hover:bg-slate-50 hover:text-slate-800 rounded-xl justify-center"
         }
       `}
       onClick={handleClick}
@@ -203,6 +203,14 @@ const SidebarIcons: React.FC = () => {
       label: "Redemptions",
       to: "/admin/rewards/redemptions",
       icon: <Icon name="wallet" className="h-4 w-4" />,
+    },
+  ];
+
+  const settingsSubItems: SubItem[] = [
+    {
+      label: "Configuration",
+      to: "/admin/settings/configuration",
+      icon: <Icon name="settings" className="h-4 w-4" />,
     },
   ];
 
@@ -360,6 +368,13 @@ const SidebarIcons: React.FC = () => {
               label="Rewards"
               expanded={expanded}
               subItems={rewardsSubItems}
+            />
+
+            <SidebarItem
+              icon={<Icon name="settings" />}
+              label="Settings"
+              expanded={expanded}
+              subItems={settingsSubItems}
             />
 
             <div className="px-4 py-3 mt-2">
