@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Drawer,
@@ -18,6 +18,7 @@ import {
   ModalFooter,
 } from "@heroui/react";
 import ReusableTable from "../../../../global/components/resuable-components/table";
+import { ImpactCards } from "../../../../global/components/resuable-components/ImpactCards";
 import ReusableButton from "../../../../global/components/resuable-components/button";
 import ReusableInput from "../../../../global/components/resuable-components/input";
 import MultiSelectDropdown from "../../../../global/components/resuable-components/multi_select_dropdown";
@@ -463,9 +464,9 @@ const VolunteersPage: React.FC = () => {
       { backgroundColor: string; color: string; border: string }
     > = {
       available: {
-        backgroundColor: "rgba(34, 197, 94, 0.1)",
+        backgroundColor: "rgba(34, 197, 197, 0.1)", // Teal/Green
         color: "#22c55e",
-        border: "1px solid rgba(34, 197, 94, 0.2)",
+        border: "1px solid rgba(34, 197, 197, 0.2)",
       },
       "on-leave": {
         backgroundColor: "rgba(239, 68, 68, 0.1)",
@@ -500,6 +501,38 @@ const VolunteersPage: React.FC = () => {
       </span>
     );
   };
+
+  const volunteerStats = useMemo(() => {
+    const totalVolunteers = volunteers.length;
+    const activeVolunteers = volunteers.filter(
+      (v) => v.status === "available",
+    ).length;
+    const totalImpact = volunteers.reduce(
+      (acc, v) => acc + v.tasksCompleted,
+      0,
+    );
+
+    return [
+      {
+        label: "Total Force",
+        val: totalVolunteers.toLocaleString(),
+        trend: "Total registered members",
+        color: "bg-hf-green",
+      },
+      {
+        label: "Duty Ready",
+        val: activeVolunteers.toLocaleString(),
+        trend: "Currently available for tasks",
+        color: "bg-hf-green",
+      },
+      {
+        label: "Global Impact",
+        val: totalImpact.toLocaleString(),
+        trend: "Total tasks completed to date",
+        color: "bg-hf-green",
+      },
+    ];
+  }, [volunteers]);
 
   const renderStars = (rating: string) => {
     return (
@@ -549,13 +582,16 @@ const VolunteersPage: React.FC = () => {
         </Button>
       </div>
 
+      {/* Stats Cards */}
+      <ImpactCards data={volunteerStats} />
+
       {/* Volunteer Table */}
       <ReusableTable
         data={filteredVolunteers}
         enableFilters={false}
         additionalFilters={
           <div className="flex items-center gap-2 flex-wrap">
-            <Dropdown placement="bottom-end">
+            <Dropdown placement="bottom">
               <DropdownTrigger>
                 <Button
                   variant="flat"
@@ -1269,13 +1305,21 @@ const VolunteersPage: React.FC = () => {
                           />
                         ) : (
                           <div className="bg-white p-2.5 rounded-sm border border-slate-200 transition-all duration-300 border-b-2 border-b-transparent hover:border-b-indigo-500 hover:bg-slate-50/30 shadow-sm">
-                            <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em] mb-0.5">
+                            <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1.5">
                               Active Volunteer Zones
                             </p>
-                            <p className="text-[11px] font-black text-slate-900 leading-tight uppercase tracking-tight truncate">
-                              {activeVolunteer.volunteerAreas.length} Registered
-                              Zones
-                            </p>
+                            <div className="grid grid-cols-2 gap-1.5">
+                              {activeVolunteer.volunteerAreas.map(
+                                (area, index) => (
+                                  <span
+                                    key={index}
+                                    className="px-2 py-1 rounded-sm text-[8px] font-black bg-emerald-50 text-[#22c55e] border border-emerald-100 uppercase tracking-widest text-center"
+                                  >
+                                    {area}
+                                  </span>
+                                ),
+                              )}
+                            </div>
                           </div>
                         )}
                       </div>

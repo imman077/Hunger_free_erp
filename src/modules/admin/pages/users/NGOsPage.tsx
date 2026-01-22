@@ -266,7 +266,7 @@ const NgoPage = () => {
         enableFilters={false}
         additionalFilters={
           <div className="flex items-center gap-2 flex-wrap">
-            <Dropdown placement="bottom-end">
+            <Dropdown placement="bottom">
               <DropdownTrigger>
                 <Button
                   variant="flat"
@@ -849,12 +849,12 @@ const NgoPage = () => {
                                   placeholder="Education, Youth, etc."
                                 />
                               ) : (
-                                <div className="flex flex-wrap gap-1.5">
+                                <div className="grid grid-cols-2 gap-1.5">
                                   {selectedNgo.serviceAreas.map(
                                     (area, index) => (
                                       <span
                                         key={index}
-                                        className="px-2 py-0.5 rounded-sm text-[8px] font-black bg-slate-50 text-slate-500 border border-slate-200/60 uppercase tracking-widest"
+                                        className="px-2 py-1 rounded-sm text-[8px] font-black bg-slate-50 text-slate-500 border border-slate-200/60 uppercase tracking-widest text-center"
                                       >
                                         {area}
                                       </span>

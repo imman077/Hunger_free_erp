@@ -15,6 +15,7 @@ import {
 import { ImpactCards } from "../../../../global/components/resuable-components/ImpactCards";
 import ReusableTable from "../../../../global/components/resuable-components/table";
 import ReusableButton from "../../../../global/components/resuable-components/button";
+import ReusableInput from "../../../../global/components/resuable-components/input";
 import {
   Plus,
   Eye,
@@ -29,6 +30,9 @@ import {
   DollarSign,
   FileText,
   ShieldCheck,
+  Save,
+  RotateCcw,
+  Settings,
 } from "lucide-react";
 import FilePreviewModal from "../../../../global/components/resuable-components/FilePreviewModal";
 
@@ -59,7 +63,12 @@ const DonorPage = () => {
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const [selectedDonor, setSelectedDonor] = useState<Donor | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-  const [donors] = useState<Donor[]>([
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editableBusinessName, setEditableBusinessName] = useState("");
+  const [editableContactPerson, setEditableContactPerson] = useState("");
+  const [editableEmail, setEditableEmail] = useState("");
+  const [editableAddress, setEditableAddress] = useState("");
+  const [donors, setDonors] = useState<Donor[]>([
     {
       id: 1,
       businessName: "Saravana Bhavan",
@@ -209,6 +218,11 @@ const DonorPage = () => {
 
   const handleViewProfile = (donor: Donor): void => {
     setSelectedDonor(donor);
+    setEditableBusinessName(donor.businessName);
+    setEditableContactPerson(donor.contactPerson);
+    setEditableEmail(donor.email);
+    setEditableAddress(donor.address);
+    setIsEditMode(false);
     onOpen();
   };
 
@@ -223,8 +237,40 @@ const DonorPage = () => {
   };
 
   const closeDrawer = () => {
+    setIsEditMode(false);
     onClose();
     // setTimeout(() => setSelectedDonor(null), 300);
+  };
+
+  const handleUpdateDonor = () => {
+    if (!selectedDonor) return;
+
+    // Update the donors array
+    const updatedDonors = donors.map((donor) =>
+      donor.id === selectedDonor.id
+        ? {
+            ...donor,
+            businessName: editableBusinessName,
+            contactPerson: editableContactPerson,
+            email: editableEmail,
+            address: editableAddress,
+          }
+        : donor,
+    );
+
+    setDonors(updatedDonors);
+
+    // Update the selected donor to reflect changes immediately
+    setSelectedDonor({
+      ...selectedDonor,
+      businessName: editableBusinessName,
+      contactPerson: editableContactPerson,
+      email: editableEmail,
+      address: editableAddress,
+    });
+
+    // Exit edit mode
+    setIsEditMode(false);
   };
 
   const filteredDonors = donors.filter((donor) => {
@@ -314,7 +360,7 @@ const DonorPage = () => {
             enableFilters={false}
             additionalFilters={
               <div className="flex items-center gap-2 flex-wrap">
-                <Dropdown placement="bottom-end">
+                <Dropdown placement="bottom">
                   <DropdownTrigger>
                     <Button
                       variant="flat"
@@ -706,165 +752,220 @@ const DonorPage = () => {
                           <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest leading-none">
                             Connectivity
                           </h4>
-                          <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight mt-1 leading-none">
+                          <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tight mt-1 leading-none">
                             Communication Channels
                           </p>
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-2">
-                        {[
-                          {
-                            Icon: User,
-                            label: "Contact Person",
-                            value: selectedDonor.contactPerson,
-                            color: "amber",
-                            bg: "bg-amber-50/50",
-                          },
-                          {
-                            Icon: Mail,
-                            label: "Verified Email",
-                            value: selectedDonor.email,
-                            color: "blue",
-                            bg: "bg-blue-50/50",
-                          },
-                          {
-                            Icon: MapPin,
-                            label: "Physical Address",
-                            value: selectedDonor.address,
-                            color: "purple",
-                            bg: "bg-purple-50/50",
-                            full: true,
-                          },
-                        ].map((item, i) => (
-                          <div
-                            key={i}
-                            className={`group bg-white p-3 rounded-sm border border-slate-200 transition-all duration-500 border-b-2 border-b-transparent hover:border-b-hf-green hover:bg-slate-50/30 shadow-sm ${item.full ? "col-span-2" : ""}`}
-                          >
-                            <div className="flex items-center gap-3">
-                              <div
-                                className={`w-10 h-10 rounded-sm ${item.bg} flex items-center justify-center text-${item.color}-600 group-hover:scale-110 transition-transform duration-500`}
-                              >
-                                <item.Icon size={18} strokeWidth={2.5} />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">
-                                  {item.label}
-                                </p>
-                                <p className="text-xs font-bold text-slate-900 leading-tight truncate group-hover:text-hf-green transition-colors uppercase tracking-tight">
-                                  {item.value}
-                                </p>
+                      {isEditMode ? (
+                        <div className="bg-white p-2.5 rounded-sm border border-slate-200 shadow-sm space-y-2.5">
+                          <ReusableInput
+                            label="Business Name"
+                            value={editableBusinessName}
+                            onChange={setEditableBusinessName}
+                            placeholder="Enter business name"
+                          />
+                          <ReusableInput
+                            label="Contact Person"
+                            value={editableContactPerson}
+                            onChange={setEditableContactPerson}
+                            placeholder="Enter contact person name"
+                          />
+                          <ReusableInput
+                            label="Email Address"
+                            value={editableEmail}
+                            onChange={setEditableEmail}
+                            placeholder="Enter email address"
+                            type="email"
+                          />
+                          <ReusableInput
+                            label="Physical Address"
+                            value={editableAddress}
+                            onChange={setEditableAddress}
+                            placeholder="Enter physical address"
+                          />
+                        </div>
+                      ) : (
+                        <div className="space-y-1.5">
+                          {[
+                            {
+                              Icon: User,
+                              label: "Contact Person",
+                              value: selectedDonor.contactPerson,
+                              color: "amber",
+                              bg: "bg-amber-50/50",
+                            },
+                            {
+                              Icon: Mail,
+                              label: "Verified Email",
+                              value: selectedDonor.email,
+                              color: "blue",
+                              bg: "bg-blue-50/50",
+                            },
+                            {
+                              Icon: MapPin,
+                              label: "Physical Address",
+                              value: selectedDonor.address,
+                              color: "purple",
+                              bg: "bg-purple-50/50",
+                            },
+                          ].map((item, i) => (
+                            <div
+                              key={i}
+                              className="group bg-white p-2.5 rounded-sm border border-slate-200 transition-all duration-300 border-b-2 border-b-transparent hover:border-b-[#22c55e] hover:bg-slate-50/30 shadow-sm"
+                            >
+                              <div className="flex items-center gap-3">
+                                <div
+                                  className={`w-8 h-8 rounded-sm ${item.bg} flex items-center justify-center text-${item.color}-600 shrink-0 group-hover:scale-105 transition-transform duration-500`}
+                                >
+                                  <item.Icon size={16} strokeWidth={2.5} />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1 leading-none">
+                                    {item.label}
+                                  </p>
+                                  <p className="text-[11px] font-black text-slate-800 leading-tight truncate uppercase tracking-tight mt-1">
+                                    {item.value}
+                                  </p>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        ))}
-                      </div>
+                          ))}
+                        </div>
+                      )}
                     </section>
 
                     {/* Recent Donation History */}
-                    <section className="space-y-3">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-sm bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm shrink-0">
-                          <HistoryIcon size={16} strokeWidth={2.5} />
+                    {!isEditMode && (
+                      <section className="space-y-3">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-sm bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm shrink-0">
+                            <HistoryIcon size={16} strokeWidth={2.5} />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest leading-none">
+                              Transaction History
+                            </h4>
+                            <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tight mt-1 leading-none">
+                              Recent Contributions
+                            </p>
+                          </div>
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest leading-none">
-                            Transaction History
-                          </h4>
-                          <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight mt-1 leading-none">
-                            Recent Contributions
-                          </p>
-                        </div>
-                      </div>
 
-                      <div className="space-y-1.5">
-                        {selectedDonor.donationHistory.map(
-                          (item: DonationHistory, index: number) => (
-                            <div
-                              key={index}
-                              className="group flex items-center gap-3 p-3 rounded-sm bg-white border border-slate-200 hover:border-hf-green/40 hover:bg-slate-50/30 transition-all duration-500 relative overflow-hidden shadow-sm"
-                            >
-                              <div className="absolute top-0 right-0 w-24 h-full bg-gradient-to-l from-emerald-50/0 to-transparent group-hover:from-emerald-50/50 transition-colors" />
-                              <div className="w-10 h-10 rounded-sm bg-slate-100 flex items-center justify-center shrink-0 group-hover:bg-hf-green/10 group-hover:text-hf-green transition-colors">
-                                <DollarSign size={18} strokeWidth={2.5} />
+                        <div className="space-y-1.5">
+                          {selectedDonor.donationHistory.map(
+                            (item: DonationHistory, index: number) => (
+                              <div
+                                key={index}
+                                className="group flex items-center gap-3 p-3 rounded-sm bg-white border border-slate-200 hover:border-hf-green/40 hover:bg-slate-50/30 transition-all duration-500 relative overflow-hidden shadow-sm"
+                              >
+                                <div className="absolute top-0 right-0 w-24 h-full bg-gradient-to-l from-emerald-50/0 to-transparent group-hover:from-emerald-50/50 transition-colors" />
+                                <div className="w-10 h-10 rounded-sm bg-slate-100 flex items-center justify-center shrink-0 group-hover:bg-hf-green/10 group-hover:text-hf-green transition-colors">
+                                  <DollarSign size={18} strokeWidth={2.5} />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-xs font-bold text-slate-900 leading-tight truncate">
+                                    {item.event}
+                                  </p>
+                                  <p className="text-[10px] font-medium text-slate-500 uppercase tracking-tight">
+                                    {item.date}
+                                  </p>
+                                </div>
+                                <div className="text-right shrink-0">
+                                  <p className="text-xs font-black text-hf-green">
+                                    {formatCurrency(item.amount)}
+                                  </p>
+                                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-tighter">
+                                    Allocated
+                                  </p>
+                                </div>
                               </div>
-                              <div className="flex-1 min-w-0">
-                                <p className="text-xs font-bold text-slate-900 leading-tight truncate">
-                                  {item.event}
-                                </p>
-                                <p className="text-[10px] font-medium text-slate-500 uppercase tracking-tight">
-                                  {item.date}
-                                </p>
-                              </div>
-                              <div className="text-right shrink-0">
-                                <p className="text-xs font-black text-hf-green">
-                                  {formatCurrency(item.amount)}
-                                </p>
-                                <p className="text-[8px] font-black text-slate-400 uppercase tracking-tighter">
-                                  Allocated
-                                </p>
-                              </div>
-                            </div>
-                          ),
-                        )}
-                      </div>
-                    </section>
+                            ),
+                          )}
+                        </div>
+                      </section>
+                    )}
 
                     {/* Verification Documents */}
-                    <section className="space-y-3">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-sm bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shadow-sm shrink-0">
-                          <FileText size={16} strokeWidth={2.5} />
+                    {!isEditMode && (
+                      <section className="space-y-3">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-sm bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shadow-sm shrink-0">
+                            <FileText size={16} strokeWidth={2.5} />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest leading-none">
+                              Legal & Compliance
+                            </h4>
+                            <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tight mt-1 leading-none">
+                              Identity Verification
+                            </p>
+                          </div>
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest leading-none">
-                            Legal & Compliance
-                          </h4>
-                          <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight mt-1 leading-none">
-                            Identity Verification
-                          </p>
-                        </div>
-                      </div>
 
-                      <div className="space-y-2">
-                        <div
-                          onClick={() => setIsPreviewOpen(true)}
-                          className="p-3 rounded-sm bg-white border border-slate-200 transition-all duration-500 border-b-2 border-b-transparent hover:border-b-hf-green hover:bg-slate-50/30 shadow-sm flex items-center justify-between group cursor-pointer"
-                        >
-                          <div className="flex items-center gap-3 min-w-0">
-                            <div className="w-10 h-10 rounded-sm bg-emerald-50 border border-emerald-100 flex items-center justify-center text-hf-green shrink-0 group-hover:scale-110 transition-transform">
-                              <ShieldCheck size={18} strokeWidth={2.5} />
-                            </div>
-                            <div className="min-w-0">
-                              <p className="text-xs font-bold text-slate-900 leading-tight truncate">
-                                Business_License.pdf
-                              </p>
-                              <div className="flex items-center gap-1.5">
-                                <div className="w-1.5 h-1.5 rounded-full bg-hf-green" />
-                                <span className="text-[9px] font-black text-hf-green uppercase tracking-widest">
-                                  Verified
-                                </span>
-                                <span className="text-[9px] text-slate-400 font-bold ml-1">
-                                  • 1.2 MB
-                                </span>
+                        <div className="space-y-2">
+                          <div
+                            onClick={() => setIsPreviewOpen(true)}
+                            className="p-3 rounded-sm bg-white border border-slate-200 transition-all duration-500 border-b-2 border-b-transparent hover:border-b-hf-green hover:bg-slate-50/30 shadow-sm flex items-center justify-between group cursor-pointer"
+                          >
+                            <div className="flex items-center gap-3 min-w-0">
+                              <div className="w-10 h-10 rounded-sm bg-emerald-50 border border-emerald-100 flex items-center justify-center text-hf-green shrink-0 group-hover:scale-110 transition-transform">
+                                <ShieldCheck size={18} strokeWidth={2.5} />
+                              </div>
+                              <div className="min-w-0">
+                                <p className="text-xs font-bold text-slate-900 leading-tight truncate">
+                                  Business_License.pdf
+                                </p>
+                                <div className="flex items-center gap-1.5">
+                                  <div className="w-1.5 h-1.5 rounded-full bg-hf-green" />
+                                  <span className="text-[9px] font-black text-hf-green uppercase tracking-widest">
+                                    Verified
+                                  </span>
+                                  <span className="text-[9px] text-slate-400 font-bold ml-1">
+                                    • 1.2 MB
+                                  </span>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                          <div className="text-slate-300 group-hover:text-hf-green transition-colors shrink-0">
-                            <Eye size={16} strokeWidth={2.5} />
+                            <div className="text-slate-300 group-hover:text-hf-green transition-colors shrink-0">
+                              <Eye size={16} strokeWidth={2.5} />
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </section>
+                      </section>
+                    )}
 
                     {/* Actions Area */}
                     <div className="pt-2 flex gap-2">
-                      <ReusableButton
-                        variant="primary"
-                        className="flex-1 !bg-amber-500 hover:!bg-amber-600 !text-white !font-black !px-4 !py-5 !text-[10px] uppercase tracking-widest !rounded-sm shadow-lg shadow-amber-500/20"
-                      >
-                        Message Donor
-                      </ReusableButton>
+                      {isEditMode ? (
+                        <>
+                          <button
+                            onClick={() => setIsEditMode(false)}
+                            className="flex-1 px-6 py-3 text-[10px] font-black text-slate-400 hover:text-slate-600 uppercase tracking-widest transition-colors flex items-center justify-center gap-2 rounded-sm border border-slate-200"
+                          >
+                            <RotateCcw size={14} />
+                            Cancel
+                          </button>
+                          <ReusableButton
+                            variant="primary"
+                            className="flex-1 !bg-[#22c55e] hover:!bg-[#1ea34a] !text-white !font-black !px-4 !py-3 !text-[10px] uppercase tracking-widest !rounded-sm shadow-lg shadow-[#22c55e]/20"
+                            onClick={handleUpdateDonor}
+                          >
+                            <Save size={14} />
+                            Update Details
+                          </ReusableButton>
+                        </>
+                      ) : (
+                        <ReusableButton
+                          variant="primary"
+                          className="flex-1 !bg-[#22c55e] hover:!bg-[#1ea34a] !text-white !font-black !px-4 !py-3 !text-[10px] uppercase tracking-widest !rounded-sm shadow-lg shadow-[#22c55e]/20"
+                          onClick={() => setIsEditMode(true)}
+                        >
+                          <Settings size={14} />
+                          Edit Profile
+                        </ReusableButton>
+                      )}
                     </div>
                   </>
                 )}

@@ -18,23 +18,23 @@ const ImpactCard: React.FC<
 > = ({ label, val, trend, color, orientation }) => {
   return (
     <div
-      className={`group/impact p-7 rounded-md border transition-all duration-300 flex flex-col items-center justify-center min-h-[150px] relative overflow-hidden hover:border-[#22c55e]/30
-        ${orientation === "horizontal" ? "flex-1 min-w-[260px]" : "w-full"}
+      className={`group/impact p-5 rounded-md border transition-all duration-300 flex flex-col items-center justify-center min-h-[130px] relative overflow-hidden hover:border-[#22c55e]/30
+        ${orientation === "horizontal" ? "flex-1 min-w-[220px]" : "w-full"}
       `}
       style={{
         backgroundColor: "var(--bg-primary)",
         borderColor: "var(--border-color)",
       }}
     >
-      <div className="mb-4 relative z-10 text-center transition-transform duration-300 group-hover/impact:-translate-y-1">
+      <div className="mb-2.5 relative z-10 text-center transition-transform duration-300 group-hover/impact:-translate-y-1">
         <p
-          className="text-[10px] font-black uppercase tracking-[0.25em] mb-2.5"
+          className="text-[9px] font-black uppercase tracking-[0.25em] mb-2"
           style={{ color: "var(--text-muted)" }}
         >
           {label}
         </p>
         <h4
-          className="text-4xl font-black tracking-tighter tabular-nums leading-none transition-colors duration-300 group-hover/impact:text-[#22c55e]"
+          className="text-3xl font-black tracking-tighter tabular-nums leading-none transition-colors duration-300 group-hover/impact:text-[#22c55e]"
           style={{ color: "var(--text-primary)" }}
         >
           {val}
@@ -43,7 +43,7 @@ const ImpactCard: React.FC<
 
       <div className="flex flex-col items-center mt-auto relative z-10 text-center">
         <p
-          className={`text-[11px] font-black leading-none px-3 py-1.5 rounded-full bg-slate-50 border border-slate-100 focus:outline-none focus:ring-2 focus:ring-[#22c55e] focus:ring-offset-2 ${
+          className={`text-[10px] font-black leading-none px-2.5 py-1.5 rounded-full bg-slate-50 border border-slate-100 focus:outline-none focus:ring-2 focus:ring-[#22c55e] focus:ring-offset-2 ${
             color === "bg-[#22c55e]" || color === "bg-emerald-500"
               ? "text-[#22c55e]"
               : "text-slate-500"
@@ -82,8 +82,8 @@ export const ImpactCards: React.FC<ImpactCardsProps> = ({
     <div
       className={`${
         orientation === "horizontal"
-          ? "flex gap-6 overflow-x-auto no-scrollbar pb-2"
-          : "flex flex-col gap-6"
+          ? "flex gap-4 overflow-x-auto no-scrollbar pb-2"
+          : "flex flex-col gap-4"
       } ${className}`}
     >
       {data.map((stat, i) => (

@@ -157,7 +157,7 @@ interface ERPGridTableProps {
   enableDateFilter?: boolean;
   showColumnSettings?: boolean;
   onDateRangeChange?: (
-    range: { start: string | null; end: string | null } | null
+    range: { start: string | null; end: string | null } | null,
   ) => void;
   title?: string;
   description?: string;
@@ -216,7 +216,7 @@ const ReusableTable: React.FC<ERPGridTableProps> = ({
   const [visibleColumns, setVisibleColumns] = useState<Selection>(
     initialVisibleColumns
       ? new Set(initialVisibleColumns)
-      : new Set(columns.map((c) => c.uid))
+      : new Set(columns.map((c) => c.uid)),
   );
 
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -231,7 +231,7 @@ const ReusableTable: React.FC<ERPGridTableProps> = ({
   const headerColumns = useMemo(() => {
     if (visibleColumns === "all") return columns;
     return columns.filter((column) =>
-      Array.from(visibleColumns).includes(column.uid)
+      Array.from(visibleColumns).includes(column.uid),
     );
   }, [visibleColumns, columns]);
 
@@ -241,8 +241,8 @@ const ReusableTable: React.FC<ERPGridTableProps> = ({
     if (enableSearch && hasSearchFilter) {
       filteredData = filteredData.filter((item) =>
         Object.values(item).some((val) =>
-          String(val).toLowerCase().includes(filterValue.toLowerCase())
-        )
+          String(val).toLowerCase().includes(filterValue.toLowerCase()),
+        ),
       );
     }
 
@@ -253,7 +253,7 @@ const ReusableTable: React.FC<ERPGridTableProps> = ({
       data[0].status
     ) {
       filteredData = filteredData.filter(
-        (item) => item.status === selectedStatus
+        (item) => item.status === selectedStatus,
       );
     }
 
@@ -304,7 +304,7 @@ const ReusableTable: React.FC<ERPGridTableProps> = ({
       setRowsPerPage(Number(e.target.value));
       setPage(1);
     },
-    []
+    [],
   );
 
   const onSearchChange = useCallback((value: string) => {
@@ -408,12 +408,12 @@ const ReusableTable: React.FC<ERPGridTableProps> = ({
         </div>
       );
     },
-    [actionConfig]
+    [actionConfig],
   );
 
   const topContent = useMemo(() => {
     return (
-      <div className="flex flex-col gap-4 p-4 pb-0">
+      <div className="flex flex-col gap-3 p-3 pb-0">
         {(title || description) && (
           <div className="flex flex-col gap-0.5">
             {title && (
@@ -430,8 +430,8 @@ const ReusableTable: React.FC<ERPGridTableProps> = ({
         )}
 
         <div className="flex flex-col gap-3">
-          <div className="flex flex-col sm:flex-row items-end gap-3">
-            <div className="flex flex-col sm:flex-row items-end gap-3 flex-1">
+          <div className="flex flex-col sm:flex-row items-center gap-3 justify-between">
+            <div className="flex flex-col sm:flex-row items-center gap-2 flex-1">
               {enableSearch && (
                 <div className="relative w-full sm:max-w-xs">
                   <Input
@@ -467,7 +467,7 @@ const ReusableTable: React.FC<ERPGridTableProps> = ({
               {additionalFilters}
 
               {enableFilters && statusOptions.length > 1 && (
-                <Dropdown placement="bottom-end">
+                <Dropdown placement="bottom">
                   <DropdownTrigger>
                     <Button
                       variant="flat"
@@ -483,8 +483,8 @@ const ReusableTable: React.FC<ERPGridTableProps> = ({
                       }
                     >
                       {selectedStatus === "all"
-                        ? "ALL STATUS"
-                        : selectedStatus.toUpperCase()}
+                        ? "STATUS: ALL"
+                        : `STATUS: ${selectedStatus.toUpperCase()}`}
                     </Button>
                   </DropdownTrigger>
                   <DropdownMenu
@@ -622,13 +622,13 @@ const ReusableTable: React.FC<ERPGridTableProps> = ({
             </div>
           </div>
 
-          <div className="flex justify-between items-center bg-slate-50/50 rounded-lg p-2 border border-slate-100">
+          <div className="flex justify-between items-center bg-slate-50/50 rounded-sm p-1.5 border border-slate-100">
             <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 px-3 py-1.5">
-                <span className="text-slate-500 text-[11px] font-bold uppercase tracking-wider">
-                  Total Records:
+              <div className="flex items-center gap-2 px-2 py-1">
+                <span className="text-slate-500 text-[10px] font-black uppercase tracking-widest">
+                  TOTAL RECORDS:
                 </span>
-                <span className="text-slate-900 text-sm font-black bg-white px-2 py-0.5 rounded-sm border border-slate-200">
+                <span className="text-slate-900 text-[11px] font-black bg-white px-2 py-0.5 rounded-sm border border-slate-200 shadow-sm">
                   {data.length}
                 </span>
               </div>
@@ -643,11 +643,11 @@ const ReusableTable: React.FC<ERPGridTableProps> = ({
               )}
             </div>
             {enablePagination && (
-              <div className="flex items-center gap-3">
-                <label className="flex items-center text-gray-600 text-sm">
+              <div className="flex items-center gap-3 pr-2">
+                <label className="flex items-center text-slate-500 text-[11px] font-bold">
                   Rows per page:
                   <select
-                    className="bg-transparent outline-none text-gray-700 text-sm ml-2 cursor-pointer border border-gray-300 rounded-sm px-2 py-1 hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                    className="bg-white outline-none text-slate-800 text-[11px] font-black ml-2 cursor-pointer border border-slate-200 rounded-sm px-2 py-0.5 hover:border-slate-300 focus:ring-1 focus:ring-hf-green/30 transition-all shadow-sm"
                     onChange={onRowsPerPageChange}
                     value={rowsPerPage}
                   >
@@ -696,11 +696,11 @@ const ReusableTable: React.FC<ERPGridTableProps> = ({
       <div className="px-6 py-4 bg-slate-50/30 border-t border-slate-100 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-              Show Rows:
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
+              SHOW ROWS:
             </span>
             <select
-              className="bg-white border border-slate-200 rounded-sm text-xs font-bold px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-hf-green/20 focus:border-hf-green/50 cursor-pointer transition-all"
+              className="bg-white border border-slate-200 rounded-sm text-[11px] font-black px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-hf-green/20 focus:border-hf-green/50 cursor-pointer transition-all shadow-sm text-slate-800"
               onChange={onRowsPerPageChange}
               value={rowsPerPage}
             >
@@ -717,22 +717,22 @@ const ReusableTable: React.FC<ERPGridTableProps> = ({
           <button
             onClick={onPreviousPage}
             disabled={page === 1}
-            className={`w-8 h-8 flex items-center justify-center rounded-sm border border-slate-200 transition-all ${
+            className={`w-7 h-7 flex items-center justify-center rounded-sm border border-slate-200 transition-all ${
               page === 1
                 ? "text-slate-300 bg-slate-50 cursor-not-allowed border-slate-100"
                 : "text-slate-600 bg-white hover:bg-slate-50 hover:border-slate-300 active:scale-95"
             }`}
           >
-            <ChevronDownIconSvg className="w-4 h-4 rotate-90" />
+            <ChevronDownIconSvg className="w-3.5 h-3.5 rotate-90" />
           </button>
-          <div className="flex gap-1 px-1.5">
+          <div className="flex gap-1 px-1">
             {Array.from({ length: pages }).map((_, i) => (
               <button
                 key={i}
                 onClick={() => setPage(i + 1)}
-                className={`w-8 h-8 flex items-center justify-center rounded-sm text-[11px] font-bold transition-all ${
+                className={`w-7 h-7 flex items-center justify-center rounded-sm text-[10px] font-black transition-all ${
                   page === i + 1
-                    ? "bg-hf-green text-white font-black scale-105"
+                    ? "bg-hf-green text-white scale-105 shadow-sm"
                     : "bg-white border border-slate-200 text-slate-500 hover:bg-slate-50 hover:border-slate-300"
                 }`}
               >
@@ -743,13 +743,13 @@ const ReusableTable: React.FC<ERPGridTableProps> = ({
           <button
             onClick={onNextPage}
             disabled={page >= pages}
-            className={`w-8 h-8 flex items-center justify-center rounded-sm border border-slate-200 transition-all ${
+            className={`w-7 h-7 flex items-center justify-center rounded-sm border border-slate-200 transition-all ${
               page >= pages
                 ? "text-slate-300 bg-slate-50 cursor-not-allowed border-slate-100"
                 : "text-slate-600 bg-white hover:bg-slate-50 hover:border-slate-300 active:scale-95"
             }`}
           >
-            <ChevronDownIconSvg className="w-4 h-4 -rotate-90" />
+            <ChevronDownIconSvg className="w-3.5 h-3.5 -rotate-90" />
           </button>
         </div>
       </div>
@@ -774,12 +774,12 @@ const ReusableTable: React.FC<ERPGridTableProps> = ({
         bottomContentPlacement="outside"
         classNames={{
           wrapper: "p-0 no-scrollbar rounded-none border-none shadow-none",
-          th: `bg-[#fcfdfe] text-[10px] font-bold uppercase tracking-[0.1em] text-slate-500 whitespace-nowrap ${
-            variant === "compact" ? "py-2.5 px-4" : "py-4 px-6"
+          th: `bg-[#fcfdfe] text-[9px] font-bold uppercase tracking-[0.1em] text-slate-500 whitespace-nowrap ${
+            variant === "compact" ? "py-2 px-3" : "py-3.5 px-5"
           } border-b border-slate-200 first:rounded-tl-sm last:rounded-tr-sm`,
           td: `${
-            variant === "compact" ? "py-2 px-4" : "py-4 px-6"
-          } border-b border-slate-100 group-hover:bg-slate-50/80 transition-all font-medium text-slate-700 text-sm whitespace-nowrap`,
+            variant === "compact" ? "py-1.5 px-3" : "py-3.5 px-5"
+          } border-b border-slate-100 group-hover:bg-slate-50/80 transition-all font-medium text-slate-700 text-[13px] whitespace-nowrap`,
           tr: "group cursor-pointer transition-colors duration-200",
           base: "border-collapse",
         }}
@@ -800,8 +800,8 @@ const ReusableTable: React.FC<ERPGridTableProps> = ({
                 column.align === "start"
                   ? "text-start px-4"
                   : column.align === "end"
-                  ? "text-end px-4"
-                  : "text-center px-4"
+                    ? "text-end px-4"
+                    : "text-center px-4"
               } whitespace-nowrap`}
             >
               {column.name}
@@ -827,8 +827,8 @@ const ReusableTable: React.FC<ERPGridTableProps> = ({
                   column?.align === "start"
                     ? "text-start px-4"
                     : column?.align === "end"
-                    ? "text-end px-4"
-                    : "text-center px-4"
+                      ? "text-end px-4"
+                      : "text-center px-4"
                 } whitespace-nowrap`;
 
                 return (

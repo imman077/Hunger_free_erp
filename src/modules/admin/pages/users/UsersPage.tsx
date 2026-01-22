@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
-import { Building, Sparkles, RotateCcw } from "lucide-react";
+import { Building, Filter, X, ChevronDown, Plus } from "lucide-react";
 import { Avatar } from "@heroui/react";
 import {
   Dropdown,
@@ -7,12 +7,8 @@ import {
   DropdownMenu,
   DropdownItem,
   Button,
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerBody,
 } from "@heroui/react";
-import { Filter, X, ChevronDown, Plus } from "lucide-react";
+// No change needed here, just ensuring I don't break the import block
 import ReusableTable from "../../../../global/components/resuable-components/table";
 import type { ColumnDef } from "../../../../global/components/resuable-components/table";
 import { ImpactCards } from "../../../../global/components/resuable-components/ImpactCards";
@@ -204,9 +200,6 @@ const ROLE_OPTIONS = ["Donor", "NGO", "Volunteer", "Admin"];
 const STATUS_OPTIONS = ["Active", "New", "Pending"];
 
 const UsersPage = () => {
-  const [selectedUser, setSelectedUser] = useState<UserItem | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   // Filter States
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const [roleFilter, setRoleFilter] = useState<string>("all");
@@ -216,7 +209,7 @@ const UsersPage = () => {
     setActiveFilters((prev) =>
       prev.includes(filterType)
         ? prev.filter((f) => f !== filterType)
-        : [...prev, filterType]
+        : [...prev, filterType],
     );
     if (filterType === "role") setRoleFilter("all");
     if (filterType === "status") setStatusFilter("all");
@@ -234,9 +227,8 @@ const UsersPage = () => {
       { name: "Phone", uid: "phone" },
       { name: "Location", uid: "location", sortable: true },
       { name: "Points", uid: "totalPoints", sortable: true },
-      { name: "Actions", uid: "actions", sortable: false },
     ],
-    []
+    [],
   );
 
   // Filter users based on role and status
@@ -254,94 +246,80 @@ const UsersPage = () => {
     });
   }, [activeFilters, roleFilter, statusFilter]);
 
-  const openUserModal = useCallback((user: UserItem) => {
-    setSelectedUser(user);
-    setIsModalOpen(true);
-  }, []);
-
-  const closeModal = useCallback(() => {
-    setIsModalOpen(false);
-    setSelectedUser(null);
-  }, []);
-
   // Render cell function for the MAIN user table
-  const renderCell = useCallback(
-    (user: UserItem, columnKey: React.Key) => {
-      const cellValue = user[columnKey as keyof UserItem];
+  const renderCell = useCallback((user: UserItem, columnKey: React.Key) => {
+    const cellValue = user[columnKey as keyof UserItem];
 
-      switch (columnKey) {
-        case "name":
-          const roleAvatarColors: Record<string, string> = {
-            Donor: "bg-gradient-to-br from-amber-400 to-orange-600",
-            NGO: "bg-gradient-to-br from-indigo-400 to-blue-600",
-            Volunteer: "bg-gradient-to-br from-emerald-400 to-green-600",
-          };
-          const avatarBg = roleAvatarColors[user.role] || "bg-slate-400";
+    switch (columnKey) {
+      case "name":
+        const roleAvatarColors: Record<string, string> = {
+          Donor: "bg-gradient-to-br from-amber-400 to-orange-600",
+          NGO: "bg-gradient-to-br from-indigo-400 to-blue-600",
+          Volunteer: "bg-gradient-to-br from-emerald-400 to-green-600",
+        };
+        const avatarBg = roleAvatarColors[user.role] || "bg-slate-400";
 
-          return (
-            <div
-              className="flex items-center gap-2 px-2 py-1.5 rounded-full bg-slate-50/50 border border-slate-100 w-fit min-w-0 cursor-pointer hover:bg-hf-green/5 hover:border-hf-green/20 transition-all group"
-              onClick={() => openUserModal(user)}
-            >
-              {user.avatar ? (
-                <Avatar
-                  src={user.avatar as any}
-                  name={user.name}
-                  className="w-7 h-7 text-[10px] shrink-0"
-                  showFallback
-                />
-              ) : (
-                <div
-                  className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold text-white shadow-sm shrink-0 ${avatarBg}`}
-                >
-                  {user.name
-                    .split(" ")
-                    .map((n) => n[0])
-                    .join("")}
-                </div>
-              )}
-              <span
-                className="font-bold text-xs whitespace-nowrap truncate max-w-[140px] pr-1 group-hover:text-hf-green transition-colors"
-                style={{ color: "var(--text-primary)" }}
+        return (
+          <div className="flex items-center gap-2 px-2 py-1.5 rounded-full bg-slate-50/50 border border-slate-100 w-fit min-w-0 group">
+            {user.avatar ? (
+              <Avatar
+                src={user.avatar as any}
+                name={user.name}
+                className="w-7 h-7 text-[10px] shrink-0"
+                showFallback
+              />
+            ) : (
+              <div
+                className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold text-white shadow-sm shrink-0 ${avatarBg}`}
               >
-                {user.name}
-              </span>
-            </div>
-          );
-        case "role":
-          const roleColors: Record<string, string> = {
-            Donor: "bg-amber-50 text-amber-600 border-amber-100",
-            NGO: "bg-indigo-50 text-indigo-600 border-indigo-100",
-            Volunteer: "bg-emerald-50 text-emerald-600 border-emerald-100",
-          };
-          return (
+                {user.name
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")}
+              </div>
+            )}
             <span
-              className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
-                roleColors[user.role] ||
-                "bg-gray-50 text-gray-600 border-gray-100"
-              }`}
+              className="font-bold text-xs whitespace-nowrap truncate max-w-[140px] pr-1 group-hover:text-hf-green transition-colors"
+              style={{ color: "var(--text-primary)" }}
             >
-              {user.role.toUpperCase()}
+              {user.name}
             </span>
-          );
-        case "type":
-          return (
-            <span
-              className="text-xs font-medium"
-              style={{ color: "var(--text-secondary)" }}
-            >
-              {user.organization}
-            </span>
-          );
-        case "status":
-          const statusColors: Record<string, string> = {
-            Active: "bg-emerald-50 text-emerald-600 border-emerald-100",
-            New: "bg-blue-50 text-blue-600 border-blue-100",
-            Pending: "bg-amber-50 text-amber-600 border-amber-100",
-          };
-          return (
-            <div className="flex items-center justify-center gap-1.5 w-full">
-              {/* <span
+          </div>
+        );
+      case "role":
+        const roleColors: Record<string, string> = {
+          Donor: "bg-amber-50 text-amber-600 border-amber-100",
+          NGO: "bg-indigo-50 text-indigo-600 border-indigo-100",
+          Volunteer: "bg-emerald-50 text-emerald-600 border-emerald-100",
+        };
+        return (
+          <span
+            className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
+              roleColors[user.role] ||
+              "bg-gray-50 text-gray-600 border-gray-100"
+            }`}
+          >
+            {user.role.toUpperCase()}
+          </span>
+        );
+      case "type":
+        return (
+          <span
+            className="text-xs font-medium"
+            style={{ color: "var(--text-secondary)" }}
+          >
+            {user.organization}
+          </span>
+        );
+      case "status":
+        const statusColors: Record<string, string> = {
+          Active: "bg-emerald-50 text-emerald-600 border-emerald-100",
+          New: "bg-blue-50 text-blue-600 border-blue-100",
+          Pending: "bg-amber-50 text-amber-600 border-amber-100",
+        };
+        return (
+          <div className="flex items-center justify-center gap-1.5 w-full">
+            {/* <span
                 className={`w-1.5 h-1.5 rounded-full ${
                   user.status === "Active"
                     ? "bg-emerald-500"
@@ -350,53 +328,48 @@ const UsersPage = () => {
                     : "bg-amber-500"
                 }`}
               /> */}
-              <span
-                className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
-                  statusColors[user.status] ||
-                  "bg-gray-50 text-gray-600 border-gray-100"
-                }`}
-              >
-                {user.status.toUpperCase()}
-              </span>
-            </div>
-          );
-        case "phone":
-          return (
             <span
-              className="text-xs whitespace-nowrap"
-              style={{ color: "var(--text-secondary)" }}
-            >
-              {String(cellValue)}
-            </span>
-          );
-        case "totalPoints":
-          const pointsColors: Record<string, string> = {
-            Donor: "text-emerald-600",
-            NGO: "text-indigo-600",
-            Volunteer: "text-emerald-600",
-          };
-          return (
-            <span
-              className={`font-black text-xs ${
-                pointsColors[user.role] || "text-slate-600"
+              className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
+                statusColors[user.status] ||
+                "bg-gray-50 text-gray-600 border-gray-100"
               }`}
             >
-              {cellValue as number}
+              {user.status.toUpperCase()}
             </span>
-          );
-        default:
-          return (
-            <span
-              className="text-xs"
-              style={{ color: "var(--text-secondary)" }}
-            >
-              {String(cellValue)}
-            </span>
-          );
-      }
-    },
-    [openUserModal]
-  );
+          </div>
+        );
+      case "phone":
+        return (
+          <span
+            className="text-xs whitespace-nowrap"
+            style={{ color: "var(--text-secondary)" }}
+          >
+            {String(cellValue)}
+          </span>
+        );
+      case "totalPoints":
+        const pointsColors: Record<string, string> = {
+          Donor: "text-emerald-600",
+          NGO: "text-indigo-600",
+          Volunteer: "text-emerald-600",
+        };
+        return (
+          <span
+            className={`font-black text-xs ${
+              pointsColors[user.role] || "text-slate-600"
+            }`}
+          >
+            {cellValue as number}
+          </span>
+        );
+      default:
+        return (
+          <span className="text-xs" style={{ color: "var(--text-secondary)" }}>
+            {String(cellValue)}
+          </span>
+        );
+    }
+  }, []);
 
   const userStats = [
     {
@@ -421,7 +394,7 @@ const UsersPage = () => {
 
   const additionalFilters = (
     <div className="flex items-center gap-2 flex-wrap">
-      <Dropdown placement="bottom-end">
+      <Dropdown placement="bottom">
         <DropdownTrigger>
           <Button
             variant="flat"
@@ -580,475 +553,44 @@ const UsersPage = () => {
   );
 
   return (
-    <>
-      <div
-        className="w-full space-y-6 p-6 min-h-screen"
-        style={{ backgroundColor: "var(--bg-primary)" }}
-      >
-        {/* Header */}
-        <div className="w-full flex items-center justify-between">
-          <h1
-            className="text-xl font-bold tracking-tight"
-            style={{ color: "var(--text-primary)" }}
-          >
-            User Management
-          </h1>
-        </div>
-
-        {/* Stats Cards */}
-        <ImpactCards data={userStats} />
-
-        {/* Users Table - Generic HeroUI Table */}
-        <ReusableTable
-          data={filteredUsers}
-          columns={columns}
-          renderCell={renderCell}
-          variant="compact"
-          enableFilters={false}
-          additionalFilters={additionalFilters}
-          initialVisibleColumns={[
-            "name",
-            "role",
-            "status",
-            "date",
-            "phone",
-            "totalPoints",
-            "actions",
-          ]}
-          actionConfig={{
-            showView: true,
-            onView: openUserModal,
-            showApprove: true,
-            showDeactivate: true,
-            onApprove: (user) => console.log("Approve", user),
-            onDeactivate: (user) => console.log("Deactivate", user),
-          }}
-        />
+    <div
+      className="w-full space-y-6 p-6 min-h-screen"
+      style={{ backgroundColor: "var(--bg-primary)" }}
+    >
+      {/* Header */}
+      <div className="w-full flex-col items-center justify-between text-left">
+        <h1
+          className="text-xl font-bold tracking-tight"
+          style={{ color: "var(--text-primary)" }}
+        >
+          User Management
+        </h1>
+        <p className="mt-2 text-sm" style={{ color: "var(--text-muted)" }}>
+          Manage and track all system users and their roles
+        </p>
       </div>
 
-      {/* User Details Drawer - Standardized to Donor Template */}
-      <Drawer
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        hideCloseButton={true}
-        placement="right"
-        classNames={{
-          base: "w-[400px] !max-w-[400px] overflow-y-scroll scrollbar-hide",
-          backdrop: "bg-black/50",
-        }}
-      >
-        <DrawerContent
-          className="no-scrollbar"
-          style={{ backgroundColor: "var(--bg-primary)" }}
-        >
-          {() => (
-            <>
-              {selectedUser && (
-                <>
-                  <DrawerHeader
-                    className="flex flex-col gap-1 no-scrollbar border-b px-6 py-4"
-                    style={{ borderBottomColor: "var(--border-color)" }}
-                  >
-                    <div className="flex items-center justify-between">
-                      <h2
-                        className="text-xl font-bold"
-                        style={{ color: "var(--text-primary)" }}
-                      >
-                        User Details
-                      </h2>
-                      <Button
-                        isIconOnly
-                        variant="light"
-                        onPress={closeModal}
-                        size="sm"
-                        className="hover:bg-slate-100 transition-colors rounded-full h-8 w-8 min-w-0"
-                      >
-                        <X size={20} className="text-slate-400" />
-                      </Button>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span
-                        className="text-sm font-medium"
-                        style={{ color: "var(--text-muted)" }}
-                      >
-                        Account Overview
-                      </span>
-                      <span
-                        className="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider"
-                        style={{
-                          backgroundColor:
-                            selectedUser.status === "Active"
-                              ? "rgba(34, 197, 94, 0.1)"
-                              : selectedUser.status === "New"
-                              ? "rgba(59, 130, 246, 0.1)"
-                              : "rgba(234, 179, 8, 0.1)",
-                          color:
-                            selectedUser.status === "Active"
-                              ? "#22c55e"
-                              : selectedUser.status === "New"
-                              ? "#3b82f6"
-                              : "#eab308",
-                          border: `1px solid ${
-                            selectedUser.status === "Active"
-                              ? "rgba(34, 197, 94, 0.2)"
-                              : selectedUser.status === "New"
-                              ? "rgba(59, 130, 246, 0.2)"
-                              : "rgba(234, 179, 8, 0.2)"
-                          }`,
-                        }}
-                      >
-                        {selectedUser.status}
-                      </span>
-                    </div>
-                  </DrawerHeader>
+      {/* Stats Cards */}
+      <ImpactCards data={userStats} />
 
-                  <DrawerBody className="px-6 py-4 space-y-6 overflow-y-auto no-scrollbar">
-                    {/* Role-aware Gradient Overview Card */}
-                    {(() => {
-                      const roleGradients: Record<string, string> = {
-                        Donor:
-                          "linear-gradient(to right, rgba(245, 158, 11, 0.1), rgba(251, 191, 36, 0.1))",
-                        NGO: "linear-gradient(to right, rgba(79, 70, 229, 0.1), rgba(99, 102, 241, 0.1))",
-                        Volunteer:
-                          "linear-gradient(to right, rgba(16, 185, 129, 0.1), rgba(52, 211, 153, 0.1))",
-                      };
-                      const roleBorderColors: Record<string, string> = {
-                        Donor: "rgba(245, 158, 11, 0.2)",
-                        NGO: "rgba(79, 70, 229, 0.2)",
-                        Volunteer: "rgba(16, 185, 129, 0.2)",
-                      };
-                      const roleAvatarColors: Record<string, string> = {
-                        Donor: "bg-gradient-to-br from-amber-400 to-orange-600",
-                        NGO: "bg-gradient-to-br from-indigo-400 to-blue-600",
-                        Volunteer:
-                          "bg-gradient-to-br from-emerald-400 to-green-600",
-                      };
-                      const roleLabelColors: Record<string, string> = {
-                        Donor: "text-amber-600",
-                        NGO: "text-indigo-600",
-                        Volunteer: "text-emerald-600",
-                      };
-
-                      const currentGradient =
-                        roleGradients[selectedUser.role] ||
-                        "linear-gradient(to right, rgba(148, 163, 184, 0.1), rgba(203, 213, 225, 0.1))";
-                      const currentBorder =
-                        roleBorderColors[selectedUser.role] ||
-                        "rgba(148, 163, 184, 0.2)";
-                      const currentAvatarBg =
-                        roleAvatarColors[selectedUser.role] || "bg-slate-400";
-                      const currentLabelColor =
-                        roleLabelColors[selectedUser.role] || "text-slate-600";
-
-                      return (
-                        <div
-                          className="p-4 rounded-lg border"
-                          style={{
-                            background: currentGradient,
-                            borderColor: currentBorder,
-                          }}
-                        >
-                          <div className="flex items-center gap-4">
-                            {selectedUser.avatar ? (
-                              <Avatar
-                                src={selectedUser.avatar as any}
-                                name={selectedUser.name}
-                                className="w-12 h-12 text-lg shadow-md"
-                                showFallback
-                              />
-                            ) : (
-                              <div
-                                className={`w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold text-white shadow-md ${currentAvatarBg}`}
-                              >
-                                {selectedUser.name
-                                  .split(" ")
-                                  .map((n) => n[0])
-                                  .join("")}
-                              </div>
-                            )}
-                            <div>
-                              <h3
-                                className="font-bold text-lg leading-tight"
-                                style={{ color: "var(--text-primary)" }}
-                              >
-                                {selectedUser.name}
-                              </h3>
-                              <p
-                                className={`text-xs font-semibold uppercase tracking-widest mt-1 ${currentLabelColor}`}
-                              >
-                                {selectedUser.role}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })()}
-
-                    {/* Quick Stats Grid */}
-                    <div className="grid grid-cols-2 gap-3">
-                      <div
-                        className="p-3 rounded-lg border text-center"
-                        style={{
-                          backgroundColor: "var(--bg-secondary)",
-                          borderColor: "var(--border-color)",
-                        }}
-                      >
-                        <p
-                          className="text-[10px] font-black uppercase tracking-widest mb-1"
-                          style={{ color: "var(--text-muted)" }}
-                        >
-                          Total Points
-                        </p>
-                        <p
-                          className="text-lg font-black"
-                          style={{ color: "var(--text-primary)" }}
-                        >
-                          {selectedUser.totalPoints?.toLocaleString() || 0}
-                        </p>
-                      </div>
-                      <div
-                        className="p-3 rounded-lg border text-center"
-                        style={{
-                          backgroundColor: "var(--bg-secondary)",
-                          borderColor: "var(--border-color)",
-                        }}
-                      >
-                        <p
-                          className="text-[10px] font-black uppercase tracking-widest mb-1"
-                          style={{ color: "var(--text-muted)" }}
-                        >
-                          Donations
-                        </p>
-                        <p
-                          className="text-lg font-black"
-                          style={{ color: "var(--text-primary)" }}
-                        >
-                          {selectedUser.donationsMade || 0}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Contact Information Section */}
-                    <div>
-                      <h3
-                        className="text-sm font-semibold uppercase tracking-wider mb-3"
-                        style={{ color: "var(--text-primary)" }}
-                      >
-                        Contact Information
-                      </h3>
-                      <div className="space-y-3">
-                        {/* Email */}
-                        <div className="flex items-start space-x-3">
-                          <div className="w-8 h-8 rounded bg-slate-50 border border-slate-100 flex items-center justify-center flex-shrink-0">
-                            <span className="text-slate-600 text-sm">📧</span>
-                          </div>
-                          <div>
-                            <div
-                              className="text-[10px] font-black uppercase tracking-widest"
-                              style={{ color: "var(--text-muted)" }}
-                            >
-                              Email Address
-                            </div>
-                            <div
-                              className="text-sm font-bold break-all"
-                              style={{ color: "var(--text-secondary)" }}
-                            >
-                              {selectedUser.email}
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Phone */}
-                        <div className="flex items-start space-x-3">
-                          <div className="w-8 h-8 rounded bg-slate-50 border border-slate-100 flex items-center justify-center flex-shrink-0">
-                            <span className="text-slate-600 text-sm">📱</span>
-                          </div>
-                          <div>
-                            <div
-                              className="text-[10px] font-black uppercase tracking-widest"
-                              style={{ color: "var(--text-muted)" }}
-                            >
-                              Phone Number
-                            </div>
-                            <div
-                              className="text-sm font-bold"
-                              style={{ color: "var(--text-secondary)" }}
-                            >
-                              {selectedUser.phone}
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Address */}
-                        <div className="flex items-start space-x-3">
-                          <div className="w-8 h-8 rounded bg-slate-50 border border-slate-100 flex items-center justify-center flex-shrink-0">
-                            <span className="text-slate-600 text-sm">📍</span>
-                          </div>
-                          <div>
-                            <div
-                              className="text-[10px] font-black uppercase tracking-widest"
-                              style={{ color: "var(--text-muted)" }}
-                            >
-                              Physical Address
-                            </div>
-                            <div
-                              className="text-sm font-bold leading-relaxed"
-                              style={{ color: "var(--text-secondary)" }}
-                            >
-                              {selectedUser.address}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Account Details */}
-                    <div>
-                      <h3
-                        className="text-sm font-semibold uppercase tracking-wider mb-3"
-                        style={{ color: "var(--text-primary)" }}
-                      >
-                        Account Details
-                      </h3>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <p
-                            className="text-[10px] font-black uppercase tracking-widest mb-0.5"
-                            style={{ color: "var(--text-muted)" }}
-                          >
-                            User ID
-                          </p>
-                          <p
-                            className="text-xs font-bold"
-                            style={{ color: "var(--text-secondary)" }}
-                          >
-                            {selectedUser.userId}
-                          </p>
-                        </div>
-                        <div>
-                          <p
-                            className="text-[10px] font-black uppercase tracking-widest mb-0.5"
-                            style={{ color: "var(--text-muted)" }}
-                          >
-                            Joined Date
-                          </p>
-                          <p
-                            className="text-xs font-bold"
-                            style={{ color: "var(--text-secondary)" }}
-                          >
-                            {selectedUser.joinedDate}
-                          </p>
-                        </div>
-                        <div>
-                          <p
-                            className="text-[10px] font-black uppercase tracking-widest mb-0.5"
-                            style={{ color: "var(--text-muted)" }}
-                          >
-                            Last Login
-                          </p>
-                          <p
-                            className="text-xs font-bold"
-                            style={{ color: "var(--text-secondary)" }}
-                          >
-                            {selectedUser.lastLogin}
-                          </p>
-                        </div>
-                        <div>
-                          <p
-                            className="text-[10px] font-black uppercase tracking-widest mb-0.5"
-                            style={{ color: "var(--text-muted)" }}
-                          >
-                            Avg Rating
-                          </p>
-                          <p
-                            className="text-xs font-bold"
-                            style={{ color: "var(--text-secondary)" }}
-                          >
-                            ⭐ {selectedUser.avgRating}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Recent Activity Section */}
-                    <div>
-                      <h3
-                        className="text-sm font-semibold uppercase tracking-wider mb-3"
-                        style={{ color: "var(--text-primary)" }}
-                      >
-                        Recent Activity
-                      </h3>
-                      <div className="space-y-2">
-                        {selectedUser.recentActivity.map((item, index) => (
-                          <div
-                            key={index}
-                            className="p-3 rounded border flex items-center justify-between group hover:border-hf-green/20 transition-colors"
-                            style={{
-                              backgroundColor: "var(--bg-secondary)",
-                              borderColor: "var(--border-color)",
-                            }}
-                          >
-                            <div className="min-w-0 pr-2">
-                              <p
-                                className="text-xs font-bold truncate"
-                                style={{ color: "var(--text-primary)" }}
-                              >
-                                {item.action}
-                              </p>
-                              <p
-                                className="text-[10px] font-medium"
-                                style={{ color: "var(--text-muted)" }}
-                              >
-                                {item.time}
-                              </p>
-                            </div>
-                            <div className="shrink-0">
-                              {item.icon === "donate" ? (
-                                <Sparkles
-                                  size={14}
-                                  className="text-emerald-500"
-                                />
-                              ) : item.icon === "update" ? (
-                                <RotateCcw
-                                  size={14}
-                                  className="text-blue-500"
-                                />
-                              ) : (
-                                <Building
-                                  size={14}
-                                  className="text-slate-400"
-                                />
-                              )}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Final Actions Area */}
-                    <div className="pt-4 flex gap-2">
-                      <Button
-                        className="flex-1 bg-hf-green text-white font-black text-xs uppercase tracking-widest h-12 rounded-sm shadow-lg shadow-emerald-500/20"
-                        style={{ backgroundColor: "#22c55e" }}
-                      >
-                        Export Profile
-                      </Button>
-                      <Button
-                        variant="flat"
-                        className="flex-1 bg-slate-100 text-slate-600 font-black text-xs uppercase tracking-widest h-12 rounded-sm"
-                        onPress={closeModal}
-                      >
-                        Close
-                      </Button>
-                    </div>
-                  </DrawerBody>
-                </>
-              )}
-            </>
-          )}
-        </DrawerContent>
-      </Drawer>
-    </>
+      {/* Users Table - Generic HeroUI Table */}
+      <ReusableTable
+        data={filteredUsers}
+        columns={columns}
+        renderCell={renderCell}
+        variant="compact"
+        enableFilters={false}
+        additionalFilters={additionalFilters}
+        initialVisibleColumns={[
+          "name",
+          "role",
+          "status",
+          "date",
+          "phone",
+          "totalPoints",
+        ]}
+      />
+    </div>
   );
 };
 

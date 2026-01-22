@@ -12,6 +12,8 @@ interface ResuableInputProps {
   required?: boolean;
   align?: "left" | "center" | "right";
   info?: string | React.ReactNode;
+  startContent?: React.ReactNode;
+  endContent?: React.ReactNode;
 }
 
 const ResuableInput: React.FC<ResuableInputProps> = ({
@@ -25,6 +27,8 @@ const ResuableInput: React.FC<ResuableInputProps> = ({
   required = false,
   align = "left",
   info,
+  startContent,
+  endContent,
 }) => {
   const alignClass =
     align === "left"
@@ -61,20 +65,34 @@ const ResuableInput: React.FC<ResuableInputProps> = ({
           )}
         </div>
       )}
-      <input
-        type={type}
-        placeholder={placeholder}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        disabled={disabled}
-        required={required}
-        style={{
-          backgroundColor: "var(--bg-secondary)",
-          borderColor: "var(--border-color)",
-          color: "var(--text-primary)",
-        }}
-        className={`w-full border px-2.5 py-2 rounded-none text-[11px] font-bold focus:outline-none focus:ring-1 focus:ring-[#22c55e]/50 focus:border-[#22c55e] transition-all placeholder:text-neutral-500 ${alignClass}`}
-      />
+      <div className="relative flex items-center">
+        {startContent && (
+          <div className="absolute left-2.5 flex items-center pointer-events-none">
+            {startContent}
+          </div>
+        )}
+        <input
+          type={type}
+          placeholder={placeholder}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          disabled={disabled}
+          required={required}
+          style={{
+            backgroundColor: "var(--bg-secondary)",
+            borderColor: "var(--border-color)",
+            color: "var(--text-primary)",
+            paddingLeft: startContent ? "2rem" : "0.625rem",
+            paddingRight: endContent ? "2.5rem" : "0.625rem",
+          }}
+          className={`w-full border py-2 rounded-none text-[11px] font-bold focus:outline-none focus:ring-1 focus:ring-[#22c55e]/50 focus:border-[#22c55e] transition-all placeholder:text-neutral-500 disabled:opacity-50 disabled:cursor-not-allowed ${alignClass}`}
+        />
+        {endContent && (
+          <div className="absolute right-2.5 flex items-center pointer-events-none">
+            {endContent}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
