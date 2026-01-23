@@ -64,7 +64,7 @@ const StatCard: React.FC<StatCardProps> = ({
         };
       default:
         return {
-          textColor: "var(--text-muted)",
+          textColor: "text-slate-400",
           icon: null,
         };
     }
@@ -74,40 +74,27 @@ const StatCard: React.FC<StatCardProps> = ({
 
   return (
     <div
-      className="rounded-sm border p-5 transition-all duration-200 cursor-pointer group"
+      className="rounded-sm border p-6 transition-all duration-200 cursor-pointer group bg-white hover:border-slate-300"
       style={{
-        backgroundColor: "var(--bg-primary)",
         borderColor: "var(--border-color)",
       }}
       onClick={onClick}
     >
       {/* Header: Title and Icon */}
       <div className="flex justify-between items-start mb-4">
-        <h4
-          className="text-sm font-medium uppercase tracking-wide"
-          style={{ color: "var(--text-muted)" }}
-        >
+        <h4 className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-400/80 leading-tight pr-4">
           {title}
         </h4>
         {icon && (
-          <div
-            className="p-2.5 rounded-sm transition-colors"
-            style={{
-              backgroundColor: "var(--bg-secondary)",
-              color: "var(--text-muted)",
-            }}
-          >
+          <div className="p-2.5 rounded-sm bg-slate-50 border border-slate-100 text-slate-300 group-hover:text-slate-500 transition-colors">
             {icon}
           </div>
         )}
       </div>
 
       {/* Value */}
-      <div className="mb-3">
-        <p
-          className="text-2xl font-black"
-          style={{ color: "var(--text-primary)" }}
-        >
+      <div className="mb-4">
+        <p className="text-3xl font-black text-slate-900 tracking-tight">
           {value}
         </p>
       </div>
@@ -118,7 +105,9 @@ const StatCard: React.FC<StatCardProps> = ({
           {changeStyles.icon && (
             <span className={changeStyles.textColor}>{changeStyles.icon}</span>
           )}
-          <span className={`text-sm font-medium ${changeStyles.textColor}`}>
+          <span
+            className={`text-xs font-black tracking-wide ${changeStyles.textColor}`}
+          >
             {change}
           </span>
         </div>

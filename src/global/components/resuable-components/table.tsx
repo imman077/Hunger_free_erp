@@ -22,7 +22,7 @@ import {
 } from "@heroui/react";
 import type { SortDescriptor, Selection } from "@heroui/react";
 import HeroDateRangePicker from "./HeroDateRangePicker";
-import { Eye, Mail, CheckCircle, Ban } from "lucide-react";
+import { Eye, Mail, CheckCircle, Ban, Trash2 } from "lucide-react";
 import ResuableButton from "./button";
 
 // --- Icons ---
@@ -140,10 +140,12 @@ export interface ActionConfig<T = any> {
   showMessage?: boolean;
   showApprove?: boolean;
   showDeactivate?: boolean;
+  showDelete?: boolean;
   onView?: (item: T) => void;
   onMessage?: (item: T) => void;
   onApprove?: (item: T) => void;
   onDeactivate?: (item: T) => void;
+  onDelete?: (item: T) => void;
 }
 
 interface ERPGridTableProps {
@@ -337,14 +339,16 @@ const ReusableTable: React.FC<ERPGridTableProps> = ({
         showMessage,
         showApprove,
         showDeactivate,
+        showDelete,
         onView,
         onMessage,
         onApprove,
         onDeactivate,
+        onDelete,
       } = actionConfig;
 
       return (
-        <div className="flex items-center justify-center gap-2">
+        <div className="flex items-center justify-center gap-1">
           {showView && (
             <div title="View Details">
               <ResuableButton
@@ -402,6 +406,21 @@ const ReusableTable: React.FC<ERPGridTableProps> = ({
                 className="!p-2 !min-w-0 hover:!bg-red-50"
               >
                 <Ban size={18} className="text-red-600" />
+              </ResuableButton>
+            </div>
+          )}
+          {showDelete && (
+            <div title="Delete">
+              <ResuableButton
+                variant="ghost"
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete?.(item);
+                }}
+                className="!p-2 !min-w-0 hover:!bg-red-50"
+              >
+                <Trash2 size={18} className="text-red-600" />
               </ResuableButton>
             </div>
           )}
@@ -743,12 +762,12 @@ const ReusableTable: React.FC<ERPGridTableProps> = ({
         bottomContentPlacement="outside"
         classNames={{
           wrapper: "p-0 no-scrollbar rounded-none border-none shadow-none",
-          th: `bg-[#fcfdfe] text-[9px] font-bold uppercase tracking-[0.1em] text-slate-500 whitespace-nowrap ${
-            variant === "compact" ? "py-2 px-3" : "py-3.5 px-5"
-          } border-b border-slate-200 first:rounded-tl-sm last:rounded-tr-sm`,
+          th: `bg-[#fcfdfe] text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500 whitespace-nowrap ${
+            variant === "compact" ? "py-2.5 px-3" : "py-4 px-5"
+          } border-b border-slate-100 first:rounded-tl-sm last:rounded-tr-sm`,
           td: `${
-            variant === "compact" ? "py-1.5 px-3" : "py-3.5 px-5"
-          } border-b border-slate-100 group-hover:bg-slate-50/80 transition-all font-medium text-slate-700 text-[13px] whitespace-nowrap`,
+            variant === "compact" ? "py-2 px-3" : "py-4 px-5"
+          } border-b border-slate-50 group-hover:bg-slate-50/50 transition-all text-slate-700 text-[13px] whitespace-nowrap`,
           tr: "group cursor-pointer transition-colors duration-200",
           base: "border-collapse",
         }}

@@ -196,15 +196,6 @@ const ConfigurationPage: React.FC = () => {
                     : "text-slate-600 hover:bg-slate-50 font-medium"
                 }`}
               >
-                <span
-                  className={
-                    activeSection === section.key
-                      ? "text-emerald-600"
-                      : "text-slate-400"
-                  }
-                >
-                  {section.icon}
-                </span>
                 <span className="text-sm">{section.title}</span>
               </button>
             ))}
@@ -216,7 +207,7 @@ const ConfigurationPage: React.FC = () => {
           <div className="bg-white border border-slate-200 rounded-sm">
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-slate-100">
-              <div>
+              <div className="text-left">
                 <h2 className="text-lg font-black text-slate-800">
                   {currentSection.title}
                 </h2>
@@ -293,7 +284,7 @@ const ConfigurationPage: React.FC = () => {
               {currentItems.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-center justify-between p-4 hover:bg-slate-50/50 transition-colors group"
+                  className="relative flex items-center justify-start p-4 hover:bg-slate-50/50 transition-colors group"
                 >
                   {editingId === item.id ? (
                     <div className="flex items-center gap-3 flex-1">
@@ -354,21 +345,21 @@ const ConfigurationPage: React.FC = () => {
                       <div className="flex items-center gap-4">
                         {currentSection.hasColor && item.color && (
                           <div
-                            className={`w-3 h-3 rounded-full bg-${item.color}-500`}
+                            className={`w-3 h-3 rounded-full bg-${item.color}-500 shrink-0`}
                           />
                         )}
-                        <div>
-                          <p className="font-bold text-slate-800 text-sm">
+                        <div className="min-w-0 text-left">
+                          <p className="font-bold text-slate-800 text-sm leading-tight">
                             {item.name}
                           </p>
-                          {item.description && (
-                            <p className="text-xs text-slate-400 font-medium">
-                              {item.description}
+                          {currentSection.hasDescription && (
+                            <p className="text-xs text-slate-400 font-medium mt-0.5">
+                              {item.description || "No description"}
                             </p>
                           )}
                         </div>
                       </div>
-                      <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="absolute right-4 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
                           onClick={() => handleEdit(item)}
                           className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-sm transition-all"

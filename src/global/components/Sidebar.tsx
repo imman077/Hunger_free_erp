@@ -204,6 +204,11 @@ const SidebarIcons: React.FC = () => {
       to: "/admin/rewards/redemptions",
       icon: <Icon name="wallet" className="h-4 w-4" />,
     },
+    {
+      label: "Reward Catalog",
+      to: "/admin/rewards/catalog",
+      icon: <Icon name="stack" className="h-4 w-4" />,
+    },
   ];
 
   const settingsSubItems: SubItem[] = [

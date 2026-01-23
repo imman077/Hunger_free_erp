@@ -2,13 +2,33 @@ import React, { useState } from "react";
 import {
   Check,
   X,
-  Filter,
   Eye,
   DollarSign,
   Plane,
   Sparkles,
   Sprout,
+  Plus,
+  Filter,
+  ChevronDown,
+  BarChart3,
+  Wallet,
+  Clock,
+  Activity,
+  FileDown,
+  CheckCircle,
 } from "lucide-react";
+import {
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerBody,
+  useDisclosure,
+} from "@heroui/react";
+import { toast } from "sonner";
 import type { ColumnDef } from "../../../../../global/components/resuable-components/table";
 import ReusableTable from "../../../../../global/components/resuable-components/table";
 import ResuableButton from "../../../../../global/components/resuable-components/button";
@@ -18,10 +38,10 @@ const REDEMPTION_REQUESTS = [
     id: "REQ-001",
     user: "Hotel Grand",
     role: "Donor",
-    item: "Mega Cash Prize",
+    item: "Mega Prize",
     category: "Cash",
     amount: "₹10,000",
-    points: "10,000",
+    points: "5,000",
     date: "Dec 20, 2024",
     status: "Pending",
   },
@@ -29,10 +49,10 @@ const REDEMPTION_REQUESTS = [
     id: "REQ-002",
     user: "Skyline NGO",
     role: "NGO",
-    item: "Operations Grant",
+    item: "Big Win",
     category: "Cash",
     amount: "₹5,000",
-    points: "5,000",
+    points: "2,500",
     date: "Dec 19, 2024",
     status: "Approved",
   },
@@ -43,7 +63,7 @@ const REDEMPTION_REQUESTS = [
     item: "Goa Beach Trip",
     category: "Tours",
     amount: "Package",
-    points: "12,000",
+    points: "8,000",
     date: "Dec 18, 2024",
     status: "Pending",
   },
@@ -72,18 +92,92 @@ const REDEMPTION_REQUESTS = [
 ];
 
 const redemptionColumns: ColumnDef[] = [
-  { name: "REQ ID", uid: "id", sortable: true },
+  { name: "REQ ID", uid: "id", sortable: true, align: "start" },
   { name: "USER/ENTITY", uid: "user", sortable: true, align: "start" },
-  { name: "CATEGORY", uid: "category", sortable: true },
-  { name: "REWARD ITEM", uid: "item", sortable: true },
-  { name: "VALUE", uid: "amount", sortable: true },
-  { name: "DATE", uid: "date", sortable: true },
-  { name: "STATUS", uid: "status", sortable: true },
-  { name: "ACTIONS", uid: "actions", sortable: false },
+  { name: "CATEGORY", uid: "category", sortable: true, align: "center" },
+  { name: "REWARD ITEM", uid: "item", sortable: true, align: "center" },
+  { name: "VALUE", uid: "amount", sortable: true, align: "center" },
+  { name: "DATE", uid: "date", sortable: true, align: "center" },
+  { name: "STATUS", uid: "status", sortable: true, align: "center" },
+  { name: "ACTIONS", uid: "actions", sortable: false, align: "center" },
 ];
 
 const RedemptionsView: React.FC = () => {
-  const [filter, setFilter] = useState("All");
+  const [activeFilters, setActiveFilters] = useState<string[]>([]);
+  const [categoryFilter, setCategoryFilter] = useState("All");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [redemptionData, setRedemptionData] = useState(REDEMPTION_REQUESTS);
+  const [selectedRequest, setSelectedRequest] = useState<any>(null);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const {
+    isOpen: isDetailOpen,
+    onOpen: onDetailOpen,
+    onClose: onDetailClose,
+  } = useDisclosure();
+
+  const toggleFilter = (filterType: string) => {
+    setActiveFilters((prev) =>
+      prev.includes(filterType)
+        ? prev.filter((f) => f !== filterType)
+        : [...prev, filterType],
+    );
+    if (filterType === "category") setCategoryFilter("All");
+    if (filterType === "status") setStatusFilter("All");
+  };
+
+  const exportToCSV = () => {
+    // Define CSV headers
+    const headers = [
+      "Request ID",
+      "User",
+      "Role",
+      "Category",
+      "Item",
+      "Amount",
+      "Points",
+      "Date",
+      "Status",
+    ];
+
+    // Convert data to CSV rows
+    const csvRows = redemptionData.map((req) => [
+      req.id,
+      req.user,
+      req.role,
+      req.category,
+      req.item,
+      req.amount.replace(/₹|,/g, ""), // Remove rupee symbol and commas for Excel
+      req.points.replace(/,/g, ""), // Remove commas from points
+      req.date,
+      req.status,
+    ]);
+
+    // Create CSV content
+    const csvContent = [
+      headers.join(","),
+      ...csvRows.map((row) => row.map((cell) => `"${cell}"`).join(",")),
+    ].join("\n");
+
+    // Create blob and download
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+
+    link.setAttribute("href", url);
+    link.setAttribute(
+      "download",
+      `redemption_report_${new Date().toISOString().split("T")[0]}.csv`,
+    );
+    link.style.visibility = "hidden";
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    toast.success(
+      `CSV report exported successfully! (${redemptionData.length} records)`,
+    );
+  };
 
   const renderRedemptionCell = (req: any, columnKey: React.Key) => {
     const value = req[columnKey as string];
@@ -124,7 +218,7 @@ const RedemptionsView: React.FC = () => {
         );
       case "category":
         return (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-center gap-2">
             {req.category === "Cash" && (
               <DollarSign size={12} className="text-emerald-500" />
             )}
@@ -168,8 +262,8 @@ const RedemptionsView: React.FC = () => {
                 req.status === "Pending"
                   ? "bg-amber-600"
                   : req.status === "Approved"
-                  ? "bg-emerald-600"
-                  : "bg-red-600"
+                    ? "bg-emerald-600"
+                    : "bg-red-600"
               }`}
             />
             {req.status}
@@ -177,32 +271,17 @@ const RedemptionsView: React.FC = () => {
         );
       case "actions":
         return (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-center gap-2">
             <ResuableButton
               variant="ghost"
-              onClick={() => console.log("View", req.id)}
-              className="!p-1.5 !bg-slate-50 !text-slate-600 hover:!bg-slate-900 hover:!text-white !min-w-0"
+              onClick={() => {
+                setSelectedRequest(req);
+                onDetailOpen();
+              }}
+              className="!p-1.5 !bg-slate-50 !text-slate-600 hover:!bg-[#22c55e] hover:!text-white !min-w-0"
             >
               <Eye size={14} />
             </ResuableButton>
-            {req.status === "Pending" && (
-              <>
-                <ResuableButton
-                  variant="ghost"
-                  onClick={() => console.log("Approve", req.id)}
-                  className="!p-1.5 !bg-emerald-50 !text-emerald-600 hover:!bg-emerald-600 hover:!text-white !min-w-0"
-                >
-                  <Check size={14} />
-                </ResuableButton>
-                <ResuableButton
-                  variant="ghost"
-                  onClick={() => console.log("Reject", req.id)}
-                  className="!p-1.5 !bg-red-50 !text-red-600 hover:!bg-red-600 hover:!text-white !min-w-0"
-                >
-                  <X size={14} />
-                </ResuableButton>
-              </>
-            )}
           </div>
         );
       default:
@@ -212,138 +291,601 @@ const RedemptionsView: React.FC = () => {
     }
   };
 
-  const categories = ["All", "Cash", "Tours", "Youth", "Trees"];
+  const categoryOptions = ["Cash", "Tours", "Youth", "Trees"];
+  const statusOptions = ["Pending", "Approved", "Rejected"];
+
+  const filteredData = redemptionData.filter((req) => {
+    const categoryMatch =
+      categoryFilter === "All" || req.category === categoryFilter;
+    const statusMatch = statusFilter === "All" || req.status === statusFilter;
+    return categoryMatch && statusMatch;
+  });
+
+  const additionalFilters = (
+    <div className="flex items-center gap-2 flex-nowrap overflow-x-auto no-scrollbar pb-1 sm:pb-0">
+      <Dropdown placement="bottom">
+        <DropdownTrigger>
+          <ResuableButton
+            variant="ghost"
+            className="border border-slate-200 bg-white rounded-sm h-10 px-4 text-[11px] font-bold text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-none shrink-0"
+            onClick={(e) => {}}
+            startContent={<Filter size={14} className="text-slate-400" />}
+            endContent={<Plus size={14} className="text-slate-400" />}
+          >
+            ADD FILTER
+          </ResuableButton>
+        </DropdownTrigger>
+        <DropdownMenu
+          aria-label="Add Filter Options"
+          onAction={(key) => toggleFilter(key as string)}
+          classNames={{
+            base: "bg-white border border-slate-200 rounded-sm min-w-[180px] p-1",
+          }}
+          itemClasses={{
+            base: [
+              "text-slate-600 text-[11px] font-bold uppercase tracking-tight",
+              "data-[hover=true]:bg-slate-50 data-[hover=true]:text-hf-green",
+              "rounded-sm",
+              "px-3",
+              "py-2.5",
+              "transition-colors duration-200",
+            ].join(" "),
+          }}
+        >
+          <DropdownItem
+            key="category"
+            isDisabled={activeFilters.includes("category")}
+            startContent={<Filter size={14} />}
+          >
+            CATEGORY
+          </DropdownItem>
+          <DropdownItem
+            key="status"
+            isDisabled={activeFilters.includes("status")}
+            startContent={<Filter size={14} />}
+          >
+            STATUS
+          </DropdownItem>
+        </DropdownMenu>
+      </Dropdown>
+
+      {activeFilters.includes("category") && (
+        <Dropdown>
+          <DropdownTrigger>
+            <ResuableButton
+              variant="ghost"
+              className="border border-emerald-100 bg-emerald-50/50 rounded-sm h-10 px-3 text-[11px] font-bold text-hf-green hover:bg-emerald-100 transition-all shadow-none shrink-0"
+              endContent={<ChevronDown size={14} />}
+              onClick={(e) => {}}
+            >
+              CATEGORY: {categoryFilter.toUpperCase()}
+              <div
+                className="ml-2 hover:bg-emerald-200 rounded-full p-0.5 cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleFilter("category");
+                }}
+              >
+                <X size={12} />
+              </div>
+            </ResuableButton>
+          </DropdownTrigger>
+          <DropdownMenu
+            aria-label="Category Filter Choices"
+            selectionMode="single"
+            selectedKeys={[categoryFilter]}
+            onSelectionChange={(keys) =>
+              setCategoryFilter(Array.from(keys)[0] as string)
+            }
+            classNames={{
+              base: "bg-white border border-slate-200 rounded-sm min-w-[160px] p-1",
+            }}
+            itemClasses={{
+              base: [
+                "text-slate-600 text-[11px] font-bold uppercase tracking-tight",
+                "data-[hover=true]:bg-slate-50 data-[hover=true]:text-hf-green",
+                "data-[selected=true]:bg-emerald-50 data-[selected=true]:text-hf-green",
+                "rounded-sm",
+                "px-3",
+                "py-2.5",
+                "transition-colors duration-200",
+              ].join(" "),
+              selectedIcon: "text-hf-green w-4 h-4 ml-auto",
+            }}
+          >
+            {[
+              <DropdownItem key="All">ALL CATEGORIES</DropdownItem>,
+              ...categoryOptions.map((cat) => (
+                <DropdownItem key={cat}>{cat.toUpperCase()}</DropdownItem>
+              )),
+            ]}
+          </DropdownMenu>
+        </Dropdown>
+      )}
+
+      {activeFilters.includes("status") && (
+        <Dropdown>
+          <DropdownTrigger>
+            <ResuableButton
+              variant="ghost"
+              className="border border-blue-100 bg-blue-50/50 rounded-sm h-10 px-3 text-[11px] font-bold text-blue-600 hover:bg-blue-100 transition-all shadow-none shrink-0"
+              endContent={<ChevronDown size={14} />}
+              onClick={(e) => {}}
+            >
+              STATUS: {statusFilter.toUpperCase()}
+              <div
+                className="ml-2 hover:bg-blue-200 rounded-full p-0.5 cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleFilter("status");
+                }}
+              >
+                <X size={12} />
+              </div>
+            </ResuableButton>
+          </DropdownTrigger>
+          <DropdownMenu
+            aria-label="Status Filter Choices"
+            selectionMode="single"
+            selectedKeys={[statusFilter]}
+            onSelectionChange={(keys) =>
+              setStatusFilter(Array.from(keys)[0] as string)
+            }
+            classNames={{
+              base: "bg-white border border-slate-200 rounded-sm min-w-[160px] p-1",
+            }}
+            itemClasses={{
+              base: [
+                "text-slate-600 text-[11px] font-bold uppercase tracking-tight",
+                "data-[hover=true]:bg-slate-50 data-[hover=true]:text-blue-600",
+                "data-[selected=true]:bg-blue-50 data-[selected=true]:text-blue-600",
+                "rounded-sm",
+                "px-3",
+                "py-2.5",
+                "transition-colors duration-200",
+              ].join(" "),
+              selectedIcon: "text-blue-600 w-4 h-4 ml-auto",
+            }}
+          >
+            {[
+              <DropdownItem key="All">ALL STATUS</DropdownItem>,
+              ...statusOptions.map((status) => (
+                <DropdownItem key={status}>{status.toUpperCase()}</DropdownItem>
+              )),
+            ]}
+          </DropdownMenu>
+        </Dropdown>
+      )}
+    </div>
+  );
 
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-4 gap-8 pb-10">
-      <div className="xl:col-span-3 space-y-8">
-        {/* Filters */}
-        <div
-          className="p-4 border rounded-sm flex flex-wrap items-center justify-between gap-4"
-          style={{
-            backgroundColor: "var(--bg-primary)",
-            borderColor: "var(--border-color)",
-          }}
-        >
-          <div className="flex items-center gap-2">
-            <Filter size={16} className="text-slate-400" />
-            <span className="text-xs font-black uppercase tracking-widest text-slate-400">
-              Filter By Category:
-            </span>
-          </div>
-          <div className="flex gap-2">
-            {categories.map((c) => (
-              <button
-                key={c}
-                onClick={() => setFilter(c)}
-                className={`px-4 py-1.5 rounded-sm text-[10px] font-black uppercase tracking-widest transition-all ${
-                  filter === c
-                    ? "bg-slate-900 text-white"
-                    : "bg-slate-50 text-slate-400 hover:bg-slate-100"
-                }`}
-              >
-                {c}
-              </button>
-            ))}
-          </div>
+    <div className="space-y-8 pb-8">
+      <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-0.5">
+          <h1
+            className="text-4xl font-black tracking-tight uppercase"
+            style={{ color: "var(--text-primary)" }}
+          >
+            Redemption Hub
+          </h1>
+          <p className="text-slate-500 font-semibold mt-1">
+            Authorize and track user reward payouts
+          </p>
         </div>
-
-        <ReusableTable
-          data={
-            filter === "All"
-              ? REDEMPTION_REQUESTS
-              : REDEMPTION_REQUESTS.filter((r) => r.category === filter)
-          }
-          columns={redemptionColumns}
-          renderCell={renderRedemptionCell}
-          title="ULTRA Redemptions"
-          description="Manage pending and processed reward requests"
-        />
+        <ResuableButton
+          variant="primary"
+          className="rounded-sm h-12 px-8 font-black uppercase tracking-widest text-xs transition-all active:scale-95 shadow-sm"
+          onClick={onOpen}
+          startContent={<BarChart3 size={16} />}
+        >
+          Payout Summary
+        </ResuableButton>
       </div>
 
-      <div className="space-y-6">
-        <div
-          className="rounded-sm border p-8 shadow-sm text-start overflow-hidden relative"
-          style={{
-            backgroundColor: "var(--bg-primary)",
-            borderColor: "var(--border-color)",
-          }}
+      <ReusableTable
+        data={filteredData}
+        columns={redemptionColumns}
+        renderCell={renderRedemptionCell}
+        enableFilters={false}
+        additionalFilters={additionalFilters}
+      />
+
+      <Drawer
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        placement="right"
+        size="md"
+        hideCloseButton={true}
+        classNames={{
+          base: "w-[380px] !max-w-[380px]",
+          backdrop: "bg-black/50",
+        }}
+      >
+        <DrawerContent
+          className="no-scrollbar"
+          style={{ backgroundColor: "var(--bg-primary)" }}
         >
-          <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50/50 rounded-full -mr-16 -mt-16 z-0" />
-          <div className="relative z-10">
-            <h4
-              className="font-black text-lg tracking-tight mb-8 uppercase"
-              style={{ color: "var(--text-primary)" }}
-            >
-              Payout Summary
-            </h4>
-
-            <div className="space-y-8">
-              <StatMiniCard
-                label="Total Approved"
-                value="₹1,45,000"
-                sub="Cumulative payouts"
-              />
-              <StatMiniCard
-                label="Pending Grants"
-                value="12 Requests"
-                sub="Awaiting review"
-              />
-              <StatMiniCard
-                label="System Health"
-                value="Optimal"
-                sub="Processing at 100%"
-              />
-            </div>
-
-            <div className="mt-12 space-y-3">
-              <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-4">
-                Batch Processing
-              </p>
-              <ResuableButton
-                variant="dark"
-                onClick={() => console.log("Approve All")}
-                className="w-full !bg-emerald-600 hover:!bg-emerald-700 font-black uppercase tracking-widest"
+          {(onClose) => (
+            <>
+              <DrawerHeader
+                className="flex flex-col gap-1 border-b px-6 py-4"
+                style={{ borderBottomColor: "var(--border-color)" }}
               >
-                Approve All Pending
-              </ResuableButton>
-              <ResuableButton
-                variant="ghost"
-                onClick={() => console.log("Export")}
-                className="w-full font-black uppercase tracking-widest text-[10px]"
+                <div className="flex items-center justify-between">
+                  <h2
+                    className="text-xl font-black tracking-tight uppercase"
+                    style={{ color: "var(--text-primary)" }}
+                  >
+                    Payout Summary
+                  </h2>
+                  <button
+                    onClick={onClose}
+                    className="p-1.5 hover:bg-slate-100 rounded-sm transition-colors text-slate-400"
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    Real-time reward metrics
+                  </span>
+                  <div className="flex items-center gap-1.5 px-2 py-0.5 bg-emerald-50 rounded-sm">
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="text-[9px] font-black text-emerald-600 uppercase tracking-tighter">
+                      Live
+                    </span>
+                  </div>
+                </div>
+              </DrawerHeader>
+
+              <DrawerBody className="px-6 py-5 space-y-5 overflow-y-auto no-scrollbar">
+                {/* Stats Grid */}
+                <div className="grid grid-cols-1 gap-3">
+                  <div className="bg-gradient-to-br from-emerald-50 to-teal-50 p-3 rounded-sm border border-emerald-100 shadow-sm">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-sm bg-emerald-500/10 flex items-center justify-center">
+                        <Wallet size={18} className="text-emerald-600" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="text-[8px] font-black text-emerald-600/70 uppercase tracking-[0.2em] mb-0.5">
+                          Total Approved
+                        </div>
+                        <div className="text-xl font-black text-emerald-700 tracking-tight">
+                          ₹1,45,000
+                        </div>
+                        <div className="text-[8px] font-bold text-emerald-500/70 uppercase tracking-tight mt-0.5">
+                          Cumulative Payouts
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-br from-amber-50 to-orange-50 p-3 rounded-sm border border-amber-100 shadow-sm">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-sm bg-amber-500/10 flex items-center justify-center">
+                        <Clock size={18} className="text-amber-600" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="text-[8px] font-black text-amber-600/70 uppercase tracking-[0.2em] mb-0.5">
+                          Pending Grants
+                        </div>
+                        <div className="text-xl font-black text-amber-700 tracking-tight">
+                          12 Requests
+                        </div>
+                        <div className="text-[8px] font-bold text-amber-500/70 uppercase tracking-tight mt-1">
+                          Awaiting Review
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-3 rounded-sm border border-blue-100 shadow-sm">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-sm bg-blue-500/10 flex items-center justify-center">
+                        <Activity size={18} className="text-blue-600" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="text-[8px] font-black text-blue-600/70 uppercase tracking-[0.2em] mb-0.5">
+                          System Health
+                        </div>
+                        <div className="text-xl font-black text-blue-700 tracking-tight">
+                          Optimal
+                        </div>
+                        <div className="text-[8px] font-bold text-blue-500/70 uppercase tracking-tight mt-1">
+                          Processing at 100%
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Batch Processing */}
+                <section className="space-y-3 pt-2">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-sm bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 shadow-sm shrink-0">
+                      <CheckCircle size={16} strokeWidth={2.5} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest leading-none">
+                        Batch Processing
+                      </h4>
+                      <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tight mt-1 leading-none">
+                        Quick Actions
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <ResuableButton
+                      variant="primary"
+                      disabled={
+                        redemptionData.filter((r) => r.status === "Pending")
+                          .length === 0
+                      }
+                      onClick={() => {
+                        const pendingCount = redemptionData.filter(
+                          (r) => r.status === "Pending",
+                        ).length;
+                        setRedemptionData((prev) =>
+                          prev.map((r) =>
+                            r.status === "Pending"
+                              ? { ...r, status: "Approved" }
+                              : r,
+                          ),
+                        );
+                        toast.success(`${pendingCount} requests approved!`);
+                      }}
+                      className="w-full !h-11 !bg-[#22c55e] hover:!bg-emerald-600 font-black uppercase tracking-[0.2em] text-[10px] shadow-lg shadow-emerald-500/20 disabled:!bg-slate-100 disabled:!text-slate-400 disabled:!shadow-none"
+                      startContent={<CheckCircle size={16} />}
+                    >
+                      Approve All Pending
+                    </ResuableButton>
+                    <ResuableButton
+                      variant="ghost"
+                      onClick={exportToCSV}
+                      className="w-full !h-11 !bg-white border border-slate-200 hover:!bg-slate-50 font-black uppercase tracking-[0.2em] text-[10px] !text-slate-500 shadow-sm transition-all"
+                      startContent={
+                        <FileDown size={16} className="text-slate-400" />
+                      }
+                    >
+                      Export Report (.CSV)
+                    </ResuableButton>
+                  </div>
+                </section>
+              </DrawerBody>
+            </>
+          )}
+        </DrawerContent>
+      </Drawer>
+
+      {/* Request Details Drawer */}
+      <Drawer
+        isOpen={isDetailOpen}
+        onOpenChange={(open) => {
+          if (!open) onDetailClose();
+        }}
+        placement="right"
+        size="md"
+        hideCloseButton={true}
+        classNames={{
+          base: "w-[400px] !max-w-[400px]",
+          backdrop: "bg-black/50",
+        }}
+      >
+        <DrawerContent
+          className="no-scrollbar"
+          style={{ backgroundColor: "var(--bg-primary)" }}
+        >
+          {() => (
+            <>
+              <DrawerHeader
+                className="flex flex-col gap-1 border-b px-6 py-4"
+                style={{ borderBottomColor: "var(--border-color)" }}
               >
-                Export Report (.CSV)
-              </ResuableButton>
-            </div>
-          </div>
-        </div>
-      </div>
+                <div className="flex items-center justify-between">
+                  <h2
+                    className="text-xl font-black tracking-tight uppercase"
+                    style={{ color: "var(--text-primary)" }}
+                  >
+                    Request Details
+                  </h2>
+                  <button
+                    onClick={onDetailClose}
+                    className="p-1.5 hover:bg-slate-100 rounded-sm transition-colors text-slate-400"
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                  {selectedRequest?.id}
+                </span>
+              </DrawerHeader>
+
+              <DrawerBody className="px-6 py-5 space-y-5 overflow-y-auto no-scrollbar">
+                {selectedRequest && (
+                  <>
+                    {/* User Info */}
+                    <div className="bg-gradient-to-br from-slate-50 to-slate-100 p-4 rounded-sm border border-slate-200 shadow-sm">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white font-black text-sm shadow-md">
+                          {selectedRequest.user.substring(0, 2).toUpperCase()}
+                        </div>
+                        <div className="flex-1">
+                          <div className="text-sm font-black text-slate-800">
+                            {selectedRequest.user}
+                          </div>
+                          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                            {selectedRequest.role}
+                          </div>
+                        </div>
+                        <div
+                          className={`px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-wide border ${
+                            selectedRequest.status === "Pending"
+                              ? "bg-amber-50 text-amber-600 border-amber-200"
+                              : selectedRequest.status === "Approved"
+                                ? "bg-emerald-50 text-emerald-600 border-emerald-200"
+                                : "bg-red-50 text-red-600 border-red-200"
+                          }`}
+                        >
+                          {selectedRequest.status}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Request Details Grid */}
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="bg-white p-3 rounded-sm border border-slate-100 shadow-sm">
+                        <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                          Category
+                        </div>
+                        <div className="text-sm font-bold text-slate-700">
+                          {selectedRequest.category}
+                        </div>
+                      </div>
+                      <div className="bg-white p-3 rounded-sm border border-slate-100 shadow-sm">
+                        <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                          Reward Item
+                        </div>
+                        <div className="text-sm font-bold text-slate-700">
+                          {selectedRequest.item}
+                        </div>
+                      </div>
+                      <div className="bg-white p-3 rounded-sm border border-slate-100 shadow-sm">
+                        <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                          Value
+                        </div>
+                        <div className="text-sm font-bold text-emerald-600">
+                          {selectedRequest.amount}
+                        </div>
+                      </div>
+                      <div className="bg-white p-3 rounded-sm border border-slate-100 shadow-sm">
+                        <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                          Points Used
+                        </div>
+                        <div className="text-sm font-bold text-slate-700">
+                          {selectedRequest.points}
+                        </div>
+                      </div>
+                      <div className="bg-white p-3 rounded-sm border border-slate-100 shadow-sm col-span-2">
+                        <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                          Request Date
+                        </div>
+                        <div className="text-sm font-bold text-slate-700">
+                          {selectedRequest.date}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Actions for Pending Requests */}
+                    {selectedRequest.status === "Pending" && (
+                      <section className="space-y-3 pt-4 border-t border-slate-100">
+                        <div className="flex items-center gap-2.5 mb-4">
+                          <div className="w-8 h-8 rounded-sm bg-amber-100 border border-amber-200 flex items-center justify-center text-amber-600 shadow-sm shrink-0">
+                            <Clock size={16} strokeWidth={2.5} />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest leading-none">
+                              Pending Approval
+                            </h4>
+                            <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tight mt-1 leading-none">
+                              Take action on this request
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3">
+                          <ResuableButton
+                            variant="primary"
+                            onClick={() => {
+                              setRedemptionData((prev) =>
+                                prev.map((r) =>
+                                  r.id === selectedRequest.id
+                                    ? { ...r, status: "Approved" }
+                                    : r,
+                                ),
+                              );
+                              setSelectedRequest({
+                                ...selectedRequest,
+                                status: "Approved",
+                              });
+                              toast.success(
+                                `Request ${selectedRequest.id} approved successfully!`,
+                              );
+                            }}
+                            className="w-full !h-11 !bg-[#22c55e] hover:!bg-emerald-600 font-black uppercase tracking-[0.15em] text-[10px] shadow-lg shadow-emerald-500/20"
+                            startContent={<Check size={16} />}
+                          >
+                            Approve
+                          </ResuableButton>
+                          <ResuableButton
+                            variant="ghost"
+                            onClick={() => {
+                              setRedemptionData((prev) =>
+                                prev.map((r) =>
+                                  r.id === selectedRequest.id
+                                    ? { ...r, status: "Rejected" }
+                                    : r,
+                                ),
+                              );
+                              setSelectedRequest({
+                                ...selectedRequest,
+                                status: "Rejected",
+                              });
+                              toast.error(
+                                `Request ${selectedRequest.id} has been rejected.`,
+                              );
+                            }}
+                            className="w-full !h-11 font-black uppercase tracking-[0.15em] text-[10px] border-2 border-red-100 !text-red-600 hover:!bg-red-600 hover:!text-white transition-all shadow-sm"
+                            startContent={<X size={16} />}
+                          >
+                            Reject
+                          </ResuableButton>
+                        </div>
+                      </section>
+                    )}
+
+                    {/* Status Message for Processed Requests */}
+                    {selectedRequest.status !== "Pending" && (
+                      <div className="py-10 flex flex-col items-center justify-center space-y-4 border-t border-slate-50 mt-4">
+                        <div
+                          className={`w-14 h-14 rounded-full flex items-center justify-center shadow-sm ${
+                            selectedRequest.status === "Approved"
+                              ? "bg-emerald-50 text-emerald-500 border border-emerald-100"
+                              : "bg-red-50 text-red-500 border border-red-100"
+                          }`}
+                        >
+                          {selectedRequest.status === "Approved" ? (
+                            <CheckCircle size={28} strokeWidth={2.5} />
+                          ) : (
+                            <X size={28} strokeWidth={2.5} />
+                          )}
+                        </div>
+                        <div className="text-center space-y-1.5">
+                          <h4
+                            className={`text-[12px] font-black uppercase tracking-[0.25em] ${
+                              selectedRequest.status === "Approved"
+                                ? "text-emerald-600"
+                                : "text-red-600"
+                            }`}
+                          >
+                            Request {selectedRequest.status}
+                          </h4>
+                          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">
+                            Transaction Finalized
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+              </DrawerBody>
+            </>
+          )}
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 };
-
-const StatMiniCard: React.FC<{ label: string; value: string; sub: string }> = ({
-  label,
-  value,
-  sub,
-}) => (
-  <div className="group cursor-default">
-    <p
-      className="text-[9px] font-black uppercase tracking-widest mb-1"
-      style={{ color: "var(--text-muted)" }}
-    >
-      {label}
-    </p>
-    <h5
-      className="text-3xl font-black group-hover:text-emerald-500 transition-colors tracking-tighter"
-      style={{ color: "var(--text-primary)" }}
-    >
-      {value}
-    </h5>
-    <p className="text-[10px] font-bold text-slate-300 uppercase italic tracking-tight">
-      {sub}
-    </p>
-  </div>
-);
 
 export default RedemptionsView;

@@ -26,6 +26,7 @@ export interface ResuableButtonProps {
   fullWidth?: boolean;
   className?: string;
   type?: "button" | "submit" | "reset";
+  [key: string]: any;
 }
 
 const variantClasses: Record<ButtonVariant, string> = {
@@ -64,6 +65,7 @@ const ResuableButton: React.FC<ResuableButtonProps> = ({
   fullWidth = false,
   className = "",
   type = "button",
+  ...rest
 }) => {
   const getVariantStyles = (): React.CSSProperties => {
     switch (variant) {
@@ -105,6 +107,7 @@ const ResuableButton: React.FC<ResuableButtonProps> = ({
 
   return (
     <button
+      {...rest}
       type={type}
       disabled={disabled || loading}
       onClick={onClick}
@@ -113,7 +116,7 @@ const ResuableButton: React.FC<ResuableButtonProps> = ({
         ${variantClasses[variant]}
         ${sizeClasses[size]}
         ${fullWidth ? "w-full" : ""}
-        rounded-none
+        rounded-sm
         font-medium
         transition-all
         duration-200
