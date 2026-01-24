@@ -1,4 +1,11 @@
 import React from "react";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerBody,
+  DrawerFooter,
+} from "@heroui/react";
 import { X } from "lucide-react";
 
 interface ResuableDrawerProps {
@@ -8,7 +15,7 @@ interface ResuableDrawerProps {
   subtitle?: string;
   children: React.ReactNode;
   footer?: React.ReactNode;
-  size?: "sm" | "md" | "lg" | "xl";
+  size?: "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "full";
   headerExtra?: React.ReactNode;
 }
 
@@ -22,89 +29,73 @@ const ResuableDrawer: React.FC<ResuableDrawerProps> = ({
   size = "md",
   headerExtra,
 }) => {
-  const sizeClasses = {
-    sm: "max-w-sm",
-    md: "max-w-md",
-    lg: "max-w-[400px]",
-    xl: "max-w-xl",
-  };
-
-  if (!isOpen) return null;
-
   return (
-    <>
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9998] transition-opacity"
-        onClick={onClose}
-      />
+    <Drawer
+      isOpen={isOpen}
+      onOpenChange={onClose}
+      size={size as any}
+      placement="right"
+      backdrop="blur"
+      radius="none"
+      hideCloseButton
+      classNames={{
+        base: "bg-white border-l border-slate-200",
+        backdrop: "bg-slate-900/40 backdrop-blur-md",
+        header: "border-b border-slate-100 p-0",
+        body: "p-0",
+        footer: "border-t border-slate-100 p-6",
+      }}
+      style={{
+        backgroundColor: "var(--bg-primary)",
+        borderColor: "var(--border-color)",
+      }}
+    >
+      <DrawerContent>
+        {(onClose) => (
+          <>
+            <DrawerHeader className="flex flex-col gap-1 px-6 py-4">
+              <div className="flex items-center justify-between">
+                <h2
+                  className="text-xl font-black uppercase tracking-tight"
+                  style={{ color: "var(--text-primary)" }}
+                >
+                  {title}
+                </h2>
+                <button
+                  onClick={onClose}
+                  className="p-1.5 hover:bg-slate-100 rounded-sm transition-colors"
+                  style={{ color: "var(--text-muted)" }}
+                >
+                  <X size={18} />
+                </button>
+              </div>
+              {(subtitle || headerExtra) && (
+                <div className="flex items-center justify-between">
+                  {subtitle && (
+                    <span
+                      className="text-[10px] font-black uppercase tracking-widest text-slate-400"
+                    >
+                      {subtitle}
+                    </span>
+                  )}
+                  {headerExtra}
+                </div>
+              )}
+            </DrawerHeader>
 
-      {/* Drawer */}
-      <div
-        className={`fixed top-0 right-0 h-full ${sizeClasses[size]} w-full bg-white shadow-2xl z-[9999] transform transition-transform duration-300 ease-out flex flex-col overflow-y-auto scrollbar-hide`}
-        style={{
-          borderLeft: "1px solid var(--border-color)",
-          backgroundColor: "var(--bg-primary)",
-        }}
-      >
-        {/* Header */}
-        <div
-          className="flex-shrink-0 px-6 py-3 border-b flex flex-col gap-1"
-          style={{
-            backgroundColor: "var(--bg-primary)",
-            borderBottomColor: "var(--border-color)",
-          }}
-        >
-          <div className="flex items-center justify-between">
-            <h2
-              className="text-xl font-black uppercase tracking-tight"
-              style={{ color: "var(--text-primary)" }}
-            >
-              {title}
-            </h2>
-            <button
-              onClick={onClose}
-              className="p-1.5 hover:bg-slate-100 rounded-sm transition-colors"
-              style={{ color: "var(--text-muted)" }}
-            >
-              <X size={18} />
-            </button>
-          </div>
-          {subtitle && (
-            <div className="flex items-center justify-between">
-              <span
-                className="text-[10px] font-black uppercase tracking-widest"
-                style={{ color: "var(--text-muted)" }}
-              >
-                {subtitle}
-              </span>
-              {headerExtra}
-            </div>
-          )}
-        </div>
+            <DrawerBody className="p-6 overflow-y-auto scrollbar-hide" style={{ backgroundColor: "var(--bg-secondary)" }}>
+              {children}
+            </DrawerBody>
 
-        {/* Body */}
-        <div
-          className="flex-1 overflow-y-auto px-6 py-3 space-y-4 scrollbar-hide"
-          style={{ backgroundColor: "var(--bg-secondary)" }}
-        >
-          {children}
-        </div>
-
-        {/* Footer */}
-        {footer && (
-          <div
-            className="flex-shrink-0 px-6 py-4 border-t flex items-center justify-end gap-3"
-            style={{
-              backgroundColor: "var(--bg-primary)",
-              borderTopColor: "var(--border-color)",
-            }}
-          >
-            {footer}
-          </div>
+            {footer && (
+              <DrawerFooter className="px-6 py-4 flex items-center justify-end gap-3" style={{ backgroundColor: "var(--bg-primary)" }}>
+                {footer}
+              </DrawerFooter>
+            )}
+          </>
         )}
-      </div>
-    </>
+      </DrawerContent>
+    </Drawer>
   );
 };
 

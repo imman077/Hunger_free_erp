@@ -285,8 +285,8 @@ const NGORewards = () => {
                       isCurrent
                         ? "bg-indigo-600 border-white scale-125 ring-4 ring-indigo-50"
                         : isPast
-                        ? "border-indigo-600 bg-indigo-50/30"
-                        : "border-transparent bg-slate-50"
+                          ? "border-indigo-600 bg-indigo-50/30"
+                          : "border-transparent bg-slate-50"
                     }`}
                   >
                     {isPast ? (

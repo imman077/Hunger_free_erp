@@ -3,21 +3,13 @@ import {
   Gem,
   Wallet,
   Users,
-  BarChart,
   Settings,
   RotateCcw,
   Plus,
   X,
-  Phone,
-  User,
-  Mail,
-  MapPin,
-  History,
   ShieldCheck,
   Save,
-  BarChart3,
   Search,
-  Tag,
 } from "lucide-react";
 import {
   Drawer,
@@ -40,51 +32,63 @@ const INITIAL_TIERS = [
     name: "Beginner",
     range: "0 - 500",
     bonus: "0%",
-    perks: "Basic Badge, Entry Level Perks",
+    pointsRequired: 0,
+    perks: "Welcome Pack, Forum Access, Standard Support",
   },
   {
     name: "Bronze",
     range: "501 - 1,500",
     bonus: "5%",
-    perks: "Bronze Badge, Monthly Raffle Entry",
+    pointsRequired: 501,
+    perks: "Verified Badge, 5% Multiplier, Raffle Entry",
   },
   {
     name: "Silver",
     range: "1,501 - 3,500",
     bonus: "10%",
-    perks: "Silver Badge, Priority Support",
+    pointsRequired: 1501,
+    perks: "Silver Badge, Priority Pickup, Impact Reports",
   },
   {
     name: "Gold",
     range: "3,501 - 7,500",
     bonus: "15%",
-    perks: "Gold Badge, Event Invites",
+    pointsRequired: 3501,
+    perks: "Gold Badge, VIP Event Invites, Direct Support",
   },
   {
     name: "Platinum",
     range: "7,501 - 15,000",
     bonus: "20%",
-    perks: "Platinum Badge, Exclusive Gear",
+    pointsRequired: 7501,
+    perks: "Platinum Badge, Exclusive Gear, Impact Manager",
   },
   {
     name: "Diamond",
     range: "15,001 - 30,000",
     bonus: "25%",
-    perks: "Diamond Badge, Feature Profile",
+    pointsRequired: 15001,
+    perks: "Diamond Badge, Featured Profile, Milestone Gifts",
   },
   {
     name: "Legend",
     range: "30,001+",
     bonus: "40%",
-    perks: "Legend Badge, All-Access Pass, 10 Trees/mo",
+    pointsRequired: 30001,
+    perks: "Legend Badge, 10 Trees/mo, Global All-Access",
   },
 ];
 
 const tierColumns: ColumnDef[] = [
   { name: "TIER NAME", uid: "name", sortable: true, align: "start" },
-  { name: "POINT RANGE", uid: "range", sortable: true, align: "center" },
+  {
+    name: "UPGRADE THRESHOLD",
+    uid: "pointsRequired",
+    sortable: true,
+    align: "center",
+  },
+  { name: "POINT RANGE", uid: "range", sortable: false, align: "center" },
   { name: "EARNING BONUS", uid: "bonus", sortable: true, align: "center" },
-  { name: "PERKS", uid: "perks", sortable: false, align: "center" },
   { name: "ACTIONS", uid: "actions", sortable: false, align: "center" },
 ];
 
@@ -106,6 +110,7 @@ const PointsTiersView: React.FC = () => {
     onClose: onDrawerClose,
   } = useDisclosure();
   const [selectedTier, setSelectedTier] = useState<any>(null);
+  const [previewTier, setPreviewTier] = useState<string>("None");
   const [isTierEditMode, setIsTierEditMode] = useState(false);
   const [editableTierName, setEditableTierName] = useState("");
   const [editableTierRange, setEditableTierRange] = useState("");
@@ -145,13 +150,9 @@ const PointsTiersView: React.FC = () => {
     },
   ];
 
-  const sortedTiers = [...tiers].sort((a, b) => {
-    const getBonusPercentage = (bonus: string) => {
-      const match = bonus.replace(/%/g, "").match(/\d+/);
-      return match ? parseInt(match[0], 10) : 0;
-    };
-    return getBonusPercentage(a.bonus) - getBonusPercentage(b.bonus);
-  });
+  const sortedTiers = [...tiers].sort(
+    (a, b) => a.pointsRequired - b.pointsRequired,
+  );
 
   const handleAddTier = () => {
     if (!newTier.name || !newTier.minPoints || !newTier.bonus) {
@@ -166,6 +167,7 @@ const PointsTiersView: React.FC = () => {
     const tierToAdd = {
       name: newTier.name,
       range,
+      pointsRequired: parseInt(newTier.minPoints, 10) || 0,
       bonus: newTier.bonus.endsWith("%") ? newTier.bonus : `${newTier.bonus}%`,
       perks: newTier.perks || "No perks defined",
     };
@@ -252,10 +254,16 @@ const PointsTiersView: React.FC = () => {
             </span>
           </div>
         );
+      case "pointsRequired":
+        return (
+          <span className="font-black text-slate-800 text-xs tabular-nums bg-slate-100 px-3 py-1 rounded-sm">
+            {tier.pointsRequired.toLocaleString()} PTS
+          </span>
+        );
       case "bonus":
         return (
-          <span className="font-bold text-hf-green text-xs tabular-nums">
-            {value}
+          <span className="font-black text-emerald-600 text-xs tabular-nums">
+            +{value}
           </span>
         );
       default:
@@ -568,7 +576,7 @@ const PointsTiersView: React.FC = () => {
           borderColor: "var(--border-color)",
         }}
       >
-        <div className="flex items-center justify-between mb-4 border-b border-slate-50 pb-3">
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 pb-4 border-b border-slate-50 gap-4">
           <div className="flex items-center gap-4">
             <div className="p-2.5 bg-[#22c55e] rounded-sm shadow-sm">
               <Settings className="text-white" size={20} />
@@ -585,9 +593,24 @@ const PointsTiersView: React.FC = () => {
               </p>
             </div>
           </div>
-          <button className="text-[10px] font-black uppercase text-slate-400 flex items-center gap-2 hover:text-slate-900 transition-colors tracking-widest leading-none">
-            <RotateCcw size={12} /> Reset Defaults
-          </button>
+
+          <div className="flex items-center gap-3">
+            <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest whitespace-nowrap">
+              Preview Points for Tier:
+            </p>
+            <select
+              value={previewTier}
+              onChange={(e) => setPreviewTier(e.target.value)}
+              className="bg-slate-50 border border-slate-200 rounded-sm px-3 py-1.5 text-[11px] font-black uppercase text-slate-800 focus:outline-none focus:ring-1 focus:ring-[#22c55e] cursor-pointer"
+            >
+              <option value="None">Default (Base)</option>
+              {tiers.map((t) => (
+                <option key={t.name} value={t.name}>
+                  {t.name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -599,7 +622,7 @@ const PointsTiersView: React.FC = () => {
                 className="font-black text-[13px] uppercase tracking-widest"
                 style={{ color: "var(--text-primary)" }}
               >
-                Donors (3X Base)
+                Donors
               </h5>
             </div>
             <div className="space-y-6">
@@ -641,30 +664,48 @@ const PointsTiersView: React.FC = () => {
                 </>
               ) : (
                 <>
-                  <div className="flex justify-between items-center border-b border-slate-200/40 pb-3">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em]">
-                      First Donation
-                    </p>
-                    <p className="text-sm font-black text-slate-900 tabular-nums">
-                      {baseRates.donor.first} PTS
-                    </p>
-                  </div>
-                  <div className="flex justify-between items-center border-b border-slate-200/40 pb-3">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em]">
-                      Per KG Food
-                    </p>
-                    <p className="text-sm font-black text-slate-900 tabular-nums">
-                      {baseRates.donor.perKg} PTS
-                    </p>
-                  </div>
-                  <div className="flex justify-between items-center border-b border-slate-200/40 pb-3">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em]">
-                      Milestone Bonus
-                    </p>
-                    <p className="text-sm font-black text-slate-900 tabular-nums">
-                      {baseRates.donor.milestone} PTS
-                    </p>
-                  </div>
+                  {[
+                    { label: "First Donation", val: baseRates.donor.first },
+                    { label: "Per KG Food", val: baseRates.donor.perKg },
+                    {
+                      label: "Milestone Bonus",
+                      val: baseRates.donor.milestone,
+                    },
+                  ].map((field, idx) => {
+                    const currentTierBonus =
+                      tiers.find((t) => t.name === previewTier)?.bonus || "0%";
+                    const bonusVal = parseInt(
+                      currentTierBonus.replace("%", ""),
+                      10,
+                    );
+                    const basePoints = parseInt(field.val, 10);
+                    const multipliedPoints = Math.floor(
+                      basePoints * (1 + bonusVal / 100),
+                    );
+
+                    return (
+                      <div
+                        key={idx}
+                        className="flex justify-between items-center border-b border-slate-200/40 pb-3 group"
+                      >
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] group-hover:text-slate-600 transition-colors">
+                          {field.label}
+                        </p>
+                        <div className="text-right">
+                          <p
+                            className={`text-sm font-black tabular-nums ${previewTier !== "None" ? "text-emerald-500" : "text-slate-900"}`}
+                          >
+                            {multipliedPoints} PTS
+                          </p>
+                          {previewTier !== "None" && bonusVal > 0 && (
+                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-tighter mt-0.5">
+                              Base: {basePoints} + {bonusVal}%
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </>
               )}
             </div>
@@ -678,7 +719,7 @@ const PointsTiersView: React.FC = () => {
                 className="font-black text-[13px] uppercase tracking-widest"
                 style={{ color: "var(--text-primary)" }}
               >
-                Volunteers (3X Base)
+                Volunteers
               </h5>
             </div>
             <div className="space-y-6">
@@ -720,30 +761,51 @@ const PointsTiersView: React.FC = () => {
                 </>
               ) : (
                 <>
-                  <div className="flex justify-between items-center border-b border-slate-200/40 pb-3">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em]">
-                      Per Delivery
-                    </p>
-                    <p className="text-sm font-black text-slate-900 tabular-nums">
-                      {baseRates.volunteer.delivery} PTS
-                    </p>
-                  </div>
-                  <div className="flex justify-between items-center border-b border-slate-200/40 pb-3">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em]">
-                      Weekly Streak
-                    </p>
-                    <p className="text-sm font-black text-slate-900 tabular-nums">
-                      {baseRates.volunteer.streak} PTS
-                    </p>
-                  </div>
-                  <div className="flex justify-between items-center border-b border-slate-200/40 pb-3">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em]">
-                      Emergency Bonus
-                    </p>
-                    <p className="text-sm font-black text-slate-900 tabular-nums">
-                      {baseRates.volunteer.emergency} PTS
-                    </p>
-                  </div>
+                  {[
+                    {
+                      label: "Per Delivery",
+                      val: baseRates.volunteer.delivery,
+                    },
+                    { label: "Weekly Streak", val: baseRates.volunteer.streak },
+                    {
+                      label: "Emergency Bonus",
+                      val: baseRates.volunteer.emergency,
+                    },
+                  ].map((field, idx) => {
+                    const currentTierBonus =
+                      tiers.find((t) => t.name === previewTier)?.bonus || "0%";
+                    const bonusVal = parseInt(
+                      currentTierBonus.replace("%", ""),
+                      10,
+                    );
+                    const basePoints = parseInt(field.val, 10);
+                    const multipliedPoints = Math.floor(
+                      basePoints * (1 + bonusVal / 100),
+                    );
+
+                    return (
+                      <div
+                        key={idx}
+                        className="flex justify-between items-center border-b border-slate-200/40 pb-3 group"
+                      >
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] group-hover:text-slate-600 transition-colors">
+                          {field.label}
+                        </p>
+                        <div className="text-right">
+                          <p
+                            className={`text-sm font-black tabular-nums ${previewTier !== "None" ? "text-emerald-500" : "text-slate-900"}`}
+                          >
+                            {multipliedPoints} PTS
+                          </p>
+                          {previewTier !== "None" && bonusVal > 0 && (
+                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-tighter mt-0.5">
+                              Base: {basePoints} + {bonusVal}%
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </>
               )}
             </div>
@@ -757,7 +819,7 @@ const PointsTiersView: React.FC = () => {
                 className="font-black text-[13px] uppercase tracking-widest"
                 style={{ color: "var(--text-primary)" }}
               >
-                NGOs (Fixed Rate)
+                NGOs
               </h5>
             </div>
             <div className="space-y-6">
@@ -799,30 +861,45 @@ const PointsTiersView: React.FC = () => {
                 </>
               ) : (
                 <>
-                  <div className="flex justify-between items-center border-b border-slate-200/40 pb-3">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em]">
-                      Accept Request
-                    </p>
-                    <p className="text-sm font-black text-slate-900 tabular-nums">
-                      {baseRates.ngo.accept} PTS
-                    </p>
-                  </div>
-                  <div className="flex justify-between items-center border-b border-slate-200/40 pb-3">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em]">
-                      Waste Managed
-                    </p>
-                    <p className="text-sm font-black text-slate-900 tabular-nums">
-                      {baseRates.ngo.waste} PTS
-                    </p>
-                  </div>
-                  <div className="flex justify-between items-center border-b border-slate-200/40 pb-3">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em]">
-                      Impact Report
-                    </p>
-                    <p className="text-sm font-black text-slate-900 tabular-nums">
-                      {baseRates.ngo.impact} PTS
-                    </p>
-                  </div>
+                  {[
+                    { label: "Accept Request", val: baseRates.ngo.accept },
+                    { label: "Waste Managed", val: baseRates.ngo.waste },
+                    { label: "Impact Report", val: baseRates.ngo.impact },
+                  ].map((field, idx) => {
+                    const currentTierBonus =
+                      tiers.find((t) => t.name === previewTier)?.bonus || "0%";
+                    const bonusVal = parseInt(
+                      currentTierBonus.replace("%", ""),
+                      10,
+                    );
+                    const basePoints = parseInt(field.val, 10);
+                    const multipliedPoints = Math.floor(
+                      basePoints * (1 + bonusVal / 100),
+                    );
+
+                    return (
+                      <div
+                        key={idx}
+                        className="flex justify-between items-center border-b border-slate-200/40 pb-3 group"
+                      >
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] group-hover:text-slate-600 transition-colors">
+                          {field.label}
+                        </p>
+                        <div className="text-right">
+                          <p
+                            className={`text-sm font-black tabular-nums ${previewTier !== "None" ? "text-emerald-500" : "text-slate-900"}`}
+                          >
+                            {multipliedPoints} PTS
+                          </p>
+                          {previewTier !== "None" && bonusVal > 0 && (
+                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-tighter mt-0.5">
+                              Base: {basePoints} + {bonusVal}%
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </>
               )}
             </div>

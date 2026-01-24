@@ -80,7 +80,7 @@ const DonorProfile = () => {
         className="bg-white border-b sticky top-0 z-20"
         style={{ borderColor: "var(--border-color)" }}
       >
-        <div className="max-w-7xl mx-auto px-8 py-8">
+        <div className="max-w-7xl mx-auto px-8 py-6">
           <div className="flex flex-col md:flex-row items-center md:items-end gap-10">
             <div className="relative group">
               <div className="w-36 h-36 rounded-sm overflow-hidden border-4 border-white shadow-xl group-hover:scale-[1.02] transition-transform duration-500">
@@ -100,7 +100,7 @@ const DonorProfile = () => {
                 <h1 className="text-4xl font-black tracking-tighter text-slate-900">
                   {profile.name}
                 </h1>
-                <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-sm text-[10px] font-black uppercase tracking-widest border border-emerald-100 shadow-sm">
+                <span className="px-3 py-1 bg-green-50 text-green-600 rounded-sm text-[10px] font-black uppercase tracking-widest border border-green-100 shadow-sm">
                   Lvl 12
                 </span>
               </div>
@@ -135,7 +135,7 @@ const DonorProfile = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-8 mt-10 pb-16">
+      <div className="max-w-7xl mx-auto px-8 mt-8 pb-12">
         {/* Impact Cards */}
         <ImpactCards data={impactData} className="mb-8" />
 
@@ -180,7 +180,7 @@ const DonorProfile = () => {
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-4 group">
                   <div
-                    className="p-3.5 rounded-sm border transition-all duration-300 group-hover:bg-emerald-50 group-hover:border-emerald-100 group-hover:text-emerald-600 shadow-sm"
+                    className="p-3.5 rounded-sm border transition-all duration-300 group-hover:bg-green-50 group-hover:border-green-100 group-hover:text-green-600 shadow-sm"
                     style={{
                       backgroundColor: "var(--bg-secondary)",
                       borderColor: "var(--border-color)",
@@ -226,7 +226,7 @@ const DonorProfile = () => {
               <h3 className="text-sm font-black tracking-tight uppercase">
                 Recent Activity
               </h3>
-              <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest cursor-pointer hover:underline">
+              <span className="text-[10px] font-black text-green-600 uppercase tracking-widest cursor-pointer hover:underline">
                 View All
               </span>
             </div>
@@ -252,12 +252,12 @@ const DonorProfile = () => {
                             ? "donations"
                             : "trending"
                         }
-                        className="w-4 h-4 text-emerald-600"
+                        className="w-4 h-4 text-green-600"
                       />
                     </div>
                     <div>
                       <h4
-                        className="text-sm font-black group-hover:text-emerald-600 transition-colors leading-tight"
+                        className="text-sm font-black group-hover:text-green-600 transition-colors leading-tight"
                         style={{ color: "var(--text-primary)" }}
                       >
                         {activity.title}
@@ -295,7 +295,7 @@ const DonorProfile = () => {
                   Unlock hidden potential
                 </p>
               </div>
-              <div className="flex items-center gap-3 px-3 py-1.5 bg-emerald-50 text-[#16a34a] rounded-md border border-emerald-100 shadow-sm">
+              <div className="flex items-center gap-3 px-3 py-1.5 bg-green-50 text-[#16a34a] rounded-md border border-green-100 shadow-sm">
                 <div className="w-2 h-2 rounded-full bg-[#22c55e] animate-pulse" />
                 <span className="text-[10px] font-black uppercase tracking-widest">
                   4 / 12 UNLOCKED
@@ -309,51 +309,37 @@ const DonorProfile = () => {
                   name: "Top Contributor",
                   desc: "Ranked in top 1% this month",
                   status: "Mastered",
-                  color: "amber",
+                  color: "green",
                   icon: "verified",
                 },
                 {
                   name: "First Donation",
                   desc: "Completed first mission",
                   status: "Unlocked",
-                  color: "emerald",
+                  color: "green",
                   icon: "check-circle",
                 },
                 {
                   name: "Community Hero",
                   desc: "Helped over 50 families",
                   status: "Veteran",
-                  color: "emerald",
+                  color: "green",
                   icon: "users",
                 },
                 {
                   name: "Consistency King",
                   desc: "Donated 5 weeks in a row",
                   status: "Active",
-                  color: "emerald",
+                  color: "green",
                   icon: "calendar",
                 },
               ].map((badge, i) => (
                 <div
                   key={i}
-                  className={`group relative p-6 rounded-sm border transition-all duration-300 cursor-pointer flex flex-col justify-between bg-white text-start shadow-sm
-                  ${
-                    badge.color === "amber"
-                      ? "border-amber-50 hover:border-amber-200 hover:shadow-md"
-                      : "border-slate-50 hover:border-emerald-200 hover:shadow-md"
-                  }
-                `}
+                  className="group relative p-6 rounded-sm border border-slate-50 hover:border-green-200 hover:shadow-md transition-all duration-300 cursor-pointer flex flex-col justify-between bg-white text-start shadow-sm"
                 >
                   <div className="flex items-center gap-4 relative z-10 mb-3">
-                    <div
-                      className={`w-12 h-12 rounded-sm flex items-center justify-center transition-all duration-500 group-hover:scale-105 shadow-md
-                      ${
-                        badge.color === "amber"
-                          ? "bg-amber-500 text-white shadow-amber-500/20"
-                          : "bg-[#22c55e] text-white shadow-[#22c55e]/20"
-                      }
-                    `}
-                    >
+                    <div className="w-12 h-12 rounded-sm flex items-center justify-center bg-[#22c55e] text-white shadow-[#22c55e]/20 shadow-md transition-all duration-500 group-hover:scale-105">
                       <Icon name={badge.icon} className="w-5 h-5" />
                     </div>
 
@@ -362,15 +348,7 @@ const DonorProfile = () => {
                         {badge.name}
                       </h4>
                       <div className="flex items-center gap-2 mt-1">
-                        <span
-                          className={`text-[8px] font-black uppercase tracking-[0.2em] px-2 py-0.5 rounded-sm border
-                          ${
-                            badge.color === "amber"
-                              ? "bg-amber-50 text-amber-700 border-amber-100"
-                              : "bg-emerald-50 text-emerald-700 border-emerald-100"
-                          }
-                        `}
-                        >
+                        <span className="text-[8px] font-black uppercase tracking-[0.2em] px-2 py-0.5 rounded-sm border bg-green-50 text-green-700 border-green-100">
                           {badge.status}
                         </span>
                       </div>
@@ -390,10 +368,10 @@ const DonorProfile = () => {
             style={{ borderColor: "var(--border-color)" }}
           >
             <div className="flex items-center justify-between mb-8 relative z-10">
-              <h4 className="text-emerald-600 text-[10px] font-black uppercase tracking-[0.4em]">
+              <h4 className="text-green-600 text-[10px] font-black uppercase tracking-[0.4em]">
                 Current Status
               </h4>
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 text-emerald-600 rounded-sm border border-emerald-100 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-500">
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-green-50 text-green-600 rounded-sm border border-green-100 group-hover:bg-green-600 group-hover:text-white transition-all duration-500">
                 <Icon name="trending" className="w-4 h-4" />
                 <span className="text-[10px] font-black uppercase tracking-widest">
                   Top 5%
@@ -437,8 +415,8 @@ const DonorProfile = () => {
             </div>
 
             {/* Next Perk Preview */}
-            <div className="bg-emerald-50 rounded-sm p-5 mb-8 border border-emerald-100 group-hover:border-[#22c55e]/20 transition-colors relative z-10 shadow-sm">
-              <div className="text-[10px] font-black text-emerald-600 uppercase tracking-[0.25em] mb-2">
+            <div className="bg-green-50 rounded-sm p-5 mb-8 border border-green-100 group-hover:border-[#22c55e]/20 transition-colors relative z-10 shadow-sm">
+              <div className="text-[10px] font-black text-green-600 uppercase tracking-[0.25em] mb-2">
                 Next: Lvl 13
               </div>
               <div className="text-sm font-black flex items-center gap-3 text-slate-800">
@@ -452,7 +430,7 @@ const DonorProfile = () => {
                 <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">
                   280 pts to lvl 13
                 </p>
-                <span className="text-[11px] font-black text-emerald-600">
+                <span className="text-[11px] font-black text-green-600">
                   72%
                 </span>
               </div>

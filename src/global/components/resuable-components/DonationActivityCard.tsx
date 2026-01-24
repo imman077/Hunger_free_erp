@@ -29,8 +29,8 @@ const DonationActivityCard: React.FC<DonationActivityCardProps> = ({
       className={`group/item relative flex flex-col items-center text-center transition-all duration-300 border font-sans rounded-md cursor-pointer
         ${
           compact
-            ? "p-5 gap-3 aspect-square justify-center hover:bg-slate-50/50"
-            : "p-8 gap-5 aspect-square justify-center hover:border-[#22c55e]/40 hover:bg-slate-50/20"
+            ? "p-4 gap-3 justify-center hover:bg-slate-50/50"
+            : "p-6 gap-4 justify-center hover:border-[#22c55e]/40 hover:bg-slate-50/20"
         }
       `}
       style={{

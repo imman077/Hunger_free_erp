@@ -236,6 +236,11 @@ const SidebarIcons: React.FC = () => {
       icon: <Icon name="rewards" className="h-4 w-4" />,
     },
     {
+      label: "Payment Methods",
+      to: "/donor/profile/payments",
+      icon: <Icon name="wallet" className="h-4 w-4" />,
+    },
+    {
       label: "Profile",
       to: "/donor/profile",
       icon: <Icon name="users" className="h-4 w-4" />,

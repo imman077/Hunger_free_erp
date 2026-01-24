@@ -18,32 +18,32 @@ const ImpactCard: React.FC<
 > = ({ label, val, trend, color, orientation }) => {
   return (
     <div
-      className={`group/impact p-5 rounded-md border transition-all duration-300 flex flex-col items-center justify-center min-h-[130px] relative overflow-hidden hover:border-[#22c55e]/30
-        ${orientation === "horizontal" ? "flex-1 min-w-[220px]" : "w-full"}
+      className={`group/impact p-6 md:p-8 rounded-md border transition-all duration-300 flex flex-col items-center justify-center min-h-[110px] relative overflow-hidden hover:border-[#22c55e]/30
+        ${orientation === "horizontal" ? "flex-1 min-w-[200px]" : "w-full"}
       `}
       style={{
         backgroundColor: "var(--bg-primary)",
         borderColor: "var(--border-color)",
       }}
     >
-      <div className="mb-2.5 relative z-10 text-center transition-transform duration-300 group-hover/impact:-translate-y-1">
+      <div className="mb-2 relative z-10 text-center transition-transform duration-300 group-hover/impact:-translate-y-1">
         <p
-          className="text-[9px] font-black uppercase tracking-[0.25em] mb-2"
+          className="text-[8px] font-black uppercase tracking-[0.25em] mb-1.5"
           style={{ color: "var(--text-muted)" }}
         >
           {label}
         </p>
         <h4
-          className="text-3xl font-black tracking-tighter tabular-nums leading-none transition-colors duration-300 group-hover/impact:text-[#22c55e]"
+          className="text-2xl md:text-3xl font-black tracking-tighter tabular-nums leading-none transition-colors duration-300 group-hover/impact:text-[#22c55e]"
           style={{ color: "var(--text-primary)" }}
         >
           {val}
         </h4>
       </div>
 
-      <div className="flex flex-col items-center mt-auto relative z-10 text-center">
+      <div className="flex flex-col items-center mt-2 relative z-10 text-center">
         <p
-          className={`text-[10px] font-black leading-none px-2.5 py-1.5 rounded-full bg-slate-50 border border-slate-100 focus:outline-none focus:ring-2 focus:ring-[#22c55e] focus:ring-offset-2 ${
+          className={`text-[9px] font-black leading-none px-2 py-1 rounded-full bg-slate-50 border border-slate-100 focus:outline-none focus:ring-2 focus:ring-[#22c55e] focus:ring-offset-2 ${
             color === "bg-[#22c55e]" || color === "bg-emerald-500"
               ? "text-[#22c55e]"
               : "text-slate-500"

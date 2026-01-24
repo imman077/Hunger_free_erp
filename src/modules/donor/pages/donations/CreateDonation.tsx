@@ -83,7 +83,7 @@ const CreateDonation = () => {
               </h1>
             </div>
           </div>
-          <div className="bg-emerald-50 border border-emerald-100 px-4 py-1.5 rounded-md flex items-center gap-2.5 shadow-sm">
+          <div className="bg-green-50 border border-green-100 px-4 py-1.5 rounded-md flex items-center gap-2.5 shadow-sm">
             <div className="w-2 h-2 rounded-full bg-[#22c55e] animate-pulse" />
             <span className="text-[10px] font-black text-[#16a34a] uppercase tracking-widest">
               Live Entry
@@ -105,7 +105,7 @@ const CreateDonation = () => {
             className="border-b p-7 flex items-center gap-4"
             style={{ borderColor: "var(--border-color)" }}
           >
-            <div className="w-12 h-12 bg-emerald-50 border border-emerald-100 rounded-md flex items-center justify-center text-[#16a34a] shadow-sm">
+            <div className="w-12 h-12 bg-green-50 border border-green-100 rounded-md flex items-center justify-center text-[#16a34a] shadow-sm">
               <Package size={24} />
             </div>
             <div>
@@ -181,7 +181,7 @@ const CreateDonation = () => {
             className="border-b p-7 flex items-center gap-4"
             style={{ borderColor: "var(--border-color)" }}
           >
-            <div className="w-12 h-12 bg-emerald-50 border border-emerald-100 rounded-md flex items-center justify-center text-[#16a34a] shadow-sm">
+            <div className="w-12 h-12 bg-green-50 border border-green-100 rounded-md flex items-center justify-center text-[#16a34a] shadow-sm">
               <MapPin size={24} />
             </div>
             <div>
@@ -250,7 +250,7 @@ const CreateDonation = () => {
             <ResuableButton
               type="submit"
               variant="dark"
-              className="min-w-[240px] h-[52px] !bg-[#16a34a] hover:!bg-[#15803d] !rounded-md shadow-lg shadow-emerald-500/20 transition-all active:scale-95"
+              className="min-w-[240px] h-[52px] !bg-[#16a34a] hover:!bg-[#15803d] !rounded-md shadow-lg shadow-green-500/20 transition-all active:scale-95"
               startContent={<CheckCircle size={20} />}
             >
               <span className="text-[11px] font-black uppercase tracking-widest">

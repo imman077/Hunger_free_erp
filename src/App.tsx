@@ -27,7 +27,9 @@ import DonorDashboard from "./modules/donor/pages/dashboard/Dashboard";
 import DonorMyDonations from "./modules/donor/pages/donations/MyDonations";
 import DonorCreateDonation from "./modules/donor/pages/donations/CreateDonation";
 import DonorProfile from "./modules/donor/pages/profile/Profile";
+import DonorPaymentMethods from "./modules/donor/pages/profile/PaymentMethods";
 import DonorRewards from "./modules/donor/pages/rewards/Rewards";
+import DonorBenefits from "./modules/donor/pages/rewards/Benefits";
 
 // NGO Imports
 import NGODashboard from "./modules/ngo/pages/dashboard/Dashboard";
@@ -124,7 +126,9 @@ function App() {
             <Route path="donations" element={<DonorMyDonations />} />
             <Route path="donations/create" element={<DonorCreateDonation />} />
             <Route path="rewards" element={<DonorRewards />} />
+            <Route path="rewards/benefits" element={<DonorBenefits />} />
             <Route path="profile" element={<DonorProfile />} />
+            <Route path="profile/payments" element={<DonorPaymentMethods />} />
           </Route>
 
           {/* NGO Section */}

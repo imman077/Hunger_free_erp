@@ -22,7 +22,7 @@ const MyDonations = () => {
       ngo: "Hope Shelter",
       date: "Dec 25, 2024",
       status: "In Transit",
-      statusColor: "text-emerald-600 bg-emerald-50",
+      statusColor: "text-green-600 bg-green-50",
     },
   ];
 
@@ -39,7 +39,7 @@ const MyDonations = () => {
         </div>
         <button
           onClick={() => navigate("/donor/donations/create")}
-          className="px-8 py-4 bg-[#22c55e] text-white rounded-md text-[11px] font-black uppercase tracking-widest hover:bg-[#16a34a] transition-all flex items-center gap-3 active:scale-95 shadow-lg shadow-emerald-500/20"
+          className="px-8 py-4 bg-[#22c55e] text-white rounded-md text-[11px] font-black uppercase tracking-widest hover:bg-[#16a34a] transition-all flex items-center gap-3 active:scale-95 shadow-lg shadow-green-500/20"
         >
           <Package size={18} />
           Create New Donation
@@ -96,7 +96,7 @@ const MyDonations = () => {
           </p>
           <button
             onClick={() => navigate("/donor/donations/create")}
-            className="px-10 py-4 bg-[#22c55e] text-white rounded-md text-[11px] font-black uppercase tracking-[0.25em] hover:bg-[#16a34a] transition-all active:scale-95 shadow-lg shadow-emerald-500/20"
+            className="px-10 py-4 bg-[#22c55e] text-white rounded-md text-[11px] font-black uppercase tracking-[0.25em] hover:bg-[#16a34a] transition-all active:scale-95 shadow-lg shadow-green-500/20"
           >
             Start Your Journey
           </button>
