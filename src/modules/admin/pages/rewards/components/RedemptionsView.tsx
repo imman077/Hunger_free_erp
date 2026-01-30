@@ -22,16 +22,14 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerBody,
+  Button,
   useDisclosure,
 } from "@heroui/react";
 import { toast } from "sonner";
 import type { ColumnDef } from "../../../../../global/components/resuable-components/table";
 import ReusableTable from "../../../../../global/components/resuable-components/table";
 import ResuableButton from "../../../../../global/components/resuable-components/button";
+import ResuableDrawer from "../../../../../global/components/resuable-components/drawer";
 
 const REDEMPTION_REQUESTS = [
   {
@@ -108,11 +106,11 @@ const RedemptionsView: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState("All");
   const [redemptionData, setRedemptionData] = useState(REDEMPTION_REQUESTS);
   const [selectedRequest, setSelectedRequest] = useState<any>(null);
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
   const {
-    isOpen: isDetailOpen,
-    onOpen: onDetailOpen,
-    onClose: onDetailClose,
+    isOpen: isSummaryOpen,
+    onOpen: onSummaryOpen,
+    onClose: onSummaryClose,
   } = useDisclosure();
 
   const toggleFilter = (filterType: string) => {
@@ -272,16 +270,19 @@ const RedemptionsView: React.FC = () => {
       case "actions":
         return (
           <div className="flex items-center justify-center gap-2">
-            <ResuableButton
-              variant="ghost"
-              onClick={() => {
+            <Button
+              isIconOnly
+              size="sm"
+              variant="flat"
+              onPress={() => {
+                // stopPropagation is handled by onPress in HeroUI
                 setSelectedRequest(req);
-                onDetailOpen();
+                setIsDetailOpen(true);
               }}
-              className="!p-1.5 !bg-slate-50 !text-slate-600 hover:!bg-[#22c55e] hover:!text-white !min-w-0"
+              className="!bg-transparent !text-slate-600 hover:!text-[#22c55e] transition-all min-w-0 h-8 w-8"
             >
               <Eye size={14} />
-            </ResuableButton>
+            </Button>
           </div>
         );
       default:
@@ -308,7 +309,7 @@ const RedemptionsView: React.FC = () => {
           <ResuableButton
             variant="ghost"
             className="border border-slate-200 bg-white rounded-sm h-10 px-4 text-[11px] font-bold text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-none shrink-0"
-            onClick={(e) => {}}
+            onClick={() => {}}
             startContent={<Filter size={14} className="text-slate-400" />}
             endContent={<Plus size={14} className="text-slate-400" />}
           >
@@ -356,7 +357,7 @@ const RedemptionsView: React.FC = () => {
               variant="ghost"
               className="border border-emerald-100 bg-emerald-50/50 rounded-sm h-10 px-3 text-[11px] font-bold text-hf-green hover:bg-emerald-100 transition-all shadow-none shrink-0"
               endContent={<ChevronDown size={14} />}
-              onClick={(e) => {}}
+              onClick={() => {}}
             >
               CATEGORY: {categoryFilter.toUpperCase()}
               <div
@@ -410,7 +411,7 @@ const RedemptionsView: React.FC = () => {
               variant="ghost"
               className="border border-blue-100 bg-blue-50/50 rounded-sm h-10 px-3 text-[11px] font-bold text-blue-600 hover:bg-blue-100 transition-all shadow-none shrink-0"
               endContent={<ChevronDown size={14} />}
-              onClick={(e) => {}}
+              onClick={() => {}}
             >
               STATUS: {statusFilter.toUpperCase()}
               <div
@@ -476,7 +477,7 @@ const RedemptionsView: React.FC = () => {
         <ResuableButton
           variant="primary"
           className="rounded-sm h-12 px-8 font-black uppercase tracking-widest text-xs transition-all active:scale-95 shadow-sm"
-          onClick={onOpen}
+          onClick={onSummaryOpen}
           startContent={<BarChart3 size={16} />}
         >
           Payout Summary
@@ -491,399 +492,310 @@ const RedemptionsView: React.FC = () => {
         additionalFilters={additionalFilters}
       />
 
-      <Drawer
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        placement="right"
+      <ResuableDrawer
+        isOpen={isSummaryOpen}
+        onClose={onSummaryClose}
+        title="Payout Summary"
+        subtitle="Real-time reward metrics"
         size="md"
-        hideCloseButton={true}
-        classNames={{
-          base: "w-[380px] !max-w-[380px]",
-          backdrop: "bg-black/50",
-        }}
       >
-        <DrawerContent
-          className="no-scrollbar"
-          style={{ backgroundColor: "var(--bg-primary)" }}
-        >
-          {(onClose) => (
-            <>
-              <DrawerHeader
-                className="flex flex-col gap-1 border-b px-6 py-4"
-                style={{ borderBottomColor: "var(--border-color)" }}
+        <div className="space-y-5 px-3 sm:px-6 pb-8">
+          {/* Stats Grid */}
+          <div className="grid grid-cols-1 gap-3">
+            <div className="bg-gradient-to-br from-emerald-50 to-teal-50 p-3 rounded-sm border border-emerald-100 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-sm bg-emerald-500/10 flex items-center justify-center">
+                  <Wallet size={18} className="text-emerald-600" />
+                </div>
+                <div className="flex-1">
+                  <div className="text-[8px] font-black text-emerald-600/70 uppercase tracking-[0.2em] mb-0.5">
+                    Total Approved
+                  </div>
+                  <div className="text-xl font-black text-emerald-700 tracking-tight">
+                    ₹1,45,000
+                  </div>
+                  <div className="text-[8px] font-bold text-emerald-500/70 uppercase tracking-tight mt-0.5">
+                    Cumulative Payouts
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-amber-50 to-orange-50 p-3 rounded-sm border border-amber-100 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-sm bg-amber-500/10 flex items-center justify-center">
+                  <Clock size={18} className="text-amber-600" />
+                </div>
+                <div className="flex-1">
+                  <div className="text-[8px] font-black text-amber-600/70 uppercase tracking-[0.2em] mb-0.5">
+                    Pending Grants
+                  </div>
+                  <div className="text-xl font-black text-amber-700 tracking-tight">
+                    12 Requests
+                  </div>
+                  <div className="text-[8px] font-bold text-amber-500/70 uppercase tracking-tight mt-1">
+                    Awaiting Review
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-3 rounded-sm border border-blue-100 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-sm bg-blue-500/10 flex items-center justify-center">
+                  <Activity size={18} className="text-blue-600" />
+                </div>
+                <div className="flex-1">
+                  <div className="text-[8px] font-black text-blue-600/70 uppercase tracking-[0.2em] mb-0.5">
+                    System Health
+                  </div>
+                  <div className="text-xl font-black text-blue-700 tracking-tight">
+                    Optimal
+                  </div>
+                  <div className="text-[8px] font-bold text-blue-500/70 uppercase tracking-tight mt-1">
+                    Processing at 100%
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Batch Processing */}
+          <section className="space-y-3 pt-2">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-sm bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 shadow-sm shrink-0">
+                <CheckCircle size={16} strokeWidth={2.5} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest leading-none">
+                  Batch Processing
+                </h4>
+                <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tight mt-1 leading-none">
+                  Quick Actions
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <ResuableButton
+                variant="primary"
+                disabled={
+                  redemptionData.filter((r) => r.status === "Pending")
+                    .length === 0
+                }
+                onClick={() => {
+                  const pendingCount = redemptionData.filter(
+                    (r) => r.status === "Pending",
+                  ).length;
+                  setRedemptionData((prev) =>
+                    prev.map((r) =>
+                      r.status === "Pending" ? { ...r, status: "Approved" } : r,
+                    ),
+                  );
+                  toast.success(`${pendingCount} requests approved!`);
+                }}
+                className="w-full !h-11 !bg-[#22c55e] hover:!bg-emerald-600 font-black uppercase tracking-[0.2em] text-[10px] shadow-lg shadow-emerald-500/20 disabled:!bg-slate-100 disabled:!text-slate-400 disabled:!shadow-none"
+                startContent={<CheckCircle size={16} />}
               >
-                <div className="flex items-center justify-between">
-                  <h2
-                    className="text-xl font-black tracking-tight uppercase"
-                    style={{ color: "var(--text-primary)" }}
-                  >
-                    Payout Summary
-                  </h2>
-                  <button
-                    onClick={onClose}
-                    className="p-1.5 hover:bg-slate-100 rounded-sm transition-colors text-slate-400"
-                  >
-                    <X size={18} />
-                  </button>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                    Real-time reward metrics
-                  </span>
-                  <div className="flex items-center gap-1.5 px-2 py-0.5 bg-emerald-50 rounded-sm">
-                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    <span className="text-[9px] font-black text-emerald-600 uppercase tracking-tighter">
-                      Live
-                    </span>
-                  </div>
-                </div>
-              </DrawerHeader>
+                Approve All Pending
+              </ResuableButton>
+              <ResuableButton
+                variant="ghost"
+                onClick={exportToCSV}
+                className="w-full !h-11 !bg-white border border-slate-200 hover:!bg-slate-50 font-black uppercase tracking-[0.2em] text-[10px] !text-slate-500 shadow-sm transition-all"
+                startContent={<FileDown size={16} className="text-slate-400" />}
+              >
+                Export Report (.CSV)
+              </ResuableButton>
+            </div>
+          </section>
+        </div>
+      </ResuableDrawer>
 
-              <DrawerBody className="px-6 py-5 space-y-5 overflow-y-auto no-scrollbar">
-                {/* Stats Grid */}
-                <div className="grid grid-cols-1 gap-3">
-                  <div className="bg-gradient-to-br from-emerald-50 to-teal-50 p-3 rounded-sm border border-emerald-100 shadow-sm">
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-sm bg-emerald-500/10 flex items-center justify-center">
-                        <Wallet size={18} className="text-emerald-600" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="text-[8px] font-black text-emerald-600/70 uppercase tracking-[0.2em] mb-0.5">
-                          Total Approved
-                        </div>
-                        <div className="text-xl font-black text-emerald-700 tracking-tight">
-                          ₹1,45,000
-                        </div>
-                        <div className="text-[8px] font-bold text-emerald-500/70 uppercase tracking-tight mt-0.5">
-                          Cumulative Payouts
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-gradient-to-br from-amber-50 to-orange-50 p-3 rounded-sm border border-amber-100 shadow-sm">
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-sm bg-amber-500/10 flex items-center justify-center">
-                        <Clock size={18} className="text-amber-600" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="text-[8px] font-black text-amber-600/70 uppercase tracking-[0.2em] mb-0.5">
-                          Pending Grants
-                        </div>
-                        <div className="text-xl font-black text-amber-700 tracking-tight">
-                          12 Requests
-                        </div>
-                        <div className="text-[8px] font-bold text-amber-500/70 uppercase tracking-tight mt-1">
-                          Awaiting Review
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-3 rounded-sm border border-blue-100 shadow-sm">
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-sm bg-blue-500/10 flex items-center justify-center">
-                        <Activity size={18} className="text-blue-600" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="text-[8px] font-black text-blue-600/70 uppercase tracking-[0.2em] mb-0.5">
-                          System Health
-                        </div>
-                        <div className="text-xl font-black text-blue-700 tracking-tight">
-                          Optimal
-                        </div>
-                        <div className="text-[8px] font-bold text-blue-500/70 uppercase tracking-tight mt-1">
-                          Processing at 100%
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Batch Processing */}
-                <section className="space-y-3 pt-2">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-sm bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 shadow-sm shrink-0">
-                      <CheckCircle size={16} strokeWidth={2.5} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest leading-none">
-                        Batch Processing
-                      </h4>
-                      <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tight mt-1 leading-none">
-                        Quick Actions
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <ResuableButton
-                      variant="primary"
-                      disabled={
-                        redemptionData.filter((r) => r.status === "Pending")
-                          .length === 0
-                      }
-                      onClick={() => {
-                        const pendingCount = redemptionData.filter(
-                          (r) => r.status === "Pending",
-                        ).length;
-                        setRedemptionData((prev) =>
-                          prev.map((r) =>
-                            r.status === "Pending"
-                              ? { ...r, status: "Approved" }
-                              : r,
-                          ),
-                        );
-                        toast.success(`${pendingCount} requests approved!`);
-                      }}
-                      className="w-full !h-11 !bg-[#22c55e] hover:!bg-emerald-600 font-black uppercase tracking-[0.2em] text-[10px] shadow-lg shadow-emerald-500/20 disabled:!bg-slate-100 disabled:!text-slate-400 disabled:!shadow-none"
-                      startContent={<CheckCircle size={16} />}
-                    >
-                      Approve All Pending
-                    </ResuableButton>
-                    <ResuableButton
-                      variant="ghost"
-                      onClick={exportToCSV}
-                      className="w-full !h-11 !bg-white border border-slate-200 hover:!bg-slate-50 font-black uppercase tracking-[0.2em] text-[10px] !text-slate-500 shadow-sm transition-all"
-                      startContent={
-                        <FileDown size={16} className="text-slate-400" />
-                      }
-                    >
-                      Export Report (.CSV)
-                    </ResuableButton>
-                  </div>
-                </section>
-              </DrawerBody>
-            </>
-          )}
-        </DrawerContent>
-      </Drawer>
-
-      {/* Request Details Drawer */}
-      <Drawer
+      <ResuableDrawer
         isOpen={isDetailOpen}
-        onOpenChange={(open) => {
-          if (!open) onDetailClose();
-        }}
-        placement="right"
+        onClose={() => setIsDetailOpen(false)}
+        title="Request Details"
+        subtitle={selectedRequest?.id}
         size="md"
-        hideCloseButton={true}
-        classNames={{
-          base: "w-[400px] !max-w-[400px]",
-          backdrop: "bg-black/50",
-        }}
       >
-        <DrawerContent
-          className="no-scrollbar"
-          style={{ backgroundColor: "var(--bg-primary)" }}
-        >
-          {() => (
-            <>
-              <DrawerHeader
-                className="flex flex-col gap-1 border-b px-6 py-4"
-                style={{ borderBottomColor: "var(--border-color)" }}
-              >
-                <div className="flex items-center justify-between">
-                  <h2
-                    className="text-xl font-black tracking-tight uppercase"
-                    style={{ color: "var(--text-primary)" }}
-                  >
-                    Request Details
-                  </h2>
-                  <button
-                    onClick={onDetailClose}
-                    className="p-1.5 hover:bg-slate-100 rounded-sm transition-colors text-slate-400"
-                  >
-                    <X size={18} />
-                  </button>
+        {selectedRequest && (
+          <div className="space-y-5 px-3 sm:px-6 pb-8">
+            {/* User Info */}
+            <div className="bg-gradient-to-br from-slate-50 to-slate-100 p-4 rounded-sm border border-slate-200 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white font-black text-sm shadow-md">
+                  {selectedRequest.user.substring(0, 2).toUpperCase()}
                 </div>
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                  {selectedRequest?.id}
-                </span>
-              </DrawerHeader>
+                <div className="flex-1">
+                  <div className="text-sm font-black text-slate-800">
+                    {selectedRequest.user}
+                  </div>
+                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                    {selectedRequest.role}
+                  </div>
+                </div>
+                <div
+                  className={`px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-wide border ${
+                    selectedRequest.status === "Pending"
+                      ? "bg-amber-50 text-amber-600 border-amber-200"
+                      : selectedRequest.status === "Approved"
+                        ? "bg-emerald-50 text-emerald-600 border-emerald-200"
+                        : "bg-red-50 text-red-600 border-red-200"
+                  }`}
+                >
+                  {selectedRequest.status}
+                </div>
+              </div>
+            </div>
 
-              <DrawerBody className="px-6 py-5 space-y-5 overflow-y-auto no-scrollbar">
-                {selectedRequest && (
-                  <>
-                    {/* User Info */}
-                    <div className="bg-gradient-to-br from-slate-50 to-slate-100 p-4 rounded-sm border border-slate-200 shadow-sm">
-                      <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white font-black text-sm shadow-md">
-                          {selectedRequest.user.substring(0, 2).toUpperCase()}
-                        </div>
-                        <div className="flex-1">
-                          <div className="text-sm font-black text-slate-800">
-                            {selectedRequest.user}
-                          </div>
-                          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                            {selectedRequest.role}
-                          </div>
-                        </div>
-                        <div
-                          className={`px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-wide border ${
-                            selectedRequest.status === "Pending"
-                              ? "bg-amber-50 text-amber-600 border-amber-200"
-                              : selectedRequest.status === "Approved"
-                                ? "bg-emerald-50 text-emerald-600 border-emerald-200"
-                                : "bg-red-50 text-red-600 border-red-200"
-                          }`}
-                        >
-                          {selectedRequest.status}
-                        </div>
-                      </div>
-                    </div>
+            {/* Request Details Grid */}
+            <div className="grid grid-cols-1 min-[400px]:grid-cols-2 gap-3">
+              <div className="bg-white p-3 rounded-sm border border-slate-100 shadow-sm">
+                <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                  Category
+                </div>
+                <div className="text-sm font-bold text-slate-700">
+                  {selectedRequest.category}
+                </div>
+              </div>
+              <div className="bg-white p-3 rounded-sm border border-slate-100 shadow-sm">
+                <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                  Reward Item
+                </div>
+                <div className="text-sm font-bold text-slate-700">
+                  {selectedRequest.item}
+                </div>
+              </div>
+              <div className="bg-white p-3 rounded-sm border border-slate-100 shadow-sm">
+                <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                  Value
+                </div>
+                <div className="text-sm font-bold text-emerald-600">
+                  {selectedRequest.amount}
+                </div>
+              </div>
+              <div className="bg-white p-3 rounded-sm border border-slate-100 shadow-sm">
+                <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                  Points Used
+                </div>
+                <div className="text-sm font-bold text-slate-700">
+                  {selectedRequest.points}
+                </div>
+              </div>
+              <div className="bg-white p-3 rounded-sm border border-slate-100 shadow-sm col-span-2">
+                <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                  Request Date
+                </div>
+                <div className="text-sm font-bold text-slate-700">
+                  {selectedRequest.date}
+                </div>
+              </div>
+            </div>
 
-                    {/* Request Details Grid */}
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="bg-white p-3 rounded-sm border border-slate-100 shadow-sm">
-                        <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">
-                          Category
-                        </div>
-                        <div className="text-sm font-bold text-slate-700">
-                          {selectedRequest.category}
-                        </div>
-                      </div>
-                      <div className="bg-white p-3 rounded-sm border border-slate-100 shadow-sm">
-                        <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">
-                          Reward Item
-                        </div>
-                        <div className="text-sm font-bold text-slate-700">
-                          {selectedRequest.item}
-                        </div>
-                      </div>
-                      <div className="bg-white p-3 rounded-sm border border-slate-100 shadow-sm">
-                        <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">
-                          Value
-                        </div>
-                        <div className="text-sm font-bold text-emerald-600">
-                          {selectedRequest.amount}
-                        </div>
-                      </div>
-                      <div className="bg-white p-3 rounded-sm border border-slate-100 shadow-sm">
-                        <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">
-                          Points Used
-                        </div>
-                        <div className="text-sm font-bold text-slate-700">
-                          {selectedRequest.points}
-                        </div>
-                      </div>
-                      <div className="bg-white p-3 rounded-sm border border-slate-100 shadow-sm col-span-2">
-                        <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">
-                          Request Date
-                        </div>
-                        <div className="text-sm font-bold text-slate-700">
-                          {selectedRequest.date}
-                        </div>
-                      </div>
-                    </div>
+            {/* Actions for Pending Requests */}
+            {selectedRequest.status === "Pending" && (
+              <section className="space-y-3 pt-4 border-t border-slate-100">
+                <div className="flex items-center gap-2.5 mb-4">
+                  <div className="w-8 h-8 rounded-sm bg-amber-100 border border-amber-200 flex items-center justify-center text-amber-600 shadow-sm shrink-0">
+                    <Clock size={16} strokeWidth={2.5} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest leading-none">
+                      Pending Approval
+                    </h4>
+                    <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tight mt-1 leading-none">
+                      Take action on this request
+                    </p>
+                  </div>
+                </div>
 
-                    {/* Actions for Pending Requests */}
-                    {selectedRequest.status === "Pending" && (
-                      <section className="space-y-3 pt-4 border-t border-slate-100">
-                        <div className="flex items-center gap-2.5 mb-4">
-                          <div className="w-8 h-8 rounded-sm bg-amber-100 border border-amber-200 flex items-center justify-center text-amber-600 shadow-sm shrink-0">
-                            <Clock size={16} strokeWidth={2.5} />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest leading-none">
-                              Pending Approval
-                            </h4>
-                            <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tight mt-1 leading-none">
-                              Take action on this request
-                            </p>
-                          </div>
-                        </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <ResuableButton
+                    variant="primary"
+                    onClick={() => {
+                      setRedemptionData((prev) =>
+                        prev.map((r) =>
+                          r.id === selectedRequest.id
+                            ? { ...r, status: "Approved" }
+                            : r,
+                        ),
+                      );
+                      setSelectedRequest({
+                        ...selectedRequest,
+                        status: "Approved",
+                      });
+                      toast.success(
+                        `Request ${selectedRequest.id} approved successfully!`,
+                      );
+                    }}
+                    className="w-full !h-11 !bg-[#22c55e] hover:!bg-emerald-600 font-black uppercase tracking-[0.15em] text-[10px] shadow-lg shadow-emerald-500/20"
+                    startContent={<Check size={16} />}
+                  >
+                    Approve
+                  </ResuableButton>
+                  <ResuableButton
+                    variant="ghost"
+                    onClick={() => {
+                      setRedemptionData((prev) =>
+                        prev.map((r) =>
+                          r.id === selectedRequest.id
+                            ? { ...r, status: "Rejected" }
+                            : r,
+                        ),
+                      );
+                      setSelectedRequest({
+                        ...selectedRequest,
+                        status: "Rejected",
+                      });
+                      toast.error(
+                        `Request ${selectedRequest.id} has been rejected.`,
+                      );
+                    }}
+                    className="w-full !h-11 font-black uppercase tracking-[0.15em] text-[10px] border-2 border-red-100 !text-red-600 hover:!bg-red-600 hover:!text-white transition-all shadow-sm"
+                    startContent={<X size={16} />}
+                  >
+                    Reject
+                  </ResuableButton>
+                </div>
+              </section>
+            )}
 
-                        <div className="grid grid-cols-2 gap-3">
-                          <ResuableButton
-                            variant="primary"
-                            onClick={() => {
-                              setRedemptionData((prev) =>
-                                prev.map((r) =>
-                                  r.id === selectedRequest.id
-                                    ? { ...r, status: "Approved" }
-                                    : r,
-                                ),
-                              );
-                              setSelectedRequest({
-                                ...selectedRequest,
-                                status: "Approved",
-                              });
-                              toast.success(
-                                `Request ${selectedRequest.id} approved successfully!`,
-                              );
-                            }}
-                            className="w-full !h-11 !bg-[#22c55e] hover:!bg-emerald-600 font-black uppercase tracking-[0.15em] text-[10px] shadow-lg shadow-emerald-500/20"
-                            startContent={<Check size={16} />}
-                          >
-                            Approve
-                          </ResuableButton>
-                          <ResuableButton
-                            variant="ghost"
-                            onClick={() => {
-                              setRedemptionData((prev) =>
-                                prev.map((r) =>
-                                  r.id === selectedRequest.id
-                                    ? { ...r, status: "Rejected" }
-                                    : r,
-                                ),
-                              );
-                              setSelectedRequest({
-                                ...selectedRequest,
-                                status: "Rejected",
-                              });
-                              toast.error(
-                                `Request ${selectedRequest.id} has been rejected.`,
-                              );
-                            }}
-                            className="w-full !h-11 font-black uppercase tracking-[0.15em] text-[10px] border-2 border-red-100 !text-red-600 hover:!bg-red-600 hover:!text-white transition-all shadow-sm"
-                            startContent={<X size={16} />}
-                          >
-                            Reject
-                          </ResuableButton>
-                        </div>
-                      </section>
-                    )}
-
-                    {/* Status Message for Processed Requests */}
-                    {selectedRequest.status !== "Pending" && (
-                      <div className="py-10 flex flex-col items-center justify-center space-y-4 border-t border-slate-50 mt-4">
-                        <div
-                          className={`w-14 h-14 rounded-full flex items-center justify-center shadow-sm ${
-                            selectedRequest.status === "Approved"
-                              ? "bg-emerald-50 text-emerald-500 border border-emerald-100"
-                              : "bg-red-50 text-red-500 border border-red-100"
-                          }`}
-                        >
-                          {selectedRequest.status === "Approved" ? (
-                            <CheckCircle size={28} strokeWidth={2.5} />
-                          ) : (
-                            <X size={28} strokeWidth={2.5} />
-                          )}
-                        </div>
-                        <div className="text-center space-y-1.5">
-                          <h4
-                            className={`text-[12px] font-black uppercase tracking-[0.25em] ${
-                              selectedRequest.status === "Approved"
-                                ? "text-emerald-600"
-                                : "text-red-600"
-                            }`}
-                          >
-                            Request {selectedRequest.status}
-                          </h4>
-                          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">
-                            Transaction Finalized
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                  </>
-                )}
-              </DrawerBody>
-            </>
-          )}
-        </DrawerContent>
-      </Drawer>
+            {/* Status Message for Processed Requests */}
+            {selectedRequest.status !== "Pending" && (
+              <div className="py-10 flex flex-col items-center justify-center space-y-4 border-t border-slate-50 mt-4">
+                <div
+                  className={`w-14 h-14 rounded-full flex items-center justify-center shadow-sm ${
+                    selectedRequest.status === "Approved"
+                      ? "bg-emerald-50 text-emerald-500 border border-emerald-100"
+                      : "bg-red-50 text-red-500 border border-red-100"
+                  }`}
+                >
+                  {selectedRequest.status === "Approved" ? (
+                    <CheckCircle size={28} strokeWidth={2.5} />
+                  ) : (
+                    <X size={28} strokeWidth={2.5} />
+                  )}
+                </div>
+                <div className="text-center space-y-1.5">
+                  <h4
+                    className={`text-[12px] font-black uppercase tracking-[0.25em] ${
+                      selectedRequest.status === "Approved"
+                        ? "text-emerald-600"
+                        : "text-red-600"
+                    }`}
+                  >
+                    Request {selectedRequest.status}
+                  </h4>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">
+                    Transaction Finalized
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </ResuableDrawer>
     </div>
   );
 };

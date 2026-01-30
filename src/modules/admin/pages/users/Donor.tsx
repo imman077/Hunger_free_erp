@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerBody,
-  useDisclosure,
   Button,
   Dropdown,
   DropdownTrigger,
@@ -16,24 +11,24 @@ import { ImpactCards } from "../../../../global/components/resuable-components/I
 import ReusableTable from "../../../../global/components/resuable-components/table";
 import ReusableButton from "../../../../global/components/resuable-components/button";
 import ReusableInput from "../../../../global/components/resuable-components/input";
+import ResuableDrawer from "../../../../global/components/resuable-components/drawer";
 import {
   Plus,
   Eye,
   ChevronDown,
   Filter,
   X,
-  Phone,
   User,
   Mail,
   MapPin,
   History as HistoryIcon,
-  DollarSign,
   FileText,
   ShieldCheck,
   Save,
   RotateCcw,
   Settings,
 } from "lucide-react";
+
 import FilePreviewModal from "../../../../global/components/resuable-components/FilePreviewModal";
 
 interface DonationHistory {
@@ -57,7 +52,7 @@ interface Donor {
 
 const DonorPage = () => {
   const navigate = useNavigate();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [filterType, setFilterType] = useState("All");
   const [filterStatus, setFilterStatus] = useState("All");
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
@@ -223,7 +218,7 @@ const DonorPage = () => {
     setEditableEmail(donor.email);
     setEditableAddress(donor.address);
     setIsEditMode(false);
-    onOpen();
+    setIsDrawerOpen(true);
   };
 
   const toggleFilter = (filter: string) => {
@@ -238,7 +233,7 @@ const DonorPage = () => {
 
   const closeDrawer = () => {
     setIsEditMode(false);
-    onClose();
+    setIsDrawerOpen(false);
     // setTimeout(() => setSelectedDonor(null), 300);
   };
 
@@ -602,378 +597,260 @@ const DonorPage = () => {
                       </span>
                     </div>
                   );
+                case "actions":
+                  return (
+                    <div className="flex items-center justify-center gap-2">
+                      <Button
+                        isIconOnly
+                        size="sm"
+                        variant="flat"
+                        onPress={() => handleViewProfile(donor)}
+                        className="!bg-transparent !text-slate-600 hover:!text-[#22c55e] transition-all min-w-0 h-8 w-8"
+                      >
+                        <Eye size={14} />
+                      </Button>
+                    </div>
+                  );
                 default:
                   return <span>{String(donor[columnKey as keyof Donor])}</span>;
               }
             }}
             // title="Donor List"
             // description="Manage your donors and their contributions"
-            actionConfig={{
-              showView: true,
-              showApprove: true,
-              showDeactivate: true,
-              onView: handleViewProfile,
-              onApprove: (donor: Donor) => console.log("Approve", donor),
-              onDeactivate: (donor: Donor) => console.log("Deactivate", donor),
-            }}
           />
         </div>
       </div>
 
       {/* Donor Details Drawer */}
-      <Drawer
-        isOpen={isOpen}
+      <ResuableDrawer
+        isOpen={isDrawerOpen}
         onClose={closeDrawer}
-        hideCloseButton={true}
-        placement="right"
-        classNames={{
-          base: "w-[400px] !max-w-[400px] overflow-y-scroll scrollbar-hide",
-          backdrop: "bg-black/50",
-        }}
+        title="Donor Intelligence"
+        subtitle={`Global Identifier: #DON-${selectedDonor?.id?.toString().padStart(4, "0") || "0000"}`}
+        size="md"
       >
-        <DrawerContent
-          className="no-scrollbar"
-          style={{ backgroundColor: "var(--bg-primary)" }}
-        >
-          {() => (
-            <>
-              <DrawerHeader
-                className="flex flex-col gap-1 no-scrollbar border-b px-6 py-3"
-                style={{ borderBottomColor: "var(--border-color)" }}
-              >
-                <div className="flex items-center justify-between">
-                  <h2
-                    className="text-xl font-black tracking-tight"
-                    style={{ color: "var(--text-primary)" }}
-                  >
-                    Donor Details
-                  </h2>
+        {selectedDonor && (
+          <div className="space-y-6 pb-10 px-3 sm:px-6">
+            {/* Hero Section */}
+            <div className="bg-white p-4 sm:p-6 rounded-md border border-slate-100 shadow-sm space-y-4">
+              <div className="flex items-start justify-between">
+                <div className="space-y-1">
+                  <h3 className="text-2xl font-black tracking-tighter text-slate-900">
+                    {selectedDonor.businessName}
+                  </h3>
+                  <div className="flex items-center gap-2">
+                    {getStatusBadge(selectedDonor.status)}
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                      • {selectedDonor.type}
+                    </span>
+                  </div>
+                </div>
+                <div className="w-12 h-12 bg-amber-50 rounded-md flex items-center justify-center border border-amber-100">
+                  {/* Avatar with Initials */}
+                  <div className="w-full h-full rounded-sm bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center text-xl font-black text-white shadow-sm overflow-hidden uppercase italic">
+                    {selectedDonor.businessName
+                      .split(" ")
+                      .map((n) => n[0])
+                      .slice(0, 2)
+                      .join("")}
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 min-[400px]:grid-cols-2 gap-4">
+                <div className="p-3 bg-slate-50 rounded-sm border border-slate-100">
+                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                    Total Contributions
+                  </p>
+                  <p className="text-sm font-black text-slate-900">
+                    {formatCurrency(selectedDonor.totalDonations)}
+                  </p>
+                </div>
+                <div className="p-3 bg-slate-50 rounded-sm border border-slate-100">
+                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                    Reward Points
+                  </p>
+                  <p className="text-sm font-black text-hf-green">
+                    {selectedDonor.points.toLocaleString()} PTS
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Information Grid */}
+            <div className="space-y-4">
+              <h4 className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2">
+                <User size={14} className="text-hf-green" />
+                Connectivity Details
+              </h4>
+
+              {isEditMode ? (
+                <div className="bg-white p-5 rounded-md border border-slate-100 shadow-sm space-y-4">
+                  <ReusableInput
+                    label="Business Name"
+                    value={editableBusinessName}
+                    onChange={setEditableBusinessName}
+                    placeholder="Enter business name"
+                  />
+                  <ReusableInput
+                    label="Contact Person"
+                    value={editableContactPerson}
+                    onChange={setEditableContactPerson}
+                    placeholder="Enter contact person name"
+                  />
+                  <ReusableInput
+                    label="Email Address"
+                    value={editableEmail}
+                    onChange={setEditableEmail}
+                    placeholder="Enter email address"
+                    type="email"
+                  />
+                  <ReusableInput
+                    label="Physical Address"
+                    value={editableAddress}
+                    onChange={setEditableAddress}
+                    placeholder="Enter physical address"
+                  />
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {[
+                    {
+                      Icon: User,
+                      label: "Contact Person",
+                      value: selectedDonor.contactPerson,
+                    },
+                    {
+                      Icon: Mail,
+                      label: "Official Email",
+                      value: selectedDonor.email,
+                    },
+                    {
+                      Icon: MapPin,
+                      label: "Physical HQ",
+                      value: selectedDonor.address,
+                      span: true,
+                    },
+                  ].map((item, idx) => (
+                    <div
+                      key={idx}
+                      className={`p-4 bg-white rounded-md border border-slate-100 shadow-sm ${item.span ? "md:col-span-2" : ""}`}
+                    >
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <item.Icon size={12} className="text-slate-400" />
+                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                          {item.label}
+                        </span>
+                      </div>
+                      <p className="text-[11px] font-bold text-slate-700 leading-relaxed uppercase tracking-tight">
+                        {item.value}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Transaction History Section */}
+            {!isEditMode && (
+              <div className="space-y-4">
+                <h4 className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2">
+                  <HistoryIcon size={14} className="text-hf-green" />
+                  Audit Trail History
+                </h4>
+                <div className="space-y-2">
+                  {selectedDonor.donationHistory.map((item, index) => (
+                    <div
+                      key={index}
+                      className="flex flex-col min-[400px]:flex-row justify-between items-start min-[400px]:items-center bg-white p-4 rounded-md border border-slate-100 shadow-sm hover:border-hf-green/30 transition-all gap-3"
+                    >
+                      <div className="space-y-1">
+                        <p className="text-[11px] font-black uppercase tracking-wider text-slate-900">
+                          {item.event}
+                        </p>
+                        <p className="text-[9px] font-bold text-slate-400 uppercase">
+                          {item.date}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-[11px] font-black text-hf-green">
+                          {formatCurrency(item.amount)}
+                        </p>
+                        <p className="text-[8px] font-bold text-slate-300 uppercase">
+                          Allocated
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Verification Section */}
+            {!isEditMode && (
+              <div className="space-y-4">
+                <h4 className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2">
+                  <ShieldCheck size={14} className="text-blue-500" />
+                  Compliance Verification
+                </h4>
+                <div
+                  onClick={() => setIsPreviewOpen(true)}
+                  className="group p-4 bg-white rounded-md border border-slate-100 shadow-sm hover:border-blue-500/30 transition-all cursor-pointer flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-md bg-blue-50 flex items-center justify-center text-blue-500">
+                      <FileText size={18} />
+                    </div>
+                    <div>
+                      <p className="text-[11px] font-black text-slate-900 uppercase tracking-tight">
+                        Business_License.pdf
+                      </p>
+                      <span className="text-[9px] font-bold text-hf-green uppercase tracking-widest flex items-center gap-1">
+                        <ShieldCheck size={10} /> Verified
+                      </span>
+                    </div>
+                  </div>
+                  <Eye
+                    size={16}
+                    className="text-slate-300 group-hover:text-blue-500 transition-colors"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Action Footer */}
+            <div className="flex gap-3 pt-6">
+              {isEditMode ? (
+                <>
                   <button
-                    onClick={closeDrawer}
-                    className="p-1.5 hover:bg-slate-100 rounded-sm transition-colors text-slate-400"
+                    onClick={() => setIsEditMode(false)}
+                    className="flex-1 px-6 py-3.5 text-[10px] font-black text-slate-400 hover:text-slate-600 uppercase tracking-widest transition-colors flex items-center justify-center gap-2 rounded-md border border-slate-200"
                   >
-                    <X size={18} />
+                    <RotateCcw size={14} />
+                    Cancel
                   </button>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                    System Profile Identifier
-                  </span>
-                  {selectedDonor && getStatusBadge(selectedDonor.status)}
-                </div>
-              </DrawerHeader>
-
-              <DrawerBody className="px-6 py-3 space-y-4 overflow-y-auto no-scrollbar">
-                {selectedDonor && (
-                  <>
-                    {/* Hero Section - NGO Style */}
-                    <div className="relative pb-6 border-b border-slate-100">
-                      <div className="flex flex-col items-center gap-4">
-                        {/* Avatar with Badge - Literal NGO Style */}
-                        <div className="relative w-24 h-24 mb-4 group transition-transform duration-500 hover:scale-105">
-                          {/* Inner Avatar Box */}
-                          <div className="w-full h-full p-1.5 rounded-sm bg-amber-50 border border-amber-100/50">
-                            <div className="w-full h-full rounded-sm bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center text-3xl font-black text-white shadow-sm overflow-hidden uppercase italic">
-                              {selectedDonor.businessName
-                                .split(" ")
-                                .map((n: string) => n[0])
-                                .slice(0, 3)
-                                .join("")}
-                            </div>
-                          </div>
-
-                          {/* Status Float - Centered Bottom (NGO Reference) */}
-                          <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 bg-white p-1 rounded-sm border border-slate-100 ring-2 ring-slate-50 shadow-sm z-20 whitespace-nowrap">
-                            <div className="flex items-center gap-1.5 px-2 py-0.5 bg-amber-500/10 rounded-sm">
-                              <div className="w-1.5 h-1.5 rounded-sm bg-amber-500 animate-pulse" />
-                              <span className="text-[9px] font-black text-amber-600 uppercase tracking-tighter">
-                                Corporate Donor
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Business Info */}
-                        <div className="text-center space-y-3 max-w-sm">
-                          <div className="space-y-0.5 w-full flex flex-col items-center">
-                            <h3 className="text-2xl font-black text-slate-900 leading-[1.05] tracking-tight">
-                              {selectedDonor.businessName}
-                            </h3>
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
-                              Global Identifier: #
-                              {selectedDonor.id.toString().padStart(4, "0")}
-                            </p>
-                          </div>
-
-                          {/* Badges Row */}
-                          <div className="flex flex-wrap items-center justify-center gap-2">
-                            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-sm bg-white/80 backdrop-blur-md border border-slate-200/50 transition-all hover:border-amber-500">
-                              <span className="text-[9px] font-black text-amber-600/80 uppercase">
-                                Type
-                              </span>
-                              <div className="w-1 h-3 bg-amber-100 rounded-full" />
-                              <span className="text-xs font-mono font-bold text-slate-700">
-                                {selectedDonor.type}
-                              </span>
-                            </div>
-                            {getStatusBadge(selectedDonor.status)}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Stats Grid */}
-                    <div className="grid grid-cols-2 gap-2">
-                      <div className="bg-gradient-to-br from-amber-50 to-orange-50 p-3 rounded-sm border border-amber-100 shadow-sm">
-                        <div className="text-[9px] font-black text-amber-600/70 uppercase tracking-[0.2em] mb-1">
-                          Total Donations
-                        </div>
-                        <div className="text-sm font-black text-amber-700">
-                          {formatCurrency(selectedDonor.totalDonations)}
-                        </div>
-                      </div>
-                      <div className="bg-gradient-to-br from-amber-50 to-orange-50 p-3 rounded-sm border border-amber-100 shadow-sm">
-                        <div className="text-[9px] font-black text-amber-600/70 uppercase tracking-[0.2em] mb-1">
-                          Loyalty Points
-                        </div>
-                        <div className="text-sm font-black text-amber-700">
-                          {selectedDonor.points.toLocaleString()} pts
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Contact & Connectivity Section */}
-                    <section className="space-y-3">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-sm bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 shadow-sm shrink-0">
-                          <Phone size={16} strokeWidth={2.5} />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest leading-none">
-                            Connectivity
-                          </h4>
-                          <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tight mt-1 leading-none">
-                            Communication Channels
-                          </p>
-                        </div>
-                      </div>
-
-                      {isEditMode ? (
-                        <div className="bg-white p-2.5 rounded-sm border border-slate-200 shadow-sm space-y-2.5">
-                          <ReusableInput
-                            label="Business Name"
-                            value={editableBusinessName}
-                            onChange={setEditableBusinessName}
-                            placeholder="Enter business name"
-                          />
-                          <ReusableInput
-                            label="Contact Person"
-                            value={editableContactPerson}
-                            onChange={setEditableContactPerson}
-                            placeholder="Enter contact person name"
-                          />
-                          <ReusableInput
-                            label="Email Address"
-                            value={editableEmail}
-                            onChange={setEditableEmail}
-                            placeholder="Enter email address"
-                            type="email"
-                          />
-                          <ReusableInput
-                            label="Physical Address"
-                            value={editableAddress}
-                            onChange={setEditableAddress}
-                            placeholder="Enter physical address"
-                          />
-                        </div>
-                      ) : (
-                        <div className="space-y-1.5">
-                          {[
-                            {
-                              Icon: User,
-                              label: "Contact Person",
-                              value: selectedDonor.contactPerson,
-                              color: "amber",
-                              bg: "bg-amber-50/50",
-                            },
-                            {
-                              Icon: Mail,
-                              label: "Verified Email",
-                              value: selectedDonor.email,
-                              color: "blue",
-                              bg: "bg-blue-50/50",
-                            },
-                            {
-                              Icon: MapPin,
-                              label: "Physical Address",
-                              value: selectedDonor.address,
-                              color: "purple",
-                              bg: "bg-purple-50/50",
-                            },
-                          ].map((item, i) => (
-                            <div
-                              key={i}
-                              className="group bg-white p-2.5 rounded-sm border border-slate-200 transition-all duration-300 border-b-2 border-b-transparent hover:border-b-[#22c55e] hover:bg-slate-50/30 shadow-sm"
-                            >
-                              <div className="flex items-center gap-3">
-                                <div
-                                  className={`w-8 h-8 rounded-sm ${item.bg} flex items-center justify-center text-${item.color}-600 shrink-0 group-hover:scale-105 transition-transform duration-500`}
-                                >
-                                  <item.Icon size={16} strokeWidth={2.5} />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1 leading-none">
-                                    {item.label}
-                                  </p>
-                                  <p className="text-[11px] font-black text-slate-800 leading-tight truncate uppercase tracking-tight mt-1">
-                                    {item.value}
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </section>
-
-                    {/* Recent Donation History */}
-                    {!isEditMode && (
-                      <section className="space-y-3">
-                        <div className="flex items-center gap-2.5">
-                          <div className="w-8 h-8 rounded-sm bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm shrink-0">
-                            <HistoryIcon size={16} strokeWidth={2.5} />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest leading-none">
-                              Transaction History
-                            </h4>
-                            <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tight mt-1 leading-none">
-                              Recent Contributions
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="space-y-1.5">
-                          {selectedDonor.donationHistory.map(
-                            (item: DonationHistory, index: number) => (
-                              <div
-                                key={index}
-                                className="group flex items-center gap-3 p-3 rounded-sm bg-white border border-slate-200 hover:border-hf-green/40 hover:bg-slate-50/30 transition-all duration-500 relative overflow-hidden shadow-sm"
-                              >
-                                <div className="absolute top-0 right-0 w-24 h-full bg-gradient-to-l from-emerald-50/0 to-transparent group-hover:from-emerald-50/50 transition-colors" />
-                                <div className="w-10 h-10 rounded-sm bg-slate-100 flex items-center justify-center shrink-0 group-hover:bg-hf-green/10 group-hover:text-hf-green transition-colors">
-                                  <DollarSign size={18} strokeWidth={2.5} />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  <p className="text-xs font-bold text-slate-900 leading-tight truncate">
-                                    {item.event}
-                                  </p>
-                                  <p className="text-[10px] font-medium text-slate-500 uppercase tracking-tight">
-                                    {item.date}
-                                  </p>
-                                </div>
-                                <div className="text-right shrink-0">
-                                  <p className="text-xs font-black text-hf-green">
-                                    {formatCurrency(item.amount)}
-                                  </p>
-                                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-tighter">
-                                    Allocated
-                                  </p>
-                                </div>
-                              </div>
-                            ),
-                          )}
-                        </div>
-                      </section>
-                    )}
-
-                    {/* Verification Documents */}
-                    {!isEditMode && (
-                      <section className="space-y-3">
-                        <div className="flex items-center gap-2.5">
-                          <div className="w-8 h-8 rounded-sm bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shadow-sm shrink-0">
-                            <FileText size={16} strokeWidth={2.5} />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest leading-none">
-                              Legal & Compliance
-                            </h4>
-                            <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tight mt-1 leading-none">
-                              Identity Verification
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="space-y-2">
-                          <div
-                            onClick={() => setIsPreviewOpen(true)}
-                            className="p-3 rounded-sm bg-white border border-slate-200 transition-all duration-500 border-b-2 border-b-transparent hover:border-b-hf-green hover:bg-slate-50/30 shadow-sm flex items-center justify-between group cursor-pointer"
-                          >
-                            <div className="flex items-center gap-3 min-w-0">
-                              <div className="w-10 h-10 rounded-sm bg-emerald-50 border border-emerald-100 flex items-center justify-center text-hf-green shrink-0 group-hover:scale-110 transition-transform">
-                                <ShieldCheck size={18} strokeWidth={2.5} />
-                              </div>
-                              <div className="min-w-0">
-                                <p className="text-xs font-bold text-slate-900 leading-tight truncate">
-                                  Business_License.pdf
-                                </p>
-                                <div className="flex items-center gap-1.5">
-                                  <div className="w-1.5 h-1.5 rounded-full bg-hf-green" />
-                                  <span className="text-[9px] font-black text-hf-green uppercase tracking-widest">
-                                    Verified
-                                  </span>
-                                  <span className="text-[9px] text-slate-400 font-bold ml-1">
-                                    • 1.2 MB
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-                            <div className="text-slate-300 group-hover:text-hf-green transition-colors shrink-0">
-                              <Eye size={16} strokeWidth={2.5} />
-                            </div>
-                          </div>
-                        </div>
-                      </section>
-                    )}
-
-                    {/* Actions Area */}
-                    <div className="pt-2 flex gap-2">
-                      {isEditMode ? (
-                        <>
-                          <button
-                            onClick={() => setIsEditMode(false)}
-                            className="flex-1 px-6 py-3 text-[10px] font-black text-slate-400 hover:text-slate-600 uppercase tracking-widest transition-colors flex items-center justify-center gap-2 rounded-sm border border-slate-200"
-                          >
-                            <RotateCcw size={14} />
-                            Cancel
-                          </button>
-                          <ReusableButton
-                            variant="primary"
-                            className="flex-1 !bg-[#22c55e] hover:!bg-[#1ea34a] !text-white !font-black !px-4 !py-3 !text-[10px] uppercase tracking-widest !rounded-sm shadow-lg shadow-[#22c55e]/20"
-                            onClick={handleUpdateDonor}
-                          >
-                            <Save size={14} />
-                            Update Details
-                          </ReusableButton>
-                        </>
-                      ) : (
-                        <ReusableButton
-                          variant="primary"
-                          className="flex-1 !bg-[#22c55e] hover:!bg-[#1ea34a] !text-white !font-black !px-4 !py-3 !text-[10px] uppercase tracking-widest !rounded-sm shadow-lg shadow-[#22c55e]/20"
-                          onClick={() => setIsEditMode(true)}
-                        >
-                          <Settings size={14} />
-                          Edit Profile
-                        </ReusableButton>
-                      )}
-                    </div>
-                  </>
-                )}
-              </DrawerBody>
-            </>
-          )}
-        </DrawerContent>
-      </Drawer>
+                  <ReusableButton
+                    variant="primary"
+                    className="flex-1 !bg-hf-green hover:!bg-[#1ea34a] !text-white !font-black !px-4 !py-3.5 !text-[10px] uppercase tracking-widest !rounded-md shadow-lg shadow-green-500/20"
+                    onClick={handleUpdateDonor}
+                  >
+                    <Save size={14} />
+                    Update Profile
+                  </ReusableButton>
+                </>
+              ) : (
+                <button
+                  onClick={() => setIsEditMode(true)}
+                  className="flex-1 px-6 py-3.5 bg-hf-green text-white text-[10px] font-black uppercase tracking-widest hover:bg-[#1ea34a] transition-all flex items-center justify-center gap-3 rounded-md active:scale-95 shadow-lg shadow-green-500/20"
+                >
+                  <Settings size={14} />
+                  Modify Profile
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+      </ResuableDrawer>
       <FilePreviewModal
         isOpen={isPreviewOpen}
         onOpenChange={setIsPreviewOpen}

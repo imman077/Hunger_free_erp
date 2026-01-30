@@ -279,7 +279,7 @@ const PaymentMethods = () => {
 
   return (
     <div
-      className="p-6 md:p-8 min-h-screen space-y-6 max-w-[1400px] mx-auto"
+      className="p-6 md:p-8 space-y-6 max-w-[1400px] mx-auto"
       style={{ backgroundColor: "var(--bg-primary)" }}
     >
       {/* Header Section */}

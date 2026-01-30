@@ -1,31 +1,25 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerBody,
-  DrawerFooter,
-  useDisclosure,
   Button,
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
 } from "@heroui/react";
+import ResuableDrawer from "../../../../global/components/resuable-components/drawer";
 import { ImpactCards } from "../../../../global/components/resuable-components/ImpactCards";
 import ReusableTable from "../../../../global/components/resuable-components/table";
 import ResuableInput from "../../../../global/components/resuable-components/input";
-import ResuableDropdown from "../../../../global/components/resuable-components/dropdown";
 import {
   Plus,
   Filter,
   ChevronDown,
   X,
+  Eye,
   Mail,
   Phone,
   MapPin,
-  Users,
   Target,
   Zap,
 } from "lucide-react";
@@ -56,7 +50,7 @@ interface Ngo {
 
 const NgoPage = () => {
   const navigate = useNavigate();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedNgo, setSelectedNgo] = useState<Ngo | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editedNgo, setEditedNgo] = useState<Ngo | null>(null);
@@ -131,7 +125,7 @@ const NgoPage = () => {
     setSelectedNgo(ngo);
     setEditedNgo(ngo);
     setIsEditing(false);
-    onOpen();
+    setIsDrawerOpen(true);
   };
 
   const toggleFilter = (filterType: string) => {
@@ -506,7 +500,20 @@ const NgoPage = () => {
                   {ngo.beneficiaries}
                 </span>
               );
-
+            case "actions":
+              return (
+                <div className="flex items-center justify-center gap-2">
+                  <Button
+                    isIconOnly
+                    size="sm"
+                    variant="flat"
+                    onPress={() => handleViewNgo(ngo)}
+                    className="!bg-transparent !text-slate-600 hover:!text-[#22c55e] transition-all min-w-0 h-8 w-8"
+                  >
+                    <Eye size={14} />
+                  </Button>
+                </div>
+              );
             default:
               return (
                 <span
@@ -520,55 +527,48 @@ const NgoPage = () => {
         }}
         // title="NGO Directory"
         // description={`${ngoData.length} registered organizations`}
-        actionConfig={{
-          showView: true,
-          showApprove: true,
-          showDeactivate: true,
-          onView: handleViewNgo,
-          onApprove: (ngo) => console.log("Approve", ngo),
-          onDeactivate: (ngo) => console.log("Deactivate", ngo),
-        }}
       />
 
       {/* HeroUI Drawer as Right Sidebar */}
-      <Drawer
-        isOpen={isOpen}
-        onClose={onClose}
-        placement="right"
+      <ResuableDrawer
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        title="NGO Intelligence"
+        subtitle={`Global Identifier: #NGO-${selectedNgo?.id?.toString().padStart(4, "0") || "0000"}`}
         size="md"
-        classNames={{
-          base: "sm:max-w-[440px] shadow-[0_0_50px_rgba(0,0,0,0.1)]",
-          wrapper: "shadow-none",
-          backdrop: "bg-slate-900/40 backdrop-blur-sm",
-        }}
-      >
-        <DrawerContent className="bg-slate-50 h-full max-h-screen flex flex-col shadow-2xl overflow-hidden">
-          {/* Premium Sticky Header */}
-          <DrawerHeader className="flex items-center justify-between px-8 py-5 bg-white/70 backdrop-blur-xl border-b border-slate-200/50 sticky top-0 z-30">
-            <div className="flex flex-col">
-              <div className="flex items-center gap-2">
-                <h2 className="text-sm font-black text-slate-400 uppercase tracking-[0.2em]">
-                  NGO Intelligence
-                </h2>
-                <div className="px-2 py-0.5 rounded-sm bg-hf-green/10 border border-hf-green/20">
-                  <p className="text-[9px] font-black text-hf-green uppercase">
-                    Verified
-                  </p>
-                </div>
-              </div>
+        footer={
+          selectedNgo && (
+            <div className="flex items-center gap-2 w-full max-w-md mx-auto">
+              {!isEditing ? (
+                <Button
+                  className="w-full bg-hf-green text-white font-black h-12 rounded-sm hover:bg-emerald-600 transition-all active:scale-95 text-[11px] uppercase tracking-widest"
+                  startContent={<Target size={18} strokeWidth={2.5} />}
+                  onPress={() => setIsEditing(true)}
+                >
+                  Edit Profile
+                </Button>
+              ) : (
+                <>
+                  <Button
+                    className="flex-[2] bg-hf-green text-white font-black h-12 rounded-sm hover:bg-emerald-600 transition-all active:scale-95 text-[11px] uppercase tracking-widest"
+                    onPress={handleSaveNgo}
+                  >
+                    Update Details
+                  </Button>
+                  <Button
+                    className="flex-1 bg-white border border-slate-200 text-slate-500 font-black h-12 rounded-sm hover:bg-slate-50 transition-all active:scale-95 text-[11px] uppercase tracking-widest"
+                    onPress={() => setIsEditing(false)}
+                  >
+                    Cancel
+                  </Button>
+                </>
+              )}
             </div>
-            <Button
-              isIconOnly
-              size="sm"
-              variant="light"
-              className="text-slate-400 hover:text-slate-900 hover:bg-white border border-slate-100 rounded-sm transition-all"
-              onPress={onClose}
-            >
-              <X size={20} strokeWidth={3} />
-            </Button>
-          </DrawerHeader>
-          {/* Body */}
-          <DrawerBody className="p-0 overflow-y-auto no-scrollbar relative bg-slate-50/80">
+          )
+        }
+      >
+        {selectedNgo && (
+          <div className="flex flex-col relative z-10 text-start">
             {/* Immersive Background Decorations */}
             <div className="absolute inset-0 pointer-events-none">
               <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-hf-green/5 blur-[120px] rounded-sm -mr-48 -mt-48" />
@@ -582,513 +582,174 @@ const NgoPage = () => {
               />
             </div>
 
-            {selectedNgo && (
-              <div className="flex flex-col relative z-10">
-                {/* Elite Hero Section */}
-                <div className="pt-4 pb-1.5 px-6 flex flex-col items-center">
-                  <div className="relative mb-4 group">
-                    {/* Green Glow effect */}
-                    <div className="absolute inset-[-10px] bg-hf-green/5 blur-2xl rounded-sm opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-
-                    <div className="relative w-24 h-24 p-1.5 rounded-sm bg-emerald-50 transform transition-transform duration-500 group-hover:scale-105">
-                      <div className="w-full h-full rounded-sm bg-hf-green flex items-center justify-center relative overflow-hidden">
-                        <span className="text-4xl font-black text-white italic">
-                          {selectedNgo.name.charAt(0)}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Status Float - Centered Bottom (Reference Image 1) */}
-                    <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 bg-white p-1 rounded-sm border border-slate-100 ring-2 ring-slate-50 shadow-sm z-20 whitespace-nowrap">
-                      <div className="flex items-center gap-1 px-2 py-0.5 bg-hf-green/10 rounded-sm">
-                        <div className="w-1.5 h-1.5 rounded-sm bg-hf-green animate-pulse" />
-                        <span className="text-[9px] font-black text-hf-green uppercase tracking-tighter">
-                          Live Portal
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="text-center space-y-3 max-w-sm">
-                    <div className="space-y-0.5 w-full flex flex-col items-center">
-                      {isEditing ? (
-                        <input
-                          className="text-2xl font-black text-slate-900 leading-[1.05] tracking-tight bg-slate-50 border-2 border-slate-200 rounded-sm px-4 py-2 focus:outline-none focus:border-hf-green text-center w-full placeholder:text-slate-300"
-                          value={editedNgo?.name}
-                          onChange={(e) =>
-                            setEditedNgo((prev) =>
-                              prev ? { ...prev, name: e.target.value } : null,
-                            )
-                          }
-                          placeholder="NGO Name"
-                        />
-                      ) : (
-                        <h3 className="text-2xl font-black text-slate-900 leading-[1.05] tracking-tight">
-                          {selectedNgo.name}
-                        </h3>
-                      )}
-                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
-                        Global Identifier: #
-                        {selectedNgo.id.toString().padStart(4, "0")}
-                      </p>
-                    </div>
-
-                    <div className="flex flex-wrap items-center justify-center gap-2">
-                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-sm bg-white/80 backdrop-blur-md border border-slate-200/50 transition-all hover:border-hf-green">
-                        <span className="text-[9px] font-black text-indigo-600/80 uppercase">
-                          Reg.
-                        </span>
-                        <div className="w-1 h-3 bg-indigo-100 rounded-full" />
-                        {isEditing ? (
-                          <input
-                            className="text-xs font-mono font-bold text-slate-700 bg-slate-50 border border-slate-300 rounded-sm px-2 py-1 focus:outline-none focus:border-hf-green w-28"
-                            value={editedNgo?.registrationNo}
-                            onChange={(e) =>
-                              setEditedNgo((prev) =>
-                                prev
-                                  ? {
-                                      ...prev,
-                                      registrationNo: e.target.value,
-                                    }
-                                  : null,
-                              )
-                            }
-                          />
-                        ) : (
-                          <span className="text-xs font-mono font-bold text-slate-700">
-                            {selectedNgo.registrationNo}
-                          </span>
-                        )}
-                      </div>
-                      {getStatusBadge(selectedNgo.status)}
-                    </div>
+            {/* Elite Hero Section */}
+            <div className="pt-4 pb-1.5 px-3 sm:px-6 flex flex-col items-center">
+              <div className="relative mb-4 group">
+                <div className="absolute inset-[-10px] bg-hf-green/5 blur-2xl rounded-sm opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                <div className="relative w-24 h-24 p-1.5 rounded-sm bg-emerald-50 transform transition-transform duration-500 group-hover:scale-105">
+                  <div className="w-full h-full rounded-sm bg-hf-green flex items-center justify-center relative overflow-hidden">
+                    <span className="text-4xl font-black text-white italic">
+                      {selectedNgo.name.charAt(0)}
+                    </span>
                   </div>
                 </div>
-
-                {/* Content: View Mode vs Edit Mode */}
-                {!isEditing ? (
-                  // VIEW MODE - Original Design
-                  <div className="p-6 space-y-8 relative z-10">
-                    {/* Connectivity Section */}
-                    <section className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2.5">
-                          <div className="w-8 h-8 rounded-sm bg-emerald-50 border border-emerald-100 flex items-center justify-center text-hf-green shadow-sm shrink-0">
-                            <Phone size={16} strokeWidth={2.5} />
-                          </div>
-                          <div>
-                            <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest leading-none">
-                              Connectivity
-                            </h4>
-                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight mt-1 leading-none">
-                              Communication Channels
-                            </p>
-                          </div>
-                        </div>
-                        <div className="px-2.5 py-1 rounded-sm bg-white border border-slate-100 flex items-center gap-1.5 shadow-sm ring-2 ring-slate-50/50">
-                          <div className="w-1.5 h-1.5 rounded-sm bg-hf-green" />
-                          <span className="text-[9px] font-black text-slate-600 uppercase tracking-tighter">
-                            Verified Data
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-1 gap-1.5">
-                        {[
-                          {
-                            Icon: Mail,
-                            label: "Official Correspondence",
-                            value: selectedNgo.email,
-                            color: "blue",
-                            bg: "bg-blue-50/50",
-                          },
-                          {
-                            Icon: Phone,
-                            label: "Verified Contact Line",
-                            value: selectedNgo.phone,
-                            color: "emerald",
-                            bg: "bg-emerald-50/50",
-                          },
-                          {
-                            Icon: MapPin,
-                            label: "Headquarters Address",
-                            value: selectedNgo.address,
-                            color: "purple",
-                            bg: "bg-purple-50/50",
-                          },
-                        ].map((item, i) => (
-                          <div
-                            key={i}
-                            className="group bg-white p-3 rounded-sm border border-slate-200 transition-all duration-500 border-b-2 border-b-transparent hover:border-b-hf-green hover:bg-slate-50/30 shadow-sm"
-                          >
-                            <div className="flex items-center gap-3">
-                              <div
-                                className={`w-10 h-10 rounded-sm ${item.bg} flex items-center justify-center text-${item.color}-600 group-hover:scale-110 transition-transform duration-500`}
-                              >
-                                <item.Icon size={18} strokeWidth={2.5} />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">
-                                  {item.label}
-                                </p>
-                                <p className="text-xs font-bold text-slate-900 leading-tight truncate group-hover:text-hf-green transition-colors uppercase tracking-tight">
-                                  {item.value}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </section>
-
-                    {/* Impact Ecosystem */}
-                    <section className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2.5">
-                          <div className="w-8 h-8 rounded-sm bg-emerald-50 border border-emerald-100 flex items-center justify-center text-hf-green shadow-sm shrink-0">
-                            <Zap size={16} strokeWidth={2.5} />
-                          </div>
-                          <div>
-                            <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest leading-none">
-                              Impact Ecosystem
-                            </h4>
-                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight mt-1 leading-none">
-                              Strategic Focus & Metrics
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="bg-white rounded-sm border border-slate-200 shadow-sm overflow-hidden">
-                        {/* Top: High Impact Reach Segment (Green) */}
-                        <div className="bg-hf-green p-3 relative overflow-hidden group/reach">
-                          <div className="absolute top-1/2 -right-8 w-24 h-24 border-[12px] border-white/5 rounded-sm -translate-y-1/2 opacity-20" />
-                          <div className="flex items-center gap-3 relative z-10 text-white">
-                            <div className="w-10 h-10 rounded-sm bg-white/20 border border-white/20 flex items-center justify-center text-white shrink-0">
-                              <Users size={18} strokeWidth={2.5} />
-                            </div>
-                            <div className="flex-1 flex items-center justify-between min-w-0">
-                              <div className="flex flex-col justify-center">
-                                <p className="text-[9px] font-black text-white/70 uppercase tracking-[0.2em] leading-none mb-1">
-                                  Impact Reach Metrics
-                                </p>
-                                {isEditing ? (
-                                  <div className="relative">
-                                    <select
-                                      className="bg-white/20 text-sm font-black tracking-tighter uppercase leading-none text-white border-2 border-white/30 rounded-sm px-2 py-1 pr-6 focus:outline-none focus:border-white appearance-none cursor-pointer w-full"
-                                      value={editedNgo?.beneficiaries}
-                                      onChange={(e) =>
-                                        setEditedNgo((prev) =>
-                                          prev
-                                            ? {
-                                                ...prev,
-                                                beneficiaries: e.target.value,
-                                              }
-                                            : null,
-                                        )
-                                      }
-                                    >
-                                      {BENEFICIARY_OPTIONS.map((opt) => (
-                                        <option
-                                          key={opt}
-                                          value={opt}
-                                          className="text-slate-900 bg-white"
-                                        >
-                                          {opt}
-                                        </option>
-                                      ))}
-                                    </select>
-                                    <ChevronDown
-                                      className="absolute right-1 top-1/2 -translate-y-1/2 text-white pointer-events-none"
-                                      size={14}
-                                      strokeWidth={3}
-                                    />
-                                  </div>
-                                ) : (
-                                  <h4 className="text-sm font-black tracking-tighter uppercase leading-none">
-                                    {selectedNgo.beneficiaries}
-                                  </h4>
-                                )}
-                              </div>
-                              <div className="flex items-center text-right pr-2">
-                                <span className="text-[9px] font-black text-white/80 uppercase tracking-[0.2em] leading-tight opacity-80 block max-w-[80px]">
-                                  Primary Beneficiaries
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Bottom: Strategic Focus Segment (White) */}
-                        <div className="p-3 relative overflow-hidden group/strategy border-t border-slate-100">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-sm bg-emerald-50 border border-emerald-100 flex items-center justify-center text-hf-green shrink-0">
-                              <Target size={18} strokeWidth={2.5} />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1 leading-none">
-                                Strategic Focus & Identity
-                              </p>
-                              {isEditing ? (
-                                <input
-                                  className="text-[10px] font-bold text-slate-900 w-full bg-slate-50 border border-slate-200 rounded-sm px-2 py-1 focus:outline-none focus:border-hf-green"
-                                  value={editedNgo?.serviceAreas.join(", ")}
-                                  onChange={(e) =>
-                                    setEditedNgo((prev) =>
-                                      prev
-                                        ? {
-                                            ...prev,
-                                            serviceAreas: e.target.value
-                                              .split(",")
-                                              .map((s) => s.trim())
-                                              .filter((s) => s !== ""),
-                                          }
-                                        : null,
-                                    )
-                                  }
-                                  placeholder="Education, Youth, etc."
-                                />
-                              ) : (
-                                <div className="grid grid-cols-2 gap-1.5">
-                                  {selectedNgo.serviceAreas.map(
-                                    (area, index) => (
-                                      <span
-                                        key={index}
-                                        className="px-2 py-1 rounded-sm text-[8px] font-black bg-slate-50 text-slate-500 border border-slate-200/60 uppercase tracking-widest text-center"
-                                      >
-                                        {area}
-                                      </span>
-                                    ),
-                                  )}
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </section>
-
-                    {/* Mission Partners Section */}
-                    <section className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2.5">
-                          <div className="w-8 h-8 rounded-sm bg-white border border-slate-200 flex items-center justify-center text-hf-green shadow-sm shrink-0">
-                            <Users size={16} strokeWidth={2.5} />
-                          </div>
-                          <div>
-                            <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest leading-none">
-                              Ecosystem Partners
-                            </h4>
-                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight mt-1 leading-none">
-                              Vetted Mission Contributors
-                            </p>
-                          </div>
-                        </div>
-                        <div className="px-3 py-1 rounded-sm bg-hf-green text-white text-[9px] font-black uppercase tracking-widest">
-                          {selectedNgo.volunteers.length} Active
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-1 gap-1.5">
-                        {selectedNgo.volunteers.map((volunteer, index) => (
-                          <div
-                            key={index}
-                            className="group flex items-center gap-3 p-3 rounded-sm bg-white border border-slate-200 hover:border-hf-green/40 hover:bg-slate-50/30 transition-all duration-500 relative overflow-hidden shadow-sm"
-                          >
-                            <div className="absolute top-0 right-0 w-24 h-full bg-gradient-to-l from-emerald-50/0 to-transparent group-hover:from-emerald-50/50 transition-colors" />
-
-                            <div className="relative">
-                              <div
-                                className={`w-10 h-10 rounded-sm flex items-center justify-center text-white text-base font-black transition-transform duration-500 group-hover:scale-105 ${
-                                  [
-                                    "bg-emerald-500",
-                                    "bg-hf-green",
-                                    "bg-emerald-600",
-                                    "bg-teal-500",
-                                  ][index % 4]
-                                }`}
-                              >
-                                {volunteer
-                                  .split(" ")
-                                  .map((n) => n[0])
-                                  .join("")}
-                              </div>
-                              <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-white rounded-sm flex items-center justify-center border border-slate-100 transform group-hover:scale-110 transition-transform">
-                                <div className="w-2 h-2 rounded-sm bg-hf-green border border-white" />
-                              </div>
-                            </div>
-
-                            <div className="flex-1 relative z-10">
-                              <p className="text-xs font-black text-slate-800 group-hover:text-hf-green transition-colors tracking-tight leading-tight mb-1">
-                                {volunteer}
-                              </p>
-                              <p className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em]">
-                                Certified Impact Volunteer
-                              </p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </section>
+                <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 bg-white p-1 rounded-sm border border-slate-100 ring-2 ring-slate-50 shadow-sm z-20 whitespace-nowrap">
+                  <div className="flex items-center gap-1 px-2 py-0.5 bg-hf-green/10 rounded-sm">
+                    <div className="w-1.5 h-1.5 rounded-sm bg-hf-green animate-pulse" />
+                    <span className="text-[9px] font-black text-hf-green uppercase tracking-tighter">
+                      Live Portal
+                    </span>
                   </div>
-                ) : (
-                  // EDIT MODE - Clean Form Layout
-                  <div className="p-6 space-y-6 relative z-10">
-                    {/* Edit Form Header */}
-                    <div className="bg-gradient-to-r from-hf-green to-emerald-600 p-4 rounded-sm">
-                      <h3 className="text-white font-black text-lg uppercase tracking-wider">
-                        Edit NGO Details
-                      </h3>
-                      <p className="text-white/80 text-xs mt-1">
-                        Update organization information
+                </div>
+              </div>
+
+              <div className="text-center space-y-3 max-w-sm">
+                <div className="space-y-0.5 w-full flex flex-col items-center">
+                  {isEditing ? (
+                    <input
+                      className="text-2xl font-black text-slate-900 leading-[1.05] tracking-tight bg-slate-50 border-2 border-slate-200 rounded-sm px-4 py-2 focus:outline-none focus:border-hf-green text-center w-full placeholder:text-slate-300"
+                      value={editedNgo?.name}
+                      onChange={(e) =>
+                        setEditedNgo((prev) =>
+                          prev ? { ...prev, name: e.target.value } : null,
+                        )
+                      }
+                      placeholder="NGO Name"
+                    />
+                  ) : (
+                    <h3 className="text-2xl font-black text-slate-900 leading-[1.05] tracking-tight">
+                      {selectedNgo.name}
+                    </h3>
+                  )}
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
+                    Global Identifier: #
+                    {selectedNgo.id.toString().padStart(4, "0")}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Content: View Mode vs Edit Mode */}
+            {!isEditing ? (
+              <div className="px-3 sm:px-6 space-y-8 relative z-10">
+                <section className="space-y-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-sm bg-emerald-50 border border-emerald-100 flex items-center justify-center text-hf-green shadow-sm shrink-0">
+                      <Phone size={16} strokeWidth={2.5} />
+                    </div>
+                    <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest leading-none">
+                      Connectivity
+                    </h4>
+                  </div>
+                  <div className="grid grid-cols-1 gap-1.5">
+                    {[
+                      {
+                        Icon: Mail,
+                        label: "Official Email",
+                        value: selectedNgo.email,
+                      },
+                      {
+                        Icon: Phone,
+                        label: "Verified Contact",
+                        value: selectedNgo.phone,
+                      },
+                      {
+                        Icon: MapPin,
+                        label: "Location",
+                        value: selectedNgo.address,
+                      },
+                    ].map((item, i) => (
+                      <div
+                        key={i}
+                        className="group bg-white p-3 rounded-sm border border-slate-200 transition-all hover:border-hf-green hover:bg-slate-50/30 shadow-sm"
+                      >
+                        <div className="flex items-center gap-3">
+                          <item.Icon size={18} className="text-slate-400" />
+                          <div>
+                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">
+                              {item.label}
+                            </p>
+                            <p className="text-xs font-bold text-slate-800 uppercase tracking-tight">
+                              {item.value}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+
+                <section className="space-y-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-sm bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm shrink-0">
+                      <Zap size={16} strokeWidth={2.5} />
+                    </div>
+                    <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest leading-none">
+                      Impact Reach
+                    </h4>
+                  </div>
+                  <div className="bg-white rounded-sm border border-slate-200 shadow-sm overflow-hidden">
+                    <div className="bg-hf-green p-3 text-white">
+                      <p className="text-[9px] font-black text-white/70 uppercase tracking-[0.2em] mb-1">
+                        Impact Category
                       </p>
+                      <h4 className="text-sm font-black tracking-tighter uppercase">
+                        {selectedNgo.beneficiaries}
+                      </h4>
                     </div>
-
-                    {/* Form Fields */}
-                    <div className="space-y-4">
-                      {/* NGO Name */}
-                      <ResuableInput
-                        label="Organization Name"
-                        value={editedNgo?.name || ""}
-                        onChange={(value) =>
-                          setEditedNgo((prev) =>
-                            prev ? { ...prev, name: value } : null,
-                          )
-                        }
-                        placeholder="Enter NGO name"
-                        required
-                      />
-
-                      {/* Registration Number */}
-                      <ResuableInput
-                        label="Registration Number"
-                        value={editedNgo?.registrationNo || ""}
-                        onChange={(value) =>
-                          setEditedNgo((prev) =>
-                            prev ? { ...prev, registrationNo: value } : null,
-                          )
-                        }
-                        placeholder="REG-XX-XXXX-XXX"
-                        required
-                      />
-
-                      {/* Email */}
-                      <ResuableInput
-                        label="Official Email"
-                        type="email"
-                        value={editedNgo?.email || ""}
-                        onChange={(value) =>
-                          setEditedNgo((prev) =>
-                            prev ? { ...prev, email: value } : null,
-                          )
-                        }
-                        placeholder="contact@ngo.org"
-                        required
-                      />
-
-                      {/* Phone */}
-                      <ResuableInput
-                        label="Contact Phone"
-                        type="tel"
-                        value={editedNgo?.phone || ""}
-                        onChange={(value) =>
-                          setEditedNgo((prev) =>
-                            prev ? { ...prev, phone: value } : null,
-                          )
-                        }
-                        placeholder="+91-XXX-XXX-XXXX"
-                        required
-                      />
-
-                      {/* Address */}
-                      <ResuableInput
-                        label="Headquarters Address"
-                        value={editedNgo?.address || ""}
-                        onChange={(value) =>
-                          setEditedNgo((prev) =>
-                            prev ? { ...prev, address: value } : null,
-                          )
-                        }
-                        placeholder="Enter full address"
-                        required
-                      />
-
-                      {/* Beneficiaries */}
-                      <ResuableDropdown
-                        label="Primary Beneficiaries"
-                        value={editedNgo?.beneficiaries || ""}
-                        onChange={(value) =>
-                          setEditedNgo((prev) =>
-                            prev ? { ...prev, beneficiaries: value } : null,
-                          )
-                        }
-                        options={BENEFICIARY_OPTIONS.map((opt) => ({
-                          value: opt,
-                          label: opt,
-                        }))}
-                        placeholder="Select beneficiaries"
-                        required
-                      />
-
-                      {/* Service Areas */}
-                      <ResuableInput
-                        label="Service Areas (comma-separated)"
-                        value={editedNgo?.serviceAreas.join(", ") || ""}
-                        onChange={(value) =>
-                          setEditedNgo((prev) =>
-                            prev
-                              ? {
-                                  ...prev,
-                                  serviceAreas: value
-                                    .split(",")
-                                    .map((s) => s.trim())
-                                    .filter((s) => s !== ""),
-                                }
-                              : null,
-                          )
-                        }
-                        placeholder="Education, Healthcare, etc."
-                      />
+                    <div className="p-3">
+                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">
+                        Strategic Focus
+                      </p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {selectedNgo.serviceAreas.map((area, index) => (
+                          <span
+                            key={index}
+                            className="px-2 py-1 rounded-sm text-[8px] font-black bg-slate-50 text-slate-500 border border-slate-200 uppercase tracking-widest"
+                          >
+                            {area}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                )}
+                </section>
+              </div>
+            ) : (
+              <div className="px-3 sm:px-6 space-y-4 relative z-10">
+                <ResuableInput
+                  label="Organization Name"
+                  value={editedNgo?.name || ""}
+                  onChange={(v) =>
+                    setEditedNgo((p) => (p ? { ...p, name: v } : null))
+                  }
+                />
+                <ResuableInput
+                  label="Official Email"
+                  value={editedNgo?.email || ""}
+                  onChange={(v) =>
+                    setEditedNgo((p) => (p ? { ...p, email: v } : null))
+                  }
+                />
+                <ResuableInput
+                  label="Contact Phone"
+                  value={editedNgo?.phone || ""}
+                  onChange={(v) =>
+                    setEditedNgo((p) => (p ? { ...p, phone: v } : null))
+                  }
+                />
+                <ResuableInput
+                  label="Address"
+                  value={editedNgo?.address || ""}
+                  onChange={(v) =>
+                    setEditedNgo((p) => (p ? { ...p, address: v } : null))
+                  }
+                />
               </div>
             )}
-          </DrawerBody>
-
-          {/* Fixed Bottom Action Bar */}
-          {selectedNgo && (
-            <DrawerFooter className="p-4 bg-white border-t border-slate-200 z-50">
-              <div className="flex items-center gap-2 w-full max-w-md mx-auto">
-                {!isEditing ? (
-                  <Button
-                    className="w-full bg-hf-green text-white font-black h-12 rounded-sm hover:bg-emerald-600 transition-all active:scale-95 text-[11px] uppercase tracking-widest"
-                    startContent={<Target size={18} strokeWidth={2.5} />}
-                    onPress={() => setIsEditing(true)}
-                  >
-                    Edit Profile
-                  </Button>
-                ) : (
-                  <>
-                    <Button
-                      className="flex-[2] bg-hf-green text-white font-black h-12 rounded-sm hover:bg-emerald-600 transition-all active:scale-95 text-[11px] uppercase tracking-widest"
-                      onPress={handleSaveNgo}
-                    >
-                      Update Details
-                    </Button>
-                    <Button
-                      className="flex-1 bg-white border border-slate-200 text-slate-500 font-black h-12 rounded-sm hover:bg-slate-50 transition-all active:scale-95 text-[11px] uppercase tracking-widest"
-                      onPress={() => setIsEditing(false)}
-                    >
-                      Cancel
-                    </Button>
-                  </>
-                )}
-              </div>
-            </DrawerFooter>
-          )}
-        </DrawerContent>
-      </Drawer>
+          </div>
+        )}
+      </ResuableDrawer>
     </div>
   );
 };

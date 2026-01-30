@@ -209,6 +209,11 @@ const SidebarIcons: React.FC = () => {
       to: "/admin/rewards/catalog",
       icon: <Icon name="stack" className="h-4 w-4" />,
     },
+    {
+      label: "Impact Milestones",
+      to: "/admin/rewards/milestones",
+      icon: <Icon name="verified" className="h-4 w-4" />,
+    },
   ];
 
   const settingsSubItems: SubItem[] = [

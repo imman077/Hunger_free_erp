@@ -15,7 +15,17 @@ interface ResuableDrawerProps {
   subtitle?: string;
   children: React.ReactNode;
   footer?: React.ReactNode;
-  size?: "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "full";
+  size?:
+    | "xs"
+    | "sm"
+    | "md"
+    | "lg"
+    | "xl"
+    | "2xl"
+    | "3xl"
+    | "4xl"
+    | "5xl"
+    | "full";
   headerExtra?: React.ReactNode;
 }
 
@@ -29,34 +39,48 @@ const ResuableDrawer: React.FC<ResuableDrawerProps> = ({
   size = "md",
   headerExtra,
 }) => {
+  const sizeClasses = {
+    xs: "sm:max-w-xs",
+    sm: "sm:max-w-sm",
+    md: "sm:max-w-md",
+    lg: "sm:max-w-lg",
+    xl: "sm:max-w-xl",
+    "2xl": "sm:max-w-2xl",
+    "3xl": "sm:max-w-3xl",
+    "4xl": "sm:max-w-4xl",
+    "5xl": "sm:max-w-5xl",
+    full: "sm:max-w-full",
+  };
+
   return (
     <Drawer
       isOpen={isOpen}
-      onOpenChange={onClose}
+      onClose={onClose}
       size={size as any}
       placement="right"
       backdrop="blur"
-      radius="none"
-      hideCloseButton
+      hideCloseButton={true}
       classNames={{
-        base: "bg-white border-l border-slate-200",
+        base: `bg-white rounded-none w-full ${sizeClasses[size as keyof typeof sizeClasses] || "sm:max-w-md"} shadow-none no-scrollbar`,
         backdrop: "bg-slate-900/40 backdrop-blur-md",
         header: "border-b border-slate-100 p-0",
-        body: "p-0",
-        footer: "border-t border-slate-100 p-6",
+        body: "p-0 overflow-hidden",
+        footer: "border-t border-slate-100 p-5",
       }}
       style={{
         backgroundColor: "var(--bg-primary)",
-        borderColor: "var(--border-color)",
       }}
     >
-      <DrawerContent>
-        {(onClose) => (
+      <DrawerContent
+        className="no-scrollbar"
+        style={{ backgroundColor: "var(--bg-primary)" }}
+      >
+        {() => (
           <>
-            <DrawerHeader className="flex flex-col gap-1 px-6 py-4">
+            <DrawerHeader className="flex flex-col gap-0.5 px-3 py-3.5">
               <div className="flex items-center justify-between">
                 <h2
-                  className="text-xl font-black uppercase tracking-tight"
+                  className="text-lg font-black uppercase tracking-tight"
                   style={{ color: "var(--text-primary)" }}
                 >
                   {title}
@@ -72,9 +96,7 @@ const ResuableDrawer: React.FC<ResuableDrawerProps> = ({
               {(subtitle || headerExtra) && (
                 <div className="flex items-center justify-between">
                   {subtitle && (
-                    <span
-                      className="text-[10px] font-black uppercase tracking-widest text-slate-400"
-                    >
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
                       {subtitle}
                     </span>
                   )}
@@ -83,12 +105,18 @@ const ResuableDrawer: React.FC<ResuableDrawerProps> = ({
               )}
             </DrawerHeader>
 
-            <DrawerBody className="p-6 overflow-y-auto scrollbar-hide" style={{ backgroundColor: "var(--bg-secondary)" }}>
-              {children}
+            <DrawerBody
+              className="py-1 px-0 overflow-y-auto no-scrollbar flex-1"
+              style={{ backgroundColor: "var(--bg-secondary)" }}
+            >
+              <div className="py-5">{children}</div>
             </DrawerBody>
 
             {footer && (
-              <DrawerFooter className="px-6 py-4 flex items-center justify-end gap-3" style={{ backgroundColor: "var(--bg-primary)" }}>
+              <DrawerFooter
+                className="px-6 py-3.5 flex items-center justify-end gap-3"
+                style={{ backgroundColor: "var(--bg-primary)" }}
+              >
                 {footer}
               </DrawerFooter>
             )}

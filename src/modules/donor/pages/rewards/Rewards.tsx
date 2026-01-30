@@ -931,9 +931,9 @@ const DonorRewards = () => {
         subtitle="Final verification before processing"
         size="md"
       >
-        <div className="flex flex-col h-full -mt-4">
+        <div className="flex flex-col h-full">
           {showClaimSuccess ? (
-            <div className="flex-1 flex flex-col items-center justify-center py-10 text-center">
+            <div className="flex-1 flex flex-col items-center justify-center py-10 px-6 text-center">
               <div className="w-20 h-20 bg-green-50 border border-green-200 rounded-full flex items-center justify-center mb-6 animate-in zoom-in duration-500">
                 <CheckIcon className="text-green-500" size={40} />
               </div>
@@ -951,7 +951,7 @@ const DonorRewards = () => {
               </div>
             </div>
           ) : (
-            <div className="flex-1 space-y-4">
+            <div className="flex-1 space-y-6 px-4 sm:px-6 pb-8">
               {/* Reward Summary Card */}
               <div className="bg-[#fbfcff] p-6 rounded-sm border border-slate-200 border-dashed relative overflow-hidden">
                 <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">
@@ -1187,7 +1187,7 @@ const DonorRewards = () => {
               )}
 
               {/* Verification Steps */}
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <div className="flex items-start gap-4 p-3 border border-slate-100 rounded-sm bg-blue-50/10">
                   <div className="w-8 h-8 rounded-sm bg-blue-50 flex items-center justify-center shrink-0">
                     <Star className="text-blue-500" size={16} />
@@ -1217,7 +1217,7 @@ const DonorRewards = () => {
               </div>
 
               {/* Action */}
-              <div className="pt-2">
+              <div className="pt-4">
                 <button
                   onClick={confirmClaim}
                   disabled={isSubmittingClaim || !isFormValid}

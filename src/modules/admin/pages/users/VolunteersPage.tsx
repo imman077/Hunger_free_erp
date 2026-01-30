@@ -1,22 +1,19 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerBody,
-  useDisclosure,
-  Button,
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
   Modal,
   ModalContent,
   ModalHeader,
   ModalBody,
   ModalFooter,
+  Button,
+  useDisclosure,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
 } from "@heroui/react";
+import ResuableDrawer from "../../../../global/components/resuable-components/drawer";
 import ReusableTable from "../../../../global/components/resuable-components/table";
 import { ImpactCards } from "../../../../global/components/resuable-components/ImpactCards";
 import ReusableButton from "../../../../global/components/resuable-components/button";
@@ -25,23 +22,20 @@ import MultiSelectDropdown from "../../../../global/components/resuable-componen
 import {
   Plus,
   Filter,
-  ChevronDown,
   X,
+  Eye,
   Phone,
-  Car,
-  Star,
-  ShieldCheck,
-  User,
-  Activity,
   Settings,
   AlertTriangle,
   BarChart,
-  ClipboardList,
-  AlertCircle,
+  RotateCcw,
+  Save,
+  User,
+  Activity,
   ToggleLeft,
   ToggleRight,
-  Save,
-  RotateCcw,
+  ShieldCheck,
+  ChevronDown,
 } from "lucide-react";
 
 type VolunteerStatus = "available" | "on-leave" | "busy";
@@ -226,50 +220,9 @@ const volunteersData: Volunteer[] = [
   },
 ];
 
-// --- Helper Components ---
-
-// Suspension Timer Component
-const SuspensionTimer: React.FC<{ endTime: number }> = ({ endTime }) => {
-  const [timeLeft, setTimeLeft] = useState("");
-
-  useEffect(() => {
-    const updateTimer = () => {
-      const now = Date.now();
-      const diff = endTime - now;
-
-      if (diff <= 0) {
-        setTimeLeft("EXPIRED");
-        return;
-      }
-
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor(
-        (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
-      );
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-      if (days > 0) {
-        setTimeLeft(`${days}d ${hours}h ${minutes}m`);
-      } else if (hours > 0) {
-        setTimeLeft(`${hours}h ${minutes}m ${seconds}s`);
-      } else {
-        setTimeLeft(`${minutes}m ${seconds}s`);
-      }
-    };
-
-    updateTimer();
-    const interval = setInterval(updateTimer, 1000);
-
-    return () => clearInterval(interval);
-  }, [endTime]);
-
-  return <span>{timeLeft}</span>;
-};
-
 const VolunteersPage: React.FC = () => {
   const navigate = useNavigate();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const {
     isOpen: isSuspenseOpen,
     onOpen: onSuspenseOpen,
@@ -293,7 +246,6 @@ const VolunteersPage: React.FC = () => {
     string[]
   >([]);
   const [selectedTaskTypes, setSelectedTaskTypes] = useState<string[]>([]);
-  const [editablePrimaryZone, setEditablePrimaryZone] = useState("");
   const [editablePhone, setEditablePhone] = useState("");
   const [editableAddress, setEditableAddress] = useState("");
   const [editableEmergencyPhone, setEditableEmergencyPhone] = useState("");
@@ -338,13 +290,12 @@ const VolunteersPage: React.FC = () => {
     setIsEditMode(false); // Always start in view mode
     setSelectedVolunteerAreas(vol.volunteerAreas);
     setSelectedTaskTypes(vol.allowedTaskTypes);
-    setEditablePrimaryZone(vol.zone);
     setEditablePhone(vol.phone);
     setEditableAddress(vol.address);
     setEditableEmergencyPhone(vol.emergencyPhone);
     setEditableVehicle(vol.vehicle);
     setEditableVehicleNumber(vol.license);
-    onOpen();
+    setIsDrawerOpen(true);
   };
 
   const handleHoursChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -833,6 +784,20 @@ const VolunteersPage: React.FC = () => {
                   {getStatusBadge(vol.status)}
                 </div>
               );
+            case "actions":
+              return (
+                <div className="flex items-center justify-center gap-2">
+                  <Button
+                    isIconOnly
+                    size="sm"
+                    variant="flat"
+                    onPress={() => openDrawer(vol)}
+                    className="!bg-transparent !text-slate-600 hover:!text-[#22c55e] transition-all min-w-0 h-8 w-8"
+                  >
+                    <Eye size={14} />
+                  </Button>
+                </div>
+              );
             case "email":
             case "phone":
               return (
@@ -854,739 +819,338 @@ const VolunteersPage: React.FC = () => {
               );
           }
         }}
-        actionConfig={{
-          showView: true,
-          showApprove: true,
-          showDeactivate: true,
-          onView: openDrawer,
-          onApprove: (vol) => console.log("Approve", vol),
-          onDeactivate: (vol) => console.log("Deactivate", vol),
-        }}
+        actionConfig={undefined}
       />
 
-      {/* HeroUI Drawer */}
-      <Drawer
-        isOpen={isOpen}
-        onClose={onClose}
-        placement="right"
+      <ResuableDrawer
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        title="Volunteer Intelligence"
+        subtitle={`Global Identifier: #VOL-${activeVolunteer?.id?.toString().padStart(4, "0") || "0000"}`}
         size="md"
-        classNames={{
-          base: "sm:max-w-[440px] shadow-[0_0_50px_rgba(0,0,0,0.1)]",
-          wrapper: "shadow-none",
-          backdrop: "bg-slate-900/40 backdrop-blur-sm",
-        }}
-      >
-        <DrawerContent className="bg-slate-50 h-full max-h-screen flex flex-col shadow-2xl overflow-hidden">
-          {/* Premium Sticky Header */}
-          <DrawerHeader className="flex items-center justify-between px-8 py-5 bg-white/70 backdrop-blur-xl border-b border-slate-200/50 sticky top-0 z-30">
-            <div className="flex flex-col">
-              <div className="flex items-center gap-2">
-                <h2 className="text-sm font-black text-slate-400 uppercase tracking-[0.2em]">
-                  Volunteer Intelligence
-                </h2>
-                <div className="px-2 py-0.5 rounded-sm bg-[#22c55e]/10 border border-[#22c55e]/20">
-                  <p className="text-[8px] font-black text-[#22c55e] uppercase">
-                    Verified
-                  </p>
-                </div>
-              </div>
-            </div>
-            <Button
-              isIconOnly
-              size="sm"
-              variant="light"
-              className="text-slate-400 hover:text-slate-900 hover:bg-white border border-slate-100 rounded-sm transition-all"
-              onPress={onClose}
-            >
-              <X size={20} strokeWidth={3} />
-            </Button>
-          </DrawerHeader>
-
-          {/* Body */}
-          <DrawerBody className="p-0 overflow-y-auto no-scrollbar relative bg-slate-50/80">
-            {/* Immersive Background Decorations */}
-            <div className="absolute inset-0 pointer-events-none">
-              <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#22c55e]/5 blur-[120px] rounded-sm -mr-48 -mt-48" />
-              <div className="absolute top-1/2 left-0 w-[400px] h-[400px] bg-emerald-500/5 blur-[100px] rounded-sm -ml-32" />
-              <div
-                className="absolute inset-0 opacity-[0.015] [mask-image:linear-gradient(to_bottom,white,transparent)]"
-                style={{
-                  backgroundImage: "radial-gradient(#000 1px, transparent 1px)",
-                  backgroundSize: "24px 24px",
-                }}
-              />
-            </div>
-            {activeVolunteer && (
-              <div className="flex flex-col relative z-10">
-                {/* Elite Hero Section */}
-                <div className="pt-4 pb-1 px-6 flex flex-col items-center">
-                  <div className="relative mb-4 group">
-                    {/* Elite Glow Effect */}
-                    <div className="absolute inset-[-12px] bg-[#22c55e]/10 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-
-                    <div className="relative w-24 h-24 p-1 rounded-sm bg-white border border-slate-100 shadow-xl shadow-slate-200/50 transform transition-transform duration-700 group-hover:scale-105">
-                      <div className="w-full h-full rounded-sm bg-[#22c55e] flex items-center justify-center relative overflow-hidden ring-1 ring-[#22c55e]/30">
-                        <span className="text-4xl font-black text-white italic drop-shadow-sm">
-                          {activeVolunteer.name
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Elite Status Badge - LIVE PORTAL Style */}
-                    <div className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-sm border border-slate-100 ring-4 ring-white/50 shadow-lg z-20 whitespace-nowrap">
-                      <div className="flex items-center gap-2">
-                        <div
-                          className={`w-1.5 h-1.5 rounded-full animate-pulse ${
-                            activeVolunteer.status === "available"
-                              ? "bg-[#22c55e]"
-                              : activeVolunteer.status === "busy"
-                                ? "bg-amber-500"
-                                : "bg-rose-500"
-                          }`}
-                        />
-                        <span className="text-[8px] font-black uppercase tracking-[0.1em] text-slate-600">
-                          {activeVolunteer.status === "available"
-                            ? "LIVE PORTAL"
-                            : activeVolunteer.status === "busy"
-                              ? "BUSY STATUS"
-                              : "OFFLINE"}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="text-center space-y-3 max-w-sm w-full mt-1">
-                    <div className="space-y-0.5 w-full flex flex-col items-center">
-                      <h3 className="text-[28px] font-black text-slate-900 leading-none tracking-tight">
-                        {activeVolunteer.name}
-                      </h3>
-                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.22em] pt-0.5">
-                        GLOBAL IDENTIFIER: #{2025000 + activeVolunteer.id}
-                      </p>
-                    </div>
-
-                    {/* Metadata Badge Row - Elite Alignment */}
-                    <div className="flex items-center justify-center gap-1.5 pt-0.5">
-                      <div className="px-2.5 py-1 bg-white border border-slate-100 rounded-sm shadow-sm flex items-center gap-1.5 ring-1 ring-slate-50">
-                        <span className="text-[8px] font-black text-indigo-500 uppercase">
-                          REG.
-                        </span>
-                        <div className="w-[1px] h-2.5 bg-slate-200" />
-                        <span className="text-[8px] font-black text-slate-700 uppercase tracking-tight">
-                          VOL-TN-2024-{100 + activeVolunteer.id}
-                        </span>
-                      </div>
-                      <div className="px-3 py-1 bg-emerald-50 border border-emerald-100/50 rounded-sm shadow-sm flex items-center justify-center ring-1 ring-emerald-50">
-                        <span className="text-[8px] font-black text-[#22c55e] uppercase tracking-widest">
-                          {activeVolunteer.verificationStatus === "Verified"
-                            ? "ACTIVE"
-                            : "PENDING"}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-6 space-y-4 relative z-10">
-                  {/* Identity & Timeline Card */}
-                  <section className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-sm bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-500 shadow-sm shrink-0">
-                          <User size={16} strokeWidth={2.5} />
-                        </div>
-                        <div>
-                          <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest leading-none">
-                            Identity & Account
-                          </h4>
-                          <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tight mt-1 leading-none">
-                            Verification & Timeline
-                          </p>
-                        </div>
-                      </div>
-                      <div className="px-2.5 py-1 rounded-sm bg-white border border-slate-100 flex items-center gap-1.5 shadow-sm ring-2 ring-slate-50/50">
-                        <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-                        <span className="text-[8px] font-black text-slate-500 uppercase tracking-tighter">
-                          PROFILE STATUS
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="bg-white px-4 py-1.5 rounded-sm border border-slate-200 transition-all duration-300 border-b-2 border-b-transparent hover:border-b-[#22c55e] shadow-sm space-y-0">
-                      <div className="flex justify-between items-center py-1.5 border-b border-slate-50/50">
-                        <span className="text-[8px] font-black uppercase tracking-[0.15em] text-slate-400">
-                          Verification
-                        </span>
-                        <div
-                          className={`px-1.5 py-0.5 rounded-sm text-[8px] font-black uppercase tracking-wider ${activeVolunteer.verificationStatus === "Verified" ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600"}`}
-                        >
-                          {activeVolunteer.verificationStatus}
-                        </div>
-                      </div>
-                      <div className="flex justify-between items-center py-1.5">
-                        <span className="text-[8px] font-black uppercase tracking-[0.15em] text-slate-400">
-                          Onboarded On
-                        </span>
-                        <span className="text-[10px] font-black text-slate-800 uppercase tracking-widest">
-                          {activeVolunteer.createdDate}
-                        </span>
-                      </div>
-                    </div>
-                  </section>
-
-                  {/* Operational Metrics Grid */}
-                  {!isEditMode && (
-                    <section className="space-y-3">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-sm bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shadow-sm shrink-0">
-                          <BarChart size={16} strokeWidth={2.5} />
-                        </div>
-                        <div>
-                          <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest leading-none">
-                            Performance Metrics
-                          </h4>
-                          <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tight mt-1 leading-none">
-                            Efficiency & Reliability
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-1.5">
-                        <div className="bg-white p-2.5 rounded-sm border border-slate-200 transition-all duration-300 border-b-2 border-b-transparent hover:border-b-[#22c55e] hover:bg-slate-50/30 shadow-sm">
-                          <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em] mb-0.5">
-                            Success Rate
-                          </p>
-                          <p className="text-[11px] font-black text-slate-900 leading-tight uppercase tracking-tight mt-1">
-                            92%
-                          </p>
-                        </div>
-                        <div className="bg-white p-2 rounded-sm border border-slate-200 transition-all duration-300 border-b-2 border-b-transparent hover:border-b-indigo-500 hover:bg-slate-50/30 shadow-sm">
-                          <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em] mb-0.5">
-                            Total Tasks
-                          </p>
-                          <p className="text-[11px] font-black text-slate-900 leading-tight uppercase tracking-tight mt-1">
-                            {activeVolunteer.totalTasks}
-                          </p>
-                        </div>
-                        <div className="bg-white p-2.5 rounded-sm border border-slate-200 transition-all duration-300 border-b-2 border-b-transparent hover:border-b-amber-500 hover:bg-slate-50/30 shadow-sm">
-                          <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em] mb-0.5">
-                            Avg Rating
-                          </p>
-                          <p className="text-[11px] font-black text-slate-900 leading-tight uppercase tracking-tight mt-1 flex items-center gap-1">
-                            {activeVolunteer.rating}{" "}
-                            <Star className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />
-                          </p>
-                        </div>
-                        <div className="bg-white p-2.5 rounded-sm border border-slate-200 transition-all duration-300 border-b-2 border-b-transparent hover:border-b-rose-500 hover:bg-slate-50/30 shadow-sm">
-                          <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em] mb-0.5">
-                            Missed Focus
-                          </p>
-                          <p className="text-[11px] font-black text-rose-600 leading-tight uppercase tracking-tight">
-                            {activeVolunteer.missedTasks}
-                          </p>
-                        </div>
-                      </div>
-                    </section>
-                  )}
-
-                  {/* Activity & History Card */}
-                  <section className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-sm bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-600 shadow-sm shrink-0">
-                          <ClipboardList size={16} strokeWidth={2.5} />
-                        </div>
-                        <div>
-                          <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest leading-none">
-                            Assignments & Activity
-                          </h4>
-                          <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tight mt-1 leading-none">
-                            Task Lifecycle Overview
-                          </p>
-                        </div>
-                      </div>
-                      <div className="px-2.5 py-1 rounded-sm bg-emerald-500 border border-emerald-600/20 flex items-center gap-1.5 shadow-sm ring-1 ring-emerald-500/10">
-                        <span className="text-[8px] font-black text-white uppercase tracking-tighter px-0.5">
-                          2 ACTIVE
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="bg-white px-4 py-1.5 rounded-sm border border-slate-200 shadow-sm divide-y divide-slate-50/50">
-                      <div className="flex justify-between items-center py-2">
-                        <span className="text-[8px] font-black uppercase tracking-[0.15em] text-slate-400">
-                          Current Load
-                        </span>
-                        <span className="text-[10px] font-black text-slate-800 uppercase tracking-widest">
-                          2 Ongoing Tasks
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center py-2">
-                        <span className="text-[8px] font-black uppercase tracking-[0.15em] text-slate-400">
-                          Lifetime Total
-                        </span>
-                        <span className="text-[10px] font-black text-slate-800 uppercase tracking-widest">
-                          {activeVolunteer.tasksCompleted} Tasks
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center py-2">
-                        <span className="text-[8px] font-black uppercase tracking-[0.15em] text-slate-400">
-                          Last Active
-                        </span>
-                        <span className="text-[10px] font-black text-slate-800 uppercase tracking-widest">
-                          {activeVolunteer.lastActive || "Never"}
-                        </span>
-                      </div>
-                      <div className="py-2">
-                        <button className="text-[8px] font-black text-purple-600 hover:underline uppercase tracking-widest flex items-center gap-1">
-                          View Full History <Plus size={10} />
-                        </button>
-                      </div>
-                    </div>
-                  </section>
-
-                  {/* System Metadata Card */}
-                  {!isEditMode && (
-                    <section className="space-y-3">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-sm bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-500 shadow-sm shrink-0">
-                          <Settings size={16} strokeWidth={2.5} />
-                        </div>
-                        <div>
-                          <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest leading-none">
-                            System Metadata
-                          </h4>
-                          <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight mt-1 leading-none">
-                            Backend Configuration & Logs
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="bg-white p-4 rounded-sm border border-slate-200 shadow-sm space-y-3">
-                        <div className="flex justify-between items-center py-1">
-                          <span className="text-[8px] font-black uppercase tracking-[0.2em] text-slate-400">
-                            Availability
-                          </span>
-                          <span className="text-[11px] font-black text-slate-800 uppercase tracking-widest">
-                            GLOBAL PERMISSIONED
-                          </span>
-                        </div>
-
-                        <div className="mt-3">
-                          <button
-                            onClick={onSuspenseOpen}
-                            className={`w-full px-4 py-3 ${activeVolunteer.isSuspended ? "bg-rose-500 hover:bg-rose-600 shadow-rose-200" : "bg-[#22c55e] hover:bg-[#1ea34a] shadow-emerald-200"} text-white rounded-sm text-[10px] font-black uppercase tracking-[0.2em] transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2`}
-                          >
-                            {activeVolunteer.isSuspended ? (
-                              <>
-                                <RotateCcw size={14} />
-                                REACTIVATE VOLUNTEER
-                                {activeVolunteer.suspensionEndTime && (
-                                  <span className="ml-2 opacity-80 font-bold border-l border-white/30 pl-2">
-                                    <SuspensionTimer
-                                      endTime={
-                                        activeVolunteer.suspensionEndTime
-                                      }
-                                    />
-                                  </span>
-                                )}
-                              </>
-                            ) : (
-                              <>
-                                <AlertTriangle size={14} />
-                                SUSPEND VOLUNTEER
-                              </>
-                            )}
-                          </button>
-                        </div>
-                        {onLeaveToggle && !activeVolunteer.isSuspended && (
-                          <div className="flex items-center gap-2 px-3 py-2 bg-amber-50 text-amber-600 rounded-sm border border-amber-100 mt-2">
-                            <AlertCircle size={14} className="shrink-0" />
-                            <span className="text-[9px] font-black uppercase">
-                              On Leave – Assignments Locked
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </section>
-                  )}
-
-                  {/* Operational Control Section */}
-                  <section className="space-y-3">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-sm bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm shrink-0">
-                        <Activity size={16} strokeWidth={2.5} />
-                      </div>
-                      <div>
-                        <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest leading-none">
-                          Operational Control
-                        </h4>
-                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight mt-1 leading-none">
-                          Duty Management & Scope
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-1.5">
-                      {isEditMode ? (
-                        <div className="col-span-2 bg-white p-4 rounded-sm border border-slate-200 shadow-sm space-y-4">
-                          <div className="space-y-3">
-                            <label className="text-[8px] font-black uppercase text-slate-400 tracking-[0.2em]">
-                              Weekly Capacity
-                            </label>
-                            <div className="flex items-center gap-4">
-                              <input
-                                type="range"
-                                min={0}
-                                max={60}
-                                value={weeklyHours}
-                                onChange={handleHoursChange}
-                                className="flex-1 h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#22c55e]"
-                              />
-                              <span className="text-[10px] font-black text-[#22c55e] min-w-[60px] uppercase">
-                                {weeklyHours}h/wk
-                              </span>
-                            </div>
-                          </div>
-                          <div className="flex items-center justify-between p-2.5 bg-slate-50 rounded-sm border border-slate-100">
-                            <div>
-                              <p className="text-[9px] font-black uppercase text-slate-400 tracking-[0.2em]">
-                                Duty Status
-                              </p>
-                              <p className="text-xs font-bold text-slate-700 mt-0.5">
-                                {onLeaveToggle ? "Active Duty" : "On Leave"}
-                              </p>
-                            </div>
-                            <button
-                              onClick={toggleOnLeave}
-                              className={`p-1 rounded-sm transition-all ${onLeaveToggle ? "bg-emerald-100 text-[#22c55e]" : "bg-rose-100 text-rose-600"}`}
-                            >
-                              {onLeaveToggle ? (
-                                <ToggleRight size={20} />
-                              ) : (
-                                <ToggleLeft size={20} />
-                              )}
-                            </button>
-                          </div>
-                        </div>
-                      ) : (
-                        <>
-                          <div className="bg-white p-2.5 rounded-sm border border-slate-200 transition-all duration-300 border-b-2 border-b-transparent hover:border-b-indigo-500 hover:bg-slate-50/30 shadow-sm">
-                            <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em] mb-0.5">
-                              Weekly Capacity
-                            </p>
-                            <p className="text-[11px] font-black text-slate-900 leading-tight uppercase tracking-tight">
-                              {weeklyHours}h/wk
-                            </p>
-                          </div>
-                          <div className="bg-white p-2.5 rounded-sm border border-slate-200 transition-all duration-300 border-b-2 border-b-transparent hover:border-b-[#22c55e] hover:bg-slate-50/30 shadow-sm">
-                            <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em] mb-0.5">
-                              Duty Status
-                            </p>
-                            <p
-                              className={`text-[11px] font-black leading-tight uppercase tracking-tight ${onLeaveToggle ? "text-[#22c55e]" : "text-rose-500"}`}
-                            >
-                              {onLeaveToggle ? "Active Duty" : "On Leave"}
-                            </p>
-                          </div>
-                        </>
-                      )}
-                      <div className="col-span-2">
-                        {isEditMode ? (
-                          <MultiSelectDropdown
-                            label="Areas"
-                            value={selectedVolunteerAreas}
-                            onChange={setSelectedVolunteerAreas}
-                            options={VOLUNTEER_AREAS_OPTIONS}
-                            placeholder="Select volunteer areas"
-                          />
-                        ) : (
-                          <div className="bg-white p-2.5 rounded-sm border border-slate-200 transition-all duration-300 border-b-2 border-b-transparent hover:border-b-indigo-500 hover:bg-slate-50/30 shadow-sm">
-                            <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1.5">
-                              Active Volunteer Zones
-                            </p>
-                            <div className="grid grid-cols-2 gap-1.5">
-                              {activeVolunteer.volunteerAreas.map(
-                                (area, index) => (
-                                  <span
-                                    key={index}
-                                    className="px-2 py-1 rounded-sm text-[8px] font-black bg-emerald-50 text-[#22c55e] border border-emerald-100 uppercase tracking-widest text-center"
-                                  >
-                                    {area}
-                                  </span>
-                                ),
-                              )}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                      <div className="col-span-2">
-                        {isEditMode ? (
-                          <MultiSelectDropdown
-                            label="Allowed Task Types"
-                            value={selectedTaskTypes}
-                            onChange={setSelectedTaskTypes}
-                            options={TASK_TYPES_OPTIONS}
-                            placeholder="Select task types"
-                          />
-                        ) : (
-                          <div className="bg-white p-2.5 rounded-sm border border-slate-200 transition-all duration-300 border-b-2 border-b-transparent hover:border-b-[#22c55e] hover:bg-slate-50/30 shadow-sm">
-                            <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em] mb-0.5">
-                              Authorized Operations
-                            </p>
-                            <p className="text-[11px] font-black text-slate-900 leading-tight uppercase tracking-tight truncate">
-                              {activeVolunteer.allowedTaskTypes.join(", ")}
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </section>
-
-                  {/* Connectivity Section (Contact & Location) */}
-                  <section className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-sm bg-emerald-50 border border-emerald-100 flex items-center justify-center text-[#22c55e] shadow-sm shrink-0">
-                          <Phone size={16} strokeWidth={2.5} />
-                        </div>
-                        <div>
-                          <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest leading-none">
-                            Connectivity
-                          </h4>
-                          <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight mt-1 leading-none">
-                            Communication Channels
-                          </p>
-                        </div>
-                      </div>
-                      <div className="px-2.5 py-1 rounded-sm bg-white border border-slate-100 flex items-center gap-1.5 shadow-sm ring-2 ring-slate-50/50">
-                        <div className="w-1.5 h-1.5 rounded-full bg-[#22c55e]" />
-                        <span className="text-[9px] font-black text-slate-500 uppercase tracking-tighter">
-                          VERIFIED DATA
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-1.5">
-                      {isEditMode ? (
-                        <div className="bg-white p-2.5 rounded-sm border border-slate-200 shadow-sm space-y-2.5">
-                          <ReusableInput
-                            label="Contact Number"
-                            value={editablePhone}
-                            onChange={setEditablePhone}
-                            placeholder="+91-XXXXX-XXXXX"
-                          />
-                          <ReusableInput
-                            label="Res. Address"
-                            value={editableAddress}
-                            onChange={setEditableAddress}
-                            placeholder="Enter residential address"
-                          />
-                          <ReusableInput
-                            label="Emergency Contact"
-                            value={editableEmergencyPhone}
-                            onChange={setEditableEmergencyPhone}
-                            placeholder="+91-XXXXX-XXXXX"
-                          />
-                        </div>
-                      ) : (
-                        <>
-                          {[
-                            {
-                              Icon: Phone,
-                              label: "VERIFIED CONTACT LINE",
-                              value: activeVolunteer.phone,
-                              color: "emerald",
-                              bg: "bg-emerald-50/50",
-                            },
-                            {
-                              Icon: User,
-                              label: "EMERGENCY LINE",
-                              value: activeVolunteer.emergencyPhone,
-                              color: "amber",
-                              bg: "bg-amber-50/50",
-                            },
-                            {
-                              Icon: Car,
-                              label: "RESIDENTIAL ADDRESS",
-                              value: activeVolunteer.address,
-                              color: "indigo",
-                              bg: "bg-indigo-50/50",
-                            },
-                          ].map((item, i) => (
-                            <div
-                              key={i}
-                              className="group bg-white p-2 rounded-sm border border-slate-200 transition-all duration-300 border-b-2 border-b-transparent hover:border-b-[#22c55e] hover:bg-slate-50/30 shadow-sm"
-                            >
-                              <div className="flex items-center gap-3">
-                                <div
-                                  className={`w-8 h-8 rounded-sm ${item.bg} flex items-center justify-center text-${item.color}-600 shrink-0 group-hover:scale-105 transition-transform duration-500`}
-                                >
-                                  <item.Icon size={16} strokeWidth={2.5} />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.15em] mb-1 leading-none">
-                                    {item.label}
-                                  </p>
-                                  <p className="text-[11px] font-black text-slate-800 leading-tight truncate uppercase tracking-tight mt-1">
-                                    {item.value}
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                        </>
-                      )}
-                    </div>
-                  </section>
-
-                  {/* Logistics Section */}
-                  <section className="space-y-3">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-sm bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 shadow-sm shrink-0">
-                        <Car size={16} strokeWidth={2.5} />
-                      </div>
-                      <div>
-                        <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest leading-none">
-                          Vehicle & Logistics
-                        </h4>
-                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight mt-1 leading-none">
-                          Transport Infrastructure
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-1.5">
-                      {isEditMode ? (
-                        <div className="col-span-2 bg-white p-2.5 rounded-sm border border-slate-200 shadow-sm space-y-2.5">
-                          <ReusableInput
-                            label="Vehicle Type"
-                            value={editableVehicle}
-                            onChange={setEditableVehicle}
-                            placeholder="e.g. Swift (Car)"
-                          />
-                          <ReusableInput
-                            label="Vehicle Number"
-                            value={editableVehicleNumber}
-                            onChange={setEditableVehicleNumber}
-                            placeholder="e.g. TN 01 AB 1234"
-                          />
-                          <div className="flex items-center justify-between p-2.5 bg-slate-50 rounded-sm border border-slate-100">
-                            <span className="text-[9px] font-black uppercase text-slate-400 tracking-[0.2em]">
-                              Fuel Eligibility
-                            </span>
-                            <button
-                              onClick={() => {}}
-                              className={`px-3 py-1 rounded-sm text-[9px] font-black uppercase tracking-widest transition-all ${activeVolunteer.fuelEligibility ? "bg-[#22c55e]/10 text-[#22c55e]" : "bg-slate-100 text-slate-400"}`}
-                            >
-                              {activeVolunteer.fuelEligibility
-                                ? "Approved"
-                                : "Authorize"}
-                            </button>
-                          </div>
-                        </div>
-                      ) : (
-                        <>
-                          <div className="bg-white p-2.5 rounded-sm border border-slate-200 transition-all duration-300 border-b-2 border-b-transparent hover:border-b-[#22c55e] hover:bg-slate-50/30 shadow-sm">
-                            <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em] mb-0.5">
-                              Vehicle Class
-                            </p>
-                            <p className="text-[11px] font-black text-slate-900 leading-tight truncate uppercase tracking-tight">
-                              {activeVolunteer.vehicle}
-                            </p>
-                          </div>
-                          <div className="bg-white p-2.5 rounded-sm border border-slate-200 transition-all duration-300 border-b-2 border-b-transparent hover:border-b-indigo-500 hover:bg-slate-50/30 shadow-sm">
-                            <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em] mb-0.5">
-                              Plate Number
-                            </p>
-                            <p className="text-[11px] font-black text-slate-900 leading-tight truncate uppercase tracking-tight">
-                              {activeVolunteer.license}
-                            </p>
-                          </div>
-                          <div className="col-span-2 flex items-center justify-between p-2.5 bg-white rounded-sm border border-slate-200 transition-all duration-300 border-b-2 border-b-transparent hover:border-b-[#22c55e] shadow-sm">
-                            <span className="text-[8px] font-black uppercase text-slate-400 tracking-[0.2em]">
-                              Fuel Refill Eligibility
-                            </span>
-                            <span
-                              className={`text-[9px] font-black ${activeVolunteer.fuelEligibility ? "text-[#22c55e]" : "text-slate-400"} uppercase tracking-widest`}
-                            >
-                              {activeVolunteer.fuelEligibility
-                                ? "Corporate Verified"
-                                : "Restricted Access"}
-                            </span>
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  </section>
-                </div>
-              </div>
-            )}
-          </DrawerBody>
-
-          {/* Footer Actions */}
-          <div className="p-4 bg-white border-t border-slate-200 sticky bottom-0 z-30 flex items-center gap-3 shrink-0">
-            {isEditMode ? (
-              <>
-                <button
-                  onClick={() => setIsEditMode(false)}
-                  className="flex-1 px-6 py-3 text-[10px] font-black text-slate-400 hover:text-slate-600 uppercase tracking-widest transition-colors flex items-center justify-center gap-2"
-                >
-                  <RotateCcw size={14} />
-                  Cancel
-                </button>
-                <ReusableButton
-                  variant="primary"
-                  className="flex-1 !bg-[#22c55e] hover:!bg-[#1ea34a] px-8 py-3 !rounded-sm text-[10px] font-black uppercase tracking-widest shadow-lg shadow-[#22c55e]/20"
-                  onClick={() => {
-                    console.log("Save Changes", {
-                      ...activeVolunteer,
-                      zone: editablePrimaryZone,
-                      volunteerAreas: selectedVolunteerAreas,
-                      allowedTaskTypes: selectedTaskTypes,
-                      phone: editablePhone,
-                      address: editableAddress,
-                      emergencyPhone: editableEmergencyPhone,
-                      vehicle: editableVehicle,
-                      license: editableVehicleNumber,
-                      weeklyHours,
-                      onLeave: onLeaveToggle,
-                    });
-                    setIsEditMode(false);
-                  }}
-                  startContent={<Save size={14} />}
-                >
-                  Save Changes
-                </ReusableButton>
-              </>
-            ) : (
-              <>
-                <button
-                  onClick={onClose}
-                  className="flex-1 px-6 py-4 text-[11px] font-black text-slate-400 hover:text-slate-600 uppercase tracking-[0.2em] transition-colors"
-                >
-                  Dismiss
-                </button>
-                <div className="flex-[2] relative">
+        footer={
+          activeVolunteer && (
+            <div className="flex items-center gap-3 w-full">
+              {isEditMode ? (
+                <>
+                  <button
+                    onClick={() => setIsEditMode(false)}
+                    className="flex-1 px-6 py-3 text-[10px] font-black text-slate-400 hover:text-slate-600 uppercase tracking-widest transition-colors flex items-center justify-center gap-2"
+                  >
+                    <RotateCcw size={14} />
+                    Cancel
+                  </button>
                   <ReusableButton
                     variant="primary"
-                    className="w-full !bg-[#22c55e] hover:!bg-[#1ea34a] px-8 py-4 !rounded-sm text-[10px] font-black uppercase tracking-[0.15em] shadow-xl shadow-emerald-200/50 transition-all active:scale-95 flex items-center justify-center gap-2"
-                    onClick={() => setIsEditMode(true)}
+                    className="flex-1 !bg-hf-green hover:!bg-emerald-600 px-8 py-3 !rounded-sm text-[10px] font-black uppercase tracking-widest shadow-lg shadow-emerald-200/50"
+                    onClick={() => {
+                      setIsEditMode(false);
+                    }}
+                    startContent={<Save size={14} />}
                   >
-                    <div className="p-1 rounded-full bg-white/20">
-                      <Settings size={12} className="text-white" />
-                    </div>
-                    EDIT PROFILE
+                    Save Changes
                   </ReusableButton>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={() => setIsDrawerOpen(false)}
+                    className="flex-1 px-6 py-4 text-[11px] font-black text-slate-400 hover:text-slate-600 uppercase tracking-[0.2em] transition-colors"
+                  >
+                    Dismiss
+                  </button>
+                  <div className="flex-[2] relative">
+                    <ReusableButton
+                      variant="primary"
+                      className="w-full !bg-hf-green hover:!bg-emerald-600 px-8 py-4 !rounded-sm text-[10px] font-black uppercase tracking-[0.15em] shadow-xl shadow-emerald-200/50 transition-all active:scale-95 flex items-center justify-center gap-2"
+                      onClick={() => setIsEditMode(true)}
+                    >
+                      <div className="p-1 rounded-full bg-white/20">
+                        <Settings size={12} className="text-white" />
+                      </div>
+                      EDIT PROFILE
+                    </ReusableButton>
+                  </div>
+                </>
+              )}
+            </div>
+          )
+        }
+      >
+        {activeVolunteer && (
+          <div className="flex flex-col relative z-10 text-start pb-8 px-3 sm:px-6">
+            {/* Immersive Background Decorations */}
+            <div className="absolute inset-0 pointer-events-none">
+              <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-hf-green/5 blur-[120px] rounded-sm -mr-48 -mt-48" />
+              <div className="absolute top-1/2 left-0 w-[400px] h-[400px] bg-emerald-500/5 blur-[100px] rounded-sm -ml-32" />
+            </div>
+
+            {/* Elite Hero Section */}
+            <div className="pt-4 pb-1.5 flex flex-col items-center">
+              <div className="relative mb-4 group">
+                <div className="absolute inset-[-10px] bg-hf-green/5 blur-2xl rounded-sm opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                <div className="relative w-24 h-24 p-1.5 rounded-sm bg-emerald-50 transform transition-transform duration-500 group-hover:scale-105">
+                  <div className="w-full h-full rounded-sm bg-hf-green flex items-center justify-center relative overflow-hidden">
+                    <span className="text-4xl font-black text-white italic">
+                      {activeVolunteer.name.charAt(0)}
+                    </span>
+                  </div>
                 </div>
-              </>
-            )}
+                {/* Status Float */}
+                <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 bg-white p-1 rounded-sm border border-slate-100 ring-2 ring-slate-50 shadow-sm z-20 whitespace-nowrap">
+                  <div className="flex items-center gap-1 px-2 py-0.5 bg-hf-green/10 rounded-sm">
+                    <div className="w-1.5 h-1.5 rounded-sm bg-hf-green animate-pulse" />
+                    <span className="text-[9px] font-black text-hf-green uppercase tracking-tighter">
+                      Live Portal
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="text-center space-y-3 max-w-sm">
+                <div className="space-y-0.5 w-full flex flex-col items-center">
+                  <h3 className="text-2xl font-black text-slate-900 leading-[1.05] tracking-tight">
+                    {activeVolunteer.name}
+                  </h3>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
+                    Global Identifier: #VOL-
+                    {activeVolunteer.id.toString().padStart(4, "0")}
+                  </p>
+                </div>
+                <div className="flex items-center justify-center gap-2">
+                  {getStatusBadge(activeVolunteer.status)}
+                </div>
+              </div>
+            </div>
+
+            <div className="p-0 space-y-8 relative z-10">
+              {/* Identity & Timeline Block */}
+              <section className="space-y-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-sm bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-500 shadow-sm shrink-0">
+                    <User size={16} strokeWidth={2.5} />
+                  </div>
+                  <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest">
+                    Identity & Account
+                  </h4>
+                </div>
+                <div className="bg-white px-4 py-1.5 rounded-sm border border-slate-200 shadow-sm divide-y divide-slate-50/50">
+                  <div className="flex justify-between items-center py-2">
+                    <span className="text-[8px] font-black uppercase text-slate-400">
+                      Verification
+                    </span>
+                    <span
+                      className={`text-[10px] font-black ${activeVolunteer.verificationStatus === "Verified" ? "text-emerald-600" : "text-amber-600"} uppercase`}
+                    >
+                      {activeVolunteer.verificationStatus}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center py-2">
+                    <span className="text-[8px] font-black uppercase text-slate-400">
+                      Onboarded
+                    </span>
+                    <span className="text-[10px] font-black text-slate-800 uppercase">
+                      {activeVolunteer.createdDate}
+                    </span>
+                  </div>
+                </div>
+              </section>
+
+              {/* Performance Metrics Section */}
+              {!isEditMode && (
+                <section className="space-y-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-sm bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shadow-sm shrink-0">
+                      <BarChart size={16} strokeWidth={2.5} />
+                    </div>
+                    <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest">
+                      Performance Metrics
+                    </h4>
+                  </div>
+                  <div className="grid grid-cols-1 min-[450px]:grid-cols-2 gap-1.5">
+                    <div className="bg-white p-3 rounded-sm border border-slate-200 shadow-sm">
+                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                        Success Rate
+                      </p>
+                      <p className="text-[11px] font-black text-slate-900 uppercase">
+                        92%
+                      </p>
+                    </div>
+                    <div className="bg-white p-3 rounded-sm border border-slate-200 shadow-sm">
+                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                        Total Tasks
+                      </p>
+                      <p className="text-[11px] font-black text-slate-900 uppercase">
+                        {activeVolunteer.totalTasks}
+                      </p>
+                    </div>
+                  </div>
+                </section>
+              )}
+
+              {/* Operational Control block */}
+              <section className="space-y-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-sm bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-600 shadow-sm shrink-0">
+                    <Activity size={16} strokeWidth={2.5} />
+                  </div>
+                  <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest">
+                    Operational Control
+                  </h4>
+                </div>
+                <div className="grid grid-cols-1 min-[450px]:grid-cols-2 gap-1.5">
+                  {isEditMode ? (
+                    <div className="col-span-2 space-y-4 bg-white p-4 rounded-sm border border-slate-200 shadow-sm">
+                      <div className="space-y-3">
+                        <label className="text-[8px] font-black uppercase text-slate-400 tracking-widest">
+                          Weekly Capacity
+                        </label>
+                        <div className="flex items-center gap-4">
+                          <input
+                            type="range"
+                            min={0}
+                            max={60}
+                            value={weeklyHours}
+                            onChange={handleHoursChange}
+                            className="flex-1 h-1.5 bg-slate-100 rounded-sm appearance-none accent-hf-green"
+                          />
+                          <span className="text-[10px] font-black text-hf-green min-w-[50px]">
+                            {weeklyHours}h/wk
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between p-3 bg-slate-50 border border-slate-100 rounded-sm">
+                        <span className="text-[8px] font-black uppercase text-slate-400 tracking-widest">
+                          Duty Status
+                        </span>
+                        <button
+                          onClick={toggleOnLeave}
+                          className={`p-1 transition-all ${onLeaveToggle ? "text-hf-green" : "text-rose-500"}`}
+                        >
+                          {onLeaveToggle ? (
+                            <ToggleRight size={24} />
+                          ) : (
+                            <ToggleLeft size={24} />
+                          )}
+                        </button>
+                      </div>
+                      <MultiSelectDropdown
+                        label="Active Areas"
+                        value={selectedVolunteerAreas}
+                        onChange={setSelectedVolunteerAreas}
+                        options={VOLUNTEER_AREAS_OPTIONS}
+                      />
+                      <MultiSelectDropdown
+                        label="Task Authority"
+                        value={selectedTaskTypes}
+                        onChange={setSelectedTaskTypes}
+                        options={TASK_TYPES_OPTIONS}
+                      />
+                    </div>
+                  ) : (
+                    <>
+                      <div className="bg-white p-3 rounded-sm border border-slate-200 shadow-sm">
+                        <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                          Weekly Load
+                        </p>
+                        <p className="text-[11px] font-black text-slate-900 uppercase">
+                          {weeklyHours}h/wk
+                        </p>
+                      </div>
+                      <div className="bg-white p-3 rounded-sm border border-slate-200 shadow-sm">
+                        <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                          Status
+                        </p>
+                        <p
+                          className={`text-[11px] font-black uppercase ${onLeaveToggle ? "text-hf-green" : "text-rose-500"}`}
+                        >
+                          {onLeaveToggle ? "Active" : "On Leave"}
+                        </p>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </section>
+
+              {/* Connectivity and Logistics */}
+              <section className="space-y-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-sm bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 shadow-sm shrink-0">
+                    <Phone size={16} strokeWidth={2.5} />
+                  </div>
+                  <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest">
+                    Connectivity & Logistics
+                  </h4>
+                </div>
+                <div className="grid grid-cols-1 gap-1.5">
+                  {isEditMode ? (
+                    <div className="bg-white p-4 rounded-sm border border-slate-200 shadow-sm space-y-4">
+                      <ReusableInput
+                        label="Phone Number"
+                        value={editablePhone}
+                        onChange={setEditablePhone}
+                      />
+                      <ReusableInput
+                        label="Address"
+                        value={editableAddress}
+                        onChange={setEditableAddress}
+                      />
+                      <ReusableInput
+                        label="Emergency Contact"
+                        value={editableEmergencyPhone}
+                        onChange={setEditableEmergencyPhone}
+                      />
+                      <ReusableInput
+                        label="Vehicle Model"
+                        value={editableVehicle}
+                        onChange={setEditableVehicle}
+                      />
+                      <ReusableInput
+                        label="Vehicle Number"
+                        value={editableVehicleNumber}
+                        onChange={setEditableVehicleNumber}
+                      />
+                    </div>
+                  ) : (
+                    <div className="bg-white p-1 rounded-sm border border-slate-200 shadow-sm divide-y divide-slate-100">
+                      <div className="p-3">
+                        <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                          Contact Details
+                        </p>
+                        <p className="text-[11px] font-black text-slate-800 uppercase">
+                          {activeVolunteer.phone}
+                        </p>
+                        <p className="text-[11px] font-black text-slate-500 uppercase mt-1">
+                          {activeVolunteer.address}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </section>
+
+              {/* Action - Suspension */}
+              {!isEditMode && (
+                <section className="pb-6">
+                  <button
+                    onClick={onSuspenseOpen}
+                    className={`w-full px-4 py-3 ${activeVolunteer.isSuspended ? "bg-rose-500 hover:bg-rose-600" : "bg-hf-green hover:bg-emerald-600"} text-white rounded-sm text-[10px] font-black uppercase tracking-[0.2em] transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2`}
+                  >
+                    {activeVolunteer.isSuspended ? (
+                      <RotateCcw size={14} />
+                    ) : (
+                      <AlertTriangle size={14} />
+                    )}
+                    {activeVolunteer.isSuspended
+                      ? "REACTIVATE VOLUNTEER"
+                      : "SUSPEND VOLUNTEER"}
+                  </button>
+                </section>
+              )}
+            </div>
           </div>
-        </DrawerContent>
-      </Drawer>
+        )}
+      </ResuableDrawer>
 
       {/* Suspension Confirmation Modal */}
       <Modal

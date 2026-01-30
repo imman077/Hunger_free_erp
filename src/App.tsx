@@ -16,6 +16,7 @@ import AdminDashboard from "./modules/admin/pages/dashboard/Dashboard";
 import PointsTiersView from "./modules/admin/pages/rewards/components/PointsTiersView";
 import RedemptionsView from "./modules/admin/pages/rewards/components/RedemptionsView";
 import RewardsConfig from "./modules/admin/pages/rewards/components/RewardsConfig";
+import MilestonesConfig from "./modules/admin/pages/rewards/components/MilestonesConfig";
 import RewardsPage from "./modules/admin/pages/rewards/RewardsPage";
 import CreateDonor from "./modules/admin/pages/users/CreateDonor";
 import CreateNgo from "./modules/admin/pages/users/CreateNgo";
@@ -110,6 +111,7 @@ function App() {
               <Route path="points" element={<PointsTiersView />} />
               <Route path="redemptions" element={<RedemptionsView />} />
               <Route path="catalog" element={<RewardsConfig />} />
+              <Route path="milestones" element={<MilestonesConfig />} />
             </Route>
 
             {/* Settings Section */}

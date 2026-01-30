@@ -94,7 +94,7 @@ const ResuableDropdown: React.FC<ResuableDropdownProps> = ({
           } ${align === "right" ? "justify-end" : ""}`}
         >
           <label
-            className="text-[10px] font-bold uppercase tracking-widest block"
+            className="text-[8px] font-black uppercase tracking-widest block"
             style={{ color: "var(--text-muted)" }}
           >
             {label} {required && <span style={{ color: "#ef4444" }}>*</span>}
@@ -125,7 +125,7 @@ const ResuableDropdown: React.FC<ResuableDropdownProps> = ({
             color: "var(--text-primary)",
             borderColor: "var(--border-color)",
           }}
-          className={`w-full flex items-center justify-between border px-3 py-2.5 rounded-none text-xs font-semibold transition-all ${
+          className={`w-full flex items-center justify-between border px-3 py-2 rounded-none text-[11px] font-bold transition-all ${
             isOpen ? "ring-1 ring-[#22c55e]" : ""
           } ${
             disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
