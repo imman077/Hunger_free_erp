@@ -951,34 +951,48 @@ const DonorRewards = () => {
               </div>
             </div>
           ) : (
-            <div className="flex-1 space-y-6 px-4 sm:px-6 pb-8">
+            <div className="flex-1 space-y-6 px-6 py-2">
               {/* Reward Summary Card */}
-              <div className="bg-[#fbfcff] p-6 rounded-sm border border-slate-200 border-dashed relative overflow-hidden">
-                <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">
-                  Reward Details
-                </p>
-                <div className="flex items-end justify-between">
-                  <div className="text-start">
-                    <div className="flex items-baseline gap-1">
+              <div className="bg-[#f8fafc] rounded-md p-6 border border-slate-200/60 relative overflow-hidden">
+                {/* Subtle Decorative Accent */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/[0.03] rounded-full blur-3xl -mr-16 -mt-16" />
+
+                <div className="relative z-10">
+                  <div className="mb-6">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">
+                      Reward Intelligence
+                    </p>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-6">
+                    <div className="space-y-1.5">
                       <h4 className="text-3xl font-black text-slate-900 tracking-tighter uppercase leading-none">
                         {selectedReward?.amount ||
                           selectedReward?.name ||
                           "REWARD"}
                       </h4>
+                      <div className="space-y-3">
+                        <p className="text-[11px] font-bold text-slate-400 tracking-widest leading-tight max-w-[280px]">
+                          {selectedReward?.amount
+                            ? selectedReward?.name
+                            : selectedReward?.desc || "System Optimized Reward"}
+                        </p>
+                        <div className="inline-flex items-center bg-[#22c55e] px-2 py-1 rounded-sm shadow-sm">
+                          <span className="text-[8px] font-black text-white uppercase tracking-[0.15em] leading-none">
+                            Verified Reward
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                    <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest mt-2">
-                      {selectedReward?.amount
-                        ? selectedReward?.name
-                        : selectedReward?.desc || "Item Reward"}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-2xl font-black text-slate-900 tabular-nums leading-none">
-                      {selectedReward?.points.toLocaleString()}
-                    </p>
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-1">
-                      PTS
-                    </p>
+
+                    <div className="shrink-0 bg-white border border-slate-200 px-5 py-3 rounded-sm shadow-sm text-right min-w-[120px]">
+                      <span className="text-2xl font-black text-slate-800 tabular-nums leading-none block">
+                        {selectedReward?.points.toLocaleString()}
+                      </span>
+                      <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mt-1.5 block">
+                        Pts Required
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>

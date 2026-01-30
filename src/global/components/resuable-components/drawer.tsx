@@ -77,14 +77,23 @@ const ResuableDrawer: React.FC<ResuableDrawerProps> = ({
       >
         {() => (
           <>
-            <DrawerHeader className="flex flex-col gap-0.5 px-3 py-3.5">
-              <div className="flex items-center justify-between">
+            <DrawerHeader className="px-6 py-6 flex flex-row items-center justify-between gap-4">
+              <div className="flex flex-col gap-1.5">
                 <h2
-                  className="text-lg font-black uppercase tracking-tight"
+                  className="text-[22px] font-black uppercase tracking-tight leading-[1.1]"
                   style={{ color: "var(--text-primary)" }}
                 >
                   {title}
                 </h2>
+                {subtitle && (
+                  <span className="text-[11px] font-black tracking-[0.25em] text-slate-400 leading-none ml-1">
+                    {subtitle}
+                  </span>
+                )}
+              </div>
+
+              <div className="flex items-center gap-2">
+                {headerExtra}
                 <button
                   onClick={onClose}
                   className="p-1.5 hover:bg-slate-100 rounded-sm transition-colors"
@@ -93,23 +102,13 @@ const ResuableDrawer: React.FC<ResuableDrawerProps> = ({
                   <X size={18} />
                 </button>
               </div>
-              {(subtitle || headerExtra) && (
-                <div className="flex items-center justify-between">
-                  {subtitle && (
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                      {subtitle}
-                    </span>
-                  )}
-                  {headerExtra}
-                </div>
-              )}
             </DrawerHeader>
 
             <DrawerBody
               className="py-1 px-0 overflow-y-auto no-scrollbar flex-1"
               style={{ backgroundColor: "var(--bg-secondary)" }}
             >
-              <div className="py-5">{children}</div>
+              <div className="">{children}</div>
             </DrawerBody>
 
             {footer && (

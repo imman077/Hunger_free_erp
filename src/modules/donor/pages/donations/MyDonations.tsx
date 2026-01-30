@@ -140,8 +140,8 @@ const MyDonations = () => {
   };
 
   return (
-    <div className="p-8 space-y-12 max-w-7xl mx-auto">
-      <div className="flex flex-col md:flex-row justify-between items-center md:items-end gap-6 px-1">
+    <div className="w-full space-y-8 p-4 md:p-6 lg:p-8">
+      <div className="flex flex-col md:flex-row justify-between items-center md:items-end gap-6">
         <div className="text-start space-y-2">
           <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-slate-900 leading-none">
             My Donations
@@ -161,7 +161,7 @@ const MyDonations = () => {
 
       {/* Donation History */}
       {donationHistory.length > 0 ? (
-        <div className="space-y-10 max-w-5xl mx-auto w-full">
+        <div className="space-y-6 w-full">
           <div className="text-center relative">
             <div
               className="absolute inset-0 flex items-center"
@@ -225,7 +225,7 @@ const MyDonations = () => {
         size="md"
       >
         {selectedDonation && (
-          <div className="space-y-6 pb-10">
+          <div className="space-y-6 px-5 md:px-7 pb-10">
             {/* Hero Section */}
             <div className="bg-white p-5 rounded-md border border-slate-100 shadow-sm space-y-3">
               <div className="flex items-start justify-between">
@@ -271,10 +271,10 @@ const MyDonations = () => {
                         <div className="h-1.5 w-1.5 rounded-full bg-[#22c55e]" />
                       )}
                     </div>
-                    <div className="flex flex-1 justify-between items-center bg-white p-2.5 rounded-md border border-slate-100 shadow-sm hover:border-[#22c55e]/30 transition-all">
-                      <div>
+                    <div className="flex flex-1 justify-between items-center gap-3 bg-white p-2.5 rounded-md border border-slate-100 shadow-sm hover:border-[#22c55e]/30 transition-all min-w-0">
+                      <div className="min-w-0">
                         <p
-                          className={`text-[11px] font-black uppercase tracking-wider ${item.completed ? "text-slate-900" : "text-slate-400"}`}
+                          className={`text-[11px] font-black uppercase tracking-wider truncate mb-0.5 ${item.completed ? "text-slate-900" : "text-slate-400"}`}
                         >
                           {item.status}
                         </p>
@@ -282,7 +282,7 @@ const MyDonations = () => {
                           {item.date}
                         </p>
                       </div>
-                      <span className="text-[10px] font-black text-[#22c55e] tabular-nums">
+                      <span className="text-[10px] font-black text-[#22c55e] tabular-nums shrink-0">
                         {item.time}
                       </span>
                     </div>
@@ -324,16 +324,16 @@ const MyDonations = () => {
                 <h4 className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">
                   Assigned Personnel
                 </h4>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-white border border-slate-200 flex items-center justify-center text-[#22c55e] font-black text-xl shadow-sm">
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                  <div className="flex items-center gap-4 min-w-0">
+                    <div className="w-12 h-12 rounded-full bg-white border border-slate-200 flex items-center justify-center text-[#22c55e] font-black text-xl shadow-sm shrink-0">
                       {selectedDonation.volunteer.name.charAt(0)}
                     </div>
-                    <div className="space-y-0.5">
-                      <p className="text-[12px] font-black text-slate-900 uppercase">
+                    <div className="space-y-0.5 min-w-0">
+                      <p className="text-[12px] font-black text-slate-900 uppercase truncate">
                         {selectedDonation.volunteer.name}
                       </p>
-                      <div className="flex items-center gap-3">
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                         <span className="text-[10px] font-bold text-slate-400 flex items-center gap-1">
                           <Star
                             className="fill-yellow-400 text-yellow-400"
@@ -348,7 +348,7 @@ const MyDonations = () => {
                       </div>
                     </div>
                   </div>
-                  <button className="p-2.5 rounded-full bg-white border border-slate-100 text-[#22c55e] hover:bg-[#22c55e] hover:text-white transition-all shadow-sm">
+                  <button className="p-2.5 rounded-full bg-white border border-slate-100 text-[#22c55e] hover:bg-[#22c55e] hover:text-white transition-all shadow-sm active:scale-95">
                     <Phone size={16} />
                   </button>
                 </div>

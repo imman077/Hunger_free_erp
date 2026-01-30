@@ -83,19 +83,13 @@ const DonorDashboard = () => {
   ];
 
   return (
-    <div className="w-full space-y-6 max-w-[1600px] mx-auto bg-transparent p-6 md:p-10">
+    <div className="w-full space-y-6 max-w-[1600px] mx-auto bg-transparent">
       {/* Hero / Header Section */}
       <div className="relative overflow-hidden rounded-md bg-white p-6 md:p-8">
         <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[450px] h-[450px] bg-green-500 opacity-[0.03] blur-[110px] rounded-full" />
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-3">
-            <div className="inline-flex items-center gap-2.5 px-3 py-1 rounded-sm bg-green-500/5 border border-green-500/10">
-              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              <span className="text-[10px] font-black uppercase tracking-widest text-green-600">
-                Live Impact Status
-              </span>
-            </div>
             <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-slate-800">
               Welcome back, <span className="text-green-500">Anish!</span>
             </h1>
@@ -159,6 +153,7 @@ const DonorDashboard = () => {
       </div>
 
       {/* Stats Grid */}
+      <div className="px-9">
       <ImpactCards
         className="gap-4 md:gap-6"
         data={stats.map((stat) => ({
@@ -168,6 +163,7 @@ const DonorDashboard = () => {
           color: stat.color === "#22c55e" ? "bg-green-500" : "bg-slate-300",
         }))}
       />
+        </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-0 items-stretch">
         {/* Left Column: Milestones */}
