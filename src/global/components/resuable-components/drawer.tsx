@@ -61,7 +61,7 @@ const ResuableDrawer: React.FC<ResuableDrawerProps> = ({
       backdrop="blur"
       hideCloseButton={true}
       classNames={{
-        base: `bg-white rounded-none w-full ${sizeClasses[size as keyof typeof sizeClasses] || "sm:max-w-md"} shadow-none no-scrollbar`,
+        base: `bg-white rounded-none w-full ${sizeClasses[size as keyof typeof sizeClasses] || "sm:max-w-md"} shadow-none thin-scrollbar`,
         backdrop: "bg-slate-900/40 backdrop-blur-md",
         header: "border-b border-slate-100 p-0",
         body: "p-0 overflow-hidden",
@@ -72,7 +72,7 @@ const ResuableDrawer: React.FC<ResuableDrawerProps> = ({
       }}
     >
       <DrawerContent
-        className="no-scrollbar"
+        className="thin-scrollbar"
         style={{ backgroundColor: "var(--bg-primary)" }}
       >
         {() => (
@@ -105,7 +105,7 @@ const ResuableDrawer: React.FC<ResuableDrawerProps> = ({
             </DrawerHeader>
 
             <DrawerBody
-              className="py-1 px-0 overflow-y-auto no-scrollbar flex-1"
+              className="py-1 px-0 overflow-y-auto thin-scrollbar flex-1"
               style={{ backgroundColor: "var(--bg-secondary)" }}
             >
               <div className="">{children}</div>

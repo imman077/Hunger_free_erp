@@ -73,27 +73,20 @@ const DonorDashboard = () => {
       status: "In Transit",
       category: "Meals",
     },
-    {
-      title: "Winter Blankets (5 sets)",
-      ngo: "Unity NGO",
-      time: "2 days ago",
-      status: "Delivered",
-      category: "Essentials",
-    },
   ];
 
   return (
-    <div className="w-full space-y-6 max-w-[1600px] mx-auto bg-transparent">
+    <div className="w-full space-y-4 max-w-[1600px] mx-auto bg-transparent">
       {/* Hero / Header Section */}
-      <div className="relative overflow-hidden rounded-md bg-white p-6 md:p-8">
-        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[450px] h-[450px] bg-green-500 opacity-[0.03] blur-[110px] rounded-full" />
+      <div className="relative overflow-hidden rounded-md bg-white p-5 md:p-6">
+        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[350px] h-[350px] bg-green-500 opacity-[0.03] blur-[110px] rounded-full" />
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="space-y-3">
-            <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-slate-800">
+          <div className="space-y-2">
+            <h1 className="text-2xl md:text-3xl font-black tracking-tighter text-slate-800">
               Welcome back, <span className="text-green-500">Anish!</span>
             </h1>
-            <p className="text-slate-500 font-medium text-sm max-w-lg text-start leading-tight">
+            <p className="text-slate-500 font-medium text-xs max-w-md text-start leading-tight">
               Your kindness has touched over{" "}
               <span className="text-slate-800 font-black underline decoration-green-500 decoration-2 underline-offset-4">
                 1,200 lives
@@ -103,27 +96,27 @@ const DonorDashboard = () => {
           </div>
 
           <div className="shrink-0">
-            <div className="group/hero-stat flex flex-col gap-4 bg-slate-50/50 p-5 md:p-6 rounded-md border border-slate-100 min-w-[320px] shadow-inner transition-colors duration-300 hover:bg-green-50/30">
-              <div className="flex items-center gap-6">
+            <div className="group/hero-stat flex flex-col gap-3 bg-slate-50/50 p-4 rounded-md border border-slate-100 min-w-[280px] shadow-inner transition-colors duration-300 hover:bg-green-50/30">
+              <div className="flex items-center gap-4">
                 <div
-                  className={`w-12 h-12 rounded-sm flex items-center justify-center shadow-lg shadow-green-500/10 transition-transform duration-300 group-hover/hero-stat:-translate-y-1`}
+                  className={`w-10 h-10 rounded-sm flex items-center justify-center shadow-lg shadow-green-500/10 transition-transform duration-300 group-hover/hero-stat:-translate-y-1`}
                   style={{ backgroundColor: `${currentTier.color}15` }}
                 >
                   <Trophy
-                    className="w-6 h-6"
+                    className="w-5 h-5"
                     style={{ color: currentTier.color }}
                   />
                 </div>
                 <div className="text-start">
-                  <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">
+                  <p className="text-[8px] font-black uppercase tracking-widest text-slate-400 mb-0.5">
                     Current Contribution Tier
                   </p>
-                  <div className="flex items-center gap-3">
-                    <h3 className="text-lg font-black text-slate-800 tracking-tight">
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-base font-black text-slate-800 tracking-tight">
                       {currentTier.name}
                     </h3>
                     <div className="p-1 px-1.5 rounded-sm bg-green-500/10">
-                      <TrendingUp className="text-green-500 w-3 h-3" />
+                      <TrendingUp className="text-green-500 w-2.5 h-2.5" />
                     </div>
                   </div>
                 </div>
@@ -153,92 +146,103 @@ const DonorDashboard = () => {
       </div>
 
       {/* Stats Grid */}
-      <div className="px-9">
-      <ImpactCards
-        className="gap-4 md:gap-6"
-        data={stats.map((stat) => ({
-          label: stat.title,
-          val: stat.value,
-          trend: stat.change,
-          color: stat.color === "#22c55e" ? "bg-green-500" : "bg-slate-300",
-        }))}
-      />
-        </div>
+      <div className="px-6">
+        <ImpactCards
+          className="gap-3 md:gap-4"
+          data={stats.map((stat) => ({
+            label: stat.title,
+            val: stat.value,
+            trend: stat.change,
+            color: stat.color === "#22c55e" ? "bg-green-500" : "bg-slate-300",
+          }))}
+        />
+      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-0 items-stretch">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pt-0 items-stretch">
         {/* Left Column: Milestones */}
         <div className="flex flex-col h-full child-h-full">
-          <div className="bg-white border border-slate-100 rounded-md p-8 md:p-10 space-y-8 flex flex-col h-full overflow-hidden">
+          <div className="bg-white border border-slate-100 rounded-md p-5 md:p-6 space-y-6 flex flex-col h-full overflow-hidden">
             <div className="flex items-center justify-between px-1">
-              <h2 className="text-sm font-black text-slate-800 uppercase tracking-widest">
+              <h2 className="text-[11px] font-black text-slate-800 uppercase tracking-widest">
                 Impact Milestones
               </h2>
-              <button className="text-[9px] font-black text-green-600 hover:text-green-700 uppercase tracking-widest transition-colors focus:outline-none">
-                VIEW ALL ACHIEVEMENTS
+              <button className="text-[8px] font-black text-green-600 hover:text-green-700 uppercase tracking-widest transition-colors focus:outline-none">
+                VIEW ALL
               </button>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 flex-1 overflow-y-auto pr-2 max-h-[500px] no-scrollbar">
-              {INITIAL_MILESTONES.map((badge, i) => {
-                const isUnlocked = i < 3; // Mocking unlock status
-                const BadgeIcon = getIcon(badge.icon || "Award");
-                return (
-                  <div
-                    key={i}
-                    className={`group relative p-6 rounded-md border flex flex-col items-center text-center gap-4 transition-all duration-300 justify-center ${
-                      isUnlocked
-                        ? "bg-white border-slate-100 hover:border-green-500/30 shadow-sm hover:shadow-md"
-                        : "bg-slate-50/20 border-slate-100 opacity-50 grayscale"
-                    }`}
-                  >
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 flex-1 overflow-y-auto pr-2 max-h-[500px] thin-scrollbar">
+              {INITIAL_MILESTONES.filter((badge) => badge.category === "donors")
+                .map((badge, i) => ({
+                  badge,
+                  i,
+                  isUnlocked: i < 3,
+                }))
+                .sort((a, b) => {
+                  // Sort: unlocked first, then locked
+                  if (a.isUnlocked && !b.isUnlocked) return -1;
+                  if (!a.isUnlocked && b.isUnlocked) return 1;
+                  return 0;
+                })
+                .map(({ badge, i, isUnlocked }) => {
+                  const BadgeIcon = getIcon(badge.icon || "Award");
+                  return (
                     <div
-                      className={`w-14 h-14 shrink-0 rounded-sm flex items-center justify-center transition-transform duration-500 group-hover:-translate-y-2 ${
+                      key={i}
+                      className={`group relative p-6 rounded-md border flex flex-col items-center text-center gap-4 transition-all duration-300 justify-center ${
                         isUnlocked
-                          ? "bg-green-500 text-white shadow-lg shadow-green-500/20"
-                          : "bg-slate-300 text-slate-500"
+                          ? "bg-white border-slate-100 hover:border-green-500/30 shadow-sm hover:shadow-md"
+                          : "bg-slate-50/20 border-slate-100 opacity-50 grayscale"
                       }`}
                     >
-                      <BadgeIcon size={24} />
-                    </div>
-                    <div className="space-y-2">
-                      <h3 className="text-lg font-black text-slate-800 tracking-tighter transition-colors duration-300 group-hover:text-green-600 leading-tight">
-                        {badge.name}
-                      </h3>
-                      <p className="text-[10px] text-slate-400 font-bold leading-relaxed max-w-[140px]">
-                        {badge.desc}
-                      </p>
-                      <div className="pt-2">
-                        <span
-                          className={`text-[8px] font-black uppercase tracking-[0.2em] px-2 py-1 rounded-md border ${
-                            isUnlocked
-                              ? "text-green-600 bg-green-50 border-green-100/50"
-                              : "text-slate-400 bg-slate-100/50 border-slate-200/50"
-                          }`}
-                        >
-                          {isUnlocked ? "Unlocked" : "Locked"}
-                        </span>
+                      <div
+                        className={`w-14 h-14 shrink-0 rounded-sm flex items-center justify-center transition-transform duration-500 group-hover:-translate-y-2 ${
+                          isUnlocked
+                            ? "bg-green-500 text-white shadow-lg shadow-green-500/20"
+                            : "bg-slate-300 text-slate-500"
+                        }`}
+                      >
+                        <BadgeIcon size={24} />
                       </div>
-                    </div>
-                    {!isUnlocked && (
-                      <div className="absolute top-4 right-4 text-slate-300 opacity-60">
-                        <Clock size={16} />
+
+                      <div className="space-y-1 flex-1 flex flex-col justify-center">
+                        <h3 className="text-xs font-black text-slate-800 uppercase tracking-tight leading-tight">
+                          {badge.name}
+                        </h3>
+                        <p className="text-[10px] font-bold text-slate-500 leading-snug">
+                          {badge.desc}
+                        </p>
                       </div>
-                    )}
-                  </div>
-                );
-              })}
+
+                      <span
+                        className={`px-3 py-1 rounded-md text-[7px] font-black uppercase tracking-widest ${
+                          isUnlocked
+                            ? "bg-green-50 text-green-600 border border-green-100"
+                            : "bg-slate-100 text-slate-400 border border-slate-200"
+                        }`}
+                      >
+                        {isUnlocked ? "UNLOCKED" : "LOCKED"}
+                      </span>
+                      {!isUnlocked && (
+                        <div className="absolute top-4 right-4 text-slate-300 opacity-60">
+                          <Clock size={16} />
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
             </div>
           </div>
         </div>
 
         {/* Right Column: Activity */}
         <div className="flex flex-col h-full child-h-full">
-          <div className="bg-white border border-slate-100 rounded-md p-8 md:p-10 space-y-8 flex flex-col h-full overflow-hidden">
+          <div className="bg-white border border-slate-100 rounded-md p-5 md:p-6 space-y-6 flex flex-col h-full overflow-hidden">
             <div className="flex items-center justify-between px-1">
-              <h2 className="text-sm font-black text-slate-800 uppercase tracking-widest">
+              <h2 className="text-[11px] font-black text-slate-800 uppercase tracking-widest">
                 Recent Activity
               </h2>
-              <button className="text-[9px] font-black text-green-600 hover:text-green-700 uppercase tracking-widest transition-colors focus:outline-none">
+              <button className="text-[8px] font-black text-green-600 hover:text-green-700 uppercase tracking-widest transition-colors focus:outline-none">
                 DETAILS
               </button>
             </div>
@@ -250,40 +254,40 @@ const DonorDashboard = () => {
                 return (
                   <div
                     key={idx}
-                    className="group flex items-center justify-between p-4 px-6 rounded-md transition-all duration-300 hover:bg-slate-50/50 cursor-pointer border border-slate-100 hover:border-slate-200"
+                    className="group flex items-center justify-between p-3 px-4 rounded-md transition-all duration-300 hover:bg-slate-50/50 cursor-pointer border border-slate-100 hover:border-slate-200"
                   >
-                    <div className="flex items-center gap-5 min-w-0">
+                    <div className="flex items-center gap-4 min-w-0">
                       <div
-                        className={`w-12 h-12 rounded-md shrink-0 flex items-center justify-center transition-all duration-300 group-hover:scale-105 ${
+                        className={`w-10 h-10 rounded-md shrink-0 flex items-center justify-center transition-all duration-300 group-hover:scale-105 ${
                           isCollected
                             ? "bg-green-50 text-green-600 border border-green-100/50"
                             : "bg-blue-50 text-blue-500 border border-blue-100/50"
                         }`}
                       >
                         <Package
-                          size={20}
+                          size={18}
                           className="transition-transform group-hover:-translate-y-0.5"
                         />
                       </div>
 
                       <div className="min-w-0 text-start">
-                        <h3 className="text-lg font-black text-slate-800 tracking-tight truncate group-hover:text-green-600 transition-colors mb-0.5 leading-none">
+                        <h3 className="text-sm font-black text-slate-800 tracking-tight truncate group-hover:text-green-600 transition-colors mb-0.5 leading-none">
                           {activity.title}
                         </h3>
                         <div className="flex items-center gap-2">
-                          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest truncate leading-none">
+                          <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest truncate leading-none">
                             {activity.ngo}
                           </p>
                         </div>
                       </div>
                     </div>
 
-                    <div className="flex flex-col items-end gap-2 shrink-0 ml-4 border-l border-slate-100 pl-6">
-                      <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.2em] tabular-nums font-sans">
+                    <div className="flex flex-col items-end gap-1.5 shrink-0 ml-4 border-l border-slate-100 pl-4">
+                      <span className="text-[8px] font-black text-slate-300 uppercase tracking-[0.2em] tabular-nums font-sans">
                         {activity.time}
                       </span>
                       <span
-                        className={`px-3 py-1 rounded-sm text-[8px] font-black uppercase tracking-[0.2em] border ${
+                        className={`px-2.5 py-0.5 rounded-sm text-[7px] font-black uppercase tracking-[0.2em] border ${
                           isCollected
                             ? "text-green-600 bg-green-50 border-green-100/50"
                             : "text-blue-500 bg-blue-50 border-blue-100/50"

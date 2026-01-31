@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { toast } from "sonner";
 import ResuableButton from "../../../../global/components/resuable-components/button";
 import ResuableDrawer from "../../../../global/components/resuable-components/drawer";
+import FilePreviewModal from "../../../../global/components/resuable-components/FilePreviewModal";
 import ImpactCards from "../../../../global/components/resuable-components/ImpactCards";
 import { INITIAL_TIERS } from "../../../../global/constants/milestone_config";
 import {
@@ -18,6 +20,9 @@ import {
   MessageSquare,
   Send,
   AlertCircle,
+  Eye,
+  Download,
+  Edit,
 } from "lucide-react";
 
 /**
@@ -32,6 +37,13 @@ const DonorProfile = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [requestId, setRequestId] = useState("");
   const [requestMessage, setRequestMessage] = useState("");
+
+  // Document Preview State
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<{
+    url: string;
+    name: string;
+  } | null>(null);
 
   const CATEGORIES_CONFIG: Record<
     string,
@@ -78,18 +90,18 @@ const DonorProfile = () => {
   const toggleField = (field: string) => {
     setSelectedFields((prev) => {
       const isSelecting = !prev.includes(field);
-      const entry = `• ${field.toUpperCase()}: `;
+      const entry = `${field.toUpperCase()}: `;
 
       if (isSelecting) {
         setRequestMessage((curr) => {
-          if (curr.includes(`• ${field.toUpperCase()}:`)) return curr;
+          if (curr.includes(`${field.toUpperCase()}:`)) return curr;
           return curr ? `${curr}\n${entry}` : entry;
         });
       } else {
         setRequestMessage((curr) => {
           return curr
             .split("\n")
-            .filter((line) => !line.includes(`• ${field.toUpperCase()}:`))
+            .filter((line) => !line.includes(`${field.toUpperCase()}:`))
             .join("\n")
             .trim();
         });
@@ -134,6 +146,37 @@ const DonorProfile = () => {
     accountNumber: "**** 8890",
     upiId: "grandregal@okaxis",
     branch: "Anna Nagar, Chennai",
+  };
+
+  const handleViewDocument = (doc: any) => {
+    setSelectedFile({
+      url: doc.url || "/HungerFree Doc.pdf",
+      name: doc.name,
+    });
+    setIsPreviewOpen(true);
+  };
+
+  const handleDownloadDocument = async (doc: any) => {
+    const url = doc.url || "/HungerFree Doc.pdf";
+
+    const promise = fetch(url)
+      .then((response) => response.blob())
+      .then((blob) => {
+        const blobUrl = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.download = `${doc.name.replace(/\s+/g, "_")}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(blobUrl);
+      });
+
+    toast.promise(promise, {
+      loading: `Preparing ${doc.name} for download...`,
+      success: `${doc.name} downloaded successfully!`,
+      error: "Failed to download document. Please try again.",
+    });
   };
 
   const currentPoints = 24500;
@@ -241,7 +284,7 @@ const DonorProfile = () => {
                   <User size={14} className="text-[#22c55e]" /> Contact Details
                 </h3>
               </div>
-              <div className="p-6 flex-grow overflow-y-auto no-scrollbar flex flex-col gap-6">
+              <div className="p-6 flex-grow overflow-y-auto thin-scrollbar flex flex-col gap-6">
                 {/* Primary Contact */}
                 <div className="space-y-4">
                   <p className={labelText}>Primary Manager</p>
@@ -321,7 +364,7 @@ const DonorProfile = () => {
                 </div>
               </div>
 
-              <div className="p-7 text-start flex-grow overflow-y-auto no-scrollbar flex flex-col">
+              <div className="p-7 text-start flex-grow overflow-y-auto thin-scrollbar flex flex-col">
                 {activeTab === "identity" && (
                   <div className="space-y-8 animate-in fade-in duration-500">
                     {/* SECTION 1: BUSINESS INTELLIGENCE */}
@@ -443,47 +486,74 @@ const DonorProfile = () => {
 
                 {activeTab === "documents" && (
                   <div className="space-y-6 animate-in fade-in duration-300">
-                    <p className={labelText}>Uploads & Compliance</p>
+                    <p className={labelText}>Documents</p>
                     <div className="grid grid-cols-1 gap-4">
                       {[
                         {
                           name: "Business License",
                           status: "Verified",
                           date: "Jan 12, 2025",
+                          url: "/HungerFree Doc.pdf",
                         },
                         {
                           name: "Tax Registration",
                           status: "Verified",
                           date: "Jan 12, 2025",
+                          url: "/HungerFree Doc.pdf",
                         },
                         {
                           name: "Food Safety Cert",
                           status: "In Review",
                           date: "Pending",
+                          url: "/HungerFree Doc.pdf",
                         },
                       ].map((doc, i) => (
                         <div
                           key={i}
-                          className="flex items-center justify-between p-5 bg-slate-50/50 border border-slate-100 rounded-md"
+                          className="group flex items-center justify-between p-3 bg-slate-50/50 border border-slate-100 rounded-md hover:bg-white hover:border-emerald-200 transition-all duration-300"
                         >
-                          <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-md bg-white border border-slate-100 flex items-center justify-center text-slate-400">
-                              <FileText size={18} />
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-md bg-white border border-slate-100 flex items-center justify-center text-slate-400 group-hover:text-emerald-500 transition-colors">
+                              <FileText size={14} />
                             </div>
                             <div>
-                              <p className="text-sm font-bold text-slate-800 uppercase tracking-tight">
+                              <p className="text-xs font-bold text-slate-800 uppercase tracking-tight">
                                 {doc.name}
                               </p>
-                              <p className="text-[10px] font-bold text-slate-400 uppercase">
+                              <p className="text-[9px] font-bold text-slate-400 uppercase">
                                 Updated: {doc.date}
                               </p>
                             </div>
                           </div>
-                          <span
-                            className={`px-3 py-1 rounded-md text-[9px] font-black uppercase tracking-widest border ${doc.status === "Verified" ? "bg-green-50 text-green-600 border-green-100" : "bg-amber-50 text-amber-600 border-amber-100"}`}
-                          >
-                            {doc.status}
-                          </span>
+
+                          <div className="flex items-center gap-3">
+                            <span
+                              className={`px-2.5 py-0.5 rounded-md text-[8px] font-black uppercase tracking-widest border transition-colors ${
+                                doc.status === "Verified"
+                                  ? "bg-green-50 text-green-600 border-green-100"
+                                  : "bg-amber-50 text-amber-600 border-amber-100"
+                              }`}
+                            >
+                              {doc.status}
+                            </span>
+
+                            <div className="flex items-center gap-0.5 pl-3 border-l border-slate-200">
+                              <button
+                                onClick={() => handleViewDocument(doc)}
+                                title="Quick View"
+                                className="p-1.5 hover:bg-emerald-50 text-slate-400 hover:text-emerald-600 rounded-lg transition-all active:scale-90"
+                              >
+                                <Eye size={14} />
+                              </button>
+                              <button
+                                onClick={() => handleDownloadDocument(doc)}
+                                title="Download Document"
+                                className="p-1.5 hover:bg-blue-50 text-slate-400 hover:text-blue-600 rounded-lg transition-all active:scale-90"
+                              >
+                                <Download size={14} />
+                              </button>
+                            </div>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -509,10 +579,6 @@ const DonorProfile = () => {
             </p>
           </div>
         </div>
-        <style>{`
-          .no-scrollbar::-webkit-scrollbar { display: none; }
-          .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        `}</style>
       </main>
 
       {/* SUPPORT & COMPLIANCE DRAWER */}
@@ -526,53 +592,63 @@ const DonorProfile = () => {
         <div className="p-8 h-full flex flex-col">
           {isSubmitted ? (
             /* SUCCESS FEEDBACK VIEW */
-            <div className="flex-grow flex flex-col items-center justify-center space-y-8 animate-in zoom-in-95 fade-in duration-500">
+            <div className="flex-grow flex flex-col items-center justify-center space-y-6 animate-in zoom-in-95 fade-in duration-500">
               <div className="relative">
-                <div className="w-24 h-24 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center animate-bounce duration-1000">
-                  <BadgeCheck size={48} className="text-[#22c55e]" />
+                <div className="w-20 h-20 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center animate-bounce duration-1000">
+                  <BadgeCheck size={40} className="text-[#22c55e]" />
                 </div>
-                <div className="absolute top-0 right-0 w-6 h-6 bg-[#22c55e] border-4 border-white rounded-full flex items-center justify-center">
-                  <ShieldCheck size={10} className="text-white" />
+                <div className="absolute top-0 right-0 w-5 h-5 bg-[#22c55e] border-4 border-white rounded-full flex items-center justify-center">
+                  <ShieldCheck size={8} className="text-white" />
                 </div>
               </div>
 
-              <div className="text-center space-y-3">
-                <h3 className="text-lg font-black text-slate-900 uppercase tracking-widest">
+              <div className="text-center space-y-2">
+                <h3 className="text-base font-black text-slate-900 uppercase tracking-widest">
                   Request Dispatched
                 </h3>
-                <p className="text-sm font-bold text-slate-500 max-w-[280px] mx-auto leading-relaxed">
+                <p className="text-xs font-bold text-slate-500 max-w-[280px] mx-auto leading-relaxed">
                   Your verification request has been successfully sent to the
                   compliance admin.
                 </p>
               </div>
 
-              <div className="w-full p-6 bg-slate-50 rounded-2xl border border-slate-100 space-y-6">
-                <div className="space-y-4">
+              <div className="w-full p-4 bg-slate-50 rounded-2xl border border-slate-100 space-y-4">
+                <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                    <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">
                       Reference ID
                     </span>
-                    <span className="text-xs font-black text-slate-900 font-mono">
+                    <span className="text-[11px] font-black text-slate-900 font-mono">
                       {requestId}
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                    <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">
                       Estimated Review
                     </span>
-                    <span className="text-xs font-black text-[#22c55e]">
+                    <span className="text-[11px] font-black text-[#22c55e]">
                       12 - 24 Hours
                     </span>
                   </div>
                 </div>
 
                 {/* Message Summary Receipt */}
-                <div className="pt-4 border-t border-slate-200/60 space-y-3">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 block">
-                    Message Sent
-                  </span>
-                  <div className="max-h-32 overflow-y-auto no-scrollbar p-3 bg-white/50 border border-slate-200/50 rounded-lg">
-                    <pre className="text-[11px] font-bold text-slate-600 whitespace-pre-wrap leading-relaxed">
+                <div className="pt-3 border-t border-slate-200/60 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[9px] font-black uppercase tracking-widest text-slate-400 block">
+                      Message Sent
+                    </span>
+                    <button
+                      onClick={() => setIsSubmitted(false)}
+                      className="flex items-center gap-1 px-2 py-1 text-[8px] font-black uppercase tracking-widest text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-md transition-all"
+                      title="Edit Message"
+                    >
+                      <Edit size={10} />
+                      Edit
+                    </button>
+                  </div>
+                  <div className="max-h-28 overflow-y-auto thin-scrollbar p-3 bg-white/50 border border-slate-200/50 rounded-lg">
+                    <pre className="text-[10px] font-bold text-slate-600 whitespace-pre-wrap leading-relaxed">
                       {requestMessage || "No additional message provided."}
                     </pre>
                   </div>
@@ -581,7 +657,7 @@ const DonorProfile = () => {
 
               <ResuableButton
                 variant="primary"
-                className="w-full h-16 rounded-xl text-[11px] font-black uppercase tracking-[0.2em]"
+                className="w-full h-11 rounded-xl text-[10px] font-black uppercase tracking-[0.2em]"
                 onClick={() => {
                   setIsRequestDrawerOpen(false);
                   resetSupportHub();
@@ -592,17 +668,17 @@ const DonorProfile = () => {
             </div>
           ) : (
             /* ACTIVE FORM VIEW */
-            <div className="space-y-10 flex-grow">
+            <div className="space-y-6 flex-grow">
               {/* Header Note */}
-              <div className="flex items-start gap-4 p-5 bg-blue-50/50 border border-blue-100 rounded-lg">
-                <div className="p-2 bg-white rounded-md border border-blue-200 shrink-0">
-                  <MessageSquare size={18} className="text-blue-500" />
+              <div className="flex items-start gap-3 p-3 bg-blue-50/50 border border-blue-100 rounded-lg">
+                <div className="p-1.5 bg-white rounded-md border border-blue-200 shrink-0">
+                  <MessageSquare size={14} className="text-blue-500" />
                 </div>
-                <div className="space-y-1">
-                  <h4 className="text-[11px] font-black uppercase tracking-widest text-blue-900">
+                <div className="space-y-0.5">
+                  <h4 className="text-[9px] font-black uppercase tracking-widest text-blue-900">
                     Direct Compliance Channel
                   </h4>
-                  <p className="text-[11px] font-bold text-blue-800/70 leading-relaxed tracking-tight">
+                  <p className="text-[10px] font-bold text-blue-800/70 leading-relaxed tracking-tight">
                     For security reasons, changing legal identifiers or payout
                     methods requires manual validation by our auditing team.
                   </p>
@@ -611,21 +687,21 @@ const DonorProfile = () => {
 
               {!requestCategory ? (
                 /* CATEGORY GRID VIEW */
-                <div className="space-y-4">
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                <div className="space-y-3">
+                  <p className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">
                     What do you need help with?
                   </p>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-3">
                     {Object.entries(CATEGORIES_CONFIG).map(([id, item]) => (
                       <button
                         key={id}
                         onClick={() => switchCategory(id)}
-                        className="flex flex-col items-center justify-center h-40 bg-white border border-slate-100 rounded-xl hover:border-[#22c55e]/50 hover:bg-slate-50 transition-all group shadow-sm active:scale-95"
+                        className="flex flex-col items-center justify-center h-28 bg-white border border-slate-100 rounded-xl hover:border-[#22c55e]/50 hover:bg-slate-50 transition-all group shadow-sm active:scale-95"
                       >
-                        <div className="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-[#22c55e] transition-colors mb-4">
+                        <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-[#22c55e] transition-colors mb-2">
                           {item.icon}
                         </div>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 group-hover:text-slate-900 text-center px-4">
+                        <span className="text-[9px] font-black uppercase tracking-widest text-slate-500 group-hover:text-slate-900 text-center px-3">
                           {item.label}
                         </span>
                       </button>
@@ -634,27 +710,27 @@ const DonorProfile = () => {
                 </div>
               ) : (
                 /* SUB-FIELD SELECTION VIEW */
-                <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
+                <div className="space-y-5 animate-in fade-in slide-in-from-right-4 duration-300">
                   <div className="flex items-center justify-between">
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                    <p className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">
                       Select fields to update:
                     </p>
                     <button
                       onClick={() => switchCategory(null)}
-                      className="text-[9px] font-black uppercase tracking-widest text-[#22c55e] hover:underline"
+                      className="text-[8px] font-black uppercase tracking-widest text-[#22c55e] hover:underline"
                     >
                       Change Category
                     </button>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-2">
                     {CATEGORIES_CONFIG[requestCategory].fields.map((field) => {
                       const isSelected = selectedFields.includes(field);
                       return (
                         <button
                           key={field}
                           onClick={() => toggleField(field)}
-                          className={`w-full h-11 px-4 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all border text-center truncate ${
+                          className={`w-full h-9 px-3 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all border text-center truncate ${
                             isSelected
                               ? "bg-[#22c55e] text-white border-[#22c55e] shadow-md shadow-emerald-500/20"
                               : "bg-white text-slate-500 border-slate-100 hover:border-slate-300"
@@ -667,8 +743,8 @@ const DonorProfile = () => {
                   </div>
 
                   {/* Message Area */}
-                  <div className="space-y-4">
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                  <div className="space-y-3">
+                    <p className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">
                       Request Details & Inquiries
                     </p>
                     <div className="relative group">
@@ -682,11 +758,8 @@ const DonorProfile = () => {
                               )}`
                             : "Please provide more details about your request..."
                         }
-                        className="w-full h-40 p-6 bg-slate-50/50 border border-slate-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#22c55e]/20 focus:border-[#22c55e] text-sm font-bold text-slate-800 placeholder:text-slate-400 resize-none transition-all no-scrollbar"
+                        className="w-full h-32 p-4 bg-slate-50/50 border border-slate-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#22c55e]/20 focus:border-[#22c55e] text-xs font-bold text-slate-800 placeholder:text-slate-400 resize-none transition-all thin-scrollbar"
                       />
-                      <div className="absolute top-4 right-4 text-slate-300">
-                        <Send size={16} />
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -697,7 +770,7 @@ const DonorProfile = () => {
                 <ResuableButton
                   variant="primary"
                   disabled={!requestCategory}
-                  className={`w-full h-16 rounded-xl text-[11px] font-black uppercase tracking-[0.2em] shadow-lg transition-all ${
+                  className={`w-full h-10 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] shadow-lg transition-all ${
                     requestCategory
                       ? "shadow-emerald-500/20"
                       : "opacity-50 grayscale cursor-not-allowed"
@@ -706,7 +779,7 @@ const DonorProfile = () => {
                 >
                   Submit Verification Request
                 </ResuableButton>
-                <p className="text-center mt-6 text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                <p className="text-center mt-3 text-[8px] font-bold text-slate-400 uppercase tracking-widest">
                   Standard review time: 12 - 24 business hours
                 </p>
               </div>
@@ -714,6 +787,13 @@ const DonorProfile = () => {
           )}
         </div>
       </ResuableDrawer>
+
+      <FilePreviewModal
+        isOpen={isPreviewOpen}
+        onOpenChange={setIsPreviewOpen}
+        file={selectedFile?.url || null}
+        fileName={selectedFile?.name}
+      />
     </div>
   );
 };

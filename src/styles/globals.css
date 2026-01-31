@@ -37,6 +37,10 @@
   --color-amber: #f59e0b;
   --color-red: #ef4444;
   --color-purple: #a855f7;
+
+  /* Scrollbar Theme */
+  --scrollbar-thumb: #cbd5e1;
+  --scrollbar-thumb-hover: #94a3b8;
 }
 
 [data-theme="dark"] {
@@ -70,6 +74,10 @@
   --color-amber: #fbbf24;
   --color-red: #f87171;
   --color-purple: #c084fc;
+
+  /* Scrollbar Theme */
+  --scrollbar-thumb: #475569;
+  --scrollbar-thumb-hover: #64748b;
 }
 
 /* Ensure consistent MUI component sizing on mobile */
@@ -93,6 +101,32 @@
   display: none !important;
 }
 
+.thin-scrollbar::-webkit-scrollbar {
+  width: 6px !important;
+  height: 6px !important;
+}
+
+.thin-scrollbar::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+.thin-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb) !important;
+  border-radius: 20px !important;
+  border: 1.5px solid transparent !important;
+  background-clip: content-box !important;
+}
+
+.thin-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-thumb-hover) !important;
+}
+
+/* For Firefox */
+.thin-scrollbar {
+  scrollbar-width: thin !important;
+  scrollbar-color: var(--scrollbar-thumb) transparent !important;
+}
+
 /* Hide scrollbar on HeroUI Drawer overlay */
 [class*="overflow-x-auto"][class*="fixed"][class*="inset-0"] {
   overflow-x: hidden !important;
@@ -108,7 +142,9 @@ body {
   background-color: var(--bg-secondary);
   font-family: "Inter", sans-serif;
   color: var(--text-primary);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 html,
@@ -144,12 +180,16 @@ body {
 }
 
 .erp-card {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .erp-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 0.1),
+    0 2px 4px -2px rgb(0 0 0 / 0.1);
 }
 
 /* Remove black focus outline from all buttons and interactive elements */
