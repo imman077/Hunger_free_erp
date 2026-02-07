@@ -95,6 +95,57 @@ const AnalyticsReportsPage: React.FC = () => {
     });
   }, [dateFilter]);
 
+  const handleExport = () => {
+    // UTF-8 BOM for Excel compatibility
+    const BOM = "\uFEFF";
+    const separator = ",";
+
+    const headers = [
+      "Donation ID",
+      "Donor",
+      "Receiving NGO",
+      "Category",
+      "Quantity",
+      "Date",
+      "Status",
+    ];
+
+    // Create CSV content with explicit separator declaration for Excel
+    const csvContent = [
+      `sep=${separator}`,
+      headers.map((h) => `"${h}"`).join(separator),
+      ...filteredLogs.map((log) =>
+        [
+          log.id,
+          log.donor,
+          log.ngo,
+          log.category,
+          log.quantity,
+          log.date,
+          log.status,
+        ]
+          .map((val) => `"${String(val).replace(/"/g, '""')}"`)
+          .join(separator),
+      ),
+    ].join("\r\n");
+
+    const blob = new Blob([BOM + csvContent], {
+      type: "text/csv;charset=utf-8;",
+    });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+
+    link.setAttribute("href", url);
+    link.setAttribute(
+      "download",
+      `donation-distribution-logs-${new Date().toISOString().split("T")[0]}.csv`,
+    );
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const renderCell = React.useCallback((log: any, columnKey: React.Key) => {
     const cellValue = log[columnKey as string];
 
@@ -102,17 +153,32 @@ const AnalyticsReportsPage: React.FC = () => {
       case "id":
         return (
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-sm bg-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-emerald-100 group-hover:text-emerald-600 transition-colors">
+            <div
+              className="w-8 h-8 rounded-sm flex items-center justify-center transition-colors"
+              style={{
+                backgroundColor: "var(--bg-secondary)",
+                color: "var(--text-muted)",
+              }}
+            >
               <Package size={16} />
             </div>
-            <span className="font-black text-slate-800 text-sm tracking-tight">
+            <span
+              className="font-black text-sm tracking-tight"
+              style={{ color: "var(--text-primary)" }}
+            >
               {log.id}
             </span>
           </div>
         );
       case "donor":
         return (
-          <div className="flex items-center gap-2 px-2 py-1 rounded-sm bg-amber-50 border border-amber-200 hover:border-amber-400 transition-all cursor-pointer group w-fit min-w-0">
+          <div
+            className="flex items-center gap-2 px-2 py-1 rounded-sm border transition-all cursor-pointer group w-fit min-w-0"
+            style={{
+              backgroundColor: "rgba(245, 158, 11, 0.05)",
+              borderColor: "rgba(245, 158, 11, 0.1)",
+            }}
+          >
             <div className="w-5 h-5 rounded-sm flex items-center justify-center text-[9px] font-bold text-white bg-amber-500 shadow-sm shrink-0">
               {log.donor
                 .split(" ")
@@ -120,14 +186,20 @@ const AnalyticsReportsPage: React.FC = () => {
                 .slice(0, 2)
                 .join("")}
             </div>
-            <span className="font-bold text-xs whitespace-nowrap truncate max-w-[140px] pr-1 group-hover:text-amber-700 transition-colors text-amber-700">
+            <span className="font-bold text-xs whitespace-nowrap truncate max-w-[140px] pr-1 transition-colors text-amber-500">
               {log.donor}
             </span>
           </div>
         );
       case "ngo":
         return (
-          <div className="flex items-center gap-2 px-2 py-1 rounded-sm bg-emerald-50 border border-emerald-200 hover:border-hf-green transition-all cursor-pointer group w-fit min-w-0">
+          <div
+            className="flex items-center gap-2 px-2 py-1 rounded-sm border transition-all cursor-pointer group w-fit min-w-0"
+            style={{
+              backgroundColor: "rgba(16, 185, 129, 0.05)",
+              borderColor: "rgba(16, 185, 129, 0.1)",
+            }}
+          >
             <div className="w-5 h-5 rounded-sm flex items-center justify-center text-[9px] font-bold text-white bg-hf-green shadow-sm shrink-0">
               {log.ngo
                 .split(" ")
@@ -136,8 +208,8 @@ const AnalyticsReportsPage: React.FC = () => {
                 .join("")}
             </div>
             <span
-              className="font-bold text-xs whitespace-nowrap truncate max-w-[140px] pr-1 group-hover:text-hf-green transition-colors"
-              style={{ color: "var(--text-primary)" }}
+              className="font-bold text-xs whitespace-nowrap truncate max-w-[140px] pr-1 transition-colors"
+              style={{ color: "#22c55e" }}
             >
               {log.ngo}
             </span>
@@ -145,20 +217,36 @@ const AnalyticsReportsPage: React.FC = () => {
         );
       case "category":
         return (
-          <span className="px-2 py-0.5 bg-slate-50 rounded-sm text-[9px] font-bold text-slate-500 uppercase tracking-widest border border-slate-200/50 whitespace-nowrap">
+          <span
+            className="px-2 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-widest border whitespace-nowrap"
+            style={{
+              backgroundColor: "var(--bg-secondary)",
+              color: "var(--text-muted)",
+              borderColor: "var(--border-color)",
+            }}
+          >
             {log.category}
           </span>
         );
       case "quantity":
         return (
-          <span className="font-black text-slate-700 text-sm">
+          <span
+            className="font-black text-sm"
+            style={{ color: "var(--text-primary)" }}
+          >
             {log.quantity}
           </span>
         );
       case "status":
         return (
-          <div className="flex items-center justify-center">
-            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-sm border border-slate-100 bg-slate-50/50 w-fit">
+          <div className="flex items-center justify-center font-bold">
+            <div
+              className="flex items-center gap-1.5 px-2 py-0.5 rounded-sm border w-fit"
+              style={{
+                backgroundColor: "var(--bg-secondary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
               <div
                 className={`w-1.5 h-1.5 rounded-full ${
                   log.status === "Delivered"
@@ -168,7 +256,10 @@ const AnalyticsReportsPage: React.FC = () => {
                       : "bg-amber-500"
                 }`}
               />
-              <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider whitespace-nowrap">
+              <span
+                className="text-[10px] uppercase tracking-wider whitespace-nowrap"
+                style={{ color: "var(--text-secondary)" }}
+              >
                 {log.status}
               </span>
             </div>
@@ -180,7 +271,10 @@ const AnalyticsReportsPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="p-8 w-full mx-auto space-y-8 animate-in slide-in-from-bottom-4 duration-700 text-start">
+    <div
+      className="p-8 w-full mx-auto space-y-8 animate-in slide-in-from-bottom-4 duration-700 text-start min-h-screen"
+      style={{ backgroundColor: "var(--bg-primary)" }}
+    >
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
           <h1
@@ -189,13 +283,26 @@ const AnalyticsReportsPage: React.FC = () => {
           >
             Distribution Logs
           </h1>
-          <p className="text-slate-500 font-semibold mt-2">
+          <p
+            className="font-semibold mt-2"
+            style={{ color: "var(--text-muted)" }}
+          >
             Track all donation pickups and deliveries to partner NGOs.
           </p>
         </div>
         <div className="flex gap-3">
-          <button className="flex items-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-sm font-black text-xs uppercase tracking-widest shadow-xl shadow-slate-200 hover:scale-105 transition-all">
-            <Download size={16} />
+          <button
+            onClick={handleExport}
+            className="flex items-center gap-2 px-6 py-3 rounded-sm font-black text-xs uppercase tracking-widest hover:scale-105 transition-all shadow-sm group active:scale-95"
+            style={{
+              backgroundColor: "#22c55e",
+              color: "#ffffff",
+            }}
+          >
+            <Download
+              size={16}
+              className="group-hover:translate-y-0.5 transition-transform"
+            />
             Export Report
           </button>
         </div>

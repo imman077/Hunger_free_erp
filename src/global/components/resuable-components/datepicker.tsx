@@ -16,7 +16,7 @@ export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
   onChange,
   className = "",
   required = false,
-  align = "center",
+  align = "left",
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [openUpward, setOpenUpward] = useState(false);
@@ -25,33 +25,67 @@ export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
 
   const date = value ? new Date(value) : new Date();
   const [viewDate, setViewDate] = useState(
-    new Date(date.getFullYear(), date.getMonth(), 1)
+    new Date(date.getFullYear(), date.getMonth(), 1),
   );
 
+  // Handle click outside to close
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
+        isOpen &&
         containerRef.current &&
         !containerRef.current.contains(event.target as Node)
       ) {
         setIsOpen(false);
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
-  // Check if dropdown should open upward
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
+
+  // Handle smart positioning (Upward vs Downward)
   useEffect(() => {
     if (isOpen && buttonRef.current) {
       const buttonRect = buttonRef.current.getBoundingClientRect();
-      const dropdownHeight = 400; // Approximate height of the calendar dropdown
-      const spaceBelow = window.innerHeight - buttonRect.bottom;
+      const dropdownHeight = 380; // Approximate calendar height
+      const viewportHeight = window.innerHeight;
+
+      const spaceBelow = viewportHeight - buttonRect.bottom;
       const spaceAbove = buttonRect.top;
 
-      // Open upward if there's not enough space below but enough space above
-      setOpenUpward(spaceBelow < dropdownHeight && spaceAbove > dropdownHeight);
+      // Logic: Open upward if there's no space below AND there is enough space above
+      // OR if it's already touching the bottom when opening
+      if (spaceBelow < dropdownHeight && spaceAbove > dropdownHeight) {
+        setOpenUpward(true);
+      } else {
+        setOpenUpward(false);
+      }
     }
+  }, [isOpen]);
+
+  // Auto-close on scroll or resize to maintain UI stability
+  useEffect(() => {
+    const handleScrollOrResize = () => {
+      if (isOpen) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      window.addEventListener("scroll", handleScrollOrResize, true);
+      window.addEventListener("resize", handleScrollOrResize);
+    }
+
+    return () => {
+      window.removeEventListener("scroll", handleScrollOrResize, true);
+      window.removeEventListener("resize", handleScrollOrResize);
+    };
   }, [isOpen]);
 
   const daysInMonth = (year: number, month: number) =>
@@ -110,7 +144,7 @@ export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
   const days = [];
   const startOffset = firstDayOfMonth(
     viewDate.getFullYear(),
-    viewDate.getMonth()
+    viewDate.getMonth(),
   );
   const totalDays = daysInMonth(viewDate.getFullYear(), viewDate.getMonth());
 
@@ -127,26 +161,29 @@ export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
         onClick={() => handleSelectDay(d)}
         className={`h-8 w-8 text-[11px] font-bold rounded-none flex items-center justify-center transition-all ${
           isSelected(d)
-            ? "bg-[#22c55e] text-white"
+            ? "text-white"
             : isToday(d)
-            ? "text-[#22c55e] border border-[#22c55e]/30"
-            : "hover:bg-hf-green/10 hover:text-[#22c55e]"
+              ? "border-emerald-500/30"
+              : "hover:bg-hf-green/10"
         }`}
         style={{
           backgroundColor: isSelected(d)
             ? "#22c55e"
             : isToday(d)
-            ? "rgba(34, 197, 94, 0.1)"
-            : "transparent",
+              ? "rgba(34, 197, 94, 0.1)"
+              : "transparent",
           color: isSelected(d)
             ? "white"
             : isToday(d)
-            ? "#22c55e"
-            : "var(--text-secondary)",
+              ? "#22c55e"
+              : "var(--text-secondary)",
+          borderColor: isToday(d)
+            ? "var(--color-emerald-light)"
+            : "transparent",
         }}
       >
         {d}
-      </button>
+      </button>,
     );
   }
 
@@ -154,8 +191,8 @@ export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
     align === "left"
       ? "text-left"
       : align === "right"
-      ? "text-right"
-      : "text-center";
+        ? "text-right"
+        : "text-center";
 
   return (
     <div
@@ -167,7 +204,7 @@ export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
           className="text-[10px] font-bold uppercase tracking-widest block mb-1 px-1"
           style={{ color: "var(--text-muted)" }}
         >
-          {label} {required && <span style={{ color: "#ef4444" }}>*</span>}
+          {label} {required && <span className="text-red-500">*</span>}
         </label>
       )}
       <div className="relative">
@@ -175,9 +212,7 @@ export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
           ref={buttonRef}
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className={`w-full flex items-center gap-3 border px-3 py-2.5 rounded-none text-xs font-semibold transition-all ${
-            isOpen ? "ring-1 ring-[#22c55e]" : ""
-          } ${alignClass}`}
+          className="w-full flex items-center gap-3 border px-3 py-2.5 rounded-none text-xs font-semibold transition-all"
           style={{
             backgroundColor: "var(--bg-secondary)",
             borderColor: "var(--border-color)",

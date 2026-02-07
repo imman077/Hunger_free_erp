@@ -64,7 +64,7 @@ const StatCard: React.FC<StatCardProps> = ({
         };
       default:
         return {
-          textColor: "text-slate-400",
+          textColor: "var(--text-muted)",
           icon: null,
         };
     }
@@ -74,8 +74,9 @@ const StatCard: React.FC<StatCardProps> = ({
 
   return (
     <div
-      className="rounded-sm border p-6 transition-all duration-200 cursor-pointer group bg-white hover:border-slate-300"
+      className="rounded-sm border p-6 transition-all duration-200 cursor-pointer group hover:border-emerald-500/30"
       style={{
+        backgroundColor: "var(--bg-primary)",
         borderColor: "var(--border-color)",
       }}
       onClick={onClick}
@@ -86,7 +87,14 @@ const StatCard: React.FC<StatCardProps> = ({
           {title}
         </h4>
         {icon && (
-          <div className="p-2.5 rounded-sm bg-slate-50 border border-slate-100 text-slate-300 group-hover:text-slate-500 transition-colors">
+          <div
+            className="p-2.5 rounded-sm border transition-colors"
+            style={{
+              backgroundColor: "var(--bg-secondary)",
+              borderColor: "var(--border-color)",
+              color: "var(--text-muted)",
+            }}
+          >
             {icon}
           </div>
         )}
@@ -94,7 +102,10 @@ const StatCard: React.FC<StatCardProps> = ({
 
       {/* Value */}
       <div className="mb-4">
-        <p className="text-3xl font-black text-slate-900 tracking-tight">
+        <p
+          className="text-3xl font-black tracking-tight"
+          style={{ color: "var(--text-primary)" }}
+        >
           {value}
         </p>
       </div>

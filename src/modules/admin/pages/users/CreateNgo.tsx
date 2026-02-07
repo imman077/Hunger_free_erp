@@ -203,7 +203,7 @@ const CreateNgo = () => {
 
   const handleAttachmentChange = (
     slot: string,
-    value: File | File[] | null
+    value: File | File[] | null,
   ) => {
     setAttachments((prev) => ({
       ...prev,
@@ -251,7 +251,7 @@ const CreateNgo = () => {
         alert(
           `Please fill the mandatory field: ${field
             .replace(/([A-Z])/g, " $1")
-            .trim()}`
+            .trim()}`,
         );
         return;
       }
@@ -307,14 +307,22 @@ const CreateNgo = () => {
           <div className="flex items-center gap-8">
             <button
               onClick={() => navigate("/admin/users/ngos")}
-              className="w-10 h-10 rounded-full flex items-center justify-center bg-white border border-slate-200 text-slate-400 hover:text-[#22c55e] hover:border-[#22c55e]/30 transition-all group shadow-sm"
+              className="w-10 h-10 rounded-full flex items-center justify-center border transition-all group shadow-sm"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+                color: "var(--text-muted)",
+              }}
             >
               <ArrowLeft
                 size={18}
                 className="group-hover:-translate-x-1 transition-transform"
               />
             </button>
-            <div className="h-10 w-px bg-slate-200 hidden sm:block" />
+            <div
+              className="h-10 w-px hidden sm:block"
+              style={{ backgroundColor: "var(--border-color)" }}
+            />
             <div>
               <h1
                 className="text-3xl md:text-5xl font-black tracking-tighter leading-none italic"
@@ -322,14 +330,26 @@ const CreateNgo = () => {
               >
                 Register NGO
               </h1>
-              <p className="text-[10px] font-bold text-slate-400 mt-2 uppercase tracking-[0.3em]">
+              <p
+                className="text-[10px] font-bold mt-2 uppercase tracking-[0.3em]"
+                style={{ color: "var(--text-muted)" }}
+              >
                 Administrator Console • NGO Onboarding
               </p>
             </div>
           </div>
-          <div className="bg-white border border-slate-200 px-5 py-2.5 rounded-full flex items-center gap-3 shadow-sm">
+          <div
+            className="border px-5 py-2.5 rounded-full flex items-center gap-3 shadow-sm"
+            style={{
+              backgroundColor: "var(--bg-primary)",
+              borderColor: "var(--border-color)",
+            }}
+          >
             <div className="w-2 h-2 rounded-full bg-[#22c55e] animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
-            <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest pt-0.5">
+            <span
+              className="text-[10px] font-black uppercase tracking-widest pt-0.5"
+              style={{ color: "var(--text-secondary)" }}
+            >
               Secure Registration
             </span>
           </div>
@@ -342,21 +362,39 @@ const CreateNgo = () => {
       >
         {/* Card 01: NGO Details */}
         <div
-          className="border rounded-xl bg-white shadow-sm transition-all hover:shadow-md"
-          style={{ borderColor: "var(--border-color)" }}
+          className="border rounded-xl shadow-sm transition-all hover:shadow-md"
+          style={{
+            borderColor: "var(--border-color)",
+            backgroundColor: "var(--bg-primary)",
+          }}
         >
           <div
-            className="border-b p-8 flex items-center gap-5 bg-slate-50/30"
-            style={{ borderColor: "var(--border-color)" }}
+            className="border-b p-8 flex items-center gap-5"
+            style={{
+              borderColor: "var(--border-color)",
+              backgroundColor: "var(--bg-tertiary)",
+            }}
           >
-            <div className="w-14 h-14 bg-white border border-slate-100 rounded-xl flex items-center justify-center text-[#22c55e] shadow-sm">
+            <div
+              className="w-14 h-14 border rounded-xl flex items-center justify-center text-[#22c55e] shadow-sm"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
               <Building2 size={28} />
             </div>
             <div>
-              <h2 className="text-base font-black uppercase tracking-tighter leading-none text-slate-800">
+              <h2
+                className="text-base font-black uppercase tracking-tighter leading-none"
+                style={{ color: "var(--text-primary)" }}
+              >
                 01. NGO Identity
               </h2>
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] mt-2 text-slate-400">
+              <p
+                className="text-[10px] font-bold uppercase tracking-[0.2em] mt-2"
+                style={{ color: "var(--text-muted)" }}
+              >
                 Official Entity Details & High-Level Info
               </p>
             </div>
@@ -409,12 +447,18 @@ const CreateNgo = () => {
             </div>
 
             {/* Optional NGO Details */}
-            <div className="space-y-6 pt-6 border-t border-slate-50">
+            <div
+              className="space-y-6 pt-6 border-t"
+              style={{ borderColor: "var(--border-color)" }}
+            >
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Email Toggle */}
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                    <span
+                      className="text-[10px] font-black uppercase tracking-widest"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       Email ID
                     </span>
                     <button
@@ -422,8 +466,8 @@ const CreateNgo = () => {
                       onClick={() => toggleSection("showEmail")}
                       className={`text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border transition-all ${
                         toggles.showEmail
-                          ? "bg-red-50 text-red-500 border-red-100"
-                          : "bg-emerald-50 text-hf-green border-emerald-100"
+                          ? "bg-red-500/10 text-red-500 border-red-500/20"
+                          : "bg-[#22c55e]/10 text-[#22c55e] border-[#22c55e]/20"
                       }`}
                     >
                       {toggles.showEmail ? "Remove" : "+ Add"}
@@ -444,7 +488,10 @@ const CreateNgo = () => {
                 {/* Website Toggle */}
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                    <span
+                      className="text-[10px] font-black uppercase tracking-widest"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       Website / Social
                     </span>
                     <button
@@ -452,8 +499,8 @@ const CreateNgo = () => {
                       onClick={() => toggleSection("showWebsite")}
                       className={`text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border transition-all ${
                         toggles.showWebsite
-                          ? "bg-red-50 text-red-500 border-red-100"
-                          : "bg-emerald-50 text-hf-green border-emerald-100"
+                          ? "bg-red-500/10 text-red-500 border-red-500/20"
+                          : "bg-[#22c55e]/10 text-[#22c55e] border-[#22c55e]/20"
                       }`}
                     >
                       {toggles.showWebsite ? "Remove" : "+ Add"}
@@ -473,7 +520,10 @@ const CreateNgo = () => {
                 {/* About Toggle */}
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                    <span
+                      className="text-[10px] font-black uppercase tracking-widest"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       Description
                     </span>
                     <button
@@ -481,8 +531,8 @@ const CreateNgo = () => {
                       onClick={() => toggleSection("showAbout")}
                       className={`text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border transition-all ${
                         toggles.showAbout
-                          ? "bg-red-50 text-red-500 border-red-100"
-                          : "bg-emerald-50 text-hf-green border-emerald-100"
+                          ? "bg-red-500/10 text-red-500 border-red-500/20"
+                          : "bg-[#22c55e]/10 text-[#22c55e] border-[#22c55e]/20"
                       }`}
                     >
                       {toggles.showAbout ? "Remove" : "+ Add"}
@@ -505,21 +555,39 @@ const CreateNgo = () => {
 
         {/* Card 02: Representative Details */}
         <div
-          className="border rounded-xl bg-white shadow-sm transition-all hover:shadow-md"
-          style={{ borderColor: "var(--border-color)" }}
+          className="border rounded-xl shadow-sm transition-all hover:shadow-md"
+          style={{
+            borderColor: "var(--border-color)",
+            backgroundColor: "var(--bg-primary)",
+          }}
         >
           <div
-            className="border-b p-8 flex items-center gap-5 bg-slate-50/30"
-            style={{ borderColor: "var(--border-color)" }}
+            className="border-b p-8 flex items-center gap-5"
+            style={{
+              borderColor: "var(--border-color)",
+              backgroundColor: "var(--bg-tertiary)",
+            }}
           >
-            <div className="w-14 h-14 bg-white border border-slate-100 rounded-xl flex items-center justify-center text-[#22c55e] shadow-sm">
+            <div
+              className="w-14 h-14 border rounded-xl flex items-center justify-center text-[#22c55e] shadow-sm"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
               <Users size={28} />
             </div>
             <div>
-              <h2 className="text-base font-black uppercase tracking-tighter leading-none text-slate-800">
+              <h2
+                className="text-base font-black uppercase tracking-tighter leading-none"
+                style={{ color: "var(--text-primary)" }}
+              >
                 02. Authorized Representative
               </h2>
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] mt-2 text-slate-400">
+              <p
+                className="text-[10px] font-bold uppercase tracking-[0.2em] mt-2"
+                style={{ color: "var(--text-muted)" }}
+              >
                 Primary Contact Person & Accountability
               </p>
             </div>
@@ -548,12 +616,18 @@ const CreateNgo = () => {
             </div>
 
             {/* Optional Rep Details */}
-            <div className="space-y-6 pt-6 border-t border-slate-50">
+            <div
+              className="space-y-6 pt-6 border-t"
+              style={{ borderColor: "var(--border-color)" }}
+            >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Alt Mobile Toggle */}
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                    <span
+                      className="text-[10px] font-black uppercase tracking-widest"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       Alt Mobile
                     </span>
                     <button
@@ -561,8 +635,8 @@ const CreateNgo = () => {
                       onClick={() => toggleSection("showAltMobile")}
                       className={`text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border transition-all ${
                         toggles.showAltMobile
-                          ? "bg-red-50 text-red-500 border-red-100"
-                          : "bg-emerald-50 text-hf-green border-emerald-100"
+                          ? "bg-red-500/10 text-red-500 border-red-500/20"
+                          : "bg-[#22c55e]/10 text-[#22c55e] border-[#22c55e]/20"
                       }`}
                     >
                       {toggles.showAltMobile ? "Remove" : "+ Add"}
@@ -583,7 +657,10 @@ const CreateNgo = () => {
                 {/* Designation Toggle */}
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                    <span
+                      className="text-[10px] font-black uppercase tracking-widest"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       Designation
                     </span>
                     <button
@@ -591,8 +668,8 @@ const CreateNgo = () => {
                       onClick={() => toggleSection("showDesignation")}
                       className={`text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border transition-all ${
                         toggles.showDesignation
-                          ? "bg-red-50 text-red-500 border-red-100"
-                          : "bg-emerald-50 text-hf-green border-emerald-100"
+                          ? "bg-red-500/10 text-red-500 border-red-500/20"
+                          : "bg-[#22c55e]/10 text-[#22c55e] border-[#22c55e]/20"
                       }`}
                     >
                       {toggles.showDesignation ? "Remove" : "+ Add"}
@@ -615,21 +692,39 @@ const CreateNgo = () => {
 
         {/* Card 03: Proof Documents */}
         <div
-          className="border rounded-xl bg-white shadow-sm transition-all hover:shadow-md"
-          style={{ borderColor: "var(--border-color)" }}
+          className="border rounded-xl shadow-sm transition-all hover:shadow-md"
+          style={{
+            borderColor: "var(--border-color)",
+            backgroundColor: "var(--bg-primary)",
+          }}
         >
           <div
-            className="border-b p-8 flex items-center gap-5 bg-slate-50/30"
-            style={{ borderColor: "var(--border-color)" }}
+            className="border-b p-8 flex items-center gap-5"
+            style={{
+              borderColor: "var(--border-color)",
+              backgroundColor: "var(--bg-tertiary)",
+            }}
           >
-            <div className="w-14 h-14 bg-white border border-slate-100 rounded-xl flex items-center justify-center text-blue-500 shadow-sm">
+            <div
+              className="w-14 h-14 border rounded-xl flex items-center justify-center text-blue-500 shadow-sm"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
               <ShieldCheck size={28} />
             </div>
             <div>
-              <h2 className="text-base font-black uppercase tracking-tighter leading-none text-slate-800">
+              <h2
+                className="text-base font-black uppercase tracking-tighter leading-none"
+                style={{ color: "var(--text-primary)" }}
+              >
                 03. Proof Documents
               </h2>
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] mt-2 text-slate-400">
+              <p
+                className="text-[10px] font-bold uppercase tracking-[0.2em] mt-2"
+                style={{ color: "var(--text-muted)" }}
+              >
                 Global Compliance & Validity Documents
               </p>
             </div>
@@ -656,7 +751,7 @@ const CreateNgo = () => {
                 onChange={(file) =>
                   handleAttachmentChange(
                     "Authorized Representative ID Proof",
-                    file
+                    file,
                   )
                 }
                 mandatory
@@ -664,9 +759,15 @@ const CreateNgo = () => {
             </div>
 
             {/* Optional Global Proofs */}
-            <div className="space-y-6 pt-6 border-t border-slate-50">
+            <div
+              className="space-y-6 pt-6 border-t"
+              style={{ borderColor: "var(--border-color)" }}
+            >
               <div className="flex items-center justify-between">
-                <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">
+                <h3
+                  className="text-[11px] font-black uppercase tracking-[0.2em]"
+                  style={{ color: "var(--text-muted)" }}
+                >
                   Optional Proofs
                 </h3>
                 <button
@@ -674,8 +775,8 @@ const CreateNgo = () => {
                   onClick={() => toggleSection("showProofOptional")}
                   className={`text-[9px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full border transition-all ${
                     toggles.showProofOptional
-                      ? "bg-red-50 text-red-500 border-red-100"
-                      : "bg-emerald-50 text-hf-green border-emerald-100"
+                      ? "bg-red-500/10 text-red-500 border-red-500/20"
+                      : "bg-[#22c55e]/10 text-[#22c55e] border-[#22c55e]/20"
                   }`}
                 >
                   {toggles.showProofOptional
@@ -696,7 +797,7 @@ const CreateNgo = () => {
                     onChange={(file) =>
                       handleAttachmentChange(
                         "Government Affiliation / Support Letter",
-                        file
+                        file,
                       )
                     }
                   />
@@ -713,7 +814,7 @@ const CreateNgo = () => {
                             ] as File[]) || [];
                           handleAttachmentChange(
                             "NGO Activity / Facility Photos",
-                            [...current, file]
+                            [...current, file],
                           );
                         }
                       }}
@@ -729,16 +830,24 @@ const CreateNgo = () => {
                         ).map((f, i) => (
                           <div
                             key={i}
-                            className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100 group/photo"
+                            className="flex items-center gap-2 px-3 py-1.5 rounded-full border group/photo"
+                            style={{
+                              backgroundColor: "var(--bg-tertiary)",
+                              borderColor: "var(--border-color)",
+                            }}
                           >
-                            <span className="text-[9px] font-bold text-slate-500 truncate max-w-[80px]">
+                            <span
+                              className="text-[9px] font-bold truncate max-w-[80px]"
+                              style={{ color: "var(--text-secondary)" }}
+                            >
                               {f.name}
                             </span>
                             <div className="flex items-center gap-1 opacity-0 group-hover/photo:opacity-100 transition-opacity">
                               <button
                                 type="button"
                                 onClick={() => handlePreview(f, f.name)}
-                                className="text-slate-400 hover:text-[#22c55e] transition-colors"
+                                className="hover:text-[#22c55e] transition-colors"
+                                style={{ color: "var(--text-muted)" }}
                                 title="View Photo"
                               >
                                 <Eye size={10} />
@@ -746,7 +855,8 @@ const CreateNgo = () => {
                               <button
                                 type="button"
                                 onClick={() => handleDownloadFile(f)}
-                                className="text-slate-400 hover:text-blue-500 transition-colors"
+                                className="hover:text-blue-500 transition-colors"
+                                style={{ color: "var(--text-muted)" }}
                                 title="Download Photo"
                               >
                                 <Download size={10} />
@@ -761,10 +871,11 @@ const CreateNgo = () => {
                                   ).filter((_, idx) => idx !== i);
                                   handleAttachmentChange(
                                     "NGO Activity / Facility Photos",
-                                    next
+                                    next,
                                   );
                                 }}
-                                className="text-slate-400 hover:text-red-500 transition-colors"
+                                className="hover:text-red-500 transition-colors"
+                                style={{ color: "var(--text-muted)" }}
                                 title="Remove Photo"
                               >
                                 <X size={10} />
@@ -783,21 +894,39 @@ const CreateNgo = () => {
 
         {/* Card 04: Beneficiary Category Details */}
         <div
-          className="border rounded-xl bg-white shadow-sm transition-all hover:shadow-md"
-          style={{ borderColor: "var(--border-color)" }}
+          className="border rounded-xl shadow-sm transition-all hover:shadow-md"
+          style={{
+            borderColor: "var(--border-color)",
+            backgroundColor: "var(--bg-primary)",
+          }}
         >
           <div
-            className="border-b p-8 flex items-center gap-5 bg-slate-50/30"
-            style={{ borderColor: "var(--border-color)" }}
+            className="border-b p-8 flex items-center gap-5"
+            style={{
+              borderColor: "var(--border-color)",
+              backgroundColor: "var(--bg-tertiary)",
+            }}
           >
-            <div className="w-14 h-14 bg-white border border-slate-100 rounded-xl flex items-center justify-center text-[#22c55e] shadow-sm">
+            <div
+              className="w-14 h-14 border rounded-xl flex items-center justify-center text-[#22c55e] shadow-sm"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
               <MapPin size={28} />
             </div>
             <div>
-              <h2 className="text-base font-black uppercase tracking-tighter leading-none text-slate-800">
+              <h2
+                className="text-base font-black uppercase tracking-tighter leading-none"
+                style={{ color: "var(--text-primary)" }}
+              >
                 04. Beneficiary Focus
               </h2>
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] mt-2 text-slate-400">
+              <p
+                className="text-[10px] font-bold uppercase tracking-[0.2em] mt-2"
+                style={{ color: "var(--text-muted)" }}
+              >
                 Specific details based on target group
               </p>
             </div>
@@ -856,13 +985,19 @@ const CreateNgo = () => {
                             required
                             align="left"
                           />
-                        )
+                        ),
                     )}
                   </div>
 
-                  <div className="space-y-6 pt-6 border-t border-slate-50">
+                  <div
+                    className="space-y-6 pt-6 border-t"
+                    style={{ borderColor: "var(--border-color)" }}
+                  >
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                      <span
+                        className="text-[10px] font-black uppercase tracking-widest"
+                        style={{ color: "var(--text-muted)" }}
+                      >
                         Non-Mandatory Details
                       </span>
                       <button
@@ -870,8 +1005,8 @@ const CreateNgo = () => {
                         onClick={() => toggleSection("showCategoryOptional")}
                         className={`text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border transition-all ${
                           toggles.showCategoryOptional
-                            ? "bg-red-50 text-red-500 border-red-100"
-                            : "bg-emerald-50 text-hf-green border-emerald-100"
+                            ? "bg-red-500/10 text-red-500 border-red-500/20"
+                            : "bg-[#22c55e]/10 text-[#22c55e] border-[#22c55e]/20"
                         }`}
                       >
                         {toggles.showCategoryOptional ? "Remove" : "+ Add"}
@@ -909,7 +1044,7 @@ const CreateNgo = () => {
                               }
                               align="left"
                             />
-                          )
+                          ),
                         )}
                       </div>
                     )}
@@ -917,8 +1052,14 @@ const CreateNgo = () => {
                 </div>
 
                 {/* Category Proofs */}
-                <div className="space-y-8 pt-10 border-t-2 border-dashed border-slate-100">
-                  <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-800 flex items-center gap-2">
+                <div
+                  className="space-y-8 pt-10 border-t-2 border-dashed"
+                  style={{ borderColor: "var(--border-color)" }}
+                >
+                  <h3
+                    className="text-[11px] font-black uppercase tracking-[0.2em] flex items-center gap-2"
+                    style={{ color: "var(--text-primary)" }}
+                  >
                     <CheckCircle size={14} className="text-hf-green" />
                     Category Specific Proofs
                   </h3>
@@ -934,13 +1075,19 @@ const CreateNgo = () => {
                           }
                           mandatory
                         />
-                      )
+                      ),
                     )}
                   </div>
 
-                  <div className="space-y-6 pt-6 border-t border-slate-50">
+                  <div
+                    className="space-y-6 pt-6 border-t"
+                    style={{ borderColor: "var(--border-color)" }}
+                  >
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                      <span
+                        className="text-[10px] font-black uppercase tracking-widest"
+                        style={{ color: "var(--text-muted)" }}
+                      >
                         Optional Supporting Docs
                       </span>
                       <button
@@ -950,8 +1097,8 @@ const CreateNgo = () => {
                         }
                         className={`text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border transition-all ${
                           toggles.showCategoryProofOptional
-                            ? "bg-red-50 text-red-500 border-red-100"
-                            : "bg-emerald-50 text-hf-green border-emerald-100"
+                            ? "bg-red-500/10 text-red-500 border-red-500/20"
+                            : "bg-[#22c55e]/10 text-[#22c55e] border-[#22c55e]/20"
                         }`}
                       >
                         {toggles.showCategoryProofOptional
@@ -1004,9 +1151,18 @@ const CreateNgo = () => {
                                       (f, i) => (
                                         <div
                                           key={i}
-                                          className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100 group/photo"
+                                          className="flex items-center gap-2 px-3 py-1.5 rounded-full border group/photo"
+                                          style={{
+                                            backgroundColor:
+                                              "var(--bg-tertiary)",
+                                            borderColor: "var(--border-color)",
+                                          }}
                                         >
-                                          <span className="text-[9px] font-bold text-slate-500 truncate max-w-[80px]">
+                                          <span
+                                            style={{
+                                              color: "var(--text-secondary)",
+                                            }}
+                                          >
                                             {f.name}
                                           </span>
                                           <div className="flex items-center gap-1 opacity-0 group-hover/photo:opacity-100 transition-opacity">
@@ -1015,7 +1171,10 @@ const CreateNgo = () => {
                                               onClick={() =>
                                                 handlePreview(f, f.name)
                                               }
-                                              className="text-slate-400 hover:text-[#22c55e] transition-colors"
+                                              className="hover:text-[#22c55e] transition-colors"
+                                              style={{
+                                                color: "var(--text-muted)",
+                                              }}
                                               title="View Photo"
                                             >
                                               <Eye size={10} />
@@ -1025,7 +1184,10 @@ const CreateNgo = () => {
                                               onClick={() =>
                                                 handleDownloadFile(f)
                                               }
-                                              className="text-slate-400 hover:text-blue-500 transition-colors"
+                                              className="hover:text-blue-500 transition-colors"
+                                              style={{
+                                                color: "var(--text-muted)",
+                                              }}
                                               title="Download Photo"
                                             >
                                               <Download size={10} />
@@ -1038,22 +1200,25 @@ const CreateNgo = () => {
                                                 ).filter((_, idx) => idx !== i);
                                                 handleAttachmentChange(
                                                   label,
-                                                  next
+                                                  next,
                                                 );
                                               }}
-                                              className="text-slate-400 hover:text-red-500 transition-colors"
+                                              className="hover:text-red-500 transition-colors"
+                                              style={{
+                                                color: "var(--text-muted)",
+                                              }}
                                               title="Remove Photo"
                                             >
                                               <X size={10} />
                                             </button>
                                           </div>
                                         </div>
-                                      )
+                                      ),
                                     )}
                                   </div>
                                 )}
                             </div>
-                          )
+                          ),
                         )}
                       </div>
                     )}
@@ -1066,15 +1231,20 @@ const CreateNgo = () => {
 
         {/* Action Bar */}
         <div
-          className="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-t p-6 z-[200] shadow-[0_-15px_50px_rgba(0,0,0,0.05)]"
-          style={{ borderColor: "var(--border-color)" }}
+          className="fixed bottom-0 left-0 right-0 backdrop-blur-xl border-t p-6 z-[200] shadow-[0_-15px_50px_rgba(0,0,0,0.05)]"
+          style={{
+            borderColor: "var(--border-color)",
+            backgroundColor: "var(--bg-primary)",
+            opacity: 0.95,
+          }}
         >
           <div className="max-w-5xl mx-auto flex items-center justify-end">
             <div className="flex items-center gap-8">
               <ResuableButton
                 variant="ghost"
                 onClick={() => navigate("/admin/users/ngos")}
-                className="text-slate-400 font-black text-[11px] uppercase tracking-[0.2em] hover:text-red-500 transition-colors"
+                className="font-black text-[11px] uppercase tracking-[0.2em] hover:text-red-500 transition-colors"
+                style={{ color: "var(--text-muted)" }}
               >
                 Cancel Entry
               </ResuableButton>

@@ -1,31 +1,185 @@
-import { useState, useRef } from "react";
-import { Icon } from "../../../../global/components/resuable-components/Icon";
-import { ImpactCards } from "../../../../global/components/resuable-components/ImpactCards";
+import { useState } from "react";
+import { toast } from "sonner";
 import ResuableButton from "../../../../global/components/resuable-components/button";
-import ResuableModal from "../../../../global/components/resuable-components/modal";
-import ResuableInput from "../../../../global/components/resuable-components/input";
+import ResuableDrawer from "../../../../global/components/resuable-components/drawer";
+import FilePreviewModal from "../../../../global/components/resuable-components/FilePreviewModal";
+import ImpactCards from "../../../../global/components/resuable-components/ImpactCards";
+import {
+  ShieldCheck,
+  User,
+  Phone,
+  Mail,
+  Building2,
+  FileText,
+  BadgeCheck,
+  Globe,
+  Wallet,
+  MapPin,
+  Award,
+  MessageSquare,
+  Edit,
+  Eye,
+  Download,
+} from "lucide-react";
 
+/**
+ * @module NGOProfile
+ * @description Clean, professional NGO Profile with a focus on verified status and humanitarian impact.
+ */
 const NGOProfile = () => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [profile, setProfile] = useState({
-    name: "Green Harvest NGO",
-    email: "contact@greenharvest.org",
-    phone: "+1 555 123 4567",
-    registrationId: "NGO-8823-XYZ-2025",
-    location: "New York, NY",
-    description:
-      "Dedicated to reducing food waste and hunger by connecting local donors with those in need. Operating since 2018 with a network of over 200 volunteers.",
-  });
+  const [activeTab, setActiveTab] = useState("identity");
+  const [isRequestDrawerOpen, setIsRequestDrawerOpen] = useState(false);
+  const [requestCategory, setRequestCategory] = useState<string | null>(null);
+  const [selectedFields, setSelectedFields] = useState<string[]>([]);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [requestId, setRequestId] = useState("");
+  const [requestMessage, setRequestMessage] = useState("");
 
-  const handleEditToggle = () => {
-    if (isEditing) {
-      setIsEditing(false);
-    } else {
-      setIsEditing(true);
-    }
+  // Document Preview State
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<{
+    url: string;
+    name: string;
+  } | null>(null);
+
+  const CATEGORIES_CONFIG: Record<
+    string,
+    { label: string; icon: any; fields: string[] }
+  > = {
+    contact: {
+      label: "Contact Info",
+      icon: <User size={16} />,
+      fields: [
+        "Manager Name",
+        "Primary Email",
+        "Phone Number",
+        "Address Details",
+      ],
+    },
+    legal: {
+      label: "Legal Details",
+      icon: <Building2 size={16} />,
+      fields: [
+        "NGO Legal Name",
+        "Registration ID",
+        "Operating License",
+        "Tax Exemption (80G)",
+        "FCRA Details",
+      ],
+    },
+    payout: {
+      label: "Payout System",
+      icon: <Wallet size={16} />,
+      fields: [
+        "Bank Account",
+        "Primary UPI ID",
+        "Branch / IFSC",
+        "Settlement Cycle",
+      ],
+    },
+    other: {
+      label: "General Help",
+      icon: <MessageSquare size={16} />,
+      fields: [
+        "Grant Inquiry",
+        "Technical Support",
+        "Need Posting Issue",
+        "Other",
+      ],
+    },
   };
 
-  const impactData = [
+  const toggleField = (field: string) => {
+    setSelectedFields((prev) => {
+      const isSelecting = !prev.includes(field);
+      const entry = `${field.toUpperCase()}: `;
+
+      if (isSelecting) {
+        setRequestMessage((curr) => {
+          if (curr.includes(`${field.toUpperCase()}:`)) return curr;
+          return curr ? `${curr}\n${entry}` : entry;
+        });
+      } else {
+        setRequestMessage((curr) => {
+          return curr
+            .split("\n")
+            .filter((line) => !line.includes(`${field.toUpperCase()}:`))
+            .join("\n")
+            .trim();
+        });
+      }
+      return isSelecting ? [...prev, field] : prev.filter((f) => f !== field);
+    });
+  };
+
+  const handleSubmit = () => {
+    const newId = `REQ-${Math.floor(1000 + Math.random() * 9000)}`;
+    setRequestId(newId);
+    setIsSubmitted(true);
+  };
+
+  const resetSupportHub = () => {
+    setIsSubmitted(false);
+    setRequestCategory(null);
+    setSelectedFields([]);
+    setRequestId("");
+    setRequestMessage("");
+  };
+
+  const switchCategory = (id: string | null) => {
+    setRequestCategory(id);
+    setSelectedFields([]);
+    setRequestMessage("");
+  };
+
+  const profile = {
+    ngoName: "Green Harvest NGO",
+    ngoType: "Social Welfare / Food Security",
+    registrationId: "NGO-8823-XYZ-2025",
+    taxId: "80G-EXEMPT-9920",
+    managerName: "Sarah Micheals",
+    email: "contact@greenharvest.org",
+    phone: "+1 555 123 4567",
+    location: "New York, NY",
+    memberSince: "January 2025",
+    verificationLevel: "Verified Partner",
+    bankName: "HDFC Bank",
+    accountNumber: "**** 8824",
+    upiId: "charity@okaxis",
+  };
+
+  const handleViewDocument = (doc: any) => {
+    setSelectedFile({
+      url: doc.url || "/HungerFree Doc.pdf",
+      name: doc.name,
+    });
+    setIsPreviewOpen(true);
+  };
+
+  const handleDownloadDocument = async (doc: any) => {
+    const url = doc.url || "/HungerFree Doc.pdf";
+
+    const promise = fetch(url)
+      .then((response) => response.blob())
+      .then((blob) => {
+        const blobUrl = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.download = `${doc.name.replace(/\s+/g, "_")}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(blobUrl);
+      });
+
+    toast.promise(promise, {
+      loading: `Preparing ${doc.name} for download...`,
+      success: `${doc.name} downloaded successfully!`,
+      error: "Failed to download document. Please try again.",
+    });
+  };
+
+  const profileStats = [
     {
       label: "Total Donations",
       val: "850",
@@ -39,799 +193,574 @@ const NGOProfile = () => {
       color: "bg-[#22c55e]",
     },
     {
+      label: "Verification",
+      val: "Partner",
+      trend: "Fully Verified",
+      color: "bg-[#22c55e]",
+    },
+    {
       label: "Active Needs",
       val: "12",
-      trend: "Current requests",
+      trend: "In progress",
       color: "bg-blue-500",
     },
-    {
-      label: "Volunteers",
-      val: "200+",
-      trend: "Network size",
-      color: "bg-purple-500",
-    },
   ];
 
-  const activities = [
-    {
-      title: "Donation Received",
-      time: "2 hours ago",
-      desc: "Received 50kg of rice from Hotel Grand.",
-      type: "donation",
-    },
-    {
-      title: "Need Fulfilled",
-      time: "Yesterday",
-      desc: "Baby Food & Formula request completed.",
-      type: "milestone",
-    },
-    {
-      title: "Profile Updated",
-      time: "3 days ago",
-      desc: "Updated contact information and location.",
-      type: "update",
-    },
-  ];
-
-  // Document Management State
-  const [documents, setDocuments] = useState([
-    {
-      id: "1",
-      name: "Tax Exempt Certificate.pdf",
-      type: "Tax Exempt Certificate",
-      status: "VERIFIED",
-      uploadedAt: new Date("2024-03-15"),
-      aiFeedback: "Document validated with high confidence.",
-    },
-    {
-      id: "2",
-      name: "Operating License.pdf",
-      type: "Operating License",
-      status: "VERIFIED",
-      uploadedAt: new Date("2024-03-10"),
-      aiFeedback: "Entity active. License verified.",
-    },
-  ]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isVerifying, setIsVerifying] = useState(false);
-
-  const handleDeleteDoc = (id: string) => {
-    setDocuments((prev) => prev.filter((doc) => doc.id !== id));
-  };
-
-  const handleUploadDoc = (file: File, type: string) => {
-    setIsModalOpen(false);
-    setIsVerifying(true);
-
-    const newDoc = {
-      id: Math.random().toString(36).substr(2, 9),
-      name: file.name,
-      type: type,
-      status: "ANALYZING",
-      uploadedAt: new Date(),
-      aiFeedback: "Gemini is analyzing your document...",
-    };
-
-    setDocuments((prev) => [newDoc, ...prev]);
-
-    // Simulate verification delay
-    setTimeout(() => {
-      setDocuments((prev) =>
-        prev.map((doc) =>
-          doc.id === newDoc.id
-            ? {
-                ...doc,
-                status: "VERIFIED",
-                aiFeedback: "Document verified successfully!",
-              }
-            : doc
-        )
-      );
-      setIsVerifying(false);
-    }, 3000);
-  };
+  // Alignment Helpers
+  const labelText = "text-[10px] font-black text-slate-400 tracking-[0.1em]";
+  const valueText = "text-sm font-bold text-slate-800 tracking-tight";
+  const rowItem = "flex items-center gap-3 w-full";
 
   return (
-    <div
-      className="min-h-screen"
-      style={{ backgroundColor: "var(--bg-secondary)" }}
-    >
-      {/* Header Section */}
-      <div
-        className="bg-white border-b sticky top-0 z-20"
-        style={{ borderColor: "var(--border-color)" }}
-      >
-        <div className="max-w-7xl mx-auto px-8 py-8">
-          <div className="flex flex-col md:flex-row items-center md:items-end gap-10">
-            <div className="relative group">
-              <div className="w-36 h-36 rounded-sm overflow-hidden border-4 border-white shadow-xl group-hover:scale-[1.02] transition-transform duration-500 bg-[#22c55e] flex items-center justify-center">
-                <span className="text-5xl font-black text-white">GH</span>
-              </div>
-              <div className="absolute -bottom-1 -right-1 bg-[#22c55e] text-white p-2 rounded-sm border-2 border-white shadow-md">
-                <Icon name="verified" className="w-5 h-5" />
-              </div>
+    <div className="min-h-screen bg-slate-50/50 flex flex-col pb-20 font-sans">
+      {/* 1. CLEAN HEADER */}
+      <header className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
+        <div className="max-w-7xl mx-auto px-6 md:px-8 py-4 flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
+            <div className="w-20 h-20 rounded-lg border border-slate-200 p-1 bg-[#22c55e] shadow-sm overflow-hidden flex items-center justify-center">
+              <span className="text-3xl font-black text-white">GH</span>
             </div>
 
-            <div className="flex-1 text-center md:text-left">
-              <div className="flex items-center justify-center md:justify-start gap-4 mb-2">
-                <h1 className="text-4xl font-black tracking-tighter text-slate-900">
-                  {profile.name}
-                </h1>
-                <span className="px-3 py-1 bg-emerald-50 text-[#22c55e] rounded-sm text-[10px] font-black uppercase tracking-widest border border-emerald-100 shadow-sm">
-                  Certified Partner
+            <div className="space-y-2">
+              <div className="flex items-center justify-center md:justify-start gap-2">
+                <span className="px-2.5 py-1 bg-green-50 text-green-600 text-[10px] font-black tracking-widest rounded-md border border-green-100 flex items-center gap-1.5">
+                  <ShieldCheck size={12} /> {profile.verificationLevel}
+                </span>
+                <span className="text-slate-400 text-[10px] font-bold tracking-widest">
+                  Reg Id: {profile.registrationId}
                 </span>
               </div>
-              <div className="flex flex-wrap items-center justify-center md:justify-start gap-6 text-slate-500">
-                <p className="font-bold text-xs flex items-center gap-2">
-                  <Icon name="office" className="w-4 h-4 text-[#22c55e]" />
-                  {profile.location}
-                </p>
-                <p className="font-bold text-xs flex items-center gap-2">
-                  <Icon name="calendar" className="w-4 h-4 text-[#22c55e]" />
-                  Member since Jan 2025
-                </p>
+              <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight uppercase leading-none">
+                {profile.ngoName}
+              </h1>
+              <p className="text-slate-500 font-bold text-xs tracking-widest">
+                {profile.ngoType}
+              </p>
+            </div>
+          </div>
+
+          <div className="w-full md:w-auto">
+            <ResuableButton
+              variant="primary"
+              onClick={() => {
+                resetSupportHub();
+                setIsRequestDrawerOpen(true);
+              }}
+              className="w-full md:w-auto px-8 h-12 rounded-md shadow-sm text-white text-[10px] font-black tracking-widest flex items-center gap-2"
+            >
+              <ShieldCheck size={16} />
+              Request Information Update
+            </ResuableButton>
+          </div>
+        </div>
+      </header>
+
+      <main className="max-w-7xl mx-auto w-full px-6 md:px-8 mt-5 space-y-5">
+        {/* 2. STATS GRID */}
+        <section>
+          <ImpactCards
+            data={profileStats}
+            orientation="horizontal"
+            className="w-full"
+          />
+        </section>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* LEFT: ENTITY INFORMATION */}
+          <aside className="lg:col-span-4 w-full text-start">
+            <div className="bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden text-start lg:h-[calc(100vh-270px)] min-h-[440px] flex flex-col">
+              <div className="h-[52px] px-6 bg-slate-50/50 border-b border-slate-100 flex items-center">
+                <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest flex items-center gap-2">
+                  <User size={14} className="text-[#22c55e]" /> Organization
+                  Details
+                </h3>
+              </div>
+              <div className="p-5 flex-grow overflow-y-auto thin-scrollbar flex flex-col gap-5">
+                {/* Primary Contact */}
+                <div className="space-y-4">
+                  <p className={labelText}>Managing Director</p>
+                  <div className="space-y-2">
+                    <div className={rowItem}>
+                      <div className="w-8 h-8 rounded bg-slate-50 flex items-center justify-center text-slate-400">
+                        <User size={14} />
+                      </div>
+                      <span className={valueText}>{profile.managerName}</span>
+                    </div>
+                    <div className={rowItem}>
+                      <div className="w-8 h-8 rounded bg-slate-50 flex items-center justify-center text-slate-400">
+                        <Mail size={14} />
+                      </div>
+                      <span
+                        className={`${valueText} lowercase decoration-slate-200`}
+                      >
+                        {profile.email}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Secondary Contact */}
+                <div className="pt-4 border-t border-slate-50 space-y-3">
+                  <p className={labelText}>Contact Number</p>
+                  <div className={rowItem}>
+                    <div className="w-8 h-8 rounded bg-slate-50 flex items-center justify-center text-slate-400">
+                      <Phone size={14} />
+                    </div>
+                    <span className={valueText}>{profile.phone}</span>
+                  </div>
+                </div>
+
+                {/* Registered Address */}
+                <div className="pt-4 border-t border-slate-50 space-y-3">
+                  <p className={labelText}>Operating Office</p>
+                  <div className="flex gap-4">
+                    <div className="w-8 h-8 rounded bg-green-50 flex items-center justify-center text-[#22c55e] shrink-0">
+                      <MapPin size={14} />
+                    </div>
+                    <p className="text-[13px] font-bold text-slate-700 leading-relaxed tracking-tight">
+                      456 Charity Lane, Lower East Side,
+                      <br />
+                      New York, NY 10002
+                      <br />
+                      United States
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
+          </aside>
 
-            <div className="flex gap-4">
-              <ResuableButton
-                onClick={handleEditToggle}
-                variant="dark"
-                className="px-10 py-3.5 !rounded-sm text-xs font-black uppercase tracking-widest shadow-lg"
-              >
-                {isEditing ? "Save Selection" : "Edit Profile"}
-              </ResuableButton>
-              <ResuableButton variant="secondary" className="p-3.5 !rounded-sm">
-                <Icon name="settings" className="w-6 h-6" />
-              </ResuableButton>
+          {/* RIGHT: NGO DETAILS */}
+          <section className="lg:col-span-8 w-full text-start">
+            <div className="bg-white border border-slate-200 rounded-lg shadow-sm lg:h-[calc(100vh-270px)] min-h-[440px] flex flex-col">
+              {/* TABS HEADER */}
+              <div className="h-[52px] px-1 bg-slate-50/50 border-b border-slate-100 flex items-center">
+                <div className="flex items-center gap-1 p-1 bg-slate-200/40 rounded-lg">
+                  {[
+                    { id: "identity", label: "NGO Information" },
+                    { id: "documents", label: "Credential Vault" },
+                  ].map((tab) => (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`px-4 py-1.5 rounded-md text-[9px] font-black uppercase tracking-widest transition-all ${
+                        activeTab === tab.id
+                          ? "bg-white text-[#22c55e] shadow-sm border border-slate-100"
+                          : "text-slate-400 hover:text-slate-600 hover:bg-slate-200/20"
+                      }`}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="p-6 text-start flex-grow overflow-y-auto thin-scrollbar flex flex-col">
+                {activeTab === "identity" && (
+                  <div className="space-y-6 animate-in fade-in duration-500">
+                    {/* SECTION 1: LEGAL INTELLIGENCE */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
+                      {[
+                        {
+                          label: "Formal Entity Name",
+                          val: profile.ngoName,
+                          icon: <Building2 size={14} />,
+                          span: true,
+                          isVerified: true,
+                        },
+                        {
+                          label: "Official Website",
+                          val: "www.greenharvest.org",
+                          icon: <Globe size={14} />,
+                        },
+                        {
+                          label: "Registration ID",
+                          val: profile.registrationId,
+                          icon: <FileText size={14} />,
+                        },
+                        {
+                          label: "NGO Classification",
+                          val: profile.ngoType,
+                          icon: <Award size={14} />,
+                        },
+                        {
+                          label: "Tax Exemption ID",
+                          val: profile.taxId,
+                          icon: <BadgeCheck size={14} />,
+                        },
+                      ].map((field, i) => (
+                        <div
+                          key={i}
+                          className={`space-y-2 ${field.span ? "md:col-span-2" : ""}`}
+                        >
+                          <p className={labelText}>{field.label}</p>
+                          <div className="flex items-center gap-3 bg-slate-50/50 p-2.5 rounded-md border border-slate-100 hover:border-slate-200 transition-colors">
+                            <div className="flex items-center justify-center w-7 h-7 rounded-md bg-white border border-slate-100 text-slate-400">
+                              {field.icon}
+                            </div>
+                            <span
+                              className={`${valueText} text-[13px] flex items-center gap-2`}
+                            >
+                              {field.val}
+                              {field.isVerified && (
+                                <BadgeCheck
+                                  size={14}
+                                  className="text-emerald-500"
+                                />
+                              )}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* SECTION 2: PAYOUT INTELLIGENCE */}
+                    <div className="pt-4 border-t border-slate-100 space-y-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-[#22c55e] border border-emerald-100 shadow-sm">
+                          <Wallet size={16} />
+                        </div>
+                        <div className="flex flex-col">
+                          <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900">
+                            Verified Payout Methods
+                          </h4>
+                          <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">
+                            Primary accounts for grant settlements
+                          </span>
+                        </div>
+                        <div className="ml-auto flex items-center gap-1.5 px-2 py-1 bg-blue-50/50 rounded-md border border-blue-100">
+                          <ShieldCheck size={10} className="text-blue-500" />
+                          <span className="text-[8px] font-black text-blue-600 uppercase tracking-widest">
+                            Verified & Active
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
+                        {[
+                          {
+                            label: "Bank Account",
+                            val: `${profile.bankName} (***8824)`,
+                            icon: <Building2 size={14} />,
+                          },
+                          {
+                            label: "Primary UPI VPA",
+                            val: profile.upiId,
+                            icon: <Wallet size={14} />,
+                          },
+                        ].map((field, i) => (
+                          <div key={i} className="space-y-2">
+                            <p className={labelText}>{field.label}</p>
+                            <div className="flex items-center gap-3 bg-slate-50/50 p-2.5 rounded-md border border-slate-100 hover:border-slate-200 transition-colors">
+                              <div className="flex items-center justify-center w-7 h-7 rounded-md bg-white border border-slate-100 text-slate-400">
+                                {field.icon}
+                              </div>
+                              <span
+                                className={`${valueText} text-[13px] flex items-center gap-2`}
+                              >
+                                {field.val}
+                                <ShieldCheck
+                                  size={14}
+                                  className="text-blue-500"
+                                />
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "documents" && (
+                  <div className="space-y-6 animate-in fade-in duration-300">
+                    <p className={labelText}>Organization Credentials</p>
+                    <div className="grid grid-cols-1 gap-4">
+                      {[
+                        {
+                          name: "Tax Exempt Certificate (80G)",
+                          status: "Verified",
+                          date: "Jan 15, 2025",
+                          url: "/HungerFree Doc.pdf",
+                        },
+                        {
+                          name: "Operating License",
+                          status: "Verified",
+                          date: "Jan 10, 2025",
+                          url: "/HungerFree Doc.pdf",
+                        },
+                        {
+                          name: "Impact Audit Report 2024",
+                          status: "In Review",
+                          date: "Pending",
+                          url: "/HungerFree Doc.pdf",
+                        },
+                      ].map((doc, i) => (
+                        <div
+                          key={i}
+                          className="group flex items-center justify-between p-3 bg-slate-50/50 border border-slate-100 rounded-md hover:bg-white hover:border-emerald-200 transition-all duration-300"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-md bg-white border border-slate-100 flex items-center justify-center text-slate-400 group-hover:text-emerald-500 transition-colors">
+                              <FileText size={14} />
+                            </div>
+                            <div>
+                              <p className="text-xs font-bold text-slate-800 uppercase tracking-tight">
+                                {doc.name}
+                              </p>
+                              <p className="text-[9px] font-bold text-slate-400 uppercase">
+                                Validated: {doc.date}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-3">
+                            <span
+                              className={`px-2.5 py-0.5 rounded-md text-[8px] font-black uppercase tracking-widest border transition-colors ${
+                                doc.status === "Verified"
+                                  ? "bg-green-50 text-green-600 border-green-100"
+                                  : "bg-amber-50 text-amber-600 border-amber-100"
+                              }`}
+                            >
+                              {doc.status}
+                            </span>
+
+                            <div className="flex items-center gap-0.5 pl-3 border-l border-slate-200">
+                              <button
+                                onClick={() => handleViewDocument(doc)}
+                                className="p-1.5 hover:bg-emerald-50 text-slate-400 hover:text-emerald-600 rounded-lg transition-all"
+                              >
+                                <Eye size={14} />
+                              </button>
+                              <button
+                                onClick={() => handleDownloadDocument(doc)}
+                                className="p-1.5 hover:bg-blue-50 text-slate-400 hover:text-blue-600 rounded-lg transition-all"
+                              >
+                                <Download size={14} />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </section>
+        </div>
+
+        {/* PAGE FOOTER */}
+        <div className="flex flex-col gap-4">
+          {/* SECURE CHANNEL NOTICE */}
+          <div className="p-4 bg-blue-50/50 rounded-lg border border-blue-100 flex items-start gap-4 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="p-2.5 bg-white rounded-md border border-blue-200 shadow-inner shrink-0 text-blue-500">
+              <MessageSquare size={18} />
+            </div>
+            <div className="space-y-1 text-start">
+              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900">
+                Update Process
+              </h4>
+              <p className="text-[11px] font-bold text-blue-800/80 leading-relaxed tracking-tight">
+                We manually check all updates to keep your NGO profile safe and
+                verified for grants. Review usually completes within 24 hours to
+                ensure data integrity for global donors.
+              </p>
             </div>
           </div>
         </div>
-      </div>
+      </main>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-8 mt-10 pb-12">
-        {/* Impact Cards */}
-        <div className="mb-8">
-          <ImpactCards data={impactData} />
-        </div>
+      {/* SUPPORT & COMPLIANCE HUB */}
+      <ResuableDrawer
+        isOpen={isRequestDrawerOpen}
+        onClose={() => setIsRequestDrawerOpen(false)}
+        title="NGO Support Hub"
+        subtitle="Submit updates or requests for your profile"
+        size="md"
+      >
+        <div className="p-8 h-full flex flex-col">
+          {isSubmitted ? (
+            <div className="flex-grow flex flex-col items-center justify-center space-y-6 animate-in zoom-in-95 fade-in duration-500 text-center">
+              <div className="w-20 h-20 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center">
+                <BadgeCheck size={40} className="text-[#22c55e]" />
+              </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column - Profile Info */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Organization Information Card */}
-            <div
-              className="border rounded-sm p-10 bg-white shadow-sm"
-              style={{
-                borderColor: "var(--border-color)",
-              }}
-            >
-              <h2 className="text-xl font-black tracking-tight mb-12 flex items-center justify-start gap-3 text-slate-800">
-                <Icon name="id-card" className="w-5 h-5 text-[#22c55e]" />
-                Organization Details
-              </h2>
+              <div className="space-y-2">
+                <h3 className="text-base font-black text-slate-900 uppercase tracking-widest">
+                  Request Sent
+                </h3>
+                <p className="text-xs font-bold text-slate-500 max-w-[280px] mx-auto leading-relaxed">
+                  We've received your update. Our team will review and process
+                  it shortly.
+                </p>
+              </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-y-10 gap-x-12">
-                <div className="flex flex-col">
-                  {isEditing ? (
-                    <ResuableInput
-                      label="Organization Name"
-                      value={profile.name}
-                      onChange={(val) => setProfile({ ...profile, name: val })}
-                      align="left"
-                    />
-                  ) : (
-                    <>
-                      <label className="text-[10px] font-black uppercase tracking-[0.2em] mb-2 text-slate-400">
-                        Organization Name
-                      </label>
-                      <p className="font-black text-lg text-slate-800">
-                        {profile.name}
-                      </p>
-                    </>
-                  )}
+              <div className="w-full p-4 bg-slate-50 rounded-2xl border border-slate-100 space-y-4">
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center px-1">
+                    <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">
+                      Request ID
+                    </span>
+                    <span className="text-[11px] font-black text-slate-900 font-mono">
+                      {requestId}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center px-1">
+                    <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">
+                      Current Status
+                    </span>
+                    <span className="text-[11px] font-black text-[#22c55e]">
+                      Reviewing
+                    </span>
+                  </div>
                 </div>
 
-                <div className="flex flex-col">
-                  <label className="text-[10px] font-black uppercase tracking-[0.2em] mb-2 text-slate-400">
-                    Registration ID
-                  </label>
-                  <p className="font-bold text-sm text-slate-600">
-                    {profile.registrationId}
-                  </p>
-                </div>
-
-                <div className="flex flex-col">
-                  {isEditing ? (
-                    <ResuableInput
-                      label="Email Address"
-                      value={profile.email}
-                      onChange={(val) => setProfile({ ...profile, email: val })}
-                      align="left"
-                    />
-                  ) : (
-                    <>
-                      <label className="text-[10px] font-black uppercase tracking-[0.2em] mb-2 text-slate-400">
-                        Email Address
-                      </label>
-                      <p className="font-black text-lg text-slate-800">
-                        {profile.email}
-                      </p>
-                    </>
-                  )}
-                </div>
-
-                <div className="flex flex-col">
-                  {isEditing ? (
-                    <ResuableInput
-                      label="Phone Number"
-                      value={profile.phone}
-                      onChange={(val) => setProfile({ ...profile, phone: val })}
-                      align="left"
-                    />
-                  ) : (
-                    <>
-                      <label className="text-[10px] font-black uppercase tracking-[0.2em] mb-2 text-slate-400">
-                        Phone Number
-                      </label>
-                      <p className="font-black text-lg text-slate-800">
-                        {profile.phone}
-                      </p>
-                    </>
-                  )}
-                </div>
-
-                <div className="md:col-span-2 flex flex-col">
-                  {isEditing ? (
-                    <ResuableInput
-                      label="Location"
-                      value={profile.location}
-                      onChange={(val) =>
-                        setProfile({ ...profile, location: val })
-                      }
-                      align="left"
-                    />
-                  ) : (
-                    <>
-                      <label className="text-[10px] font-black uppercase tracking-[0.2em] mb-2 text-slate-400">
-                        Location
-                      </label>
-                      <p className="font-black text-lg text-slate-800">
-                        {profile.location}
-                      </p>
-                    </>
-                  )}
-                </div>
-
-                <div className="md:col-span-2 flex flex-col">
-                  <label className="text-[10px] font-black uppercase tracking-[0.2em] mb-2 text-slate-400">
-                    Organization Description
-                  </label>
-                  {isEditing ? (
-                    <textarea
-                      value={profile.description}
-                      onChange={(e) =>
-                        setProfile({ ...profile, description: e.target.value })
-                      }
-                      rows={4}
-                      className="w-full px-4 py-3 border border-slate-200 rounded-sm text-left focus:outline-none focus:ring-1 focus:ring-[#22c55e] font-semibold text-sm transition-all resize-none"
-                    />
-                  ) : (
-                    <p className="font-semibold text-sm leading-relaxed text-slate-600 max-w-2xl">
-                      {profile.description}
-                    </p>
-                  )}
+                {/* Note Summary Receipt */}
+                <div className="pt-3 border-t border-slate-200/60 space-y-2 text-start">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[9px] font-black uppercase tracking-widest text-slate-400 block">
+                      Note Sent
+                    </span>
+                    <button
+                      onClick={() => setIsSubmitted(false)}
+                      className="flex items-center gap-1 px-2 py-1 text-[8px] font-black uppercase tracking-widest text-[#22c55e] hover:bg-emerald-50 rounded-md transition-all"
+                    >
+                      <Edit size={10} />
+                      Edit
+                    </button>
+                  </div>
+                  <div className="max-h-28 overflow-y-auto thin-scrollbar p-3 bg-white/50 border border-slate-200/50 rounded-lg text-start">
+                    <pre className="text-[10px] font-bold text-slate-600 whitespace-pre-wrap leading-relaxed">
+                      {requestMessage || "No additional note provided."}
+                    </pre>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div
-              className="rounded-sm shadow-sm overflow-hidden border transition-all duration-500 mt-8 bg-white"
-              style={{
-                borderColor: "var(--border-color)",
-              }}
-            >
-              <div
-                className="p-7 border-b flex items-center justify-between sticky top-0 z-10 bg-white"
-                style={{
-                  borderColor: "var(--border-color)",
+              <ResuableButton
+                variant="primary"
+                className="w-full h-11 rounded-xl text-[10px] font-black uppercase tracking-[0.2em]"
+                onClick={() => {
+                  setIsRequestDrawerOpen(false);
+                  resetSupportHub();
                 }}
               >
-                <div className="flex items-center space-x-3.5">
-                  <div className="w-10 h-10 rounded-sm bg-[#22c55e] flex items-center justify-center text-white shadow-md">
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2.5}
-                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                      />
-                    </svg>
-                  </div>
-                  <div className="text-start">
-                    <h1
-                      className="text-xl font-bold tracking-tight"
-                      style={{ color: "var(--text-primary)" }}
-                    >
-                      Documents
-                    </h1>
-                    <p
-                      className="text-xs font-medium mt-0.5"
-                      style={{ color: "var(--text-muted)" }}
-                    >
-                      Verification & Credentials
-                    </p>
-                  </div>
+                Done
+              </ResuableButton>
+            </div>
+          ) : (
+            <div className="space-y-6 flex-grow flex flex-col text-start">
+              <div className="flex items-start gap-3 p-3 bg-blue-50/50 border border-blue-100 rounded-lg">
+                <div className="p-1.5 bg-white rounded-md border border-blue-200 shrink-0 text-blue-500">
+                  <MessageSquare size={14} />
                 </div>
-
-                <div className="hidden sm:flex items-center text-[9px] font-bold text-[#22c55e] bg-emerald-50 px-2.5 py-1.5 rounded-sm uppercase tracking-widest border border-emerald-100">
-                  <span className="flex h-1.5 w-1.5 rounded-full bg-[#22c55e] mr-2 animate-pulse"></span>
-                  Verified
+                <div className="space-y-0.5">
+                  <h4 className="text-[9px] font-black uppercase tracking-widest text-blue-900">
+                    Security Note
+                  </h4>
+                  <p className="text-[10px] font-bold text-blue-800/70 leading-relaxed tracking-tight">
+                    We manually check all updates to keep your NGO profile safe
+                    and verified for grants. Review usually takes 24 hours.
+                  </p>
                 </div>
               </div>
 
-              <div className="p-6 sm:p-8">
-                {documents.length === 0 ? (
-                  <div className="py-12 text-center">
-                    <div className="w-16 h-16 bg-slate-50 rounded-sm flex items-center justify-center mx-auto mb-4 text-slate-200">
-                      <svg
-                        className="w-8 h-8"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
+              {!requestCategory ? (
+                <div className="space-y-3">
+                  <p className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 px-1">
+                    What would you like to update?
+                  </p>
+                  <div className="grid grid-cols-2 gap-3">
+                    {Object.entries(CATEGORIES_CONFIG).map(([id, item]) => (
+                      <button
+                        key={id}
+                        onClick={() => switchCategory(id)}
+                        className="flex flex-col items-center justify-center h-28 bg-white border border-slate-100 rounded-xl hover:border-[#22c55e]/50 hover:bg-slate-50 transition-all group shadow-sm active:scale-95"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={1.5}
-                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                        />
-                      </svg>
-                    </div>
-                    <h3 className="text-lg font-semibold text-slate-700">
-                      Storage empty
-                    </h3>
-                    <p className="text-xs text-slate-400 mt-1.5">
-                      Upload a document to begin analysis.
-                    </p>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {documents.map((doc) => (
-                      <DocumentCard
-                        key={doc.id}
-                        doc={doc}
-                        onDelete={handleDeleteDoc}
-                      />
+                        <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-[#22c55e] transition-colors mb-2">
+                          {item.icon}
+                        </div>
+                        <span className="text-[9px] font-black uppercase tracking-widest text-slate-500 group-hover:text-slate-900 text-center px-3">
+                          {item.label}
+                        </span>
+                      </button>
                     ))}
                   </div>
-                )}
-
-                <div className="mt-8 flex justify-center">
-                  <button
-                    onClick={() => setIsModalOpen(true)}
-                    disabled={isVerifying}
-                    className="group relative inline-flex items-center justify-center px-8 py-3.5 font-bold text-slate-500 bg-white border border-slate-200 rounded-sm transition-all duration-300 hover:text-[#22c55e] hover:bg-emerald-50 hover:border-emerald-100 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <svg
-                      className="w-4 h-4 mr-2.5 group-hover:rotate-90 transition-transform duration-500"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
+                </div>
+              ) : (
+                <div className="space-y-5 animate-in fade-in slide-in-from-right-4 duration-300">
+                  <div className="flex items-center justify-between px-1">
+                    <p className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">
+                      Select fields to change:
+                    </p>
+                    <button
+                      onClick={() => switchCategory(null)}
+                      className="text-[8px] font-black uppercase tracking-widest text-[#22c55e] hover:underline"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2.5}
-                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                      />
-                    </svg>
-                    <span className="tracking-widest uppercase text-[10px]">
-                      Add Document
-                    </span>
-                  </button>
-                </div>
-              </div>
-
-              {/* <div className="px-8 py-4 bg-slate-50/30 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between text-[10px] text-slate-400 font-medium">
-                <p>Gemini AI Vision Powered</p>
-                <div className="hidden sm:flex items-center space-x-3">
-                  <a href="#" className="hover:text-slate-600">
-                    Privacy
-                  </a>
-                  <span className="text-slate-200">•</span>
-                  <a href="#" className="hover:text-slate-600">
-                    Security
-                  </a>
-                </div>
-              </div> */}
-            </div>
-          </div>
-
-          <UploadModal
-            isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-            onUpload={handleUploadDoc}
-          />
-
-          {isVerifying && (
-            <div className="fixed bottom-6 right-6 bg-slate-900 text-white px-5 py-3.5 rounded-sm shadow-2xl flex items-center space-x-3 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
-              <div className="w-4 h-4 border-2 border-[#22c55e] border-t-transparent rounded-full animate-spin"></div>
-              <span className="text-xs font-bold tracking-wide">
-                Analyzing...
-              </span>
-            </div>
-          )}
-
-          {/* Right Column - Activity Timeline */}
-          <div className="lg:col-span-1">
-            <div
-              className="border rounded-sm p-10 bg-white shadow-sm sticky top-6"
-              style={{
-                borderColor: "var(--border-color)",
-              }}
-            >
-              <h2 className="text-xl font-black tracking-tight mb-12 text-slate-800">
-                Recent Activity
-              </h2>
-
-              <div className="space-y-12 relative">
-                <div className="absolute left-[7px] top-2 bottom-2 w-0.5 bg-gray-100" />
-                {activities.map((activity, index) => (
-                  <div key={index} className="relative pl-10">
-                    <div className="absolute left-0 top-1.5 w-4 h-4 rounded-full bg-[#22c55e] border-2 border-white z-10" />
-                    <div className="text-center">
-                      <h3
-                        className="font-black text-sm mb-1 uppercase tracking-tight"
-                        style={{ color: "var(--text-primary)" }}
-                      >
-                        {activity.title}
-                      </h3>
-                      <p
-                        className="text-xs font-medium leading-relaxed"
-                        style={{ color: "var(--text-secondary)" }}
-                      >
-                        {activity.desc}
-                      </p>
-                      <p
-                        className="text-[10px] mt-2 uppercase tracking-widest font-black"
-                        style={{ color: "var(--text-muted)" }}
-                      >
-                        {activity.time}
-                      </p>
-                    </div>
+                      Back
+                    </button>
                   </div>
-                ))}
+
+                  <div className="grid grid-cols-2 gap-2">
+                    {CATEGORIES_CONFIG[requestCategory].fields.map((field) => {
+                      const isSelected = selectedFields.includes(field);
+                      return (
+                        <button
+                          key={field}
+                          onClick={() => toggleField(field)}
+                          className={`w-full h-9 px-3 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all border text-center truncate ${
+                            isSelected
+                              ? "bg-[#22c55e] text-white border-[#22c55e] shadow-md shadow-emerald-500/20"
+                              : "bg-white text-slate-500 border-slate-100 hover:border-slate-300"
+                          }`}
+                        >
+                          {field}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <div className="space-y-3">
+                    <p className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 px-1">
+                      Note for Admin
+                    </p>
+                    <textarea
+                      value={requestMessage}
+                      onChange={(e) => setRequestMessage(e.target.value)}
+                      placeholder="Tell us why you are making this change..."
+                      className="w-full h-32 p-4 bg-slate-50/50 border border-slate-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#22c55e]/20 focus:border-[#22c55e] text-xs font-bold text-slate-800 placeholder:text-slate-400 resize-none transition-all"
+                    />
+                  </div>
+                </div>
+              )}
+
+              <div className="mt-auto pt-6">
+                <ResuableButton
+                  variant="primary"
+                  disabled={!requestCategory}
+                  className={`w-full h-11 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] shadow-lg transition-all ${
+                    requestCategory
+                      ? "shadow-emerald-500/20"
+                      : "opacity-50 grayscale cursor-not-allowed"
+                  }`}
+                  onClick={handleSubmit}
+                >
+                  Send Request
+                </ResuableButton>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// --- Sub-components for Vault UI ---
-
-const DocumentCard = ({
-  doc,
-  onDelete,
-}: {
-  doc: any;
-  onDelete: (id: string) => void;
-}) => {
-  const getStatusStyles = (status: string) => {
-    switch (status) {
-      case "VERIFIED":
-        return "bg-emerald-50 text-[#22c55e] border-emerald-100";
-      case "REJECTED":
-        return "bg-rose-50 text-rose-600 border-rose-100";
-      case "ANALYZING":
-        return "bg-blue-50 text-blue-600 border-blue-100 animate-pulse";
-      default:
-        return "text-slate-600 border-slate-100";
-    }
-  };
-
-  return (
-    <div
-      className="group relative flex items-center justify-between p-4 border rounded-sm transition-all duration-300"
-      style={{
-        backgroundColor: "var(--bg-primary)",
-        borderColor: "var(--border-color)",
-      }}
-    >
-      <div className="flex items-center space-x-4">
-        <div
-          className={`w-11 h-11 rounded-sm flex items-center justify-center flex-shrink-0 ${
-            doc.status === "REJECTED" ? "bg-rose-50" : "bg-[#ecfdf5]"
-          }`}
-        >
-          <svg
-            className={`w-5 h-5 ${
-              doc.status === "REJECTED" ? "text-rose-500" : "text-[#22c55e]"
-            }`}
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-            />
-          </svg>
-        </div>
-        <div className="min-w-0 text-start">
-          <h3
-            className="text-[15px] font-bold leading-tight truncate"
-            style={{ color: "var(--text-primary)" }}
-          >
-            {doc.name}
-          </h3>
-          <div className="flex items-center mt-1 space-x-2">
-            <span
-              className="text-[10px] font-semibold uppercase tracking-widest truncate max-w-[120px]"
-              style={{ color: "var(--text-muted)" }}
-            >
-              {doc.type}
-            </span>
-            <span className="text-slate-200">•</span>
-            <span
-              className="text-[10px] font-medium"
-              style={{ color: "var(--text-muted)" }}
-            >
-              {new Date(doc.uploadedAt).toLocaleDateString()}
-            </span>
-          </div>
-          {doc.aiFeedback && (
-            <p className="text-[10px] text-slate-500 mt-1.5 italic line-clamp-1 opacity-80 group-hover:opacity-100 transition-opacity">
-              {doc.aiFeedback}
-            </p>
           )}
         </div>
-      </div>
+      </ResuableDrawer>
 
-      <div className="flex items-center space-x-3 flex-shrink-0">
-        <div
-          className={`px-2.5 py-1 rounded-sm text-[9px] font-bold tracking-widest border ${getStatusStyles(
-            doc.status
-          )}`}
-        >
-          {doc.status}
-        </div>
-
-        <button
-          onClick={() => onDelete(doc.id)}
-          className="p-1.5 text-slate-300 hover:text-rose-500 transition-all rounded-sm hover:bg-rose-50 sm:opacity-0 group-hover:opacity-100"
-          title="Remove"
-        >
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-            />
-          </svg>
-        </button>
-      </div>
+      <FilePreviewModal
+        isOpen={isPreviewOpen}
+        onOpenChange={setIsPreviewOpen}
+        file={selectedFile?.url || null}
+        fileName={selectedFile?.name}
+      />
     </div>
-  );
-};
-
-const DOC_TYPES = [
-  "Tax Exempt Certificate",
-  "Operating License",
-  "Certification",
-  "Identity Proof",
-  "Other",
-];
-
-const UploadModal = ({
-  isOpen,
-  onClose,
-  onUpload,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-  onUpload: (file: File, type: string) => void;
-}) => {
-  const [selectedType, setSelectedType] = useState(DOC_TYPES[0]);
-  const [dragActive, setDragActive] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleDrag = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
-      setDragActive(true);
-    } else if (e.type === "dragleave") {
-      setDragActive(false);
-    }
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      onUpload(e.dataTransfer.files[0], selectedType);
-    }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    if (e.target.files && e.target.files[0]) {
-      onUpload(e.target.files[0], selectedType);
-    }
-  };
-
-  return (
-    <ResuableModal
-      isOpen={isOpen}
-      onOpenChange={(open) => !open && onClose()}
-      title="Add Document"
-      subtitle="Select classification & upload"
-      size="md"
-      scrollBehavior="inside"
-      classNames={{
-        base: "!rounded-sm border border-white/20 shadow-2xl overflow-hidden !max-w-3xl !max-h-[85vh]",
-        header: "px-6 py-4 !border-slate-50",
-        body: "px-6 py-6 !bg-white custom-scrollbar",
-        footer: "px-6 py-4 !bg-slate-50/80 !border-slate-100",
-      }}
-      // footerLeft={
-      //   <div className="flex items-center space-x-4">
-      //     <div className="flex -space-x-2.5">
-      //       <div className="w-9 h-9 rounded-full border-2 border-white bg-slate-200 flex items-center justify-center overflow-hidden text-slate-400 shadow-sm">
-      //         <Icon name="user" className="w-4 h-4" />
-      //       </div>
-      //       <div className="w-9 h-9 rounded-full border-2 border-white bg-[#ecfdf5] flex items-center justify-center text-[#22c55e] shadow-sm">
-      //         <Icon name="verified" className="w-4 h-4" />
-      //       </div>
-      //     </div>
-      //     {/* <div className="text-start">
-      //       <span className="block text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">
-      //         AI Verification
-      //       </span>
-      //       <span className="text-[9px] font-bold text-slate-300 uppercase tracking-widest leading-none mt-1 inline-block">
-      //         Powered by Gemini
-      //       </span>
-      //     </div> */}
-      //   </div>
-      // }
-      footer={
-        <button
-          onClick={onClose}
-          className="px-6 py-2.5 text-[10px] font-black text-slate-500 hover:text-slate-800 uppercase tracking-[0.2em] transition-all hover:bg-slate-100 rounded-sm"
-        >
-          Cancel
-        </button>
-      }
-    >
-      <div className="space-y-6">
-        <section className="text-start">
-          <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">
-            Classification
-          </label>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {DOC_TYPES.map((type) => (
-              <button
-                key={type}
-                onClick={() => setSelectedType(type)}
-                className={`px-4 py-3 rounded-sm text-left text-xs font-black transition-all border flex items-center justify-between group/btn ${
-                  selectedType === type
-                    ? "border-[#22c55e] bg-[#ecfdf5] text-[#15803d] shadow-sm shadow-emerald-100"
-                    : "border-slate-100 bg-slate-50/50 text-slate-500 hover:border-slate-200 hover:bg-white"
-                }`}
-              >
-                <span className="truncate">{type}</span>
-                {selectedType === type && (
-                  <div className="w-5 h-5 rounded-full bg-[#22c55e] flex items-center justify-center text-white shrink-0 shadow-sm">
-                    <svg
-                      className="w-3 h-3"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={4}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                  </div>
-                )}
-              </button>
-            ))}
-          </div>
-        </section>
-
-        <section className="text-start">
-          <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">
-            File Upload
-          </label>
-          <div
-            onDragEnter={handleDrag}
-            onDragLeave={handleDrag}
-            onDragOver={handleDrag}
-            onDrop={handleDrop}
-            className={`group relative border-2 border-dashed rounded-sm p-8 flex flex-col items-center justify-center transition-all duration-300 min-h-[180px] ${
-              dragActive
-                ? "border-[#22c55e] bg-[#ecfdf5] scale-[0.98] shadow-inner"
-                : "border-slate-200 bg-slate-50/50 hover:bg-white hover:border-slate-300 hover:shadow-xl hover:shadow-slate-100/50"
-            }`}
-          >
-            <div
-              className={`w-20 h-20 rounded-sm flex items-center justify-center mb-6 transition-all duration-500 ${
-                dragActive
-                  ? "bg-[#22c55e] text-white rotate-12 scale-110"
-                  : "bg-white text-slate-300 shadow-sm group-hover:text-[#22c55e] group-hover:scale-110"
-              }`}
-            >
-              <svg
-                className="w-10 h-10"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                />
-              </svg>
-            </div>
-            <div className="text-center">
-              <p className="text-xl font-black text-slate-800">
-                Drop file or browse
-              </p>
-              <p className="text-[10px] text-slate-400 mt-3 font-black uppercase tracking-[0.2em]">
-                PDF, JPG, PNG • Max 10MB
-              </p>
-            </div>
-
-            <input
-              ref={fileInputRef}
-              type="file"
-              className="absolute inset-0 opacity-0 cursor-pointer"
-              onChange={handleChange}
-              accept="image/*,application/pdf"
-            />
-          </div>
-        </section>
-      </div>
-
-      <style>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 5px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: #f8fafc;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #e2e8f0;
-          border-radius: 20px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #cbd5e1;
-        }
-      `}</style>
-    </ResuableModal>
   );
 };
 

@@ -12,6 +12,7 @@ interface ResuableInputProps {
   required?: boolean;
   align?: "left" | "center" | "right";
   info?: string | React.ReactNode;
+  inputClassName?: string;
   startContent?: React.ReactNode;
   endContent?: React.ReactNode;
 }
@@ -27,6 +28,7 @@ const ResuableInput: React.FC<ResuableInputProps> = ({
   required = false,
   align = "left",
   info,
+  inputClassName = "",
   startContent,
   endContent,
 }) => {
@@ -55,11 +57,22 @@ const ResuableInput: React.FC<ResuableInputProps> = ({
             <div className="group/info relative flex items-center">
               <Icon
                 name="info"
-                className="w-3.5 h-3.5 text-slate-300 hover:text-[#22c55e] transition-colors cursor-help"
+                className="w-3.5 h-3.5 transition-colors cursor-help"
+                style={{ color: "var(--text-muted)" }}
               />
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 min-w-[200px] max-w-[280px] p-3 bg-slate-900/95 backdrop-blur-sm text-white text-[10px] font-medium leading-relaxed rounded-lg shadow-2xl opacity-0 invisible group-hover/info:opacity-100 group-hover/info:visible transition-all z-[10000] pointer-events-none whitespace-pre-line border border-white/10 text-left">
+              <div
+                className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 min-w-[200px] max-w-[280px] p-3 backdrop-blur-sm text-[10px] font-medium leading-relaxed rounded-lg shadow-2xl opacity-0 invisible group-hover/info:opacity-100 group-hover/info:visible transition-all z-[10000] pointer-events-none whitespace-pre-line border text-left"
+                style={{
+                  backgroundColor: "var(--bg-primary)",
+                  color: "var(--text-primary)",
+                  borderColor: "var(--border-color)",
+                }}
+              >
                 {info}
-                <div className="absolute top-full left-1/2 -translate-x-1/2 border-[5px] border-transparent border-t-slate-900/95" />
+                <div
+                  className="absolute top-full left-1/2 -translate-x-1/2 border-[5px] border-transparent"
+                  style={{ borderTopColor: "var(--bg-primary)" }}
+                />
               </div>
             </div>
           )}
@@ -78,14 +91,17 @@ const ResuableInput: React.FC<ResuableInputProps> = ({
           onChange={(e) => onChange(e.target.value)}
           disabled={disabled}
           required={required}
+          className={`w-full border py-2.5 rounded-sm text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#22c55e]/10 focus:border-[#22c55e] transition-all disabled:opacity-50 disabled:cursor-not-allowed ${alignClass} ${inputClassName}`}
           style={{
-            backgroundColor: "var(--bg-secondary)",
+            backgroundColor: inputClassName.includes("bg-")
+              ? undefined
+              : "var(--bg-secondary)",
             borderColor: "var(--border-color)",
             color: "var(--text-primary)",
             paddingLeft: startContent ? "2rem" : "0.625rem",
             paddingRight: endContent ? "2.5rem" : "0.625rem",
+            caretColor: "var(--color-emerald)",
           }}
-          className={`w-full border py-2 rounded-none text-[11px] font-bold focus:outline-none focus:ring-1 focus:ring-[#22c55e]/50 focus:border-[#22c55e] transition-all placeholder:text-neutral-500 disabled:opacity-50 disabled:cursor-not-allowed ${alignClass}`}
         />
         {endContent && (
           <div className="absolute right-2.5 flex items-center pointer-events-none">

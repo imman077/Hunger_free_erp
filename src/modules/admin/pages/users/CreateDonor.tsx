@@ -53,7 +53,7 @@ const CreateDonor = () => {
   });
 
   const [attachments, setAttachments] = useState<Record<string, File | null>>(
-    {}
+    {},
   );
 
   const handleAttachmentChange = (slot: string, file: File | null) => {
@@ -113,14 +113,22 @@ const CreateDonor = () => {
           <div className="flex items-center gap-8">
             <button
               onClick={() => navigate("/admin/users/donors")}
-              className="w-10 h-10 rounded-full flex items-center justify-center bg-white border border-slate-200 text-slate-400 hover:text-[#22c55e] hover:border-[#22c55e]/30 transition-all group shadow-sm"
+              className="w-10 h-10 rounded-full flex items-center justify-center border transition-all group shadow-sm"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+                color: "var(--text-muted)",
+              }}
             >
               <ArrowLeft
                 size={18}
                 className="group-hover:-translate-x-1 transition-transform"
               />
             </button>
-            <div className="h-10 w-px bg-slate-200 hidden sm:block" />
+            <div
+              className="h-10 w-px hidden sm:block"
+              style={{ backgroundColor: "var(--border-color)" }}
+            />
             <div>
               <h1
                 className="text-3xl md:text-5xl font-black tracking-tighter leading-none italic"
@@ -128,14 +136,26 @@ const CreateDonor = () => {
               >
                 Create Donor
               </h1>
-              <p className="text-[10px] font-bold text-slate-400 mt-2 uppercase tracking-[0.3em]">
+              <p
+                className="text-[10px] font-bold mt-2 uppercase tracking-[0.3em]"
+                style={{ color: "var(--text-muted)" }}
+              >
                 Administrator Console • Onboarding Flow
               </p>
             </div>
           </div>
-          <div className="bg-white border border-slate-200 px-5 py-2.5 rounded-full flex items-center gap-3 shadow-sm">
+          <div
+            className="border px-5 py-2.5 rounded-full flex items-center gap-3 shadow-sm"
+            style={{
+              backgroundColor: "var(--bg-primary)",
+              borderColor: "var(--border-color)",
+            }}
+          >
             <div className="w-2 h-2 rounded-full bg-[#22c55e] animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
-            <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest pt-0.5">
+            <span
+              className="text-[10px] font-black uppercase tracking-widest pt-0.5"
+              style={{ color: "var(--text-secondary)" }}
+            >
               Secure Live Entry
             </span>
           </div>
@@ -148,21 +168,39 @@ const CreateDonor = () => {
       >
         {/* Card 01: Donor Profile */}
         <div
-          className="border rounded-xl bg-white shadow-sm transition-all hover:shadow-md"
-          style={{ borderColor: "var(--border-color)" }}
+          className="border rounded-xl shadow-sm transition-all hover:shadow-md"
+          style={{
+            borderColor: "var(--border-color)",
+            backgroundColor: "var(--bg-primary)",
+          }}
         >
           <div
-            className="border-b p-8 flex items-center gap-5 bg-slate-50/30"
-            style={{ borderColor: "var(--border-color)" }}
+            className="border-b p-8 flex items-center gap-5"
+            style={{
+              borderColor: "var(--border-color)",
+              backgroundColor: "var(--bg-tertiary)",
+            }}
           >
-            <div className="w-14 h-14 bg-white border border-slate-100 rounded-xl flex items-center justify-center text-[#22c55e] shadow-sm">
+            <div
+              className="w-14 h-14 border rounded-xl flex items-center justify-center text-[#22c55e] shadow-sm"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
               <Package size={28} />
             </div>
             <div>
-              <h2 className="text-base font-black uppercase tracking-tighter leading-none text-slate-800">
+              <h2
+                className="text-base font-black uppercase tracking-tighter leading-none"
+                style={{ color: "var(--text-primary)" }}
+              >
                 01. Donor Identity
               </h2>
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] mt-2 text-slate-400">
+              <p
+                className="text-[10px] font-bold uppercase tracking-[0.2em] mt-2"
+                style={{ color: "var(--text-muted)" }}
+              >
                 Primary Business Profile & Categorization
               </p>
             </div>
@@ -203,21 +241,39 @@ const CreateDonor = () => {
 
         {/* Card 02: Contact & Location */}
         <div
-          className="border rounded-xl bg-white shadow-sm transition-all hover:shadow-md"
-          style={{ borderColor: "var(--border-color)" }}
+          className="border rounded-xl shadow-sm transition-all hover:shadow-md"
+          style={{
+            borderColor: "var(--border-color)",
+            backgroundColor: "var(--bg-primary)",
+          }}
         >
           <div
-            className="border-b p-8 flex items-center gap-5 bg-slate-50/30"
-            style={{ borderColor: "var(--border-color)" }}
+            className="border-b p-8 flex items-center gap-5"
+            style={{
+              borderColor: "var(--border-color)",
+              backgroundColor: "var(--bg-tertiary)",
+            }}
           >
-            <div className="w-14 h-14 bg-white border border-slate-100 rounded-xl flex items-center justify-center text-[#22c55e] shadow-sm">
+            <div
+              className="w-14 h-14 border rounded-xl flex items-center justify-center text-[#22c55e] shadow-sm"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
               <MapPin size={28} />
             </div>
             <div>
-              <h2 className="text-base font-black uppercase tracking-tighter leading-none text-slate-800">
+              <h2
+                className="text-base font-black uppercase tracking-tighter leading-none"
+                style={{ color: "var(--text-primary)" }}
+              >
                 02. Communication & Presence
               </h2>
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] mt-2 text-slate-400">
+              <p
+                className="text-[10px] font-bold uppercase tracking-[0.2em] mt-2"
+                style={{ color: "var(--text-muted)" }}
+              >
                 Contact details and physical operational address
               </p>
             </div>
@@ -258,21 +314,39 @@ const CreateDonor = () => {
         </div>
 
         <div
-          className="border rounded-xl bg-white shadow-sm transition-all hover:shadow-md"
-          style={{ borderColor: "var(--border-color)" }}
+          className="border rounded-xl shadow-sm transition-all hover:shadow-md"
+          style={{
+            borderColor: "var(--border-color)",
+            backgroundColor: "var(--bg-primary)",
+          }}
         >
           <div
-            className="border-b p-8 flex items-center gap-5 bg-slate-50/30"
-            style={{ borderColor: "var(--border-color)" }}
+            className="border-b p-8 flex items-center gap-5"
+            style={{
+              borderColor: "var(--border-color)",
+              backgroundColor: "var(--bg-tertiary)",
+            }}
           >
-            <div className="w-14 h-14 bg-white border border-slate-100 rounded-xl flex items-center justify-center text-blue-500 shadow-sm">
+            <div
+              className="w-14 h-14 border rounded-xl flex items-center justify-center text-blue-500 shadow-sm"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
               <ShieldCheck size={28} />
             </div>
             <div>
-              <h2 className="text-base font-black uppercase tracking-tighter leading-none text-slate-800">
+              <h2
+                className="text-base font-black uppercase tracking-tighter leading-none"
+                style={{ color: "var(--text-primary)" }}
+              >
                 03. Proof & Compliance
               </h2>
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] mt-2 text-slate-400">
+              <p
+                className="text-[10px] font-bold uppercase tracking-[0.2em] mt-2"
+                style={{ color: "var(--text-muted)" }}
+              >
                 Mandatory legal and business verification documents
               </p>
             </div>
@@ -280,14 +354,32 @@ const CreateDonor = () => {
 
           <div className="p-10 space-y-10">
             {!formData.donorType ? (
-              <div className="py-24 border-2 border-dashed border-slate-100 rounded-xl bg-slate-50/50 flex flex-col items-center justify-center text-center animate-in fade-in zoom-in duration-500">
-                <div className="w-16 h-16 rounded-full bg-white shadow-sm flex items-center justify-center mb-6 text-slate-200">
+              <div
+                className="py-24 border-2 border-dashed rounded-xl flex flex-col items-center justify-center text-center animate-in fade-in zoom-in duration-500"
+                style={{
+                  borderColor: "var(--border-color)",
+                  backgroundColor: "var(--bg-secondary)",
+                }}
+              >
+                <div
+                  className="w-16 h-16 rounded-full shadow-sm flex items-center justify-center mb-6"
+                  style={{
+                    backgroundColor: "var(--bg-primary)",
+                    color: "var(--text-muted)",
+                  }}
+                >
                   <ShieldCheck size={32} />
                 </div>
-                <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">
+                <h3
+                  className="text-sm font-black uppercase tracking-widest"
+                  style={{ color: "var(--text-secondary)" }}
+                >
                   Select Donor Type
                 </h3>
-                <p className="text-[10px] font-bold text-slate-300 mt-2 uppercase tracking-[0.2em]">
+                <p
+                  className="text-[10px] font-bold mt-2 uppercase tracking-[0.2em]"
+                  style={{ color: "var(--text-muted)" }}
+                >
                   Requirements will appear dynamically
                 </p>
               </div>
@@ -297,7 +389,7 @@ const CreateDonor = () => {
                 {(() => {
                   const config = DONOR_PROOF_CONFIG[formData.donorType];
                   const allMandatoryFilled = config?.mandatory.every(
-                    (m) => !!attachments[m]
+                    (m) => !!attachments[m],
                   );
 
                   return (
@@ -308,13 +400,16 @@ const CreateDonor = () => {
                             className={`w-10 h-10 rounded-lg flex items-center justify-center shadow-sm border transition-all duration-500 ${
                               allMandatoryFilled
                                 ? "bg-[#22c55e]/10 text-[#22c55e] border-[#22c55e]/20"
-                                : "bg-red-50 text-red-500 border-red-100"
+                                : "bg-red-500/10 text-red-500 border-red-500/20"
                             }`}
                           >
                             <ShieldCheck size={20} />
                           </div>
                           <div>
-                            <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-800 leading-none">
+                            <h3
+                              className="text-[11px] font-black uppercase tracking-[0.2em] leading-none"
+                              style={{ color: "var(--text-primary)" }}
+                            >
                               Mandatory Documentation
                             </h3>
                             <p
@@ -334,7 +429,7 @@ const CreateDonor = () => {
                           className={`px-3 py-1 rounded-full border transition-all duration-500 ${
                             allMandatoryFilled
                               ? "bg-[#22c55e]/10 border-[#22c55e]/20"
-                              : "bg-red-50 border-red-100/50"
+                              : "bg-red-500/10 border-red-500/20"
                           }`}
                         >
                           <span
@@ -374,9 +469,18 @@ const CreateDonor = () => {
 
                 {/* Decorative Divider */}
                 <div className="flex items-center gap-4">
-                  <div className="h-px bg-slate-100 flex-1" />
-                  <div className="w-1.5 h-1.5 rounded-full bg-slate-200" />
-                  <div className="h-px bg-slate-100 flex-1" />
+                  <div
+                    className="h-px flex-1"
+                    style={{ backgroundColor: "var(--border-color)" }}
+                  />
+                  <div
+                    className="w-1.5 h-1.5 rounded-full"
+                    style={{ backgroundColor: "var(--border-dark)" }}
+                  />
+                  <div
+                    className="h-px flex-1"
+                    style={{ backgroundColor: "var(--border-color)" }}
+                  />
                 </div>
 
                 {/* Optional Section */}
@@ -387,16 +491,31 @@ const CreateDonor = () => {
                         <CheckCircle size={20} />
                       </div>
                       <div>
-                        <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-800 leading-none">
+                        <h3
+                          className="text-[11px] font-black uppercase tracking-[0.2em] leading-none"
+                          style={{ color: "var(--text-primary)" }}
+                        >
                           Additional Verification
                         </h3>
-                        <p className="text-[9px] font-bold text-slate-400 mt-1.5 uppercase tracking-widest">
+                        <p
+                          className="text-[9px] font-bold mt-1.5 uppercase tracking-widest"
+                          style={{ color: "var(--text-muted)" }}
+                        >
                           Optional / Supporting Proofs
                         </p>
                       </div>
                     </div>
-                    <div className="px-3 py-1 rounded-full bg-slate-50 border border-slate-100/50">
-                      <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                    <div
+                      className="px-3 py-1 rounded-full border"
+                      style={{
+                        backgroundColor: "var(--bg-tertiary)",
+                        borderColor: "var(--border-color)",
+                      }}
+                    >
+                      <span
+                        className="text-[9px] font-black uppercase tracking-widest"
+                        style={{ color: "var(--text-muted)" }}
+                      >
                         Optional
                       </span>
                     </div>
@@ -414,7 +533,7 @@ const CreateDonor = () => {
                           }
                           subtitle="Optional"
                         />
-                      )
+                      ),
                     )}
                   </div>
                 </div>
@@ -425,15 +544,20 @@ const CreateDonor = () => {
 
         {/* Action Bar (Fixed) */}
         <div
-          className="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-t p-6 z-[200] shadow-[0_-15px_50px_rgba(0,0,0,0.05)]"
-          style={{ borderColor: "var(--border-color)" }}
+          className="fixed bottom-0 left-0 right-0 backdrop-blur-xl border-t p-6 z-[200] shadow-[0_-15px_50px_rgba(0,0,0,0.05)]"
+          style={{
+            borderColor: "var(--border-color)",
+            backgroundColor: "var(--bg-primary)",
+            opacity: 0.95,
+          }}
         >
           <div className="max-w-5xl mx-auto flex items-center justify-end">
             <div className="flex items-center gap-8">
               <ResuableButton
                 variant="ghost"
                 onClick={() => navigate("/admin/users/donors")}
-                className="text-slate-400 font-black text-[11px] uppercase tracking-[0.2em] hover:text-red-500 transition-colors"
+                className="font-black text-[11px] uppercase tracking-[0.2em] hover:text-red-500 transition-colors"
+                style={{ color: "var(--text-muted)" }}
               >
                 Discard Entry
               </ResuableButton>

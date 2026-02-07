@@ -182,7 +182,10 @@ const RedemptionsView: React.FC = () => {
     switch (columnKey) {
       case "item":
         return (
-          <span className="font-bold text-slate-700 text-xs whitespace-nowrap truncate max-w-[150px] block">
+          <span
+            className="font-bold text-xs whitespace-nowrap truncate max-w-[150px] block"
+            style={{ color: "var(--text-primary)" }}
+          >
             {req.item}
           </span>
         );
@@ -194,8 +197,17 @@ const RedemptionsView: React.FC = () => {
         );
       case "user":
         return (
-          <div className="flex items-center gap-2 px-2 py-1 rounded-full bg-slate-50 border border-slate-200 hover:border-hf-green/50 hover:bg-white transition-all cursor-pointer group w-fit min-w-0">
-            <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold text-white bg-slate-400 shadow-sm shrink-0">
+          <div
+            className="flex items-center gap-2 px-2 py-1 rounded-full border transition-all cursor-pointer group w-fit min-w-0"
+            style={{
+              backgroundColor: "var(--bg-secondary)",
+              borderColor: "var(--border-color)",
+            }}
+          >
+            <div
+              className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold text-white shadow-sm shrink-0"
+              style={{ backgroundColor: "var(--text-muted)" }}
+            >
               {req.user
                 .split(" ")
                 .map((n: string) => n[0])
@@ -208,7 +220,10 @@ const RedemptionsView: React.FC = () => {
               >
                 {req.user}
               </span>
-              <span className="text-[8px] font-black uppercase tracking-widest text-slate-400 leading-none">
+              <span
+                className="text-[8px] font-black uppercase tracking-widest leading-none"
+                style={{ color: "var(--text-muted)" }}
+              >
                 {req.role}
               </span>
             </div>
@@ -229,7 +244,10 @@ const RedemptionsView: React.FC = () => {
             {req.category === "Trees" && (
               <Sprout size={12} className="text-emerald-600" />
             )}
-            <span className="text-xs font-bold text-slate-600 uppercase tracking-tight">
+            <span
+              className="text-xs font-bold uppercase tracking-tight"
+              style={{ color: "var(--text-secondary)" }}
+            >
               {value}
             </span>
           </div>
@@ -240,17 +258,17 @@ const RedemptionsView: React.FC = () => {
             className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border text-[9px] font-black uppercase tracking-wider
             ${
               req.status === "Pending"
-                ? "bg-amber-50 text-amber-600 border-amber-100"
+                ? "bg-amber-100/10 text-amber-500 border-amber-500/20"
                 : ""
             }
             ${
               req.status === "Approved"
-                ? "bg-emerald-50 text-emerald-600 border-emerald-100"
+                ? "bg-emerald-100/10 text-emerald-500 border-emerald-500/20"
                 : ""
             }
             ${
               req.status === "Rejected"
-                ? "bg-red-50 text-red-600 border-red-100"
+                ? "bg-red-100/10 text-red-500 border-red-500/20"
                 : ""
             }
           `}
@@ -287,7 +305,12 @@ const RedemptionsView: React.FC = () => {
         );
       default:
         return (
-          <span className="text-slate-500 font-bold text-xs">{value}</span>
+          <span
+            className="font-bold text-xs"
+            style={{ color: "var(--text-secondary)" }}
+          >
+            {value}
+          </span>
         );
     }
   };
@@ -308,10 +331,19 @@ const RedemptionsView: React.FC = () => {
         <DropdownTrigger>
           <ResuableButton
             variant="ghost"
-            className="border border-slate-200 bg-white rounded-sm h-10 px-4 text-[11px] font-bold text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-none shrink-0"
+            className="rounded-sm h-10 px-4 text-[11px] font-bold transition-all shadow-none shrink-0"
+            style={{
+              backgroundColor: "var(--bg-primary)",
+              borderColor: "var(--border-color)",
+              color: "var(--text-secondary)",
+            }}
             onClick={() => {}}
-            startContent={<Filter size={14} className="text-slate-400" />}
-            endContent={<Plus size={14} className="text-slate-400" />}
+            startContent={
+              <Filter size={14} style={{ color: "var(--text-muted)" }} />
+            }
+            endContent={
+              <Plus size={14} style={{ color: "var(--text-muted)" }} />
+            }
           >
             ADD FILTER
           </ResuableButton>
@@ -320,12 +352,12 @@ const RedemptionsView: React.FC = () => {
           aria-label="Add Filter Options"
           onAction={(key) => toggleFilter(key as string)}
           classNames={{
-            base: "bg-white border border-slate-200 rounded-sm min-w-[180px] p-1",
+            base: "min-w-[180px] p-1 bg-[var(--bg-primary)] border border-[var(--border-color)]",
           }}
           itemClasses={{
             base: [
-              "text-slate-600 text-[11px] font-bold uppercase tracking-tight",
-              "data-[hover=true]:bg-slate-50 data-[hover=true]:text-hf-green",
+              "text-[var(--text-secondary)] text-[11px] font-bold uppercase tracking-tight",
+              "data-[hover=true]:bg-[var(--bg-secondary)] data-[hover=true]:text-hf-green",
               "rounded-sm",
               "px-3",
               "py-2.5",
@@ -379,13 +411,13 @@ const RedemptionsView: React.FC = () => {
               setCategoryFilter(Array.from(keys)[0] as string)
             }
             classNames={{
-              base: "bg-white border border-slate-200 rounded-sm min-w-[160px] p-1",
+              base: "min-w-[160px] p-1 bg-[var(--bg-primary)] border border-[var(--border-color)]",
             }}
             itemClasses={{
               base: [
-                "text-slate-600 text-[11px] font-bold uppercase tracking-tight",
-                "data-[hover=true]:bg-slate-50 data-[hover=true]:text-hf-green",
-                "data-[selected=true]:bg-emerald-50 data-[selected=true]:text-hf-green",
+                "text-[var(--text-secondary)] text-[11px] font-bold uppercase tracking-tight",
+                "data-[hover=true]:bg-[var(--bg-secondary)] data-[hover=true]:text-hf-green",
+                "data-[selected=true]:bg-emerald-500/10 data-[selected=true]:text-hf-green",
                 "rounded-sm",
                 "px-3",
                 "py-2.5",
@@ -433,13 +465,13 @@ const RedemptionsView: React.FC = () => {
               setStatusFilter(Array.from(keys)[0] as string)
             }
             classNames={{
-              base: "bg-white border border-slate-200 rounded-sm min-w-[160px] p-1",
+              base: "min-w-[160px] p-1 bg-[var(--bg-primary)] border border-[var(--border-color)]",
             }}
             itemClasses={{
               base: [
-                "text-slate-600 text-[11px] font-bold uppercase tracking-tight",
-                "data-[hover=true]:bg-slate-50 data-[hover=true]:text-blue-600",
-                "data-[selected=true]:bg-blue-50 data-[selected=true]:text-blue-600",
+                "text-[var(--text-secondary)] text-[11px] font-bold uppercase tracking-tight",
+                "data-[hover=true]:bg-[var(--bg-secondary)] data-[hover=true]:text-blue-600",
+                "data-[selected=true]:bg-blue-500/10 data-[selected=true]:text-blue-600",
                 "rounded-sm",
                 "px-3",
                 "py-2.5",
@@ -470,7 +502,10 @@ const RedemptionsView: React.FC = () => {
           >
             Redemption Hub
           </h1>
-          <p className="text-slate-500 font-semibold mt-1">
+          <p
+            className="font-semibold mt-1"
+            style={{ color: "var(--text-muted)" }}
+          >
             Authorize and track user reward payouts
           </p>
         </div>
@@ -502,57 +537,123 @@ const RedemptionsView: React.FC = () => {
         <div className="space-y-5 px-3 sm:px-6 pb-8">
           {/* Stats Grid */}
           <div className="grid grid-cols-1 gap-3">
-            <div className="bg-gradient-to-br from-emerald-50 to-teal-50 p-3 rounded-sm border border-emerald-100 shadow-sm">
+            <div
+              className="p-3 rounded-sm border shadow-sm"
+              style={{
+                background:
+                  "linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(20, 184, 166, 0.05))",
+                borderColor: "rgba(16, 185, 129, 0.1)",
+              }}
+            >
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-sm bg-emerald-500/10 flex items-center justify-center">
-                  <Wallet size={18} className="text-emerald-600" />
+                <div
+                  className="w-9 h-9 rounded-sm flex items-center justify-center"
+                  style={{
+                    backgroundColor: "rgba(16, 185, 129, 0.1)",
+                    color: "#10b981",
+                  }}
+                >
+                  <Wallet size={18} />
                 </div>
                 <div className="flex-1">
-                  <div className="text-[8px] font-black text-emerald-600/70 uppercase tracking-[0.2em] mb-0.5">
+                  <div
+                    className="text-[8px] font-black uppercase tracking-[0.2em] mb-0.5"
+                    style={{ color: "rgba(16, 185, 129, 0.7)" }}
+                  >
                     Total Approved
                   </div>
-                  <div className="text-xl font-black text-emerald-700 tracking-tight">
+                  <div
+                    className="text-xl font-black tracking-tight"
+                    style={{ color: "#10b981" }}
+                  >
                     ₹1,45,000
                   </div>
-                  <div className="text-[8px] font-bold text-emerald-500/70 uppercase tracking-tight mt-0.5">
+                  <div
+                    className="text-[8px] font-bold uppercase tracking-tight mt-0.5"
+                    style={{ color: "rgba(16, 185, 129, 0.5)" }}
+                  >
                     Cumulative Payouts
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-amber-50 to-orange-50 p-3 rounded-sm border border-amber-100 shadow-sm">
+            <div
+              className="p-3 rounded-sm border shadow-sm"
+              style={{
+                background:
+                  "linear-gradient(135deg, rgba(245, 158, 11, 0.05), rgba(249, 115, 22, 0.05))",
+                borderColor: "rgba(245, 158, 11, 0.1)",
+              }}
+            >
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-sm bg-amber-500/10 flex items-center justify-center">
-                  <Clock size={18} className="text-amber-600" />
+                <div
+                  className="w-9 h-9 rounded-sm flex items-center justify-center"
+                  style={{
+                    backgroundColor: "rgba(245, 158, 11, 0.1)",
+                    color: "#f59e0b",
+                  }}
+                >
+                  <Clock size={18} />
                 </div>
                 <div className="flex-1">
-                  <div className="text-[8px] font-black text-amber-600/70 uppercase tracking-[0.2em] mb-0.5">
+                  <div
+                    className="text-[8px] font-black uppercase tracking-[0.2em] mb-0.5"
+                    style={{ color: "rgba(245, 158, 11, 0.7)" }}
+                  >
                     Pending Grants
                   </div>
-                  <div className="text-xl font-black text-amber-700 tracking-tight">
+                  <div
+                    className="text-xl font-black tracking-tight"
+                    style={{ color: "#f59e0b" }}
+                  >
                     12 Requests
                   </div>
-                  <div className="text-[8px] font-bold text-amber-500/70 uppercase tracking-tight mt-1">
+                  <div
+                    className="text-[8px] font-bold uppercase tracking-tight mt-1"
+                    style={{ color: "rgba(245, 158, 11, 0.5)" }}
+                  >
                     Awaiting Review
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-3 rounded-sm border border-blue-100 shadow-sm">
+            <div
+              className="p-3 rounded-sm border shadow-sm"
+              style={{
+                background:
+                  "linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(79, 70, 229, 0.05))",
+                borderColor: "rgba(59, 130, 246, 0.1)",
+              }}
+            >
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-sm bg-blue-500/10 flex items-center justify-center">
-                  <Activity size={18} className="text-blue-600" />
+                <div
+                  className="w-9 h-9 rounded-sm flex items-center justify-center"
+                  style={{
+                    backgroundColor: "rgba(59, 130, 246, 0.1)",
+                    color: "#3b82f6",
+                  }}
+                >
+                  <Activity size={18} />
                 </div>
                 <div className="flex-1">
-                  <div className="text-[8px] font-black text-blue-600/70 uppercase tracking-[0.2em] mb-0.5">
+                  <div
+                    className="text-[8px] font-black uppercase tracking-[0.2em] mb-0.5"
+                    style={{ color: "rgba(59, 130, 246, 0.7)" }}
+                  >
                     System Health
                   </div>
-                  <div className="text-xl font-black text-blue-700 tracking-tight">
+                  <div
+                    className="text-xl font-black tracking-tight"
+                    style={{ color: "#3b82f6" }}
+                  >
                     Optimal
                   </div>
-                  <div className="text-[8px] font-bold text-blue-500/70 uppercase tracking-tight mt-1">
+                  <div
+                    className="text-[8px] font-bold uppercase tracking-tight mt-1"
+                    style={{ color: "rgba(59, 130, 246, 0.5)" }}
+                  >
                     Processing at 100%
                   </div>
                 </div>
@@ -563,14 +664,27 @@ const RedemptionsView: React.FC = () => {
           {/* Batch Processing */}
           <section className="space-y-3 pt-2">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-sm bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 shadow-sm shrink-0">
+              <div
+                className="w-8 h-8 rounded-sm border flex items-center justify-center shadow-sm shrink-0"
+                style={{
+                  backgroundColor: "var(--bg-secondary)",
+                  borderColor: "var(--border-color)",
+                  color: "var(--text-secondary)",
+                }}
+              >
                 <CheckCircle size={16} strokeWidth={2.5} />
               </div>
               <div className="flex-1 min-w-0">
-                <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest leading-none">
+                <h4
+                  className="text-xs font-black uppercase tracking-widest leading-none"
+                  style={{ color: "var(--text-primary)" }}
+                >
                   Batch Processing
                 </h4>
-                <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tight mt-1 leading-none">
+                <p
+                  className="text-[8px] font-bold uppercase tracking-tight mt-1 leading-none"
+                  style={{ color: "var(--text-muted)" }}
+                >
                   Quick Actions
                 </p>
               </div>
@@ -602,8 +716,15 @@ const RedemptionsView: React.FC = () => {
               <ResuableButton
                 variant="ghost"
                 onClick={exportToCSV}
-                className="w-full !h-11 !bg-white border border-slate-200 hover:!bg-slate-50 font-black uppercase tracking-[0.2em] text-[10px] !text-slate-500 shadow-sm transition-all"
-                startContent={<FileDown size={16} className="text-slate-400" />}
+                className="w-full !h-11 border font-black uppercase tracking-[0.2em] text-[10px] shadow-sm transition-all"
+                style={{
+                  backgroundColor: "var(--bg-primary)",
+                  borderColor: "var(--border-color)",
+                  color: "var(--text-secondary)",
+                }}
+                startContent={
+                  <FileDown size={16} style={{ color: "var(--text-muted)" }} />
+                }
               >
                 Export Report (.CSV)
               </ResuableButton>
@@ -622,26 +743,38 @@ const RedemptionsView: React.FC = () => {
         {selectedRequest && (
           <div className="space-y-5 px-3 sm:px-6 pb-8">
             {/* User Info */}
-            <div className="bg-gradient-to-br from-slate-50 to-slate-100 p-4 rounded-sm border border-slate-200 shadow-sm">
+            <div
+              className="p-4 rounded-sm border shadow-sm"
+              style={{
+                backgroundColor: "var(--bg-secondary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white font-black text-sm shadow-md">
                   {selectedRequest.user.substring(0, 2).toUpperCase()}
                 </div>
                 <div className="flex-1">
-                  <div className="text-sm font-black text-slate-800">
+                  <div
+                    className="text-sm font-black"
+                    style={{ color: "var(--text-primary)" }}
+                  >
                     {selectedRequest.user}
                   </div>
-                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                  <div
+                    className="text-[10px] font-bold uppercase tracking-widest"
+                    style={{ color: "var(--text-muted)" }}
+                  >
                     {selectedRequest.role}
                   </div>
                 </div>
                 <div
                   className={`px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-wide border ${
                     selectedRequest.status === "Pending"
-                      ? "bg-amber-50 text-amber-600 border-amber-200"
+                      ? "bg-amber-100/10 text-amber-500 border-amber-500/20"
                       : selectedRequest.status === "Approved"
-                        ? "bg-emerald-50 text-emerald-600 border-emerald-200"
-                        : "bg-red-50 text-red-600 border-red-200"
+                        ? "bg-emerald-100/10 text-emerald-500 border-emerald-500/20"
+                        : "bg-red-100/10 text-red-500 border-red-500/20"
                   }`}
                 >
                   {selectedRequest.status}
@@ -651,60 +784,78 @@ const RedemptionsView: React.FC = () => {
 
             {/* Request Details Grid */}
             <div className="grid grid-cols-1 min-[400px]:grid-cols-2 gap-3">
-              <div className="bg-white p-3 rounded-sm border border-slate-100 shadow-sm">
-                <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">
-                  Category
+              {[
+                { label: "Category", val: selectedRequest.category },
+                { label: "Reward Item", val: selectedRequest.item },
+                {
+                  label: "Value",
+                  val: selectedRequest.amount,
+                  color: "emerald",
+                },
+                { label: "Points Used", val: selectedRequest.points },
+                {
+                  label: "Request Date",
+                  val: selectedRequest.date,
+                  full: true,
+                },
+              ].map((item, i) => (
+                <div
+                  key={i}
+                  className={`p-3 rounded-sm border shadow-sm ${item.full ? "col-span-2" : ""}`}
+                  style={{
+                    backgroundColor: "var(--bg-primary)",
+                    borderColor: "var(--border-color)",
+                  }}
+                >
+                  <div
+                    className="text-[9px] font-black uppercase tracking-widest mb-1"
+                    style={{ color: "var(--text-muted)" }}
+                  >
+                    {item.label}
+                  </div>
+                  <div
+                    className={`text-sm font-bold ${item.color === "emerald" ? "text-emerald-500" : ""}`}
+                    style={{
+                      color:
+                        item.color === "emerald"
+                          ? undefined
+                          : "var(--text-primary)",
+                    }}
+                  >
+                    {item.val}
+                  </div>
                 </div>
-                <div className="text-sm font-bold text-slate-700">
-                  {selectedRequest.category}
-                </div>
-              </div>
-              <div className="bg-white p-3 rounded-sm border border-slate-100 shadow-sm">
-                <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">
-                  Reward Item
-                </div>
-                <div className="text-sm font-bold text-slate-700">
-                  {selectedRequest.item}
-                </div>
-              </div>
-              <div className="bg-white p-3 rounded-sm border border-slate-100 shadow-sm">
-                <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">
-                  Value
-                </div>
-                <div className="text-sm font-bold text-emerald-600">
-                  {selectedRequest.amount}
-                </div>
-              </div>
-              <div className="bg-white p-3 rounded-sm border border-slate-100 shadow-sm">
-                <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">
-                  Points Used
-                </div>
-                <div className="text-sm font-bold text-slate-700">
-                  {selectedRequest.points}
-                </div>
-              </div>
-              <div className="bg-white p-3 rounded-sm border border-slate-100 shadow-sm col-span-2">
-                <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">
-                  Request Date
-                </div>
-                <div className="text-sm font-bold text-slate-700">
-                  {selectedRequest.date}
-                </div>
-              </div>
+              ))}
             </div>
 
             {/* Actions for Pending Requests */}
             {selectedRequest.status === "Pending" && (
-              <section className="space-y-3 pt-4 border-t border-slate-100">
+              <section
+                className="space-y-3 pt-4 border-t"
+                style={{ borderColor: "var(--border-color)" }}
+              >
                 <div className="flex items-center gap-2.5 mb-4">
-                  <div className="w-8 h-8 rounded-sm bg-amber-100 border border-amber-200 flex items-center justify-center text-amber-600 shadow-sm shrink-0">
+                  <div
+                    className="w-8 h-8 rounded-sm border flex items-center justify-center shadow-sm shrink-0"
+                    style={{
+                      backgroundColor: "rgba(245, 158, 11, 0.1)",
+                      borderColor: "rgba(245, 158, 11, 0.2)",
+                      color: "#f59e0b",
+                    }}
+                  >
                     <Clock size={16} strokeWidth={2.5} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest leading-none">
+                    <h4
+                      className="text-xs font-black uppercase tracking-widest leading-none"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       Pending Approval
                     </h4>
-                    <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tight mt-1 leading-none">
+                    <p
+                      className="text-[8px] font-bold uppercase tracking-tight mt-1 leading-none"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       Take action on this request
                     </p>
                   </div>
@@ -763,12 +914,15 @@ const RedemptionsView: React.FC = () => {
 
             {/* Status Message for Processed Requests */}
             {selectedRequest.status !== "Pending" && (
-              <div className="py-10 flex flex-col items-center justify-center space-y-4 border-t border-slate-50 mt-4">
+              <div
+                className="py-10 flex flex-col items-center justify-center space-y-4 border-t mt-4"
+                style={{ borderColor: "var(--border-color)" }}
+              >
                 <div
-                  className={`w-14 h-14 rounded-full flex items-center justify-center shadow-sm ${
+                  className={`w-14 h-14 rounded-full flex items-center justify-center shadow-sm border ${
                     selectedRequest.status === "Approved"
-                      ? "bg-emerald-50 text-emerald-500 border border-emerald-100"
-                      : "bg-red-50 text-red-500 border border-red-100"
+                      ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
+                      : "bg-red-500/10 text-red-500 border-red-500/20"
                   }`}
                 >
                   {selectedRequest.status === "Approved" ? (
@@ -781,13 +935,16 @@ const RedemptionsView: React.FC = () => {
                   <h4
                     className={`text-[12px] font-black uppercase tracking-[0.25em] ${
                       selectedRequest.status === "Approved"
-                        ? "text-emerald-600"
-                        : "text-red-600"
+                        ? "text-emerald-500"
+                        : "text-red-500"
                     }`}
                   >
                     Request {selectedRequest.status}
                   </h4>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">
+                  <p
+                    className="text-[10px] font-bold uppercase tracking-widest leading-none"
+                    style={{ color: "var(--text-muted)" }}
+                  >
                     Transaction Finalized
                   </p>
                 </div>

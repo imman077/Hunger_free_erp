@@ -166,7 +166,10 @@ const AdminDashboard = () => {
           className="p-6 border-b border-dashed flex items-center justify-between"
           style={{ borderColor: "var(--border-color)" }}
         >
-          <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+          <h2
+            className="text-xl font-bold flex items-center gap-2"
+            style={{ color: "var(--text-primary)" }}
+          >
             <div className="w-2 h-6 bg-emerald-500 rounded-full" />
             Recent Activities & Alerts
           </h2>
@@ -198,35 +201,50 @@ const AdminDashboard = () => {
             return (
               <div
                 key={index}
-                className="group relative flex items-center gap-3 p-2.5 rounded-xl border border-transparent hover:border-slate-100 hover:bg-slate-50/50 transition-all duration-200 cursor-pointer overflow-hidden"
+                className="group relative flex items-center gap-3 p-2.5 rounded-xl border border-transparent hover:bg-slate-500/5 transition-all duration-200 cursor-pointer overflow-hidden"
                 style={{ backgroundColor: "var(--bg-primary)" }}
               >
                 {/* Vertical Pillar Indicator - Pattern matched from Header.tsx */}
                 <div
                   className={`w-1 h-8 rounded-full shrink-0 ${getPillarColor(
-                    activity.category
+                    activity.category,
                   )}`}
                 />
 
                 {/* Content */}
                 <div className="flex-1 flex items-center justify-between min-w-0">
                   <div className="flex flex-col items-start min-w-0">
-                    <p className="text-[13px] font-bold text-slate-800 truncate w-full group-hover:text-emerald-700 transition-colors">
+                    <p
+                      className="text-[13px] font-bold truncate w-full group-hover:text-emerald-600 transition-colors"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       {activity.title}
                     </p>
                     <div className="flex items-center gap-2 mt-0.5">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 group-hover:text-emerald-600 transition-colors">
+                      <span
+                        className="text-[10px] font-black uppercase tracking-widest transition-colors"
+                        style={{ color: "var(--text-muted)" }}
+                      >
                         {activity.category}
                       </span>
                     </div>
                   </div>
 
                   {/* Meta - Time and Date */}
-                  <div className="flex flex-col items-end shrink-0 pl-4 border-l border-slate-100/50 ml-4">
-                    <time className="text-[11px] font-bold text-slate-500 uppercase tracking-tighter">
+                  <div
+                    className="flex flex-col items-end shrink-0 pl-4 border-l ml-4"
+                    style={{ borderColor: "var(--border-color)" }}
+                  >
+                    <time
+                      className="text-[11px] font-bold uppercase tracking-tighter"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       {activity.time}
                     </time>
-                    <span className="text-[10px] text-slate-400 font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span
+                      className="text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       {activity.date}
                     </span>
                   </div>

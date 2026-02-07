@@ -244,20 +244,35 @@ const CreateVolunteer = () => {
     rightContent,
   }: any) => (
     <div
-      className="p-6 border-b flex items-start gap-4 bg-white"
-      style={{ borderColor: "var(--border-color)" }}
+      className="p-6 border-b flex items-start gap-4"
+      style={{
+        borderColor: "var(--border-color)",
+        backgroundColor: "var(--bg-tertiary)",
+      }}
     >
       <div className="flex items-start gap-6 flex-1">
-        <div className="w-14 h-14 rounded-xl flex items-center justify-center shadow-sm shrink-0 bg-white text-[#22c55e] border border-emerald-100">
+        <div
+          className="w-14 h-14 rounded-xl flex items-center justify-center shadow-sm shrink-0 text-[#22c55e] border"
+          style={{
+            backgroundColor: "var(--bg-primary)",
+            borderColor: "var(--border-color)",
+          }}
+        >
           <Icon size={28} />
         </div>
         <div className="flex-1 flex flex-col items-start text-left">
           <div className="flex items-center gap-3">
-            <h2 className="text-sm font-black uppercase tracking-tight text-slate-800 text-left">
+            <h2
+              className="text-sm font-black uppercase tracking-tight text-left"
+              style={{ color: "var(--text-primary)" }}
+            >
               {number}. {title}
             </h2>
           </div>
-          <p className="text-[10px] font-bold text-left uppercase tracking-widest mt-1.5 text-slate-400">
+          <p
+            className="text-[10px] font-bold text-left uppercase tracking-widest mt-1.5"
+            style={{ color: "var(--text-muted)" }}
+          >
             {subtitle}
           </p>
         </div>
@@ -267,14 +282,22 @@ const CreateVolunteer = () => {
   );
 
   return (
-    <div className="p-6 md:p-10 w-full min-h-screen bg-[#f8fafc]">
+    <div
+      className="p-6 md:p-10 w-full min-h-screen"
+      style={{ backgroundColor: "var(--bg-secondary)" }}
+    >
       <div className="max-w-5xl mx-auto space-y-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-10">
           <div className="flex items-center gap-6">
             <button
               onClick={() => navigate("/admin/users/volunteers")}
-              className="w-10 h-10 rounded-full flex items-center justify-center bg-white border border-slate-200 text-slate-400 hover:text-[#22c55e] hover:border-[#22c55e]/30 transition-all shadow-sm group"
+              className="w-10 h-10 rounded-full flex items-center justify-center border transition-all shadow-sm group"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+                color: "var(--text-muted)",
+              }}
             >
               <ArrowLeft
                 size={18}
@@ -282,20 +305,42 @@ const CreateVolunteer = () => {
               />
             </button>
             <div className="text-left">
-              <h1 className="text-3xl font-black text-slate-800 tracking-tight flex items-center gap-3">
+              <h1
+                className="text-3xl font-black tracking-tight flex items-center gap-3"
+                style={{ color: "var(--text-primary)" }}
+              >
                 Volunteer Registration
-                <span className="bg-emerald-50 text-[#22c55e] text-[10px] uppercase tracking-[0.2em] px-3 py-1 rounded-full border border-emerald-100">
+                <span
+                  className="text-[10px] uppercase tracking-[0.2em] px-3 py-1 rounded-full border"
+                  style={{
+                    backgroundColor: "var(--bg-tertiary)",
+                    borderColor: "var(--border-color)",
+                    color: "var(--color-emerald)",
+                  }}
+                >
                   New Entry
                 </span>
               </h1>
-              <p className="text-[11px] font-bold text-slate-400 mt-1 uppercase tracking-[0.15em]">
+              <p
+                className="text-[11px] font-bold mt-1 uppercase tracking-[0.15em]"
+                style={{ color: "var(--text-muted)" }}
+              >
                 Onboard new community heroes for distribution network
               </p>
             </div>
           </div>
-          <div className="bg-white border border-slate-200 px-4 py-2 rounded-full flex items-center gap-3 shadow-sm">
+          <div
+            className="border px-4 py-2 rounded-full flex items-center gap-3 shadow-sm"
+            style={{
+              backgroundColor: "var(--bg-primary)",
+              borderColor: "var(--border-color)",
+            }}
+          >
             <div className="w-2 h-2 rounded-full bg-[#22c55e] animate-pulse" />
-            <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
+            <span
+              className="text-[10px] font-black uppercase tracking-widest"
+              style={{ color: "var(--text-secondary)" }}
+            >
               Live Registration
             </span>
           </div>
@@ -304,7 +349,13 @@ const CreateVolunteer = () => {
         <form onSubmit={handleSubmit} className="space-y-8 pb-32">
           <div className="grid grid-cols-1 gap-8">
             {/* 1. Basic Identity */}
-            <div className="bg-white rounded-xl border border-emerald-100 shadow-sm">
+            <div
+              className="rounded-xl border shadow-sm"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
               <SectionHeader
                 icon={User}
                 number="01"
@@ -345,7 +396,13 @@ const CreateVolunteer = () => {
             </div>
 
             {/* 2. Base Location */}
-            <div className="bg-white rounded-xl border border-emerald-100 shadow-sm">
+            <div
+              className="rounded-xl border shadow-sm"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
               <SectionHeader
                 icon={MapPin}
                 number="02"
@@ -401,7 +458,13 @@ const CreateVolunteer = () => {
             </div>
 
             {/* 3. Area Logistics */}
-            <div className="bg-white rounded-xl border border-emerald-100 shadow-sm">
+            <div
+              className="rounded-xl border shadow-sm"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
               <SectionHeader
                 icon={Navigation}
                 number="03"
@@ -470,7 +533,13 @@ const CreateVolunteer = () => {
 
             {/* Side-by-Side (4 & 5) */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <div className="bg-white rounded-xl border border-emerald-100 shadow-sm">
+              <div
+                className="bg-white rounded-xl border shadow-sm"
+                style={{
+                  backgroundColor: "var(--bg-primary)",
+                  borderColor: "var(--border-color)",
+                }}
+              >
                 <SectionHeader
                   icon={Briefcase}
                   number="04"
@@ -495,7 +564,13 @@ const CreateVolunteer = () => {
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl border border-emerald-100 shadow-sm">
+              <div
+                className="bg-white rounded-xl border shadow-sm"
+                style={{
+                  backgroundColor: "var(--bg-primary)",
+                  borderColor: "var(--border-color)",
+                }}
+              >
                 <SectionHeader
                   icon={Clock}
                   number="05"
@@ -522,7 +597,13 @@ const CreateVolunteer = () => {
             </div>
 
             {/* 6. Personal Profile */}
-            <div className="bg-white rounded-xl border border-emerald-100 shadow-sm">
+            <div
+              className="rounded-xl border shadow-sm"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
               <SectionHeader
                 icon={Smartphone}
                 number="06"
@@ -556,7 +637,13 @@ const CreateVolunteer = () => {
 
             {/* Side-by-Side (7 & 8) */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <div className="bg-white rounded-xl border border-emerald-100 shadow-sm">
+              <div
+                className="bg-white rounded-xl border shadow-sm"
+                style={{
+                  backgroundColor: "var(--bg-primary)",
+                  borderColor: "var(--border-color)",
+                }}
+              >
                 <SectionHeader
                   icon={HelpCircle}
                   number="07"
@@ -586,7 +673,13 @@ const CreateVolunteer = () => {
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl border border-emerald-100 shadow-sm">
+              <div
+                className="bg-white rounded-xl border shadow-sm"
+                style={{
+                  backgroundColor: "var(--bg-primary)",
+                  borderColor: "var(--border-color)",
+                }}
+              >
                 <SectionHeader
                   icon={Car}
                   number="08"
@@ -617,7 +710,13 @@ const CreateVolunteer = () => {
             </div>
 
             {/* 9. Extended Support & Proofs */}
-            <div className="bg-white rounded-xl border border-emerald-100 shadow-sm">
+            <div
+              className="rounded-xl border shadow-sm"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
               <SectionHeader
                 icon={ShieldCheck}
                 number="09"
@@ -656,7 +755,10 @@ const CreateVolunteer = () => {
                     info="Alternate contact number for emergencies"
                   />
                 </div>
-                <div className="h-px bg-slate-100" />
+                <div
+                  className="h-px"
+                  style={{ backgroundColor: "var(--border-color)" }}
+                />
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-10">
                   <FileUploadSlot
                     label="Address Proof"
@@ -685,7 +787,13 @@ const CreateVolunteer = () => {
             </div>
 
             {/* 10. Safety & Consent */}
-            <div className="bg-white rounded-xl border border-emerald-100 shadow-sm">
+            <div
+              className="rounded-xl border shadow-sm"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
               <SectionHeader
                 icon={ShieldCheck}
                 number="10"
@@ -705,11 +813,15 @@ const CreateVolunteer = () => {
                   />
                 </div>
                 <div
-                  className={`flex-1 p-5 rounded-xl border-2 border-dashed flex items-start gap-4 transition-all cursor-pointer group/consent ${
-                    formData.followSafetyGuidelines
-                      ? "border-emerald-200 bg-emerald-50/40 shadow-inner"
-                      : "border-slate-200 bg-white hover:border-emerald-100 hover:bg-slate-50/30"
-                  }`}
+                  className={`flex-1 p-5 rounded-xl border-2 border-dashed flex items-start gap-4 transition-all cursor-pointer group/consent`}
+                  style={{
+                    backgroundColor: formData.followSafetyGuidelines
+                      ? "rgba(34, 197, 94, 0.05)"
+                      : "var(--bg-primary)",
+                    borderColor: formData.followSafetyGuidelines
+                      ? "rgba(34, 197, 94, 0.2)"
+                      : "var(--border-color)",
+                  }}
                   onClick={() =>
                     handleValueChange(
                       "followSafetyGuidelines",
@@ -720,19 +832,30 @@ const CreateVolunteer = () => {
                   <div
                     className={`mt-0.5 w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all duration-300 ${
                       formData.followSafetyGuidelines
-                        ? "bg-[#22c55e] border-[#22c55e] scale-110 shadow-lg shadow-emerald-100"
-                        : "bg-white border-slate-200 group-hover/consent:border-emerald-300"
+                        ? "bg-[#22c55e] border-[#22c55e] scale-110"
+                        : "border-[var(--border-color)] group-hover/consent:border-emerald-300"
                     }`}
+                    style={{
+                      backgroundColor: formData.followSafetyGuidelines
+                        ? "#22c55e"
+                        : "var(--bg-secondary)",
+                    }}
                   >
                     {formData.followSafetyGuidelines && (
                       <CheckCircle size={14} className="text-white" />
                     )}
                   </div>
                   <div className="flex-1 text-left">
-                    <label className="text-[11px] font-black text-slate-700 cursor-pointer leading-relaxed block uppercase tracking-tight">
+                    <label
+                      className="text-[11px] font-black cursor-pointer leading-relaxed block uppercase tracking-tight"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       Confirm Safety Protocol Compliance
                     </label>
-                    <p className="text-[10px] font-bold text-slate-400 mt-1">
+                    <p
+                      className="text-[10px] font-bold mt-1"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       I agree to strictly follow all hygiene guidelines during
                       food collection and distribution.
                     </p>
@@ -744,12 +867,19 @@ const CreateVolunteer = () => {
         </form>
 
         {/* Footer Actions */}
-        <div className="fixed bottom-0 left-0 right-0 bg-white p-6 z-[200]">
+        <div
+          className="fixed bottom-0 left-0 right-0 p-6 z-[200] border-t"
+          style={{
+            backgroundColor: "var(--bg-primary)",
+            borderColor: "var(--border-color)",
+          }}
+        >
           <div className="flex items-center justify-end gap-6 pr-8">
             <ResuableButton
               variant="ghost"
               onClick={() => navigate("/admin/users/volunteers")}
-              className="text-slate-400 font-black text-[11px] uppercase tracking-[0.2em] hover:text-red-500"
+              className="font-black text-[11px] uppercase tracking-[0.2em] hover:text-red-500"
+              style={{ color: "var(--text-muted)" }}
             >
               Cancel Entry
             </ResuableButton>
@@ -760,7 +890,7 @@ const CreateVolunteer = () => {
                 ).requestSubmit()
               }
               variant="primary"
-              className="min-w-[240px] h-[54px] !bg-[#22c55e] hover:!bg-[#1ea34a] !rounded-xl shadow-lg shadow-emerald-200 transition-all font-black text-[11px] uppercase tracking-[0.2em]"
+              className="min-w-[240px] h-[54px] !bg-[#22c55e] hover:!bg-[#1ea34a] !rounded-xl transition-all font-black text-[11px] uppercase tracking-[0.2em]"
               startContent={<CheckCircle size={20} />}
             >
               Confirm Registration
@@ -780,25 +910,38 @@ const CreateVolunteer = () => {
         hideCloseButton
         className="max-w-sm"
         classNames={{
-          base: "rounded-[2.5rem] bg-white shadow-2xl overflow-visible",
-          backdrop: "bg-slate-900/40 backdrop-blur-md",
+          base: "rounded-[2.5rem] shadow-2xl overflow-visible",
+          backdrop: "bg-[#0f172a]/60 backdrop-blur-md",
         }}
+        style={{ backgroundColor: "var(--bg-primary)" }}
       >
         <ModalContent>
           {(onClose) => (
             <ModalBody className="p-10 flex flex-col items-center text-center">
-              <div className="w-24 h-24 rounded-full bg-[#ecfdf5] flex items-center justify-center mb-10 shadow-inner border border-[#22c55e]/20 relative">
+              <div
+                className="w-24 h-24 rounded-full flex items-center justify-center mb-10 shadow-inner border relative"
+                style={{
+                  backgroundColor: "var(--bg-tertiary)",
+                  borderColor: "var(--border-color)",
+                }}
+              >
                 <div className="absolute inset-0 bg-[#22c55e]/20 rounded-full animate-ping duration-[2000ms]" />
-                <div className="w-16 h-16 rounded-full bg-[#22c55e] flex items-center justify-center shadow-xl shadow-[#22c55e]/20 relative z-10 transition-transform duration-500 hover:scale-110">
+                <div className="w-16 h-16 rounded-full bg-[#22c55e] flex items-center justify-center relative z-10 transition-transform duration-500 hover:scale-110">
                   <CheckCircle size={36} className="text-white" />
                 </div>
               </div>
 
-              <h3 className="text-2xl font-black text-slate-800 tracking-tight leading-tight mb-4">
+              <h3
+                className="text-2xl font-black tracking-tight leading-tight mb-4"
+                style={{ color: "var(--text-primary)" }}
+              >
                 Registration Received!
               </h3>
 
-              <p className="text-[13px] font-semibold text-slate-500 leading-relaxed mb-10 px-4">
+              <p
+                className="text-[13px] font-semibold leading-relaxed mb-10 px-4"
+                style={{ color: "var(--text-secondary)" }}
+              >
                 Your details have been successfully submitted for verification.
                 We'll notify you once our team completes the review.
               </p>
@@ -809,12 +952,19 @@ const CreateVolunteer = () => {
                   navigate("/admin/users/volunteers");
                 }}
                 variant="primary"
-                className="w-full h-14 !bg-[#22c55e] hover:!bg-[#1ea34a] !rounded-2xl shadow-xl shadow-emerald-200 transition-all font-black text-[11px] uppercase tracking-[0.2em] active:scale-[0.98]"
+                className="w-full h-14 !bg-[#22c55e] hover:!bg-[#1ea34a] !rounded-2xl transition-all font-black text-[11px] uppercase tracking-[0.2em] active:scale-[0.98]"
               >
                 Return to Directory
               </ResuableButton>
 
-              <p className="text-[10px] font-bold text-slate-400 mt-8 uppercase tracking-widest bg-slate-50/50 px-4 py-1.5 rounded-full border border-slate-100">
+              <p
+                className="text-[10px] font-bold mt-8 uppercase tracking-widest px-4 py-1.5 rounded-full border"
+                style={{
+                  color: "var(--text-muted)",
+                  backgroundColor: "var(--bg-tertiary)",
+                  borderColor: "var(--border-color)",
+                }}
+              >
                 Thank you for your interest
               </p>
             </ModalBody>

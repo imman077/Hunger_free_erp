@@ -97,10 +97,14 @@ const FileUploadSlot: React.FC<FileUploadSlotProps> = ({
         >
           <div
             className={`w-14 h-14 rounded-full border-2 border-dashed flex flex-col items-center justify-center transition-all duration-300 relative overflow-hidden shrink-0 ${
-              value
-                ? "border-[#22c55e] bg-[#22c55e]/5"
-                : "border-slate-200 bg-slate-50/50 hover:border-[#22c55e]/50 hover:bg-white"
+              value ? "border-[#22c55e] bg-[#22c55e]/5" : ""
             }`}
+            style={{
+              borderColor: value ? "#22c55e" : "var(--border-color)",
+              backgroundColor: value
+                ? "rgb(34 197 94 / 0.05)"
+                : "var(--bg-tertiary)",
+            }}
           >
             {value && isImage && downloadUrl ? (
               <img
@@ -111,8 +115,9 @@ const FileUploadSlot: React.FC<FileUploadSlotProps> = ({
             ) : (
               <div
                 className={`flex flex-col items-center ${
-                  value ? "text-[#22c55e]" : "text-slate-300"
+                  value ? "text-[#22c55e]" : ""
                 }`}
+                style={{ color: value ? "#22c55e" : "var(--text-muted)" }}
               >
                 {icon === "camera" ? (
                   <Camera size={18} />
@@ -144,10 +149,16 @@ const FileUploadSlot: React.FC<FileUploadSlotProps> = ({
           </div>
 
           <div className="text-left hidden md:block">
-            <p className="text-[10px] font-black uppercase tracking-tight text-slate-800 leading-none mb-1">
+            <p
+              className="text-[10px] font-black uppercase tracking-tight leading-none mb-1"
+              style={{ color: "var(--text-primary)" }}
+            >
               {label} {mandatory && <span className="text-red-500">*</span>}
             </p>
-            <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">
+            <p
+              className="text-[8px] font-bold uppercase tracking-widest"
+              style={{ color: "var(--text-muted)" }}
+            >
               {value ? "Tap to Change" : "Identification"}
             </p>
           </div>
@@ -177,8 +188,14 @@ const FileUploadSlot: React.FC<FileUploadSlotProps> = ({
         className={`relative border-2 border-dashed rounded-md p-6 flex flex-col items-center justify-center transition-all duration-300 min-h-[160px] group ${
           value
             ? "border-[#22c55e] bg-[#22c55e]/10 shadow-inner"
-            : "border-slate-200 bg-slate-50/50 hover:border-[#22c55e]/50 hover:bg-white cursor-pointer"
+            : "hover:border-[#22c55e]/50 cursor-pointer"
         }`}
+        style={{
+          borderColor: value ? "#22c55e" : "var(--border-color)",
+          backgroundColor: value
+            ? "rgb(34 197 94 / 0.1)"
+            : "var(--bg-tertiary)",
+        }}
       >
         {/* Background Preview for Images */}
         {value && isImage && downloadUrl && (
@@ -193,8 +210,12 @@ const FileUploadSlot: React.FC<FileUploadSlotProps> = ({
           className={`relative z-10 w-12 h-12 rounded-md flex items-center justify-center mb-4 transition-all duration-500 ${
             value
               ? "bg-[#22c55e] text-white shadow-lg shadow-[#22c55e]/20"
-              : "bg-white text-slate-300 group-hover:text-[#22c55e] shadow-sm"
+              : "group-hover:text-[#22c55e] shadow-sm"
           }`}
+          style={{
+            backgroundColor: value ? "#22c55e" : "var(--bg-primary)",
+            color: value ? "white" : "var(--text-muted)",
+          }}
         >
           {value ? (
             icon === "shield" ? (
@@ -212,10 +233,16 @@ const FileUploadSlot: React.FC<FileUploadSlotProps> = ({
         </div>
 
         <div className="relative z-10 text-center">
-          <p className="text-[11px] font-black uppercase tracking-tight text-slate-800">
+          <p
+            className="text-[11px] font-black uppercase tracking-tight"
+            style={{ color: "var(--text-primary)" }}
+          >
             {label} {mandatory && <span className="text-red-500">*</span>}
           </p>
-          <p className="text-[9px] font-bold text-slate-400 mt-1 uppercase tracking-widest leading-none truncate max-w-[140px] mx-auto">
+          <p
+            className="text-[9px] font-bold mt-1 uppercase tracking-widest leading-none truncate max-w-[140px] mx-auto"
+            style={{ color: "var(--text-muted)" }}
+          >
             {value
               ? value.name
               : subtitle || (mandatory ? "Mandatory" : "Optional")}
@@ -228,7 +255,12 @@ const FileUploadSlot: React.FC<FileUploadSlotProps> = ({
             <button
               type="button"
               onClick={handleView}
-              className="p-1.5 bg-white border border-slate-100 rounded-full text-slate-400 hover:text-[#22c55e] hover:border-[#22c55e]/30 shadow-sm transition-all"
+              className="p-1.5 border rounded-full transition-all shadow-sm"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+                color: "var(--text-muted)",
+              }}
               title="Preview File"
             >
               <Eye size={12} />
@@ -236,7 +268,12 @@ const FileUploadSlot: React.FC<FileUploadSlotProps> = ({
             <button
               type="button"
               onClick={handleDownload}
-              className="p-1.5 bg-white border border-slate-100 rounded-full text-slate-400 hover:text-blue-500 hover:border-blue-200 shadow-sm transition-all"
+              className="p-1.5 border rounded-full transition-all shadow-sm"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+                color: "var(--text-muted)",
+              }}
               title="Download File"
             >
               <Download size={12} />
@@ -244,7 +281,12 @@ const FileUploadSlot: React.FC<FileUploadSlotProps> = ({
             <button
               type="button"
               onClick={handleRemove}
-              className="p-1.5 bg-white border border-slate-100 rounded-full text-slate-400 hover:text-red-600 hover:border-red-200 shadow-sm transition-all"
+              className="p-1.5 border rounded-full transition-all shadow-sm"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+                color: "var(--text-muted)",
+              }}
               title="Remove File"
             >
               <X size={12} />
@@ -258,7 +300,12 @@ const FileUploadSlot: React.FC<FileUploadSlotProps> = ({
             <button
               type="button"
               onClick={handleRemove}
-              className="p-1.5 bg-white border border-slate-100 rounded-full text-slate-400 hover:text-red-600 hover:border-red-200 shadow-sm transition-all"
+              className="p-1.5 border rounded-full transition-all shadow-sm"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+                color: "var(--text-muted)",
+              }}
               title="Remove File"
             >
               <X size={12} />

@@ -32,7 +32,7 @@ const HeroDateRangePicker: React.FC<HeroDateRangePickerProps> = ({
     const clickedDate = new Date(
       currentMonth.getFullYear(),
       currentMonth.getMonth(),
-      day
+      day,
     );
 
     if (!selection.start || (selection.start && selection.end)) {
@@ -50,7 +50,7 @@ const HeroDateRangePicker: React.FC<HeroDateRangePickerProps> = ({
     const date = new Date(
       currentMonth.getFullYear(),
       currentMonth.getMonth(),
-      day
+      day,
     );
     return (
       selection.start?.toDateString() === date.toDateString() ||
@@ -63,14 +63,14 @@ const HeroDateRangePicker: React.FC<HeroDateRangePickerProps> = ({
     const date = new Date(
       currentMonth.getFullYear(),
       currentMonth.getMonth(),
-      day
+      day,
     );
     return date > selection.start && date < selection.end;
   };
 
   const changeMonth = (offset: number) => {
     setCurrentMonth(
-      new Date(currentMonth.getFullYear(), currentMonth.getMonth() + offset, 1)
+      new Date(currentMonth.getFullYear(), currentMonth.getMonth() + offset, 1),
     );
   };
 
@@ -81,7 +81,7 @@ const HeroDateRangePicker: React.FC<HeroDateRangePickerProps> = ({
 
   return (
     <div
-      className="absolute right-0 mt-2 w-[300px] rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border p-5 z-[100] animate-in fade-in zoom-in-95 duration-200"
+      className="absolute right-0 mt-2 w-[300px] rounded-xl shadow-2xl border p-5 z-[100] animate-in fade-in zoom-in-95 duration-200"
       style={{
         backgroundColor: "var(--bg-primary)",
         borderColor: "var(--border-color)",
@@ -145,13 +145,13 @@ const HeroDateRangePicker: React.FC<HeroDateRangePickerProps> = ({
                 backgroundColor: selected
                   ? "#22c55e"
                   : range
-                  ? "rgba(34, 197, 94, 0.1)"
-                  : "transparent",
+                    ? "rgba(34, 197, 94, 0.1)"
+                    : "transparent",
                 color: selected
                   ? "white"
                   : range
-                  ? "#22c55e"
-                  : "var(--text-secondary)",
+                    ? "#22c55e"
+                    : "var(--text-secondary)",
               }}
             >
               {day}
@@ -227,7 +227,7 @@ const HeroDateRangePicker: React.FC<HeroDateRangePickerProps> = ({
             onClick={() => {
               onRangeSelect(
                 formatDateString(selection.start),
-                formatDateString(selection.end)
+                formatDateString(selection.end),
               );
               onClose();
             }}

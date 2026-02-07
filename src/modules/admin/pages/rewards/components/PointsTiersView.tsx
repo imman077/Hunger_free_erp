@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import {
   Gem,
   Wallet,
@@ -6,18 +6,14 @@ import {
   Settings,
   RotateCcw,
   Plus,
-  X,
   ShieldCheck,
   Save,
   Search,
+  AlertTriangle,
+  Eye,
+  Trash2,
 } from "lucide-react";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerBody,
-  useDisclosure,
-} from "@heroui/react";
+import { useDisclosure, Button } from "@heroui/react";
 import { toast } from "sonner";
 import ResuableModal from "../../../../../global/components/resuable-components/modal";
 
@@ -69,6 +65,10 @@ const PointsTiersView: React.FC = () => {
   const [editableTierBonus, setEditableTierBonus] = useState("");
   const [editableTierPerks, setEditableTierPerks] = useState("");
 
+  // Delete Modal State
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [tierToDelete, setTierToDelete] = useState<any>(null);
+
   const [baseRates, setBaseRates] = useState({
     donor: { first: "300", perKg: "25", milestone: "600" },
     volunteer: { delivery: "150", streak: "500", emergency: "1000" },
@@ -102,9 +102,9 @@ const PointsTiersView: React.FC = () => {
     },
   ];
 
-  const sortedTiers = [...tiers].sort(
-    (a, b) => a.pointsRequired - b.pointsRequired,
-  );
+  const sortedTiers = useMemo(() => {
+    return [...tiers].sort((a, b) => a.pointsRequired - b.pointsRequired);
+  }, [tiers]);
 
   const handleAddTier = () => {
     if (!newTier.name || !newTier.minPoints || !newTier.bonus) {
@@ -137,59 +137,86 @@ const PointsTiersView: React.FC = () => {
     setIsModalOpen(false);
   };
 
-  const handleViewTier = (tier: any) => {
-    setSelectedTier(tier);
-    setEditableTierName(tier.name);
-    setEditableTierRange(tier.range);
-    setEditableTierBonus(tier.bonus);
-    setEditableTierPerks(tier.perks);
-    setIsTierEditMode(false);
-    onDrawerOpen();
-  };
+  const handleViewTier = useCallback(
+    (tier: any) => {
+      setSelectedTier(tier);
+      setEditableTierName(tier.name);
+      setEditableTierRange(tier.range);
+      setEditableTierBonus(tier.bonus);
+      setEditableTierPerks(tier.perks);
+      setIsTierEditMode(false);
+      onDrawerOpen();
+    },
+    [onDrawerOpen],
+  );
 
-  const handleDeleteTier = (tier: any) => {
-    setTiers(tiers.filter((t) => t.name !== tier.name));
-    toast.success(`Tier "${tier.name}" deleted successfully!`);
-  };
+  const handleConfirmDelete = useCallback((tier: any) => {
+    setTierToDelete(tier);
+    setIsDeleteModalOpen(true);
+  }, []);
 
-  const handleUpdateTier = () => {
+  const handleDeleteTier = useCallback(() => {
+    if (tierToDelete) {
+      setTiers((prevTiers) =>
+        prevTiers.filter((t) => t.name !== tierToDelete.name),
+      );
+      toast.success(`Tier "${tierToDelete.name}" deleted successfully!`);
+      setIsDeleteModalOpen(false);
+      setTierToDelete(null);
+    }
+  }, [tierToDelete]);
+
+  const handleUpdateTier = useCallback(() => {
     if (!selectedTier) return;
 
-    const updatedTiers = tiers.map((t) =>
-      t.name === selectedTier.name
-        ? {
-            ...t,
-            name: editableTierName,
-            range: editableTierRange,
-            bonus: editableTierBonus,
-            perks: editableTierPerks,
-          }
-        : t,
+    setTiers((prevTiers) =>
+      prevTiers.map((t) =>
+        t.name === selectedTier.name
+          ? {
+              ...t,
+              name: editableTierName,
+              range: editableTierRange,
+              bonus: editableTierBonus,
+              perks: editableTierPerks,
+            }
+          : t,
+      ),
     );
 
-    setTiers(updatedTiers);
-    setSelectedTier({
-      ...selectedTier,
+    setSelectedTier((prev: any) => ({
+      ...prev,
       name: editableTierName,
       range: editableTierRange,
       bonus: editableTierBonus,
       perks: editableTierPerks,
-    });
+    }));
     setIsTierEditMode(false);
     toast.success("Tier updated successfully!");
-  };
+  }, [
+    selectedTier,
+    editableTierName,
+    editableTierRange,
+    editableTierBonus,
+    editableTierPerks,
+  ]);
 
-  const closeDrawer = () => {
+  const closeDrawer = useCallback(() => {
     setIsTierEditMode(false);
     onDrawerClose();
-  };
+  }, [onDrawerClose]);
 
   const renderTierCell = (tier: any, columnKey: React.Key) => {
     const value = tier[columnKey as string];
     switch (columnKey) {
       case "name":
         return (
-          <div className="flex items-center gap-2 px-2 py-0.5 rounded-full bg-slate-50 border border-slate-200 w-fit min-w-0">
+          <div
+            className="flex items-center gap-2 px-2 py-0.5 rounded-full border w-fit min-w-0"
+            style={{
+              backgroundColor: "var(--bg-secondary)",
+              borderColor: "var(--border-color)",
+            }}
+          >
             <div
               className={`w-2 h-2 rounded-full shrink-0 ${
                 tier.name === "Legend"
@@ -209,7 +236,13 @@ const PointsTiersView: React.FC = () => {
         );
       case "pointsRequired":
         return (
-          <span className="font-black text-slate-800 text-xs tabular-nums bg-slate-100 px-3 py-1 rounded-sm">
+          <span
+            className="font-black text-xs tabular-nums px-3 py-1 rounded-sm"
+            style={{
+              backgroundColor: "var(--bg-tertiary)",
+              color: "var(--text-primary)",
+            }}
+          >
             {tier.pointsRequired.toLocaleString()} PTS
           </span>
         );
@@ -219,9 +252,35 @@ const PointsTiersView: React.FC = () => {
             +{value}
           </span>
         );
+      case "actions":
+        return (
+          <div className="flex items-center justify-center gap-2">
+            <Button
+              isIconOnly
+              size="sm"
+              variant="flat"
+              onPress={() => handleViewTier(tier)}
+              className="!bg-transparent !text-slate-400 hover:!text-[#22c55e] transition-all min-w-0 h-8 w-8"
+            >
+              <Eye size={15} />
+            </Button>
+            <Button
+              isIconOnly
+              size="sm"
+              variant="flat"
+              onPress={() => handleConfirmDelete(tier)}
+              className="!bg-transparent !text-slate-400 hover:!text-red-500 transition-all min-w-0 h-8 w-8"
+            >
+              <Trash2 size={15} />
+            </Button>
+          </div>
+        );
       default:
         return (
-          <span className="text-slate-500 font-bold text-[11px] whitespace-nowrap px-1">
+          <span
+            className="font-bold text-[11px] whitespace-nowrap px-1"
+            style={{ color: "var(--text-secondary)" }}
+          >
             {value}
           </span>
         );
@@ -237,7 +296,10 @@ const PointsTiersView: React.FC = () => {
         >
           Rewards Dashboard
         </h1>
-        <p className="text-slate-500 font-semibold mt-1">
+        <p
+          className="font-semibold mt-1"
+          style={{ color: "var(--text-muted)" }}
+        >
           Configure point systems, tiers, and manage user redemptions
         </p>
       </div>
@@ -248,8 +310,14 @@ const PointsTiersView: React.FC = () => {
       <div className="space-y-6">
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-4">
-            <div className="p-3 bg-slate-50/50 border border-slate-100/50 rounded-sm">
-              <Users className="text-slate-400" size={20} />
+            <div
+              className="p-3 rounded-sm border"
+              style={{
+                backgroundColor: "var(--bg-secondary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
+              <Users style={{ color: "var(--text-muted)" }} size={20} />
             </div>
             <div className="flex flex-col text-start">
               <h4
@@ -258,7 +326,10 @@ const PointsTiersView: React.FC = () => {
               >
                 Reward Tiers
               </h4>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1.5">
+              <p
+                className="text-[10px] font-black uppercase tracking-widest mt-1.5"
+                style={{ color: "var(--text-muted)" }}
+              >
                 Manage user thresholds and benefits
               </p>
             </div>
@@ -276,12 +347,6 @@ const PointsTiersView: React.FC = () => {
           data={sortedTiers}
           columns={tierColumns}
           renderCell={renderTierCell}
-          actionConfig={{
-            showView: true,
-            showDelete: true,
-            onView: handleViewTier,
-            onDelete: handleDeleteTier,
-          }}
           enableSorting={false}
         />
       </div>
@@ -297,10 +362,19 @@ const PointsTiersView: React.FC = () => {
           <div className="space-y-4 px-3 sm:px-6">
             <>
               {/* Hero Section */}
-              <div className="relative pb-6 border-b border-slate-100">
+              <div
+                className="relative pb-6 border-b"
+                style={{ borderColor: "var(--border-color)" }}
+              >
                 <div className="flex flex-col items-center gap-4">
                   <div className="relative w-24 h-24 mb-4 group transition-transform duration-500 hover:scale-105">
-                    <div className="w-full h-full p-1.5 rounded-sm bg-blue-50 border border-blue-100/50">
+                    <div
+                      className="w-full h-full p-1.5 rounded-sm border"
+                      style={{
+                        backgroundColor: "rgba(59, 130, 246, 0.05)",
+                        borderColor: "rgba(59, 130, 246, 0.2)",
+                      }}
+                    >
                       <div className="w-full h-full rounded-sm bg-gradient-to-br from-blue-400 to-indigo-600 flex items-center justify-center text-3xl font-black text-white shadow-sm overflow-hidden uppercase italic">
                         {selectedTier.name.slice(0, 2)}
                       </div>
@@ -309,10 +383,16 @@ const PointsTiersView: React.FC = () => {
 
                   <div className="text-center space-y-3 max-w-sm">
                     <div className="space-y-0.5 w-full flex flex-col items-center">
-                      <h3 className="text-2xl font-black text-slate-900 leading-[1.05] tracking-tight">
+                      <h3
+                        className="text-2xl font-black leading-[1.05] tracking-tight"
+                        style={{ color: "var(--text-primary)" }}
+                      >
                         {selectedTier.name}
                       </h3>
-                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
+                      <p
+                        className="text-[10px] font-bold uppercase tracking-[0.2em]"
+                        style={{ color: "var(--text-muted)" }}
+                      >
                         LOYALTY LEVEL
                       </p>
                     </div>
@@ -322,19 +402,39 @@ const PointsTiersView: React.FC = () => {
 
               {/* Stats Grid */}
               <div className="grid grid-cols-1 min-[400px]:grid-cols-2 gap-2">
-                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-3 rounded-sm border border-blue-100 shadow-sm">
-                  <div className="text-[9px] font-black text-blue-600/70 uppercase tracking-[0.2em] mb-1">
+                <div
+                  className="p-3 rounded-sm border shadow-sm"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(99, 102, 241, 0.08))",
+                    borderColor: "rgba(59, 130, 246, 0.2)",
+                  }}
+                >
+                  <div className="text-[9px] font-black text-blue-500 uppercase tracking-[0.2em] mb-1">
                     Point Range
                   </div>
-                  <div className="text-sm font-black text-blue-700">
+                  <div
+                    className="text-sm font-black"
+                    style={{ color: "var(--text-primary)" }}
+                  >
                     {selectedTier.range}
                   </div>
                 </div>
-                <div className="bg-gradient-to-br from-emerald-50 to-teal-50 p-3 rounded-sm border border-emerald-100 shadow-sm">
-                  <div className="text-[9px] font-black text-emerald-600/70 uppercase tracking-[0.2em] mb-1">
+                <div
+                  className="p-3 rounded-sm border shadow-sm"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(20, 184, 166, 0.08))",
+                    borderColor: "rgba(16, 185, 129, 0.2)",
+                  }}
+                >
+                  <div className="text-[9px] font-black text-emerald-500 uppercase tracking-[0.2em] mb-1">
                     Earning Bonus
                   </div>
-                  <div className="text-sm font-black text-emerald-700">
+                  <div
+                    className="text-sm font-black"
+                    style={{ color: "var(--text-primary)" }}
+                  >
                     {selectedTier.bonus}
                   </div>
                 </div>
@@ -343,21 +443,40 @@ const PointsTiersView: React.FC = () => {
               {/* Configuration Section */}
               <section className="space-y-3">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-sm bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 shadow-sm shrink-0">
+                  <div
+                    className="w-8 h-8 rounded-sm border flex items-center justify-center shadow-sm shrink-0"
+                    style={{
+                      backgroundColor: "var(--bg-secondary)",
+                      borderColor: "var(--border-color)",
+                      color: "var(--text-secondary)",
+                    }}
+                  >
                     <Settings size={16} strokeWidth={2.5} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest leading-none">
+                    <h4
+                      className="text-xs font-black uppercase tracking-widest leading-none"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       Configuration
                     </h4>
-                    <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tight mt-1 leading-none">
+                    <p
+                      className="text-[8px] font-bold uppercase tracking-tight mt-1 leading-none"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       Tier Properties & Benefits
                     </p>
                   </div>
                 </div>
 
                 {isTierEditMode ? (
-                  <div className="bg-white p-2.5 rounded-sm border border-slate-200 shadow-sm space-y-2.5">
+                  <div
+                    className="p-2.5 rounded-sm border shadow-sm space-y-2.5"
+                    style={{
+                      backgroundColor: "var(--bg-primary)",
+                      borderColor: "var(--border-color)",
+                    }}
+                  >
                     <ResuableInput
                       label="Tier Name"
                       value={editableTierName}
@@ -390,46 +509,60 @@ const PointsTiersView: React.FC = () => {
                         Icon: Gem,
                         label: "Tier Name",
                         value: selectedTier.name,
-                        color: "blue",
-                        bg: "bg-blue-50/50",
+                        color: "rgb(59, 130, 246)",
+                        bg: "rgba(59, 130, 246, 0.1)",
                       },
                       {
                         Icon: Search,
                         label: "Point Range",
                         value: selectedTier.range,
-                        color: "indigo",
-                        bg: "bg-indigo-50/50",
+                        color: "rgb(99, 102, 241)",
+                        bg: "rgba(99, 102, 241, 0.1)",
                       },
                       {
                         Icon: Wallet,
                         label: "Bonus Multiplier",
                         value: selectedTier.bonus,
-                        color: "emerald",
-                        bg: "bg-emerald-50/50",
+                        color: "rgb(16, 185, 129)",
+                        bg: "rgba(16, 185, 129, 0.1)",
                       },
                       {
                         Icon: ShieldCheck,
                         label: "Perks & Benefits",
                         value: selectedTier.perks,
-                        color: "purple",
-                        bg: "bg-purple-50/50",
+                        color: "rgb(168, 85, 247)",
+                        bg: "rgba(168, 85, 247, 0.1)",
                       },
                     ].map((item, i) => (
                       <div
                         key={i}
-                        className="group bg-white p-2.5 rounded-sm border border-slate-200 transition-all duration-300 border-b-2 border-b-transparent hover:border-b-[#22c55e] hover:bg-slate-50/30 shadow-sm"
+                        className="group p-2.5 rounded-sm border transition-all duration-300 border-b-2 border-b-transparent hover:border-b-[#22c55e] shadow-sm"
+                        style={{
+                          backgroundColor: "var(--bg-primary)",
+                          borderColor: "var(--border-color)",
+                        }}
                       >
                         <div className="flex items-center gap-3">
                           <div
-                            className={`w-8 h-8 rounded-sm ${item.bg} flex items-center justify-center text-${item.color}-600 shrink-0 group-hover:scale-105 transition-transform duration-500`}
+                            className={`w-8 h-8 rounded-sm flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-500`}
+                            style={{
+                              backgroundColor: item.bg,
+                              color: item.color,
+                            }}
                           >
                             <item.Icon size={16} strokeWidth={2.5} />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1 leading-none">
+                            <p
+                              className="text-[8px] font-black uppercase tracking-[0.2em] mb-1 leading-none"
+                              style={{ color: "var(--text-muted)" }}
+                            >
                               {item.label}
                             </p>
-                            <p className="text-[11px] font-black text-slate-800 leading-tight truncate uppercase tracking-tight mt-1">
+                            <p
+                              className="text-[11px] font-black leading-tight truncate uppercase tracking-tight mt-1"
+                              style={{ color: "var(--text-primary)" }}
+                            >
                               {item.value}
                             </p>
                           </div>
@@ -447,7 +580,11 @@ const PointsTiersView: React.FC = () => {
                     <ResuableButton
                       variant="secondary"
                       onClick={() => setIsTierEditMode(false)}
-                      className="flex-1 !px-6 !py-3 !text-[10px] !font-black !text-slate-400 hover:!text-slate-600 uppercase tracking-widest transition-colors flex items-center justify-center gap-2 !rounded-sm !border !border-slate-200"
+                      className="flex-1 !px-6 !py-3 !text-[10px] !font-black uppercase tracking-widest transition-colors flex items-center justify-center gap-2 !rounded-sm !border"
+                      style={{
+                        borderColor: "var(--border-color)",
+                        color: "var(--text-muted)",
+                      }}
                       startContent={<RotateCcw size={14} />}
                     >
                       Cancel
@@ -485,7 +622,10 @@ const PointsTiersView: React.FC = () => {
           borderColor: "var(--border-color)",
         }}
       >
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 pb-4 border-b border-slate-50 gap-4">
+        <div
+          className="flex flex-col md:flex-row md:items-center justify-between mb-8 pb-4 border-b gap-4"
+          style={{ borderColor: "var(--border-color)" }}
+        >
           <div className="flex items-center gap-4">
             <div className="p-2.5 bg-[#22c55e] rounded-sm shadow-sm">
               <Settings className="text-white" size={20} />
@@ -497,20 +637,31 @@ const PointsTiersView: React.FC = () => {
               >
                 Ultra Reward Base Rates
               </h4>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1.5">
+              <p
+                className="text-[10px] font-black uppercase tracking-widest mt-1.5"
+                style={{ color: "var(--text-muted)" }}
+              >
                 Configure ecosystem multipliers and rewards
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest whitespace-nowrap">
+            <p
+              className="text-[10px] font-black uppercase tracking-widest whitespace-nowrap"
+              style={{ color: "var(--text-muted)" }}
+            >
               Select Tier:
             </p>
             <select
               value={previewTier}
               onChange={(e) => setPreviewTier(e.target.value)}
-              className="bg-slate-50 border border-slate-200 rounded-sm px-3 py-1.5 text-[11px] font-black uppercase text-slate-800 focus:outline-none focus:ring-1 focus:ring-[#22c55e] cursor-pointer"
+              className="rounded-sm px-3 py-1.5 text-[11px] font-black uppercase focus:outline-none focus:ring-1 focus:ring-[#22c55e] cursor-pointer"
+              style={{
+                backgroundColor: "var(--bg-secondary)",
+                borderColor: "var(--border-color)",
+                color: "var(--text-primary)",
+              }}
             >
               {tiers.map((t) => (
                 <option key={t.name} value={t.name}>
@@ -523,7 +674,13 @@ const PointsTiersView: React.FC = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Donor Points */}
-          <div className="p-6 border border-slate-100 rounded-sm bg-slate-50/20 space-y-8">
+          <div
+            className="p-6 border rounded-sm space-y-8"
+            style={{
+              backgroundColor: "rgba(59, 130, 246, 0.03)",
+              borderColor: "var(--border-color)",
+            }}
+          >
             <div className="flex items-center gap-3">
               <span className="w-1 h-6 bg-blue-500 rounded-full" />
               <h5
@@ -594,19 +751,32 @@ const PointsTiersView: React.FC = () => {
                     return (
                       <div
                         key={idx}
-                        className="flex justify-between items-center border-b border-slate-200/40 pb-3 group"
+                        className="flex justify-between items-center border-b pb-3 group"
+                        style={{ borderColor: "var(--border-color)" }}
                       >
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] group-hover:text-slate-600 transition-colors">
+                        <p
+                          className="text-[10px] font-black uppercase tracking-[0.1em] transition-colors"
+                          style={{ color: "var(--text-muted)" }}
+                        >
                           {field.label}
                         </p>
                         <div className="text-right">
                           <p
-                            className={`text-sm font-black tabular-nums ${bonusVal > 0 ? "text-emerald-500" : "text-slate-900"}`}
+                            className={`text-sm font-black tabular-nums ${bonusVal > 0 ? "text-emerald-500" : ""}`}
+                            style={{
+                              color:
+                                bonusVal > 0
+                                  ? undefined
+                                  : "var(--text-primary)",
+                            }}
                           >
                             {multipliedPoints} PTS
                           </p>
                           {bonusVal > 0 && (
-                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-tighter mt-0.5">
+                            <p
+                              className="text-[9px] font-black uppercase tracking-tighter mt-0.5"
+                              style={{ color: "var(--text-muted)" }}
+                            >
                               Base: {basePoints} + {bonusVal}%
                             </p>
                           )}
@@ -620,7 +790,13 @@ const PointsTiersView: React.FC = () => {
           </div>
 
           {/* Volunteer Points */}
-          <div className="p-6 border border-slate-100 rounded-sm bg-slate-50/20 space-y-8">
+          <div
+            className="p-6 border rounded-sm space-y-8"
+            style={{
+              backgroundColor: "rgba(34, 197, 94, 0.03)",
+              borderColor: "var(--border-color)",
+            }}
+          >
             <div className="flex items-center gap-3">
               <span className="w-1 h-6 bg-emerald-500 rounded-full" />
               <h5
@@ -694,19 +870,32 @@ const PointsTiersView: React.FC = () => {
                     return (
                       <div
                         key={idx}
-                        className="flex justify-between items-center border-b border-slate-200/40 pb-3 group"
+                        className="flex justify-between items-center border-b pb-3 group"
+                        style={{ borderColor: "var(--border-color)" }}
                       >
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] group-hover:text-slate-600 transition-colors">
+                        <p
+                          className="text-[10px] font-black uppercase tracking-[0.1em] transition-colors"
+                          style={{ color: "var(--text-muted)" }}
+                        >
                           {field.label}
                         </p>
                         <div className="text-right">
                           <p
-                            className={`text-sm font-black tabular-nums ${bonusVal > 0 ? "text-emerald-500" : "text-slate-900"}`}
+                            className={`text-sm font-black tabular-nums ${bonusVal > 0 ? "text-emerald-500" : ""}`}
+                            style={{
+                              color:
+                                bonusVal > 0
+                                  ? undefined
+                                  : "var(--text-primary)",
+                            }}
                           >
                             {multipliedPoints} PTS
                           </p>
                           {bonusVal > 0 && (
-                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-tighter mt-0.5">
+                            <p
+                              className="text-[9px] font-black uppercase tracking-tighter mt-0.5"
+                              style={{ color: "var(--text-muted)" }}
+                            >
                               Base: {basePoints} + {bonusVal}%
                             </p>
                           )}
@@ -720,7 +909,13 @@ const PointsTiersView: React.FC = () => {
           </div>
 
           {/* NGO Points */}
-          <div className="p-6 border border-slate-100 rounded-sm bg-slate-50/20 space-y-8">
+          <div
+            className="p-6 border rounded-sm space-y-8"
+            style={{
+              backgroundColor: "rgba(245, 158, 11, 0.03)",
+              borderColor: "var(--border-color)",
+            }}
+          >
             <div className="flex items-center gap-3">
               <span className="w-1 h-6 bg-amber-500 rounded-full" />
               <h5
@@ -794,19 +989,32 @@ const PointsTiersView: React.FC = () => {
                     return (
                       <div
                         key={idx}
-                        className="flex justify-between items-center border-b border-slate-200/40 pb-3 group"
+                        className="flex justify-between items-center border-b pb-3 group"
+                        style={{ borderColor: "var(--border-color)" }}
                       >
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] group-hover:text-slate-600 transition-colors">
+                        <p
+                          className="text-[10px] font-black uppercase tracking-[0.1em] transition-colors"
+                          style={{ color: "var(--text-muted)" }}
+                        >
                           {field.label}
                         </p>
                         <div className="text-right">
                           <p
-                            className={`text-sm font-black tabular-nums ${bonusVal > 0 ? "text-emerald-500" : "text-slate-900"}`}
+                            className={`text-sm font-black tabular-nums ${bonusVal > 0 ? "text-emerald-500" : ""}`}
+                            style={{
+                              color:
+                                bonusVal > 0
+                                  ? undefined
+                                  : "var(--text-primary)",
+                            }}
                           >
                             {multipliedPoints} PTS
                           </p>
                           {bonusVal > 0 && (
-                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-tighter mt-0.5">
+                            <p
+                              className="text-[9px] font-black uppercase tracking-tighter mt-0.5"
+                              style={{ color: "var(--text-muted)" }}
+                            >
                               Base: {basePoints} + {bonusVal}%
                             </p>
                           )}
@@ -837,6 +1045,61 @@ const PointsTiersView: React.FC = () => {
           </ResuableButton>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <ResuableModal
+        isOpen={isDeleteModalOpen}
+        onOpenChange={setIsDeleteModalOpen}
+        title="Delete Reward Tier"
+        subtitle="Permanent System Modification"
+        size="sm"
+        footer={
+          <>
+            <ResuableButton
+              variant="ghost"
+              onClick={() => setIsDeleteModalOpen(false)}
+              className="flex-1 font-black uppercase tracking-widest text-[10px] border whitespace-nowrap h-11"
+              style={{
+                borderColor: "var(--border-color)",
+                color: "var(--text-muted)",
+              }}
+            >
+              Cancel
+            </ResuableButton>
+            <ResuableButton
+              variant="primary"
+              onClick={handleDeleteTier}
+              className="flex-1 !bg-red-500 hover:!bg-red-600 font-black uppercase tracking-widest text-[10px] text-white shadow-lg shadow-red-500/20 whitespace-nowrap h-11"
+            >
+              Confirm Delete
+            </ResuableButton>
+          </>
+        }
+      >
+        <div className="flex flex-col items-center text-center gap-4 py-4">
+          <div className="w-16 h-16 rounded-full bg-red-100/10 border border-red-500/20 flex items-center justify-center text-red-500 animate-pulse">
+            <AlertTriangle size={32} />
+          </div>
+          <div className="space-y-1">
+            <p
+              className="text-sm font-bold uppercase tracking-tight"
+              style={{ color: "var(--text-primary)" }}
+            >
+              Are you absolutely sure?
+            </p>
+            <p
+              className="text-[11px] font-semibold leading-relaxed"
+              style={{ color: "var(--text-muted)" }}
+            >
+              You are about to remove the{" "}
+              <span className="text-red-500 font-black">
+                {tierToDelete?.name}
+              </span>{" "}
+              tier. This action cannot be undone and may affect active users.
+            </p>
+          </div>
+        </div>
+      </ResuableModal>
 
       {/* Modal for Adding New Tier */}
       <ResuableModal

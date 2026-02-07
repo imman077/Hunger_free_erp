@@ -231,7 +231,11 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
                           {displayId}
                         </p>
                       </div>
-                      <Icon name="stack" className="w-4 h-4 text-slate-300" />
+                      <Icon
+                        name="stack"
+                        className="w-4 h-4"
+                        style={{ color: "var(--text-muted)" }}
+                      />
                     </div>
                     <div
                       className="p-4 border rounded-sm flex justify-between items-start shadow-sm"
@@ -256,7 +260,8 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
                       </div>
                       <Icon
                         name="calendar"
-                        className="w-4 h-4 text-slate-300"
+                        className="w-4 h-4"
+                        style={{ color: "var(--text-muted)" }}
                       />
                     </div>
                   </div>
@@ -286,7 +291,8 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
                           >
                             <Icon
                               name="donations"
-                              className="w-10 h-10 text-slate-200"
+                              className="w-10 h-10"
+                              style={{ color: "var(--border-color)" }}
                             />
                           </div>
                           <div className="w-full space-y-3">
@@ -298,7 +304,8 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
                             >
                               <Icon
                                 name="mail"
-                                className="w-4 h-4 text-slate-400"
+                                className="w-4 h-4"
+                                style={{ color: "var(--text-muted)" }}
                               />
                               <span
                                 className="text-xs font-bold truncate"
@@ -315,7 +322,8 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
                             >
                               <Icon
                                 name="phone"
-                                className="w-4 h-4 text-slate-400"
+                                className="w-4 h-4"
+                                style={{ color: "var(--text-muted)" }}
                               />
                               <span
                                 className="text-xs font-bold"
@@ -327,7 +335,8 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
                             <div className="flex items-center gap-3 py-2">
                               <Icon
                                 name="office"
-                                className="w-4 h-4 text-slate-400"
+                                className="w-4 h-4"
+                                style={{ color: "var(--text-muted)" }}
                               />
                               <span
                                 className="text-xs font-bold truncate"
@@ -495,8 +504,8 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
                                   <div
                                     className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[8px] font-black uppercase border ${
                                       item.status === "Verified"
-                                        ? "border-[#22c55e] bg-[#ecfdf5] text-[#15803d] shadow-sm shadow-[#22c55e]/10"
-                                        : "bg-rose-50 text-rose-700 border-rose-100"
+                                        ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-500"
+                                        : "bg-red-500/10 text-red-500 border-red-500/20"
                                     }`}
                                   >
                                     {item.status}

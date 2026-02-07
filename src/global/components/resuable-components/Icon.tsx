@@ -1,11 +1,16 @@
 import React from "react";
 
-interface IconProps {
+export interface IconProps {
   name: string;
   className?: string;
+  style?: React.CSSProperties;
 }
 
-export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
+export const Icon: React.FC<IconProps> = ({
+  name,
+  className = "w-5 h-5",
+  style,
+}) => {
   switch (name) {
     case "dashboard":
       return (
@@ -15,6 +20,7 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
           stroke="currentColor"
           strokeWidth={2}
           className={className}
+          style={style}
         >
           <path d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v2a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 12a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1v-7z" />
         </svg>
@@ -27,6 +33,7 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
           stroke="currentColor"
           strokeWidth={2}
           className={className}
+          style={style}
         >
           <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
           <path d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1m-6 0a1 1 0 001-1" />
@@ -40,6 +47,7 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
           stroke="currentColor"
           strokeWidth={2}
           className={className}
+          style={style}
         >
           <path
             strokeLinecap="round"
@@ -56,6 +64,7 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
           stroke="currentColor"
           strokeWidth={2}
           className={className}
+          style={style}
         >
           <path
             strokeLinecap="round"
@@ -72,6 +81,7 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
           stroke="currentColor"
           strokeWidth={2}
           className={className}
+          style={style}
         >
           <path
             strokeLinecap="round"
@@ -88,6 +98,7 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
           stroke="currentColor"
           strokeWidth={2}
           className={className}
+          style={style}
         >
           <path
             strokeLinecap="round"
@@ -104,6 +115,7 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
           stroke="currentColor"
           strokeWidth={2}
           className={className}
+          style={style}
         >
           <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
         </svg>
@@ -116,6 +128,7 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
           stroke="currentColor"
           strokeWidth={2}
           className={className}
+          style={style}
         >
           <path
             strokeLinecap="round"
@@ -132,6 +145,7 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
           stroke="currentColor"
           strokeWidth={2}
           className={className}
+          style={style}
         >
           <path
             strokeLinecap="round"
@@ -148,6 +162,7 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
           stroke="currentColor"
           strokeWidth={2}
           className={className}
+          style={style}
         >
           <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
         </svg>
@@ -160,6 +175,7 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
           stroke="currentColor"
           strokeWidth={2}
           className={className}
+          style={style}
         >
           <path d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
         </svg>
@@ -172,6 +188,7 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
           stroke="currentColor"
           strokeWidth={2}
           className={className}
+          style={style}
         >
           <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
         </svg>
@@ -184,6 +201,7 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
           stroke="currentColor"
           strokeWidth={2}
           className={className}
+          style={style}
         >
           <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
         </svg>
@@ -196,6 +214,7 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
           stroke="currentColor"
           strokeWidth={3}
           className={className}
+          style={style}
         >
           <path d="M12 6v12m6-6H6" />
         </svg>
@@ -208,6 +227,7 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
           stroke="currentColor"
           strokeWidth={2}
           className={className}
+          style={style}
         >
           <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
@@ -220,6 +240,7 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
           stroke="currentColor"
           strokeWidth={2}
           className={className}
+          style={style}
         >
           <path d="M9 5l7 7-7 7" />
         </svg>
@@ -232,6 +253,7 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
           stroke="currentColor"
           strokeWidth={2}
           className={className}
+          style={style}
         >
           <path d="M19 9l-7 7-7-7" />
         </svg>
@@ -244,6 +266,7 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
           stroke="currentColor"
           strokeWidth={2}
           className={className}
+          style={style}
         >
           <path
             strokeLinecap="round"
@@ -260,6 +283,7 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
           stroke="currentColor"
           strokeWidth={2}
           className={className}
+          style={style}
         >
           <path
             strokeLinecap="round"
@@ -276,6 +300,7 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
           stroke="currentColor"
           strokeWidth={2}
           className={className}
+          style={style}
         >
           <path
             strokeLinecap="round"
@@ -292,6 +317,7 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
           stroke="currentColor"
           strokeWidth={2}
           className={className}
+          style={style}
         >
           <path
             strokeLinecap="round"
@@ -308,6 +334,7 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
           stroke="currentColor"
           strokeWidth={2}
           className={className}
+          style={style}
         >
           <path
             strokeLinecap="round"
@@ -324,6 +351,7 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
           stroke="currentColor"
           strokeWidth={2}
           className={className}
+          style={style}
         >
           <path
             strokeLinecap="round"
@@ -340,6 +368,7 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
           stroke="currentColor"
           strokeWidth={2}
           className={className}
+          style={style}
         >
           <path
             strokeLinecap="round"
@@ -356,6 +385,7 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
           stroke="currentColor"
           strokeWidth={2}
           className={className}
+          style={style}
         >
           <path
             strokeLinecap="round"
@@ -372,6 +402,7 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
           stroke="currentColor"
           strokeWidth={2}
           className={className}
+          style={style}
         >
           <path
             strokeLinecap="round"
@@ -388,6 +419,7 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
           stroke="currentColor"
           strokeWidth={2}
           className={className}
+          style={style}
         >
           <path
             strokeLinecap="round"
@@ -404,6 +436,7 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
           stroke="currentColor"
           strokeWidth={2}
           className={className}
+          style={style}
         >
           <path
             strokeLinecap="round"
@@ -425,6 +458,7 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
           stroke="currentColor"
           strokeWidth={2}
           className={className}
+          style={style}
         >
           <path
             strokeLinecap="round"
@@ -441,6 +475,7 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
           stroke="currentColor"
           strokeWidth={2}
           className={className}
+          style={style}
         >
           <path
             strokeLinecap="round"
@@ -464,6 +499,7 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
           stroke="currentColor"
           strokeWidth={2}
           className={className}
+          style={style}
         >
           <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1v12zM4 22v-7" />
         </svg>
@@ -476,6 +512,7 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
           stroke="currentColor"
           strokeWidth={2}
           className={className}
+          style={style}
         >
           <path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z" />
         </svg>
@@ -488,6 +525,7 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
           stroke="currentColor"
           strokeWidth={2}
           className={className}
+          style={style}
         >
           <path d="M21 8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16Z" />
           <path d="m3.3 7 8.7 5 8.7-5M12 22V12" />
@@ -501,6 +539,7 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
           stroke="currentColor"
           strokeWidth={2}
           className={className}
+          style={style}
         >
           <path d="M6 9H4.5a2.5 2.5 0 010-5H6M18 9h1.5a2.5 2.5 0 000-5H18M4 22h16M10 14.66V17c0 .55.47.98.97 1.21C11.47 18.44 12 19 12 19s.53-.56 1.03-.79c.5-.23.97-.66.97-1.21v-2.34M12 14.66l-3-3V9h6v2.66l-3 3z" />
         </svg>
@@ -513,6 +552,7 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
           stroke="currentColor"
           strokeWidth={2}
           className={className}
+          style={style}
         >
           <path
             strokeLinecap="round"
@@ -529,6 +569,7 @@ export const Icon: React.FC<IconProps> = ({ name, className = "w-5 h-5" }) => {
           stroke="currentColor"
           strokeWidth={2}
           className={className}
+          style={style}
         >
           <path
             strokeLinecap="round"

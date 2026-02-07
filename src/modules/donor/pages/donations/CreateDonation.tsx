@@ -6,6 +6,7 @@ import ResuableButton from "../../../../global/components/resuable-components/bu
 import ResuableDropdown from "../../../../global/components/resuable-components/dropdown";
 import ResuableDatePicker from "../../../../global/components/resuable-components/datepicker";
 import ResuableTimePicker from "../../../../global/components/resuable-components/TimePicker";
+import FileUploadSlot from "../../../../global/components/resuable-components/FileUploadSlot";
 
 const CreateDonation = () => {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ const CreateDonation = () => {
     pickupDate: "",
     pickupTime: "",
     contactPhone: "",
+    foodPhoto: null as File | null,
   });
 
   const foodCategories = [
@@ -36,7 +38,7 @@ const CreateDonation = () => {
     { value: "liters", label: "Liters" },
   ];
 
-  const handleValueChange = (name: string, value: string) => {
+  const handleValueChange = (name: string, value: string | File | null) => {
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -73,7 +75,10 @@ const CreateDonation = () => {
                 Back
               </span>
             </button>
-            <div className="h-8 w-px bg-slate-200 hidden sm:block" />
+            <div
+              className="h-8 w-px hidden sm:block"
+              style={{ backgroundColor: "var(--border-color)" }}
+            />
             <div>
               <h1
                 className="text-3xl md:text-4xl font-black tracking-tighter leading-none"
@@ -83,9 +88,15 @@ const CreateDonation = () => {
               </h1>
             </div>
           </div>
-          <div className="bg-green-50 border border-green-100 px-4 py-1.5 rounded-md flex items-center gap-2.5 shadow-sm">
+          <div
+            className="border px-4 py-1.5 rounded-md flex items-center gap-2.5 shadow-sm"
+            style={{
+              backgroundColor: "rgba(34, 197, 94, 0.08)",
+              borderColor: "rgba(34, 197, 94, 0.2)",
+            }}
+          >
             <div className="w-2 h-2 rounded-full bg-[#22c55e] animate-pulse" />
-            <span className="text-[10px] font-black text-[#16a34a] uppercase tracking-widest">
+            <span className="text-[10px] font-black text-[#22c55e] uppercase tracking-widest">
               Live Entry
             </span>
           </div>
@@ -98,27 +109,60 @@ const CreateDonation = () => {
       >
         {/* Card 01: Food Info */}
         <div
-          className="border rounded-md bg-white shadow-sm"
-          style={{ borderColor: "var(--border-color)" }}
+          className="border rounded-md shadow-sm"
+          style={{
+            borderColor: "var(--border-color)",
+            backgroundColor: "var(--bg-primary)",
+          }}
         >
           <div
             className="border-b p-7 flex items-center gap-4"
             style={{ borderColor: "var(--border-color)" }}
           >
-            <div className="w-12 h-12 bg-green-50 border border-green-100 rounded-md flex items-center justify-center text-[#16a34a] shadow-sm">
+            <div
+              className="w-12 h-12 border rounded-md flex items-center justify-center shadow-sm"
+              style={{
+                backgroundColor: "rgba(34, 197, 94, 0.08)",
+                borderColor: "rgba(34, 197, 94, 0.15)",
+                color: "#22c55e",
+              }}
+            >
               <Package size={24} />
             </div>
             <div>
-              <h2 className="text-sm font-black uppercase tracking-tighter leading-none text-slate-800">
+              <h2
+                className="text-sm font-black uppercase tracking-tighter leading-none"
+                style={{ color: "var(--text-primary)" }}
+              >
                 01. Food Specifications
               </h2>
-              <p className="text-[10px] font-bold uppercase tracking-widest mt-1.5 text-slate-400">
+              <p
+                className="text-[10px] font-bold uppercase tracking-widest mt-1.5"
+                style={{ color: "var(--text-muted)" }}
+              >
                 Technical details about your donation
               </p>
             </div>
           </div>
 
           <div className="p-8 space-y-8">
+            {/* Photo Upload Section */}
+            <div
+              className="pb-4 border-b"
+              style={{ borderColor: "var(--border-color)" }}
+            >
+              <FileUploadSlot
+                label="Food Item Photo"
+                value={formData.foodPhoto}
+                onChange={(file: File | null) =>
+                  handleValueChange("foodPhoto", file)
+                }
+                subtitle="High-quality image for better verification"
+                icon="camera"
+                mandatory
+              />
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <ResuableDropdown
                 label="Food Category"
@@ -152,7 +196,10 @@ const CreateDonation = () => {
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] block px-1 text-slate-400">
+              <label
+                className="text-[10px] font-black uppercase tracking-[0.2em] block px-1"
+                style={{ color: "var(--text-muted)" }}
+              >
                 Description & Handling Instructions
               </label>
               <textarea
@@ -163,7 +210,7 @@ const CreateDonation = () => {
                 placeholder="List allergens, storage, or handling needs..."
                 className="w-full border p-6 rounded-md text-[13px] font-semibold focus:outline-none focus:ring-4 focus:ring-[#22c55e]/5 focus:border-[#22c55e] transition-all min-h-[140px] resize-none"
                 style={{
-                  backgroundColor: "var(--bg-primary)",
+                  backgroundColor: "var(--bg-secondary)",
                   borderColor: "var(--border-color)",
                   color: "var(--text-primary)",
                 }}
@@ -174,21 +221,37 @@ const CreateDonation = () => {
 
         {/* Card 02: Logistics */}
         <div
-          className="border rounded-md bg-white shadow-sm"
-          style={{ borderColor: "var(--border-color)" }}
+          className="border rounded-md shadow-sm"
+          style={{
+            borderColor: "var(--border-color)",
+            backgroundColor: "var(--bg-primary)",
+          }}
         >
           <div
             className="border-b p-7 flex items-center gap-4"
             style={{ borderColor: "var(--border-color)" }}
           >
-            <div className="w-12 h-12 bg-green-50 border border-green-100 rounded-md flex items-center justify-center text-[#16a34a] shadow-sm">
+            <div
+              className="w-12 h-12 border rounded-md flex items-center justify-center shadow-sm"
+              style={{
+                backgroundColor: "rgba(34, 197, 94, 0.08)",
+                borderColor: "rgba(34, 197, 94, 0.15)",
+                color: "#22c55e",
+              }}
+            >
               <MapPin size={24} />
             </div>
             <div>
-              <h2 className="text-sm font-black uppercase tracking-tighter leading-none text-slate-800">
+              <h2
+                className="text-sm font-black uppercase tracking-tighter leading-none"
+                style={{ color: "var(--text-primary)" }}
+              >
                 02. Pickup Logistics
               </h2>
-              <p className="text-[10px] font-bold uppercase tracking-widest mt-1.5 text-slate-400">
+              <p
+                className="text-[10px] font-bold uppercase tracking-widest mt-1.5"
+                style={{ color: "var(--text-muted)" }}
+              >
                 Coordination and collection data
               </p>
             </div>
@@ -236,14 +299,18 @@ const CreateDonation = () => {
 
         {/* Action Bar (Fixed) */}
         <div
-          className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-lg border-t p-6 z-[200] shadow-[0_-10px_40px_rgba(0,0,0,0.04)]"
-          style={{ borderColor: "var(--border-color)" }}
+          className="fixed bottom-0 left-0 right-0 backdrop-blur-lg border-t p-6 z-[200] shadow-[0_-10px_40px_rgba(0,0,0,0.08)]"
+          style={{
+            backgroundColor: "var(--bg-primary)",
+            borderColor: "var(--border-color)",
+          }}
         >
           <div className="max-w-5xl mx-auto flex items-center justify-end gap-6">
             <ResuableButton
               variant="ghost"
               onClick={() => navigate("/donor/donations")}
-              className="text-slate-400 font-black text-[11px] uppercase tracking-[0.2em] hover:text-red-500 transition-colors"
+              className="font-black text-[11px] uppercase tracking-[0.2em] hover:text-red-500 transition-colors"
+              style={{ color: "var(--text-muted)" }}
             >
               Discard Entry
             </ResuableButton>

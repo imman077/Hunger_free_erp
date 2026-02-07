@@ -55,11 +55,11 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         ${
           isActive || isSubItemActive
             ? expanded
-              ? "w-full p-2.5 bg-emerald-50 text-emerald-700 font-semibold border-l-4 border-[#22c55e] shadow-sm rounded-xl"
-              : "w-11 h-11 bg-emerald-50 text-emerald-700 font-semibold shadow-sm rounded-xl justify-center"
+              ? "w-full p-2.5 bg-[#22c55e]/10 text-emerald-600 font-semibold border-l-4 border-[#22c55e] shadow-sm rounded-xl"
+              : "w-11 h-11 bg-[#22c55e]/10 text-emerald-600 font-semibold shadow-sm rounded-xl justify-center"
             : expanded
-              ? "w-full p-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-800 rounded-xl"
-              : "w-11 h-11 text-slate-500 hover:bg-slate-50 hover:text-slate-800 rounded-xl justify-center"
+              ? "w-full p-2.5 text-slate-400 hover:bg-slate-500/10 hover:text-emerald-500 rounded-xl"
+              : "w-11 h-11 text-slate-400 hover:bg-slate-500/10 hover:text-emerald-500 rounded-xl justify-center"
         }
       `}
       onClick={handleClick}
@@ -108,7 +108,10 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
             isOpen ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0"
           }`}
         >
-          <div className="ml-8 border-l border-slate-100 space-y-0.5 mt-0.5">
+          <div
+            className="ml-8 space-y-0.5 mt-0.5"
+            style={{ borderLeft: "1px solid var(--border-color)" }}
+          >
             {subItems.map((item) => {
               const isSubActive = location.pathname === item.to;
               return (
@@ -117,7 +120,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
                   to={item.to}
                   className={`w-full flex items-center justify-between px-3 py-1.5 text-sm rounded-lg transition-all duration-200 ${
                     isSubActive
-                      ? "text-emerald-600 font-semibold bg-emerald-50/50"
+                      ? "text-emerald-600 font-semibold bg-emerald-500/10"
                       : "text-slate-500 hover:text-[#22c55e] hover:translate-x-1"
                   }`}
                 >
@@ -274,6 +277,11 @@ const SidebarIcons: React.FC = () => {
       icon: <Icon name="rewards" className="h-4 w-4" />,
     },
     {
+      label: "Payment Methods",
+      to: "/ngo/profile/payments",
+      icon: <Icon name="wallet" className="h-4 w-4" />,
+    },
+    {
       label: "Profile",
       to: "/ngo/profile",
       icon: <Icon name="office" className="h-4 w-4" />,
@@ -295,6 +303,11 @@ const SidebarIcons: React.FC = () => {
       label: "Rewards",
       to: "/volunteer/rewards",
       icon: <Icon name="rewards" className="h-4 w-4" />,
+    },
+    {
+      label: "Payment Methods",
+      to: "/volunteer/payments",
+      icon: <Icon name="wallet" className="h-4 w-4" />,
     },
     {
       label: "Profile",
@@ -334,9 +347,13 @@ const SidebarIcons: React.FC = () => {
           ) : (
             <button
               onClick={() => setExpanded(!expanded)}
-              className="w-11 h-11 rounded-xl flex items-center justify-center border border-slate-200 hover:bg-slate-50 transition-all shadow-sm active:scale-95"
+              className="w-11 h-11 rounded-xl flex items-center justify-center border transition-all shadow-sm active:scale-95"
+              style={{
+                borderColor: "var(--border-color)",
+                backgroundColor: "var(--bg-secondary)",
+              }}
             >
-              <Icon name="menu" className="w-5 h-5 text-slate-500" />
+              <Icon name="menu" className="w-5 h-5 text-emerald-500" />
             </button>
           )}
         </div>
@@ -393,7 +410,10 @@ const SidebarIcons: React.FC = () => {
             />
 
             <div className="px-4 py-3 mt-2">
-              <div className="h-px bg-slate-100 w-full" />
+              <div
+                className="h-px w-full"
+                style={{ backgroundColor: "var(--border-color)" }}
+              />
             </div>
 
             <SidebarItem

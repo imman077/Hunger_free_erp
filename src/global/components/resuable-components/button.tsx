@@ -39,7 +39,7 @@ const variantClasses: Record<ButtonVariant, string> = {
   danger: "bg-red-600 text-white hover:bg-red-700 active:bg-red-800",
   success: "bg-[#22c55e] text-white hover:bg-[#1eb054] active:bg-[#198e44]",
   link: "text-blue-600 hover:underline active:opacity-70",
-  dark: "bg-slate-900 text-white hover:bg-black active:scale-95 dark:bg-slate-800",
+  dark: "bg-slate-900 text-white hover:bg-black active:scale-95",
   "soft-success":
     "hover:opacity-80 active:opacity-60 transition-all duration-200",
   "soft-danger":
@@ -99,6 +99,12 @@ const ResuableButton: React.FC<ResuableButtonProps> = ({
       case "link":
         return {
           backgroundColor: "transparent",
+        };
+      case "dark":
+        return {
+          backgroundColor: "var(--bg-primary)",
+          color: "var(--text-primary)",
+          border: "1px solid var(--border-color)",
         };
       default:
         return {};

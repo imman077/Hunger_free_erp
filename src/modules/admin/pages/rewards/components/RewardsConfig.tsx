@@ -5,10 +5,10 @@ import {
   Edit2,
   Eye,
   EyeOff,
-  IndianRupee,
-  Plane,
-  Sparkles,
-  X,
+  Info,
+  Heart,
+  Building2,
+  Users,
 } from "lucide-react";
 import {
   Modal,
@@ -17,29 +17,286 @@ import {
   ModalBody,
   ModalFooter,
   useDisclosure,
+  Tooltip,
 } from "@heroui/react";
 import ResuableInput from "../../../../../global/components/resuable-components/input";
 import { toast } from "sonner";
 import ResuableButton from "../../../../../global/components/resuable-components/button";
 
 const INITIAL_CATALOG = {
-  cash: [
-    { id: 1, name: "Quick Cash", val: "₹1,000", pts: 600, active: true },
-    { id: 2, name: "Cash Bonus", val: "₹2,500", pts: 1200, active: true },
-    { id: 3, name: "Big Win", val: "₹5,000", pts: 2500, active: true },
-    { id: 4, name: "Mega Prize", val: "₹10,000", pts: 5000, active: true },
-    { id: 5, name: "Grand Prize", val: "₹50,000", pts: 20000, active: true },
-    { id: 6, name: "Legend Prize", val: "₹1,00,000", pts: 35000, active: true },
+  donor: [
+    // Cash
+    {
+      id: 1,
+      name: "Quick Cash",
+      val: "₹1,000",
+      pts: 600,
+      active: true,
+      tag: "Cash",
+    },
+    {
+      id: 2,
+      name: "Cash Bonus",
+      val: "₹2,500",
+      pts: 1200,
+      active: true,
+      tag: "Cash",
+    },
+    {
+      id: 3,
+      name: "Big Win",
+      val: "₹5,000",
+      pts: 2500,
+      active: true,
+      tag: "Cash",
+    },
+    {
+      id: 4,
+      name: "Mega Prize",
+      val: "₹10,000",
+      pts: 5000,
+      active: true,
+      tag: "Cash",
+    },
+    // Travel
+    {
+      id: 5,
+      name: "Goa Beach Trip",
+      val: "3D/2N, Flights + Hotel",
+      pts: 8000,
+      active: true,
+      tag: "Travel",
+    },
+    {
+      id: 6,
+      name: "Rajasthan Heritage",
+      val: "4D/3N Luxury Stay",
+      pts: 18000,
+      active: true,
+      tag: "Travel",
+    },
+    {
+      id: 7,
+      name: "International - Thailand",
+      val: "6D/5N Full Package",
+      pts: 35000,
+      active: false,
+      tag: "Travel",
+    },
+    // Tech
+    {
+      id: 8,
+      name: "Gaming Console",
+      val: "PS5 or Xbox Series X",
+      pts: 18000,
+      active: true,
+      tag: "Tech",
+    },
+    {
+      id: 9,
+      name: "iPhone 15 Pro Max",
+      val: "Latest Apple Flagship",
+      pts: 35000,
+      active: false,
+      tag: "Tech",
+    },
+    {
+      id: 10,
+      name: "MacBook Pro",
+      val: "M3 Chip Edition",
+      pts: 45000,
+      active: false,
+      tag: "Tech",
+    },
   ],
-  tours: [
-    { id: 7, name: "Goa Beach Trip", val: "3D/2N", pts: 8000, active: true },
-    { id: 8, name: "Thailand", val: "6D/5N", pts: 35000, active: false },
-    { id: 9, name: "Europe Hub", val: "10D/9N", pts: 75000, active: true },
+  ngo: [
+    // Grants
+    {
+      id: 101,
+      name: "Operations Fund",
+      val: "₹5,000",
+      pts: 1000,
+      active: true,
+      tag: "Grant",
+      description: "Quick cash for electricity, water, and basic office bills.",
+    },
+    {
+      id: 102,
+      name: "Growth Fund",
+      val: "₹15,000",
+      pts: 2500,
+      active: true,
+      tag: "Grant",
+    },
+    {
+      id: 103,
+      name: "Impact Fund",
+      val: "₹30,000",
+      pts: 5000,
+      active: true,
+      tag: "Grant",
+    },
+    {
+      id: 104,
+      name: "Expansion Fund",
+      val: "₹75,000",
+      pts: 10000,
+      active: true,
+      tag: "Grant",
+    },
+    // Mega
+    {
+      id: 105,
+      name: "Mega Grant",
+      val: "₹1,50,000",
+      pts: 20000,
+      active: true,
+      tag: "Mega",
+    },
+    {
+      id: 106,
+      name: "Super Grant",
+      val: "₹3,00,000",
+      pts: 35000,
+      active: true,
+      tag: "Mega",
+    },
+    {
+      id: 107,
+      name: "National NGO Award",
+      val: "Cash + Recognition",
+      pts: 50000,
+      active: false,
+      tag: "Mega",
+    },
+    // Social
+    {
+      id: 108,
+      name: "Direct Relief Grant",
+      val: "Essential aid for 100+ lives",
+      pts: 5000,
+      active: true,
+      tag: "Aid",
+      description: "Essential relief supplies.",
+      details: [
+        { group: "Youth", text: "School kits & nutrition packs" },
+        { group: "Animals", text: "Pet food & rescue equipment" },
+        { group: "Communities", text: "Groceries & basic clothing" },
+      ],
+    },
+    {
+      id: 109,
+      name: "Field Operation Fund",
+      val: "Specialized medical/rescue camp",
+      pts: 15000,
+      active: true,
+      tag: "Aid",
+      description: "Medical or rescue field work.",
+      details: [
+        { group: "Youth", text: "Vaccinations & vitamin distribution" },
+        { group: "Animals", text: "Sterilization & mobile clinic" },
+        { group: "Communities", text: "Sugar, BP & health screenings" },
+      ],
+    },
+    {
+      id: 110,
+      name: "Logistics Grant",
+      val: "Electronic Van for Mission Mobility",
+      pts: 25000,
+      active: false,
+      tag: "Aid",
+      description: "Transportation support.",
+      details: [
+        { group: "Youth", text: "Transporting kids to events" },
+        { group: "Animals", text: "Rescue Ambulance service" },
+        { group: "Communities", text: "Mobile Food Bank delivery" },
+      ],
+    },
   ],
-  youth: [
-    { id: 10, name: "PS5 Console", val: "Digital", pts: 18000, active: true },
-    { id: 11, name: "iPhone 15", val: "128GB", pts: 35000, active: true },
-    { id: 12, name: "MacBook Pro", val: "M3 Chip", pts: 45000, active: true },
+  volunteer: [
+    // Cash
+    {
+      id: 201,
+      name: "Fuel Money",
+      val: "₹1,000",
+      pts: 500,
+      active: true,
+      tag: "Cash",
+    },
+    {
+      id: 202,
+      name: "Cash Bonus",
+      val: "₹2,500",
+      pts: 1000,
+      active: true,
+      tag: "Cash",
+    },
+    {
+      id: 203,
+      name: "Performance Bonus",
+      val: "₹5,000",
+      pts: 2000,
+      active: true,
+      tag: "Cash",
+    },
+    {
+      id: 204,
+      name: "Elite Bonus",
+      val: "₹10,000",
+      pts: 4500,
+      active: true,
+      tag: "Cash",
+    },
+    // Travel
+    {
+      id: 205,
+      name: "Weekend Getaway",
+      val: "Nearby station",
+      pts: 3000,
+      active: true,
+      tag: "Tour",
+    },
+    {
+      id: 206,
+      name: "Goa Beach Trip",
+      val: "3D/2N Pakcage",
+      pts: 8000,
+      active: true,
+      tag: "Tour",
+    },
+    {
+      id: 207,
+      name: "International - Dubai",
+      val: "5D/4N Package",
+      pts: 28000,
+      active: false,
+      tag: "Tour",
+    },
+    // Youth
+    {
+      id: 208,
+      name: "IPL Match Tickets",
+      val: "2 Tickets",
+      pts: 3500,
+      active: true,
+      tag: "Event",
+    },
+    {
+      id: 209,
+      name: "Gaming Console",
+      val: "PS5 or Xbox",
+      pts: 18000,
+      active: false,
+      tag: "Tech",
+    },
+    {
+      id: 210,
+      name: "iPhone 15 Pro Max",
+      val: "Latest Model",
+      pts: 35000,
+      active: false,
+      tag: "Tech",
+    },
   ],
 };
 
@@ -60,7 +317,8 @@ const RewardsConfig: React.FC = () => {
     name: "",
     val: "",
     pts: 0,
-    category: "cash" as keyof typeof INITIAL_CATALOG,
+    description: "",
+    category: "donor" as keyof typeof INITIAL_CATALOG,
   });
 
   const handleAddReward = () => {
@@ -80,7 +338,13 @@ const RewardsConfig: React.FC = () => {
 
     toast.success(`Successfully added ${newItem.name} to catalog`);
     onAddOpenChange();
-    setNewItem({ name: "", val: "", pts: 0, category: "cash" });
+    setNewItem({
+      name: "",
+      val: "",
+      pts: 0,
+      description: "",
+      category: "donor",
+    });
   };
 
   const handleEditOpen = (
@@ -135,7 +399,10 @@ const RewardsConfig: React.FC = () => {
           >
             Reward Catalog
           </h1>
-          <p className="text-[12px] font-semibold text-slate-500 mt-0.5">
+          <p
+            className="text-[12px] font-semibold mt-0.5"
+            style={{ color: "var(--text-muted)" }}
+          >
             Manage and define items available for point redemption
           </p>
         </div>
@@ -148,75 +415,122 @@ const RewardsConfig: React.FC = () => {
         </ResuableButton>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Cash Prizes Box */}
-        <div className="bg-slate-50/40 p-5 rounded-sm border border-slate-200/50 space-y-6">
-          <div className="flex items-center gap-3 border-b border-slate-200/50 pb-4">
-            <div className="w-9 h-9 bg-emerald-50 rounded-sm flex items-center justify-center text-emerald-500 shadow-sm border border-emerald-100/50">
-              <IndianRupee size={18} strokeWidth={2.5} />
-            </div>
-            <h4 className="text-[12px] font-black uppercase tracking-[0.2em] text-slate-800">
-              Cash Prizes
-            </h4>
-          </div>
-          <div className="flex flex-col gap-3">
-            {catalog.cash.map((item) => (
-              <RewardCard
-                key={item.id}
-                item={item}
-                onToggle={() => toggleActive("cash", item.id)}
-                onDelete={() => deleteItem("cash", item.id)}
-                onEdit={() => handleEditOpen("cash", item)}
-              />
-            ))}
-          </div>
-        </div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {[
+          {
+            id: "donor",
+            label: "Donor Rewards",
+            icon: Heart,
+            color: "emerald",
+            items: catalog.donor,
+          },
+          {
+            id: "ngo",
+            label: "NGO Rewards",
+            icon: Building2,
+            color: "blue",
+            items: catalog.ngo,
+          },
+          {
+            id: "volunteer",
+            label: "Volunteer Rewards",
+            icon: Users,
+            color: "purple",
+            items: catalog.volunteer,
+          },
+        ].map((stakeholder) => {
+          // Group items by tag
+          const grouped = stakeholder.items.reduce((acc: any, item) => {
+            const tag = item.tag || "Other";
+            if (!acc[tag]) acc[tag] = [];
+            acc[tag].push(item);
+            return acc;
+          }, {});
 
-        {/* Tour Packages Box */}
-        <div className="bg-slate-50/40 p-5 rounded-sm border border-slate-200/50 space-y-6">
-          <div className="flex items-center gap-3 border-b border-slate-200/50 pb-4">
-            <div className="w-9 h-9 bg-blue-50 rounded-sm flex items-center justify-center text-blue-500 shadow-sm border border-blue-100/50">
-              <Plane size={18} strokeWidth={2.5} />
-            </div>
-            <h4 className="text-[12px] font-black uppercase tracking-[0.2em] text-slate-800">
-              Tour Packages
-            </h4>
-          </div>
-          <div className="flex flex-col gap-3">
-            {catalog.tours.map((item) => (
-              <RewardCard
-                key={item.id}
-                item={item}
-                onToggle={() => toggleActive("tours", item.id)}
-                onDelete={() => deleteItem("tours", item.id)}
-                onEdit={() => handleEditOpen("tours", item)}
-              />
-            ))}
-          </div>
-        </div>
+          return (
+            <div
+              key={stakeholder.id}
+              className="rounded-none border shadow-sm flex flex-col h-[750px]"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
+              {/* Stakeholder Header */}
+              <div
+                className="p-5 border-b flex items-center gap-3"
+                style={{
+                  backgroundColor: "var(--bg-secondary)",
+                  borderColor: "var(--border-color)",
+                }}
+              >
+                <div
+                  className={`w-10 h-10 rounded-sm flex items-center justify-center border shadow-sm`}
+                  style={{
+                    backgroundColor: `var(--bg-${stakeholder.color}-muted)`,
+                    color: `var(--color-${stakeholder.color})`,
+                    borderColor: `var(--border-${stakeholder.color}-muted)`,
+                  }}
+                >
+                  <stakeholder.icon size={20} strokeWidth={2.5} />
+                </div>
+                <div>
+                  <h4
+                    className="text-[13px] font-black uppercase tracking-[0.15em] leading-none"
+                    style={{ color: "var(--text-primary)" }}
+                  >
+                    {stakeholder.label}
+                  </h4>
+                  <p
+                    className="text-[9px] font-bold uppercase tracking-widest mt-1"
+                    style={{ color: "var(--text-muted)" }}
+                  >
+                    {stakeholder.items.length} ACTIVE ITEMS
+                  </p>
+                </div>
+              </div>
 
-        {/* Youth & Tech Box */}
-        <div className="bg-slate-50/40 p-5 rounded-sm border border-slate-200/50 space-y-6">
-          <div className="flex items-center gap-3 border-b border-slate-200/50 pb-4">
-            <div className="w-9 h-9 bg-purple-50 rounded-sm flex items-center justify-center text-purple-500 shadow-sm border border-purple-100/50">
-              <Sparkles size={18} strokeWidth={2.5} />
+              {/* Grouped Rewards List */}
+              <div className="flex-1 overflow-y-auto p-5 space-y-8 custom-scrollbar pt-6">
+                {Object.entries(grouped).map(([tag, items]: [string, any]) => (
+                  <div key={tag} className="space-y-4">
+                    {/* Sub-Category Label */}
+                    <div className="flex items-center gap-3">
+                      <span
+                        className="text-[10px] font-black uppercase tracking-[0.25em] whitespace-nowrap"
+                        style={{ color: "var(--text-muted)" }}
+                      >
+                        {tag} REWARDS
+                      </span>
+                      <div
+                        className="h-px w-full"
+                        style={{ backgroundColor: "var(--border-color)" }}
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-3">
+                      {items.map((item: any) => (
+                        <RewardCard
+                          key={item.id}
+                          item={item}
+                          onToggle={() =>
+                            toggleActive(stakeholder.id as any, item.id)
+                          }
+                          onDelete={() =>
+                            deleteItem(stakeholder.id as any, item.id)
+                          }
+                          onEdit={() =>
+                            handleEditOpen(stakeholder.id as any, item)
+                          }
+                        />
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-            <h4 className="text-[12px] font-black uppercase tracking-[0.2em] text-slate-800">
-              Youth & Tech
-            </h4>
-          </div>
-          <div className="flex flex-col gap-3">
-            {catalog.youth.map((item) => (
-              <RewardCard
-                key={item.id}
-                item={item}
-                onToggle={() => toggleActive("youth", item.id)}
-                onDelete={() => deleteItem("youth", item.id)}
-                onEdit={() => handleEditOpen("youth", item)}
-              />
-            ))}
-          </div>
-        </div>
+          );
+        })}
       </div>
 
       {/* Edit Reward Modal */}
@@ -225,27 +539,33 @@ const RewardsConfig: React.FC = () => {
         onOpenChange={onOpenChange}
         placement="center"
         backdrop="blur"
-        closeButton={
-          <button className="absolute left-6 top-6 text-slate-400 hover:text-slate-600 transition-colors z-50 focus:outline-none">
-            <X size={18} />
-          </button>
-        }
         classNames={{
-          backdrop: "bg-slate-900/40 backdrop-blur-sm",
-          base: "border border-slate-200/50 bg-white rounded-none max-w-[420px] w-full mx-4",
-          header: "border-b border-slate-100 p-5 pl-14",
+          backdrop: "bg-[rgba(15,23,42,0.8)] backdrop-blur-sm",
+          base: "border rounded-none max-w-[420px] w-full mx-4",
+          header: "border-b p-5 pr-14",
           body: "p-6 py-8",
-          footer: "border-t border-slate-100 p-4 px-6 gap-3",
+          footer: "border-t p-4 px-6 gap-3",
+          closeButton: "top-5 right-5 transition-colors",
+        }}
+        style={{
+          backgroundColor: "var(--bg-primary)",
+          borderColor: "var(--border-color)",
         }}
       >
         <ModalContent>
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1 items-start">
-                <h4 className="text-lg font-black uppercase tracking-widest text-slate-900">
+                <h4
+                  className="text-lg font-black uppercase tracking-widest"
+                  style={{ color: "var(--text-primary)" }}
+                >
                   Edit Reward Item
                 </h4>
-                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mt-0.5">
+                <p
+                  className="text-[9px] font-bold uppercase tracking-widest leading-none mt-0.5"
+                  style={{ color: "var(--text-muted)" }}
+                >
                   Update reward details and point requirements
                 </p>
               </ModalHeader>
@@ -287,13 +607,28 @@ const RewardsConfig: React.FC = () => {
                       }
                     />
                   </div>
+                  <ResuableInput
+                    label="Internal Explanation (Admin Only)"
+                    placeholder="Describe how this helps the NGO..."
+                    value={editingItem?.data.description || ""}
+                    onChange={(val) =>
+                      setEditingItem((prev: any) => ({
+                        ...prev,
+                        data: { ...prev.data, description: val },
+                      }))
+                    }
+                  />
                 </div>
               </ModalBody>
               <ModalFooter>
                 <ResuableButton
                   variant="ghost"
                   onClick={onClose}
-                  className="font-black uppercase tracking-[0.2em] text-[10px] px-8 h-9 border border-slate-200 text-slate-500 hover:bg-slate-50"
+                  className="font-black uppercase tracking-[0.2em] text-[10px] px-8 h-9 border"
+                  style={{
+                    borderColor: "var(--border-color)",
+                    color: "var(--text-muted)",
+                  }}
                 >
                   Cancel
                 </ResuableButton>
@@ -316,27 +651,33 @@ const RewardsConfig: React.FC = () => {
         onOpenChange={onAddOpenChange}
         placement="center"
         backdrop="blur"
-        closeButton={
-          <button className="absolute left-6 top-6 text-slate-400 hover:text-slate-600 transition-colors z-50 focus:outline-none">
-            <X size={18} />
-          </button>
-        }
         classNames={{
-          backdrop: "bg-slate-900/40 backdrop-blur-sm",
-          base: "border border-slate-200/50 bg-white rounded-none max-w-[440px] w-full mx-4",
-          header: "border-b border-slate-100 p-5 pl-14",
+          backdrop: "bg-[rgba(15,23,42,0.8)] backdrop-blur-sm",
+          base: "border rounded-none max-w-[440px] w-full mx-4",
+          header: "border-b p-5 pr-14",
           body: "p-6 py-8",
-          footer: "border-t border-slate-100 p-4 px-6 gap-3",
+          footer: "border-t p-4 px-6 gap-3",
+          closeButton: "top-5 right-5 transition-colors",
+        }}
+        style={{
+          backgroundColor: "var(--bg-primary)",
+          borderColor: "var(--border-color)",
         }}
       >
         <ModalContent>
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1 items-start">
-                <h4 className="text-lg font-black uppercase tracking-widest text-slate-900">
+                <h4
+                  className="text-lg font-black uppercase tracking-widest"
+                  style={{ color: "var(--text-primary)" }}
+                >
                   New Reward Entry
                 </h4>
-                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mt-0.5">
+                <p
+                  className="text-[9px] font-bold uppercase tracking-widest leading-none mt-0.5"
+                  style={{ color: "var(--text-muted)" }}
+                >
                   Define a new item for the redemption catalog
                 </p>
               </ModalHeader>
@@ -344,27 +685,30 @@ const RewardsConfig: React.FC = () => {
                 <div className="space-y-8">
                   {/* Category Selection */}
                   <div className="space-y-3">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 px-1">
+                    <label
+                      className="text-[10px] font-black uppercase tracking-widest px-1"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       Target Category
                     </label>
                     <div className="grid grid-cols-3 gap-2">
                       {[
                         {
-                          id: "cash",
-                          label: "Cash",
-                          icon: IndianRupee,
+                          id: "donor",
+                          label: "Donor",
+                          icon: Heart,
                           color: "emerald",
                         },
                         {
-                          id: "tours",
-                          label: "Tours",
-                          icon: Plane,
+                          id: "ngo",
+                          label: "NGO",
+                          icon: Building2,
                           color: "blue",
                         },
                         {
-                          id: "youth",
-                          label: "Tech",
-                          icon: Sparkles,
+                          id: "volunteer",
+                          label: "Volunteer",
+                          icon: Users,
                           color: "purple",
                         },
                       ].map((cat) => (
@@ -375,9 +719,23 @@ const RewardsConfig: React.FC = () => {
                           }
                           className={`flex flex-col items-center justify-center p-3 rounded-sm border transition-all gap-2 ${
                             newItem.category === cat.id
-                              ? `bg-${cat.color}-50 border-${cat.color}-200 text-${cat.color}-600 shadow-sm shadow-${cat.color}-500/10`
-                              : "bg-slate-50/50 border-slate-100 text-slate-400 hover:bg-slate-50 hover:border-slate-200"
+                              ? `shadow-sm shadow-${cat.color}-500/10`
+                              : ""
                           }`}
+                          style={{
+                            backgroundColor:
+                              newItem.category === cat.id
+                                ? `var(--bg-${cat.color}-muted)`
+                                : "var(--bg-secondary)",
+                            borderColor:
+                              newItem.category === cat.id
+                                ? `var(--border-${cat.color}-muted)`
+                                : "var(--border-color)",
+                            color:
+                              newItem.category === cat.id
+                                ? `var(--color-${cat.color})`
+                                : "var(--text-muted)",
+                          }}
                         >
                           <cat.icon
                             size={16}
@@ -415,6 +773,14 @@ const RewardsConfig: React.FC = () => {
                         }
                       />
                     </div>
+                    <ResuableInput
+                      label="Internal Explanation (Admin Only)"
+                      placeholder="e.g. For food, rescue kits, or school supplies"
+                      value={newItem.description}
+                      onChange={(val) =>
+                        setNewItem({ ...newItem, description: val })
+                      }
+                    />
                   </div>
                 </div>
               </ModalBody>
@@ -422,7 +788,11 @@ const RewardsConfig: React.FC = () => {
                 <ResuableButton
                   variant="ghost"
                   onClick={onClose}
-                  className="font-black uppercase tracking-[0.2em] text-[10px] px-8 h-9 border border-slate-200 text-slate-500 hover:bg-slate-50"
+                  className="font-black uppercase tracking-[0.2em] text-[10px] px-8 h-9 border"
+                  style={{
+                    borderColor: "var(--border-color)",
+                    color: "var(--text-muted)",
+                  }}
                 >
                   Cancel
                 </ResuableButton>
@@ -449,52 +819,149 @@ const RewardCard: React.FC<{
   onEdit: () => void;
 }> = ({ item, onToggle, onDelete, onEdit }) => (
   <div
-    className={`p-5 px-6 border rounded-sm flex items-center justify-between group transition-all duration-300 h-[88px] ${
+    className={`p-6 border transition-all duration-300 flex flex-col gap-5 relative min-h-[110px] rounded-none ${
       !item.active
-        ? "opacity-60 border-dashed bg-slate-50/50"
-        : "bg-white shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_20px_-6px_rgba(0,0,0,0.08)]"
+        ? "border-dashed"
+        : "shadow-[0_2px_18px_-4px_rgba(0,0,0,0.03)]"
     }`}
     style={{
-      borderColor: !item.active
-        ? "var(--border-color)"
-        : "rgba(226, 232, 240, 0.8)",
+      backgroundColor: "var(--bg-primary)",
+      borderColor: "var(--border-color)",
     }}
   >
-    <div className="text-start space-y-1">
-      <div className="flex items-center gap-2">
-        <p className="font-bold text-[14px] text-slate-900 leading-tight">
-          {item.name}
+    {/* Header: Title, Tags & Icons */}
+    <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-col gap-3 flex-1 text-start">
+        <div className="flex flex-wrap items-center gap-3">
+          <h5
+            className={`font-black text-[17px] leading-[1.15] tracking-tight max-w-[200px]`}
+            style={{
+              color: item.active ? "var(--text-primary)" : "var(--text-muted)",
+            }}
+          >
+            {item.name}
+          </h5>
+          <div className="flex items-center gap-1.5 h-fit pt-0.5">
+            <span
+              className="text-[8px] font-black border px-2 py-0.5 rounded-[1px] uppercase tracking-widest"
+              style={{
+                backgroundColor: "var(--bg-secondary)",
+                borderColor: "var(--border-color)",
+                color: "var(--text-muted)",
+              }}
+            >
+              {item.tag || "REWARD"}
+            </span>
+            {!item.active && (
+              <span className="text-[8px] font-black text-red-400 bg-red-100/10 border border-red-500/20 px-2 py-0.5 rounded-[1px] uppercase tracking-widest">
+                HIDDEN
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-0.5 shrink-0 -mt-1">
+        <button
+          onClick={onEdit}
+          className="p-1.5 transition-colors"
+          style={{ color: "var(--text-muted)" }}
+        >
+          <Edit2 size={15} strokeWidth={1.5} />
+        </button>
+        <button
+          onClick={onToggle}
+          className={`p-1.5 transition-colors ${
+            item.active ? "text-emerald-500" : ""
+          }`}
+          style={{ color: item.active ? undefined : "var(--text-muted)" }}
+        >
+          {item.active ? (
+            <Eye size={15} strokeWidth={1.5} />
+          ) : (
+            <EyeOff size={15} strokeWidth={1.5} />
+          )}
+        </button>
+        <button
+          onClick={onDelete}
+          className="p-1.5 transition-colors"
+          style={{ color: "var(--text-muted)" }}
+        >
+          <Trash2 size={15} strokeWidth={1.5} className="hover:text-red-500" />
+        </button>
+      </div>
+    </div>
+
+    {/* Detail Info: Value | Points */}
+    <div className="flex flex-col gap-3 pt-1 text-start">
+      <div className="flex items-center gap-4">
+        <p
+          className="text-[11px] font-black uppercase tracking-[0.1em]"
+          style={{ color: "var(--text-muted)" }}
+        >
+          {item.val}
         </p>
-        {!item.active && (
-          <span className="text-[7px] font-black text-slate-400 bg-slate-100/80 px-1.5 py-0.5 rounded-[2px] uppercase tracking-wider border border-slate-200/50">
-            Disabled
-          </span>
+        <div
+          className="h-4 w-[2px]"
+          style={{ backgroundColor: "var(--border-color)" }}
+        />
+        <p
+          className="text-[11px] font-black uppercase tracking-[0.1em]"
+          style={{ color: "var(--text-muted)" }}
+        >
+          {item.pts.toLocaleString()} PTS
+        </p>
+
+        {(item.description || item.details) && (
+          <Tooltip
+            content={
+              <div className="px-1 py-2 min-w-[180px]">
+                {item.details ? (
+                  <div className="space-y-3">
+                    {item.details.map((d: any, i: number) => (
+                      <div key={i} className="flex flex-col gap-0.5">
+                        <span className="text-[8px] font-black uppercase tracking-widest text-[#22c55e]">
+                          {d.group}
+                        </span>
+                        <span
+                          className="text-[10px] font-bold leading-tight"
+                          style={{ color: "var(--text-secondary)" }}
+                        >
+                          {d.text}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p
+                    className="text-[10px] font-bold"
+                    style={{ color: "var(--text-secondary)" }}
+                  >
+                    {item.description}
+                  </p>
+                )}
+              </div>
+            }
+            className="rounded-sm"
+            style={{
+              backgroundColor: "var(--bg-primary)",
+              border: "1px solid var(--border-color)",
+            }}
+            closeDelay={0}
+          >
+            <button
+              className="w-5 h-5 rounded-full border flex items-center justify-center hover:text-[#22c55e] hover:border-[#22c55e]/30 transition-all ml-auto"
+              style={{
+                backgroundColor: "var(--bg-secondary)",
+                borderColor: "var(--border-color)",
+                color: "var(--text-muted)",
+              }}
+            >
+              <Info size={10} strokeWidth={3} />
+            </button>
+          </Tooltip>
         )}
       </div>
-      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em] flex items-center">
-        {item.val} <span className="mx-2 text-slate-200">|</span>{" "}
-        {item.pts.toLocaleString()} PTS
-      </p>
-    </div>
-    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-200 translate-x-2 group-hover:translate-x-0">
-      <button
-        className="p-2 rounded-full hover:bg-blue-50 text-slate-300 hover:text-blue-500 transition-colors"
-        onClick={onEdit}
-      >
-        <Edit2 size={13} />
-      </button>
-      <button
-        className={`p-2 rounded-full hover:bg-emerald-50 transition-colors ${item.active ? "text-emerald-500" : "text-slate-300 hover:text-emerald-500"}`}
-        onClick={onToggle}
-      >
-        {item.active ? <Eye size={13} /> : <EyeOff size={13} />}
-      </button>
-      <button
-        className="p-2 rounded-full hover:bg-red-50 text-slate-300 hover:text-red-500 transition-colors"
-        onClick={onDelete}
-      >
-        <Trash2 size={13} />
-      </button>
     </div>
   </div>
 );

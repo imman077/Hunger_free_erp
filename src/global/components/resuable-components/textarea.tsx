@@ -51,11 +51,22 @@ const ResuableTextarea: React.FC<ResuableTextareaProps> = ({
             <div className="group/info relative flex items-center">
               <Icon
                 name="info"
-                className="w-3.5 h-3.5 text-slate-300 hover:text-[#22c55e] transition-colors cursor-help"
+                className="w-3.5 h-3.5 transition-colors cursor-help"
+                style={{ color: "var(--text-muted)" }}
               />
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 min-w-[200px] max-w-[280px] p-3 bg-slate-900/95 backdrop-blur-sm text-white text-[10px] font-medium leading-relaxed rounded-lg shadow-2xl opacity-0 invisible group-hover/info:opacity-100 group-hover/info:visible transition-all z-[10000] pointer-events-none whitespace-pre-line border border-white/10 text-left">
+              <div
+                className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 min-w-[200px] max-w-[280px] p-3 backdrop-blur-sm text-[10px] font-medium leading-relaxed rounded-lg shadow-2xl opacity-0 invisible group-hover/info:opacity-100 group-hover/info:visible transition-all z-[10000] pointer-events-none whitespace-pre-line border text-left"
+                style={{
+                  backgroundColor: "var(--bg-primary)",
+                  color: "var(--text-primary)",
+                  borderColor: "var(--border-color)",
+                }}
+              >
                 {info}
-                <div className="absolute top-full left-1/2 -translate-x-1/2 border-[5px] border-transparent border-t-slate-900/95" />
+                <div
+                  className="absolute top-full left-1/2 -translate-x-1/2 border-[5px] border-transparent"
+                  style={{ borderTopColor: "var(--bg-primary)" }}
+                />
               </div>
             </div>
           )}
@@ -69,12 +80,13 @@ const ResuableTextarea: React.FC<ResuableTextareaProps> = ({
           onChange={(e) => onChange(e.target.value)}
           disabled={disabled}
           required={required}
+          className={`w-full border px-3 py-2.5 rounded-none text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#22c55e]/50 focus:border-[#22c55e] transition-all disabled:opacity-50 disabled:cursor-not-allowed resize-none ${alignClass}`}
           style={{
             backgroundColor: "var(--bg-secondary)",
             borderColor: "var(--border-color)",
             color: "var(--text-primary)",
+            caretColor: "var(--color-emerald)",
           }}
-          className={`w-full border px-2.5 py-2.5 rounded-none text-[11px] font-bold focus:outline-none focus:ring-1 focus:ring-[#22c55e]/50 focus:border-[#22c55e] transition-all placeholder:text-neutral-500 disabled:opacity-50 disabled:cursor-not-allowed resize-none ${alignClass}`}
         />
       </div>
     </div>

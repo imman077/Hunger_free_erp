@@ -61,11 +61,11 @@ const ResuableDrawer: React.FC<ResuableDrawerProps> = ({
       backdrop="blur"
       hideCloseButton={true}
       classNames={{
-        base: `bg-white rounded-none w-full ${sizeClasses[size as keyof typeof sizeClasses] || "sm:max-w-md"} shadow-none thin-scrollbar`,
-        backdrop: "bg-slate-900/40 backdrop-blur-md",
-        header: "border-b border-slate-100 p-0",
+        base: `rounded-none w-full ${sizeClasses[size as keyof typeof sizeClasses] || "sm:max-w-md"} shadow-none thin-scrollbar`,
+        backdrop: "bg-black/40 backdrop-blur-md",
+        header: "border-b p-0",
         body: "p-0 overflow-hidden",
-        footer: "border-t border-slate-100 p-5",
+        footer: "border-t p-5",
       }}
       style={{
         backgroundColor: "var(--bg-primary)",
@@ -86,7 +86,10 @@ const ResuableDrawer: React.FC<ResuableDrawerProps> = ({
                   {title}
                 </h2>
                 {subtitle && (
-                  <span className="text-[11px] font-black tracking-[0.25em] text-slate-400 leading-none ml-1">
+                  <span
+                    className="text-[11px] font-black tracking-[0.25em] leading-none ml-1"
+                    style={{ color: "var(--text-muted)" }}
+                  >
                     {subtitle}
                   </span>
                 )}
@@ -96,7 +99,7 @@ const ResuableDrawer: React.FC<ResuableDrawerProps> = ({
                 {headerExtra}
                 <button
                   onClick={onClose}
-                  className="p-1.5 hover:bg-slate-100 rounded-sm transition-colors"
+                  className="p-1.5 hover:bg-slate-500/10 rounded-sm transition-colors"
                   style={{ color: "var(--text-muted)" }}
                 >
                   <X size={18} />

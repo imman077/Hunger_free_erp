@@ -12,6 +12,7 @@ import {
   ModalBody,
   ModalFooter,
   useDisclosure,
+  Chip,
 } from "@heroui/react";
 import ReusableTable, {
   type ColumnDef,
@@ -131,6 +132,15 @@ const DonationOverview = () => {
     },
   ];
 
+  // Derived state to find busy volunteers
+  const busyVolunteerNames = donations
+    .filter((d) => d.status.startsWith("Waiting for"))
+    .map((d) => d.status.replace("Waiting for ", "").split(" (")[0]);
+
+  const availableVolunteers = nearbyVolunteers.filter(
+    (v) => !busyVolunteerNames.includes(v.name),
+  );
+
   const handleAssignClick = (donation: any) => {
     setSelectedDonation(donation);
     onOpen();
@@ -153,6 +163,20 @@ const DonationOverview = () => {
       `Assigned ${volunteer.name} to donation ${selectedDonation.id}`,
     );
     onClose();
+  };
+
+  const handleRejectAssignment = (donationId: string) => {
+    setDonations((prevDonations) =>
+      prevDonations.map((donation) =>
+        donation.id === donationId
+          ? {
+              ...donation,
+              status: "Pending",
+              assignedVolunteer: null,
+            }
+          : donation,
+      ),
+    );
   };
 
   // Filter States
@@ -251,7 +275,13 @@ const DonationOverview = () => {
     switch (columnKey) {
       case "donor":
         return (
-          <div className="flex items-center gap-2 px-2 py-1 rounded-full bg-slate-50 border border-slate-200 hover:border-amber-500/50 hover:bg-white transition-all cursor-pointer group w-fit min-w-0">
+          <div
+            className="flex items-center gap-2 px-2 py-1 rounded-full border transition-all cursor-pointer group w-fit min-w-0"
+            style={{
+              backgroundColor: "var(--bg-secondary)",
+              borderColor: "var(--border-color)",
+            }}
+          >
             <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold text-white bg-gradient-to-br from-amber-400 to-orange-600 shadow-sm shrink-0">
               {cellValue
                 .split(" ")
@@ -259,7 +289,7 @@ const DonationOverview = () => {
                 .join("")}
             </div>
             <span
-              className="font-bold text-xs whitespace-nowrap truncate max-w-[140px] pr-1 group-hover:text-amber-600 transition-colors"
+              className="font-bold text-xs whitespace-nowrap truncate max-w-[140px] pr-1 group-hover:text-amber-500 transition-colors"
               style={{ color: "var(--text-primary)" }}
             >
               {cellValue}
@@ -270,6 +300,27 @@ const DonationOverview = () => {
         // Check if status is "Waiting for {name}"
         const isWaitingStatus = cellValue.startsWith("Waiting for");
         const color = isWaitingStatus ? "#7c3aed" : getStatusColor(cellValue); // purple for waiting
+
+        if (isWaitingStatus) {
+          return (
+            <div className="flex justify-center w-full">
+              <Chip
+                className="capitalize border h-6 text-[10px] font-black shadow-none transition-colors pr-1"
+                style={{
+                  backgroundColor: `${color}10`,
+                  color: color,
+                  borderColor: `${color}20`,
+                }}
+                size="sm"
+                variant="flat"
+                startContent={<UserCheck size={12} />}
+                onClose={() => handleRejectAssignment(item.id)}
+              >
+                {cellValue}
+              </Chip>
+            </div>
+          );
+        }
 
         return (
           <div className="flex justify-center w-full">
@@ -301,7 +352,9 @@ const DonationOverview = () => {
         );
       case "quantity":
         return (
-          <span className="text-xs font-bold text-amber-600">{cellValue}</span>
+          <span className="text-xs font-bold" style={{ color: "#d97706" }}>
+            {cellValue}
+          </span>
         );
       case "actions":
         // Only show assign button for truly pending donations (not waiting for volunteer)
@@ -338,10 +391,18 @@ const DonationOverview = () => {
         <DropdownTrigger>
           <Button
             variant="flat"
-            className="border border-slate-200 bg-white rounded-sm h-10 px-4 text-[11px] font-bold text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-none"
-            style={{ backgroundColor: "white" }}
-            startContent={<Filter size={14} className="text-slate-400" />}
-            endContent={<Plus size={14} className="text-slate-400" />}
+            className="border rounded-sm h-10 px-4 text-[11px] font-bold transition-all shadow-none"
+            style={{
+              backgroundColor: "var(--bg-primary)",
+              borderColor: "var(--border-color)",
+              color: "var(--text-muted)",
+            }}
+            startContent={
+              <Filter size={14} style={{ color: "var(--text-muted)" }} />
+            }
+            endContent={
+              <Plus size={14} style={{ color: "var(--text-muted)" }} />
+            }
           >
             ADD FILTER
           </Button>
@@ -350,17 +411,22 @@ const DonationOverview = () => {
           aria-label="Add Filter Options"
           onAction={(key) => toggleFilter(key as string)}
           classNames={{
-            base: "bg-white border border-slate-200 rounded-sm min-w-[180px] p-1",
+            base: "border rounded-sm min-w-[180px] p-1 shadow-2xl",
+          }}
+          style={{
+            backgroundColor: "var(--bg-primary)",
+            borderColor: "var(--border-color)",
           }}
           itemClasses={{
             base: [
-              "text-slate-600 text-[11px] font-bold uppercase tracking-tight",
-              "data-[hover=true]:bg-slate-50 data-[hover=true]:text-hf-green",
+              "text-[11px] font-bold uppercase tracking-tight",
+              "data-[hover=true]:bg-[var(--bg-secondary)] data-[hover=true]:text-hf-green",
               "rounded-sm",
               "px-3",
               "py-2.5",
               "transition-colors duration-200",
             ].join(" "),
+            title: "text-[var(--text-secondary)]",
           }}
         >
           <DropdownItem
@@ -415,18 +481,23 @@ const DonationOverview = () => {
               })),
             ]}
             classNames={{
-              base: "bg-white border border-slate-200 rounded-sm min-w-[160px] p-1",
+              base: "rounded-sm min-w-[160px] p-1 border",
+            }}
+            style={{
+              backgroundColor: "var(--bg-primary)",
+              borderColor: "var(--border-color)",
             }}
             itemClasses={{
               base: [
-                "text-slate-600 text-[11px] font-bold uppercase tracking-tight",
-                "data-[hover=true]:bg-slate-50 data-[hover=true]:text-hf-green",
-                "data-[selected=true]:bg-emerald-50 data-[selected=true]:text-hf-green",
+                "text-[11px] font-bold uppercase tracking-tight",
+                "data-[hover=true]:bg-[var(--bg-secondary)] data-[hover=true]:text-hf-green",
+                "data-[selected=true]:bg-emerald-500/10 data-[selected=true]:text-hf-green",
                 "rounded-sm",
                 "px-3",
                 "py-2.5",
                 "transition-colors duration-200",
               ].join(" "),
+              title: "text-[var(--text-secondary)]",
               selectedIcon: "text-hf-green w-4 h-4 ml-auto",
             }}
           >
@@ -472,18 +543,23 @@ const DonationOverview = () => {
               })),
             ]}
             classNames={{
-              base: "bg-white border border-slate-200 rounded-sm min-w-[160px] p-1",
+              base: "rounded-sm min-w-[160px] p-1 border",
+            }}
+            style={{
+              backgroundColor: "var(--bg-primary)",
+              borderColor: "var(--border-color)",
             }}
             itemClasses={{
               base: [
-                "text-slate-600 text-[11px] font-bold uppercase tracking-tight",
-                "data-[hover=true]:bg-slate-50 data-[hover=true]:text-blue-600",
-                "data-[selected=true]:bg-blue-50 data-[selected=true]:text-blue-600",
+                "text-[11px] font-bold uppercase tracking-tight",
+                "data-[hover=true]:bg-[var(--bg-secondary)] data-[hover=true]:text-blue-600",
+                "data-[selected=true]:bg-blue-500/10 data-[selected=true]:text-blue-600",
                 "rounded-sm",
                 "px-3",
                 "py-2.5",
                 "transition-colors duration-200",
               ].join(" "),
+              title: "text-[var(--text-secondary)]",
               selectedIcon: "text-blue-600 w-4 h-4 ml-auto",
             }}
           >
@@ -548,18 +624,24 @@ const DonationOverview = () => {
         placement="center"
         size="md"
         classNames={{
-          backdrop: "bg-[#0b1120]/50 backdrop-blur-sm",
-          base: "border border-slate-200 bg-white rounded-sm",
-          header: "border-b border-slate-100 p-4",
-          footer: "border-t border-slate-100 p-4",
+          backdrop: "bg-[#0b1120]/80 backdrop-blur-sm",
+          base: "border border-[var(--border-color)] bg-[var(--bg-primary)] rounded-sm",
+          header: "border-b border-[var(--border-color)] p-4",
+          footer: "border-t border-[var(--border-color)] p-4",
         }}
       >
         <ModalContent>
           <ModalHeader className="flex flex-col gap-1 items-center text-center py-6">
-            <h3 className="text-sm font-black uppercase tracking-widest text-slate-800">
+            <h3
+              className="text-sm font-black uppercase tracking-widest"
+              style={{ color: "var(--text-primary)" }}
+            >
               Assign Volunteer
             </h3>
-            <p className="text-[10px] font-medium text-slate-400 uppercase tracking-tight">
+            <p
+              className="text-[10px] font-medium uppercase tracking-tight"
+              style={{ color: "var(--text-muted)" }}
+            >
               Select a nearby volunteer for donation #{selectedDonation?.id}
             </p>
           </ModalHeader>
@@ -572,10 +654,14 @@ const DonationOverview = () => {
                 <div className="h-0.5 w-6 bg-hf-green/20 rounded-full" />
               </div>
               <div className="grid gap-2">
-                {nearbyVolunteers.map((vol) => (
+                {availableVolunteers.map((vol) => (
                   <div
                     key={vol.id}
-                    className="flex items-center justify-between p-3 rounded-sm border border-slate-100 bg-slate-50/50 hover:bg-white hover:border-hf-green/30 hover:shadow-sm transition-all group"
+                    className="flex items-center justify-between p-3 rounded-sm border transition-all group"
+                    style={{
+                      backgroundColor: "var(--bg-secondary)",
+                      borderColor: "var(--border-color)",
+                    }}
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-[10px] font-black text-white shadow-sm">
@@ -585,17 +671,30 @@ const DonationOverview = () => {
                           .join("")}
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-xs font-black text-slate-700">
+                        <span
+                          className="text-xs font-black"
+                          style={{ color: "var(--text-primary)" }}
+                        >
                           {vol.name}
                         </span>
                         <div className="flex items-center gap-2 mt-0.5">
                           <span className="text-[9px] font-bold text-hf-green flex items-center gap-0.5">
                             ★ {vol.rating}
                           </span>
-                          <span className="text-[9px] font-medium text-slate-400">
+                          <span
+                            className="text-[9px] font-medium"
+                            style={{ color: "var(--text-muted)" }}
+                          >
                             • {vol.vehicle}
                           </span>
-                          <span className="text-[9px] font-black text-amber-600 bg-amber-50 px-1 rounded-full">
+                          <span
+                            className="text-[9px] font-black px-1 rounded-full border"
+                            style={{
+                              backgroundColor: "rgba(217, 119, 6, 0.1)",
+                              color: "#d97706",
+                              borderColor: "rgba(217, 119, 6, 0.2)",
+                            }}
+                          >
                             {vol.distance}
                           </span>
                         </div>
@@ -610,13 +709,30 @@ const DonationOverview = () => {
                     </Button>
                   </div>
                 ))}
+                {availableVolunteers.length === 0 && (
+                  <div className="flex flex-col items-center justify-center py-8 text-center bg-var(--bg-tertiary) rounded-sm border border-dashed border-[var(--border-color)]">
+                    <div className="w-10 h-10 rounded-full bg-[var(--bg-secondary)] flex items-center justify-center mb-2">
+                      <Plus className="w-5 h-5 text-[var(--text-muted)] rotate-45" />
+                    </div>
+                    <p className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">
+                      All local responders are currently busy
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </ModalBody>
-          <ModalFooter className="flex justify-center border-t border-slate-100 p-4">
+          <ModalFooter
+            className="flex justify-center border-t p-4"
+            style={{ borderColor: "var(--border-color)" }}
+          >
             <Button
               variant="flat"
-              className="bg-slate-100 text-slate-500 font-black text-[10px] uppercase tracking-wider h-9 px-8 rounded-sm hover:bg-slate-200 transition-all"
+              className="font-black text-[10px] uppercase tracking-wider h-9 px-8 rounded-sm transition-all"
+              style={{
+                backgroundColor: "var(--bg-tertiary)",
+                color: "var(--text-secondary)",
+              }}
               onClick={onClose}
             >
               Cancel

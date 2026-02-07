@@ -42,25 +42,10 @@ const ResuableDropdown: React.FC<ResuableDropdownProps> = ({
 
   const selectedOption = options.find((opt) => opt.value === value);
 
-  // Check if dropdown should open upward based on available space
+  // Handle click outside to close
   useEffect(() => {
-    if (isOpen && dropdownRef.current && menuRef.current) {
-      const buttonRect = dropdownRef.current.getBoundingClientRect();
-      const menuHeight = menuRef.current.scrollHeight;
-      const viewportHeight = window.innerHeight;
-      const spaceBelow = viewportHeight - buttonRect.bottom;
-      const spaceAbove = buttonRect.top;
+    if (!isOpen) return;
 
-      // Open upward if there's not enough space below but enough space above
-      if (spaceBelow < menuHeight && spaceAbove > menuHeight) {
-        setOpenUpward(true);
-      } else {
-        setOpenUpward(false);
-      }
-    }
-  }, [isOpen]);
-
-  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
         dropdownRef.current &&
@@ -69,9 +54,55 @@ const ResuableDropdown: React.FC<ResuableDropdownProps> = ({
         setIsOpen(false);
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+
+    // Use a small timeout to avoid immediate closure if the toggle triggered this
+    const timeoutId = setTimeout(() => {
+      document.addEventListener("mousedown", handleClickOutside);
+    }, 0);
+
+    return () => {
+      clearTimeout(timeoutId);
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
+
+  // Handle smart positioning (Upward vs Downward)
+  useEffect(() => {
+    if (isOpen && dropdownRef.current && menuRef.current) {
+      const buttonRect = dropdownRef.current.getBoundingClientRect();
+      const menuHeight = menuRef.current.scrollHeight;
+      const viewportHeight = window.innerHeight;
+
+      const spaceBelow = viewportHeight - buttonRect.bottom;
+      const spaceAbove = buttonRect.top;
+
+      // Logic: Open upward if there's no space below AND there is enough space above
+      if (spaceBelow < menuHeight && spaceAbove > menuHeight) {
+        setOpenUpward(true);
+      } else {
+        setOpenUpward(false);
+      }
+    }
+  }, [isOpen]);
+
+  // Auto-close on scroll or resize to maintain UI stability
+  useEffect(() => {
+    const handleScrollOrResize = () => {
+      if (isOpen) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      window.addEventListener("scroll", handleScrollOrResize, true);
+      window.addEventListener("resize", handleScrollOrResize);
+    }
+
+    return () => {
+      window.removeEventListener("scroll", handleScrollOrResize, true);
+      window.removeEventListener("resize", handleScrollOrResize);
+    };
+  }, [isOpen]);
 
   const handleSelect = (optionValue: string) => {
     onChange(optionValue);
@@ -97,17 +128,28 @@ const ResuableDropdown: React.FC<ResuableDropdownProps> = ({
             className="text-[8px] font-black uppercase tracking-widest block"
             style={{ color: "var(--text-muted)" }}
           >
-            {label} {required && <span style={{ color: "#ef4444" }}>*</span>}
+            {label} {required && <span className="text-red-500">*</span>}
           </label>
           {info && (
             <div className="group/info relative flex items-center">
               <Icon
                 name="info"
-                className="w-3.5 h-3.5 text-slate-300 hover:text-[#22c55e] transition-colors cursor-help"
+                className="w-3.5 h-3.5 transition-colors cursor-help"
+                style={{ color: "var(--text-muted)" }}
               />
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 min-w-[200px] max-w-[280px] p-3 bg-slate-900/95 backdrop-blur-sm text-white text-[10px] font-medium leading-relaxed rounded-lg shadow-2xl opacity-0 invisible group-hover/info:opacity-100 group-hover/info:visible transition-all z-[10000] pointer-events-none whitespace-pre-line border border-white/10 text-left">
+              <div
+                className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 min-w-[200px] max-w-[280px] p-3 backdrop-blur-sm text-[10px] font-medium leading-relaxed rounded-lg shadow-2xl opacity-0 invisible group-hover/info:opacity-100 group-hover/info:visible transition-all z-[10000] pointer-events-none whitespace-pre-line border text-left"
+                style={{
+                  backgroundColor: "var(--bg-primary)",
+                  color: "var(--text-primary)",
+                  borderColor: "var(--border-color)",
+                }}
+              >
                 {info}
-                <div className="absolute top-full left-1/2 -translate-x-1/2 border-[5px] border-transparent border-t-slate-900/95" />
+                <div
+                  className="absolute top-full left-1/2 -translate-x-1/2 border-[5px] border-transparent"
+                  style={{ borderTopColor: "var(--bg-primary)" }}
+                />
               </div>
             </div>
           )}
@@ -125,7 +167,7 @@ const ResuableDropdown: React.FC<ResuableDropdownProps> = ({
             color: "var(--text-primary)",
             borderColor: "var(--border-color)",
           }}
-          className={`w-full flex items-center justify-between border px-3 py-2 rounded-none text-[11px] font-bold transition-all ${
+          className={`w-full flex items-center justify-between border px-3 py-2.5 rounded-none text-xs font-semibold transition-all ${
             isOpen ? "ring-1 ring-[#22c55e]" : ""
           } ${
             disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"

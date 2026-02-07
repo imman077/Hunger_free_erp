@@ -29,8 +29,8 @@ const DonationActivityCard: React.FC<DonationActivityCardProps> = ({
       className={`group/item relative flex flex-col items-center text-center transition-all duration-300 border font-sans rounded-md cursor-pointer
         ${
           compact
-            ? "p-4 gap-3 justify-center hover:bg-slate-50/50"
-            : "p-6 gap-4 justify-center hover:border-[#22c55e]/40 hover:bg-slate-50/20"
+            ? "p-4 gap-3 justify-center hover:bg-[var(--bg-secondary)]"
+            : "p-6 gap-4 justify-center hover:border-[#22c55e]/40 hover:bg-[var(--bg-secondary)]"
         }
       `}
       style={{
@@ -45,8 +45,8 @@ const DonationActivityCard: React.FC<DonationActivityCardProps> = ({
             ${compact ? "text-[6px]" : "text-[8px]"}
             ${
               isCollected
-                ? "text-[#22c55e] bg-emerald-50 border border-emerald-100/50"
-                : "text-blue-500 bg-blue-50 border border-blue-100/50"
+                ? "text-[#22c55e] bg-emerald-500/10 border border-emerald-500/20"
+                : "text-blue-500 bg-blue-500/10 border border-blue-500/20"
             }
           `}
         >
@@ -71,25 +71,28 @@ const DonationActivityCard: React.FC<DonationActivityCardProps> = ({
       {/* Content Group */}
       <div className="space-y-2 w-full px-2">
         <h3
-          className={`font-black tracking-tighter truncate transition-colors duration-300 group-hover/item:text-[#22c55e] text-slate-900
+          className={`font-black tracking-tighter truncate transition-colors duration-300 group-hover/item:text-[#22c55e]
           ${compact ? "text-sm" : "text-base md:text-lg"}
         `}
+          style={{ color: "var(--text-primary)" }}
         >
           {title}
         </h3>
 
         <div className="flex flex-col items-center gap-1.5">
           <p
-            className={`font-bold uppercase tracking-widest text-slate-400
+            className={`font-bold uppercase tracking-widest
             ${compact ? "text-[8px]" : "text-[10px]"}
           `}
+            style={{ color: "var(--text-muted)" }}
           >
             {subtitle}
           </p>
           <p
-            className={`font-bold uppercase tracking-widest opacity-40 text-slate-400
+            className={`font-bold uppercase tracking-widest opacity-40
             ${compact ? "text-[7px]" : "text-[9px]"}
           `}
+            style={{ color: "var(--text-muted)" }}
           >
             {date}
           </p>

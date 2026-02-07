@@ -129,7 +129,10 @@ const MilestonesConfig: React.FC = () => {
           >
             Impact Milestones
           </h1>
-          <p className="text-slate-500 font-semibold mt-1">
+          <p
+            className="font-semibold mt-1"
+            style={{ color: "var(--text-muted)" }}
+          >
             Define and manage badges rewarded for user achievements
           </p>
         </div>
@@ -274,11 +277,15 @@ const MilestonesConfig: React.FC = () => {
               return (
                 <div key={section.type} className="space-y-8">
                   <div className="relative pt-6">
-                    <div className="flex items-center justify-between p-4 bg-slate-50/50 rounded-sm border border-slate-100/50">
+                    <div
+                      className="flex items-center justify-between p-4 rounded-sm border"
+                      style={{
+                        backgroundColor: "var(--bg-secondary)",
+                        borderColor: "var(--border-color)",
+                      }}
+                    >
                       <div className="flex items-center gap-4">
-                        <div
-                          className={`w-12 h-12 rounded-sm bg-[#22c55e] flex items-center justify-center border border-emerald-500 shadow-md shadow-emerald-500/10 transition-all duration-300`}
-                        >
+                        <div className="w-12 h-12 rounded-sm bg-[#22c55e] flex items-center justify-center border border-emerald-500 shadow-md shadow-emerald-500/10 transition-all duration-300">
                           <section.Icon
                             className="text-white"
                             size={20}
@@ -286,11 +293,15 @@ const MilestonesConfig: React.FC = () => {
                           />
                         </div>
                         <div className="flex flex-col text-start">
-                          <h2 className="text-sm font-black uppercase tracking-[0.3em] text-slate-900 leading-none">
+                          <h2
+                            className="text-sm font-black uppercase tracking-[0.3em] leading-none"
+                            style={{ color: "var(--text-primary)" }}
+                          >
                             {section.label}
                           </h2>
                           <p
-                            className={`text-[10px] font-bold mt-2 text-slate-400 uppercase tracking-widest`}
+                            className="text-[10px] font-bold mt-2 uppercase tracking-widest"
+                            style={{ color: "var(--text-muted)" }}
                           >
                             {sectionMilestones.length} ACTIVE BADGES
                           </p>
@@ -327,7 +338,11 @@ const MilestonesConfig: React.FC = () => {
             <ResuableButton
               variant="ghost"
               onClick={() => onOpenChange()}
-              className="font-black uppercase tracking-[0.2em] text-[10px] px-8 h-9 border border-slate-200 text-slate-500 hover:bg-slate-50"
+              className="font-black uppercase tracking-[0.2em] text-[10px] px-8 h-9 border"
+              style={{
+                borderColor: "var(--border-color)",
+                color: "var(--text-muted)",
+              }}
             >
               Cancel
             </ResuableButton>
@@ -415,7 +430,11 @@ const MilestonesConfig: React.FC = () => {
             <ResuableButton
               variant="ghost"
               onClick={() => onAddOpenChange()}
-              className="font-black uppercase tracking-[0.2em] text-[10px] px-8 h-9 border border-slate-200 text-slate-500 hover:bg-slate-50"
+              className="font-black uppercase tracking-[0.2em] text-[10px] px-8 h-9 border"
+              style={{
+                borderColor: "var(--border-color)",
+                color: "var(--text-muted)",
+              }}
             >
               Cancel
             </ResuableButton>
@@ -484,7 +503,10 @@ const MilestonesConfig: React.FC = () => {
             </div>
 
             <div className="space-y-3">
-              <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 px-1">
+              <label
+                className="text-[10px] font-black uppercase tracking-widest px-1"
+                style={{ color: "var(--text-muted)" }}
+              >
                 Display Icon
               </label>
               <div className="grid grid-cols-5 gap-2">
@@ -515,9 +537,19 @@ const MilestonesConfig: React.FC = () => {
                       }
                       className={`flex flex-col items-center justify-center p-3 rounded-sm border transition-all gap-2 ${
                         newMilestone.icon === iconName
-                          ? "bg-emerald-50 border-emerald-200 text-emerald-600 shadow-sm shadow-emerald-500/10"
-                          : "bg-slate-50/50 border-slate-100 text-slate-400 hover:bg-slate-50 hover:border-slate-200"
+                          ? "bg-[#22c55e]/10 border-emerald-500 text-emerald-500 shadow-sm shadow-emerald-500/10"
+                          : "hover:bg-[var(--bg-secondary)] transition-colors"
                       }`}
+                      style={{
+                        borderColor:
+                          newMilestone.icon === iconName
+                            ? undefined
+                            : "var(--border-color)",
+                        color:
+                          newMilestone.icon === iconName
+                            ? undefined
+                            : "var(--text-muted)",
+                      }}
                     >
                       <IconComp
                         size={18}
@@ -546,10 +578,12 @@ const MilestoneCard = ({
   return (
     <div
       className={`group relative p-6 rounded-sm border transition-all duration-300 ${
-        !milestone.active
-          ? "bg-slate-50/50 border-dashed border-slate-200 opacity-60"
-          : "bg-white border-slate-200/60 hover:border-emerald-500/30 shadow-none hover:bg-slate-50/20"
+        !milestone.active ? "opacity-60 border-dashed" : "shadow-none"
       }`}
+      style={{
+        backgroundColor: "var(--bg-primary)",
+        borderColor: "var(--border-color)",
+      }}
     >
       {(() => {
         const getRequirementUnit = () => {
@@ -569,18 +603,28 @@ const MilestoneCard = ({
         return (
           <>
             {/* Action pill - absolute positioned for cleaner card layout */}
-            <div className="absolute top-6 right-6 flex items-center gap-1 bg-white border border-slate-100 rounded-full p-1 opacity-0 group-hover:opacity-100 z-10">
+            <div
+              className="absolute top-6 right-6 flex items-center gap-1 border rounded-full p-1 opacity-0 group-hover:opacity-100 z-10 transition-opacity"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
               <button
-                className="p-1.5 rounded-full hover:bg-emerald-50 text-slate-400 hover:text-emerald-500 transition-colors"
+                className="p-1.5 rounded-full hover:bg-emerald-500/10 transition-colors"
+                style={{ color: "var(--text-muted)" }}
                 onClick={() => handleEditOpen(milestone)}
                 title="Edit Policy"
               >
                 <Edit2 size={11} />
               </button>
               <button
-                className={`p-1.5 rounded-full hover:bg-emerald-50 transition-colors ${
-                  milestone.active ? "text-emerald-500" : "text-slate-400"
+                className={`p-1.5 rounded-full hover:bg-emerald-500/10 transition-colors ${
+                  milestone.active ? "text-emerald-500" : "var(--text-muted)"
                 }`}
+                style={{
+                  color: milestone.active ? undefined : "var(--text-muted)",
+                }}
                 onClick={() => toggleActive(milestone.id)}
                 title={
                   milestone.active ? "Pause Visibility" : "Restore Visibility"
@@ -588,9 +632,12 @@ const MilestoneCard = ({
               >
                 {milestone.active ? <Eye size={11} /> : <EyeOff size={11} />}
               </button>
-              <div className="w-px h-3 bg-slate-200 mx-0.5" />
+              <div
+                className="w-px h-3 mx-0.5"
+                style={{ backgroundColor: "var(--border-color)" }}
+              />
               <button
-                className="p-1.5 rounded-full hover:bg-red-50 text-slate-300 hover:text-red-500 transition-colors"
+                className="p-1.5 rounded-full hover:bg-red-500/10 text-red-500 transition-colors"
                 onClick={() => deleteMilestone(milestone.id)}
                 title="Decommission"
               >
@@ -605,21 +652,27 @@ const MilestoneCard = ({
                   className={`w-12 h-12 rounded-xl flex items-center justify-center text-white ${
                     milestone.active
                       ? "bg-gradient-to-br from-[#22c55e] to-[#16a34a] border border-emerald-400/20"
-                      : "bg-slate-200 border-slate-300 text-slate-400"
+                      : "bg-[var(--bg-secondary)] border border-[var(--border-color)] text-[var(--text-muted)] opacity-50"
                   }`}
                 >
                   <MilestoneIcon size={24} strokeWidth={2.5} />
                 </div>
 
                 <div className="space-y-1.5">
-                  <h3 className="text-xl font-black text-slate-900 tracking-tight leading-none group-hover:text-emerald-600 transition-colors">
+                  <h3
+                    className="text-xl font-black tracking-tight leading-none group-hover:text-emerald-600 transition-colors"
+                    style={{ color: "var(--text-primary)" }}
+                  >
                     {milestone.name}
                   </h3>
                   <div className="flex items-start gap-2 max-w-[90%]">
                     <div
-                      className={`mt-1 h-2.5 w-0.5 shrink-0 rounded-full ${milestone.active ? "bg-emerald-500" : "bg-slate-300"}`}
+                      className={`mt-1 h-2.5 w-0.5 shrink-0 rounded-full ${milestone.active ? "bg-emerald-500" : "bg-[var(--border-color)]"}`}
                     />
-                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.15em] leading-normal line-clamp-2">
+                    <p
+                      className="text-[10px] font-bold uppercase tracking-[0.15em] leading-normal line-clamp-2"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       {milestone.desc}
                     </p>
                   </div>
@@ -627,14 +680,26 @@ const MilestoneCard = ({
               </div>
 
               {/* Data Footer Section */}
-              <div className="mt-auto grid grid-cols-[1fr_1px_1fr] items-center pt-4 border-t border-slate-100/60 -mx-6 -mb-6 bg-slate-50/50 rounded-b-sm">
+              <div
+                className="mt-auto grid grid-cols-[1fr_1px_1fr] items-center pt-4 border-t -mx-6 -mb-6 rounded-b-sm"
+                style={{
+                  backgroundColor: "var(--bg-secondary)",
+                  borderColor: "var(--border-color)",
+                }}
+              >
                 <div className="flex flex-col items-center px-4 pb-4">
-                  <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1.5 opacity-70">
+                  <span
+                    className="text-[8px] font-black uppercase tracking-widest mb-1.5 opacity-70"
+                    style={{ color: "var(--text-muted)" }}
+                  >
                     Threshold
                   </span>
                   <div className="flex items-center gap-1.5 min-h-[18px]">
                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                    <span className="text-[11px] font-black text-slate-800 tabular-nums tracking-tight">
+                    <span
+                      className="text-[11px] font-black tabular-nums tracking-tight"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       {milestone.threshold.toLocaleString()}
                       <span className="ml-1 text-[9px] text-emerald-600 font-bold">
                         {unit}
@@ -643,18 +708,30 @@ const MilestoneCard = ({
                   </div>
                 </div>
 
-                <div className="h-6 w-px bg-slate-200/50 mb-4" />
+                <div
+                  className="h-6 w-px mb-4"
+                  style={{ backgroundColor: "var(--border-color)" }}
+                />
 
                 <div className="flex flex-col items-center px-4 pb-4">
-                  <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1.5 opacity-70">
+                  <span
+                    className="text-[8px] font-black uppercase tracking-widest mb-1.5 opacity-70"
+                    style={{ color: "var(--text-muted)" }}
+                  >
                     System
                   </span>
                   <div
                     className={`text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border min-h-[18px] flex items-center justify-center ${
                       milestone.active
-                        ? "bg-emerald-100/50 text-emerald-600 border-emerald-200/50"
-                        : "bg-slate-200/50 text-slate-500 border-slate-300/50"
+                        ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
+                        : "opacity-50"
                     }`}
+                    style={{
+                      borderColor: milestone.active
+                        ? undefined
+                        : "var(--border-color)",
+                      color: milestone.active ? undefined : "var(--text-muted)",
+                    }}
                   >
                     {milestone.active ? "Enabled" : "Locked"}
                   </div>

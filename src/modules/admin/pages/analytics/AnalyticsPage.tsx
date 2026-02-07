@@ -63,7 +63,10 @@ const AnalyticsPage: React.FC = () => {
   ];
 
   return (
-    <div className="p-8 w-full mx-auto space-y-10 animate-in fade-in duration-700">
+    <div
+      className="p-8 w-full mx-auto space-y-10 animate-in fade-in duration-700 text-start min-h-screen"
+      style={{ backgroundColor: "var(--bg-primary)" }}
+    >
       <header className="flex justify-between items-end">
         <div className="text-start">
           <h1
@@ -72,14 +75,23 @@ const AnalyticsPage: React.FC = () => {
           >
             Impact Analytics
           </h1>
-          <p className="text-slate-500 font-semibold mt-2">
+          <p
+            className="font-semibold mt-2"
+            style={{ color: "var(--text-muted)" }}
+          >
             Track donations, distribution, and community impact metrics.
           </p>
         </div>
         <div className="flex gap-4">
-          <div className="flex items-center gap-2 bg-[#ecfdf5] px-4 py-2 rounded-sm border border-[#d1fae5]">
+          <div
+            className="flex items-center gap-2 px-4 py-2 rounded-sm border"
+            style={{
+              backgroundColor: "rgba(34, 197, 94, 0.05)",
+              borderColor: "rgba(34, 197, 94, 0.1)",
+            }}
+          >
             <Leaf size={18} className="text-[#22c55e]" />
-            <span className="text-sm font-black text-[#16a34a] uppercase tracking-tight">
+            <span className="text-sm font-black text-hf-green uppercase tracking-tight">
               95% Distribution Rate
             </span>
           </div>
@@ -111,7 +123,10 @@ const AnalyticsPage: React.FC = () => {
                   Donation Flow
                 </h3>
               </div>
-              <p className="text-sm text-slate-400 font-medium">
+              <p
+                className="text-sm font-medium"
+                style={{ color: "var(--text-muted)" }}
+              >
                 Weekly comparison of donations received vs. distributed
               </p>
             </div>
@@ -144,26 +159,46 @@ const AnalyticsPage: React.FC = () => {
                 <CartesianGrid
                   strokeDasharray="3 3"
                   vertical={false}
-                  stroke="#f1f5f9"
+                  stroke="var(--border-color)"
+                  opacity={0.3}
                 />
                 <XAxis
                   dataKey="day"
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fill: "#94a3b8", fontSize: 12, fontWeight: 700 }}
+                  tick={{
+                    fill: "var(--text-muted)",
+                    fontSize: 12,
+                    fontWeight: 700,
+                  }}
                   dy={10}
                 />
                 <YAxis
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fill: "#94a3b8", fontSize: 12, fontWeight: 700 }}
+                  tick={{
+                    fill: "var(--text-muted)",
+                    fontSize: 12,
+                    fontWeight: 700,
+                  }}
                 />
                 <Tooltip
                   contentStyle={{
-                    borderRadius: "8px",
-                    border: "1px solid #e2e8f0",
-                    boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                    backgroundColor: "var(--bg-primary)",
+                    borderRadius: "4px",
+                    border: "1px solid var(--border-color)",
+                    boxShadow: "var(--shadow-lg)",
                     padding: "12px",
+                  }}
+                  itemStyle={{
+                    fontSize: "10px",
+                    fontWeight: "700",
+                    textTransform: "uppercase",
+                  }}
+                  labelStyle={{
+                    color: "var(--text-primary)",
+                    fontWeight: "900",
+                    marginBottom: "4px",
                   }}
                 />
                 <Area
@@ -206,7 +241,10 @@ const AnalyticsPage: React.FC = () => {
               Food Categories
             </h3>
           </div>
-          <p className="text-sm text-slate-400 font-medium mb-8">
+          <p
+            className="text-sm font-medium mb-8"
+            style={{ color: "var(--text-muted)" }}
+          >
             Distribution of donation types this month
           </p>
 
@@ -219,10 +257,22 @@ const AnalyticsPage: React.FC = () => {
                   type="category"
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fill: "#475569", fontWeight: 800, fontSize: 11 }}
+                  tick={{
+                    fill: "var(--text-secondary)",
+                    fontWeight: 800,
+                    fontSize: 11,
+                  }}
                   width={100}
                 />
-                <Tooltip cursor={{ fill: "transparent" }} />
+                <Tooltip
+                  cursor={{ fill: "var(--bg-secondary)", opacity: 0.4 }}
+                  contentStyle={{
+                    backgroundColor: "var(--bg-primary)",
+                    borderRadius: "4px",
+                    border: "1px solid var(--border-color)",
+                    boxShadow: "var(--shadow-lg)",
+                  }}
+                />
                 <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={24}>
                   {categoryData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
@@ -234,23 +284,51 @@ const AnalyticsPage: React.FC = () => {
 
           {/* Quick Stats */}
           <div className="mt-8 grid grid-cols-2 gap-3">
-            <div className="p-4 bg-slate-50 rounded-sm border border-slate-100">
+            <div
+              className="p-4 rounded-sm border shadow-sm"
+              style={{
+                backgroundColor: "var(--bg-secondary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
               <div className="flex items-center gap-2 mb-2">
                 <Users size={14} className="text-blue-500" />
-                <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">
+                <span
+                  className="text-[9px] font-black uppercase tracking-widest"
+                  style={{ color: "var(--text-muted)" }}
+                >
                   Volunteers
                 </span>
               </div>
-              <p className="text-lg font-black text-slate-800">156</p>
+              <p
+                className="text-lg font-black"
+                style={{ color: "var(--text-primary)" }}
+              >
+                156
+              </p>
             </div>
-            <div className="p-4 bg-slate-50 rounded-sm border border-slate-100">
+            <div
+              className="p-4 rounded-sm border shadow-sm"
+              style={{
+                backgroundColor: "var(--bg-secondary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
               <div className="flex items-center gap-2 mb-2">
                 <Building2 size={14} className="text-amber-500" />
-                <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">
+                <span
+                  className="text-[9px] font-black uppercase tracking-widest"
+                  style={{ color: "var(--text-muted)" }}
+                >
                   NGOs
                 </span>
               </div>
-              <p className="text-lg font-black text-slate-800">24</p>
+              <p
+                className="text-lg font-black"
+                style={{ color: "var(--text-primary)" }}
+              >
+                24
+              </p>
             </div>
           </div>
         </div>

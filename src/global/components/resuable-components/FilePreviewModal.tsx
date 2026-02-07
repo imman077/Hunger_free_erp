@@ -86,11 +86,15 @@ const FilePreviewModal: React.FC<FilePreviewModalProps> = ({
       backdrop="blur"
       hideCloseButton={true}
       classNames={{
-        backdrop: "bg-slate-900/60 backdrop-blur-sm",
+        backdrop: "bg-[#0f172a]/80 backdrop-blur-sm",
         wrapper: "p-0 overflow-hidden",
-        base: "bg-white shadow-none m-0 h-screen w-screen flex flex-col",
-        header: "p-0 border-b border-slate-100 shrink-0",
-        body: "p-0 flex-1 overflow-hidden",
+        base: "shadow-none m-0 h-screen w-screen flex flex-col transition-colors duration-300",
+        header: "p-0 border-b shrink-0 transition-colors duration-300",
+        body: "p-0 flex-1 overflow-hidden transition-colors duration-300",
+      }}
+      style={{
+        backgroundColor: "var(--bg-primary)",
+        borderColor: "var(--border-color)",
       }}
     >
       <ModalContent>
@@ -103,11 +107,20 @@ const FilePreviewModal: React.FC<FilePreviewModalProps> = ({
                     <Eye size={20} />
                   </div>
                   <div className="flex flex-col">
-                    <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-800 leading-none">
+                    <h2
+                      className="text-[11px] font-black uppercase tracking-[0.2em] leading-none"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       Document Preview
                     </h2>
-                    <p className="text-[10px] items-center flex gap-2 font-bold text-slate-400 mt-2 uppercase tracking-widest truncate max-w-[200px] md:max-w-[400px]">
-                      <span className="w-1 h-1 rounded-full bg-slate-300" />
+                    <p
+                      className="text-[10px] items-center flex gap-2 font-bold mt-2 uppercase tracking-widest truncate max-w-[200px] md:max-w-[400px]"
+                      style={{ color: "var(--text-muted)" }}
+                    >
+                      <span
+                        className="w-1 h-1 rounded-full"
+                        style={{ backgroundColor: "var(--border-dark)" }}
+                      />
                       {name}
                     </p>
                   </div>
@@ -115,29 +128,44 @@ const FilePreviewModal: React.FC<FilePreviewModalProps> = ({
 
                 <div className="flex items-center gap-3">
                   {isImage && (
-                    <div className="flex items-center bg-slate-50 border border-slate-100 rounded-lg p-1 mr-2 hidden sm:flex">
+                    <div
+                      className="flex items-center border rounded-lg p-1 mr-2 hidden sm:flex"
+                      style={{
+                        backgroundColor: "var(--bg-tertiary)",
+                        borderColor: "var(--border-color)",
+                      }}
+                    >
                       <button
                         onClick={handleZoomOut}
                         disabled={scale <= 0.5}
-                        className="p-2 hover:bg-white hover:text-[#22c55e] rounded-md transition-all disabled:opacity-30 disabled:hover:text-slate-400"
+                        className="p-2 hover:text-[#22c55e] rounded-md transition-all disabled:opacity-30"
+                        style={{ color: "var(--text-muted)" }}
                         title="Zoom Out"
                       >
                         <ZoomOut size={16} />
                       </button>
-                      <div className="w-12 text-center text-[10px] font-black text-slate-400 uppercase tracking-tighter">
+                      <div
+                        className="w-12 text-center text-[10px] font-black uppercase tracking-tighter"
+                        style={{ color: "var(--text-muted)" }}
+                      >
                         {Math.round(scale * 100)}%
                       </div>
                       <button
                         onClick={handleZoomIn}
                         disabled={scale >= 4}
-                        className="p-2 hover:bg-white hover:text-[#22c55e] rounded-md transition-all disabled:opacity-30 disabled:hover:text-slate-400"
+                        className="p-2 hover:text-[#22c55e] rounded-md transition-all disabled:opacity-30"
+                        style={{ color: "var(--text-muted)" }}
                         title="Zoom In"
                       >
                         <ZoomIn size={16} />
                       </button>
                       <button
                         onClick={handleResetZoom}
-                        className="p-2 ml-1 hover:bg-white hover:text-[#22c55e] rounded-md transition-all border-l border-slate-100"
+                        className="p-2 ml-1 hover:text-[#22c55e] rounded-md transition-all border-l"
+                        style={{
+                          borderColor: "var(--border-color)",
+                          color: "var(--text-muted)",
+                        }}
                         title="Reset Zoom"
                       >
                         <RotateCcw size={14} />
@@ -159,10 +187,14 @@ const FilePreviewModal: React.FC<FilePreviewModalProps> = ({
                       Download
                     </span>
                   </a>
-                  <div className="w-px h-6 bg-slate-100 mx-1" />
+                  <div
+                    className="w-px h-6 mx-1"
+                    style={{ backgroundColor: "var(--border-color)" }}
+                  />
                   <button
                     onClick={onClose}
-                    className="w-10 h-10 flex items-center justify-center hover:bg-red-50 text-slate-400 hover:text-red-500 rounded-xl transition-all"
+                    className="w-10 h-10 flex items-center justify-center hover:bg-red-500/10 rounded-xl transition-all"
+                    style={{ color: "var(--text-muted)" }}
                   >
                     <X size={20} />
                   </button>
@@ -170,9 +202,10 @@ const FilePreviewModal: React.FC<FilePreviewModalProps> = ({
               </div>
             </ModalHeader>
             <ModalBody
-              className={`flex-1 bg-[#0f172a]/5 transition-all duration-300 ${
+              className={`flex-1 transition-all duration-300 ${
                 scale > 1 ? "overflow-auto" : "overflow-hidden"
               }`}
+              style={{ backgroundColor: "var(--bg-secondary)" }}
             >
               <div className="min-h-full w-full flex items-center justify-center p-4 md:p-12 relative">
                 {isImage ? (
@@ -183,23 +216,38 @@ const FilePreviewModal: React.FC<FilePreviewModalProps> = ({
                     <img
                       src={url}
                       alt={name}
-                      className="max-w-full max-h-[calc(100vh-200px)] w-auto h-auto object-contain rounded shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] ring-8 ring-white animate-in fade-in zoom-in duration-500"
+                      className="max-w-full max-h-[calc(100vh-200px)] w-auto h-auto object-contain rounded shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] ring-8 ring-[var(--bg-primary)] ring-offset-4 ring-offset-[var(--bg-secondary)] animate-in fade-in zoom-in duration-500"
                     />
-                    <div className="absolute inset-0 ring-1 ring-inset ring-black/5 pointer-events-none" />
+                    <div className="absolute inset-0 ring-1 ring-inset ring-white/10 pointer-events-none" />
                   </div>
                 ) : isPdf ? (
                   <div className="flex flex-col items-center gap-6 py-20 text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <div className="w-32 h-32 rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-red-500 shadow-xl relative group">
+                    <div
+                      className="w-32 h-32 rounded-2xl border flex items-center justify-center text-red-500 shadow-xl relative group"
+                      style={{
+                        backgroundColor: "var(--bg-primary)",
+                        borderColor: "var(--border-color)",
+                      }}
+                    >
                       <FileText size={56} />
-                      <div className="absolute top-0 right-0 -mr-2 -mt-2 w-8 h-8 rounded-full bg-red-500 text-white flex items-center justify-center text-[10px] font-black border-4 border-white shadow-lg">
+                      <div
+                        className="absolute top-0 right-0 -mr-2 -mt-2 w-8 h-8 rounded-full bg-red-500 text-white flex items-center justify-center text-[10px] font-black border-4 shadow-lg"
+                        style={{ borderColor: "var(--bg-primary)" }}
+                      >
                         PDF
                       </div>
                     </div>
                     <div>
-                      <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest leading-none">
+                      <h3
+                        className="text-sm font-black uppercase tracking-widest leading-none"
+                        style={{ color: "var(--text-primary)" }}
+                      >
                         Protected Document
                       </h3>
-                      <p className="text-[10px] font-bold text-slate-400 mt-2 uppercase tracking-[0.2em]">
+                      <p
+                        className="text-[10px] font-bold mt-2 uppercase tracking-[0.2em]"
+                        style={{ color: "var(--text-muted)" }}
+                      >
                         Click below to view the official PDF content
                       </p>
                     </div>
@@ -207,7 +255,11 @@ const FilePreviewModal: React.FC<FilePreviewModalProps> = ({
                       href={url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-3 px-8 py-4 bg-slate-900 text-white text-[11px] font-black uppercase tracking-[0.2em] rounded-xl shadow-2xl shadow-slate-900/20 hover:bg-slate-800 hover:scale-105 active:scale-95 transition-all"
+                      className="inline-flex items-center gap-3 px-8 py-4 text-[11px] font-black uppercase tracking-[0.2em] rounded-xl shadow-2xl hover:scale-105 active:scale-95 transition-all"
+                      style={{
+                        backgroundColor: "var(--text-primary)",
+                        color: "var(--bg-primary)",
+                      }}
                     >
                       <Eye size={18} />
                       Open Full Document
@@ -215,14 +267,27 @@ const FilePreviewModal: React.FC<FilePreviewModalProps> = ({
                   </div>
                 ) : (
                   <div className="flex flex-col items-center gap-6 py-20 animate-in fade-in duration-500">
-                    <div className="w-24 h-24 rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-slate-200 shadow-inner">
+                    <div
+                      className="w-24 h-24 rounded-2xl border flex items-center justify-center shadow-inner"
+                      style={{
+                        backgroundColor: "var(--bg-primary)",
+                        borderColor: "var(--border-color)",
+                        color: "var(--text-muted)",
+                      }}
+                    >
                       <FileText size={48} />
                     </div>
                     <div className="text-center">
-                      <p className="text-xs font-black uppercase tracking-widest text-slate-400">
+                      <p
+                        className="text-xs font-black uppercase tracking-widest"
+                        style={{ color: "var(--text-muted)" }}
+                      >
                         Unsupported Format
                       </p>
-                      <p className="text-[10px] font-bold text-slate-300 mt-2 uppercase tracking-widest">
+                      <p
+                        className="text-[10px] font-bold mt-2 uppercase tracking-widest"
+                        style={{ color: "var(--text-muted)" }}
+                      >
                         Download to view on your device
                       </p>
                     </div>

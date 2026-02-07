@@ -175,13 +175,15 @@ const DonorPage = () => {
         };
       case "Inactive":
         return {
-          backgroundColor: "rgba(100, 116, 139, 0.1)",
-          color: "#64748b",
+          backgroundColor: "var(--bg-secondary)",
+          color: "var(--text-muted)",
+          border: "1px solid var(--border-color)",
         };
       default:
         return {
-          backgroundColor: "rgba(100, 116, 139, 0.1)",
-          color: "#64748b",
+          backgroundColor: "var(--bg-secondary)",
+          color: "var(--text-muted)",
+          border: "1px solid var(--border-color)",
         };
     }
   };
@@ -353,18 +355,31 @@ const DonorPage = () => {
           {/* Table */}
           <ReusableTable
             enableFilters={false}
+            onRowClick={handleViewProfile}
             additionalFilters={
               <div className="flex items-center gap-2 flex-wrap">
                 <Dropdown placement="bottom">
                   <DropdownTrigger>
                     <Button
                       variant="flat"
-                      className="border border-slate-200 bg-white rounded-sm h-10 px-4 text-[11px] font-bold text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-none"
-                      style={{ backgroundColor: "white" }}
+                      className="border rounded-sm h-10 px-4 text-[11px] font-bold transition-all shadow-none"
+                      style={{
+                        backgroundColor: "var(--bg-primary)",
+                        borderColor: "var(--border-color)",
+                        color: "var(--text-muted)",
+                      }}
                       startContent={
-                        <Filter size={14} className="text-slate-400" />
+                        <Filter
+                          size={14}
+                          style={{ color: "var(--text-muted)" }}
+                        />
                       }
-                      endContent={<Plus size={14} className="text-slate-400" />}
+                      endContent={
+                        <Plus
+                          size={14}
+                          style={{ color: "var(--text-muted)" }}
+                        />
+                      }
                     >
                       ADD FILTER
                     </Button>
@@ -373,17 +388,22 @@ const DonorPage = () => {
                     aria-label="Add Filter Options"
                     onAction={(key) => toggleFilter(key as string)}
                     classNames={{
-                      base: "bg-white border border-slate-200 rounded-sm min-w-[180px] p-1",
+                      base: "border rounded-sm min-w-[180px] p-1 shadow-2xl",
+                    }}
+                    style={{
+                      backgroundColor: "var(--bg-primary)",
+                      borderColor: "var(--border-color)",
                     }}
                     itemClasses={{
                       base: [
-                        "text-slate-600 text-[11px] font-bold uppercase tracking-tight",
-                        "data-[hover=true]:bg-slate-50 data-[hover=true]:text-[#22c55e]",
+                        "text-[11px] font-bold uppercase tracking-tight",
+                        "data-[hover=true]:bg-[var(--bg-secondary)] data-[hover=true]:text-[#22c55e]",
                         "rounded-sm",
                         "px-3",
                         "py-2.5",
                         "transition-colors duration-200",
                       ].join(" "),
+                      title: "text-[var(--text-secondary)]",
                     }}
                   >
                     <DropdownItem
@@ -432,18 +452,23 @@ const DonorPage = () => {
                         setFilterType(selected || "All");
                       }}
                       classNames={{
-                        base: "bg-white border border-slate-200 rounded-sm min-w-[160px] p-1",
+                        base: "rounded-sm min-w-[160px] p-1 border",
+                      }}
+                      style={{
+                        backgroundColor: "var(--bg-primary)",
+                        borderColor: "var(--border-color)",
                       }}
                       itemClasses={{
                         base: [
-                          "text-slate-600 text-[11px] font-bold uppercase tracking-tight",
-                          "data-[hover=true]:bg-slate-50 data-[hover=true]:text-[#22c55e]",
-                          "data-[selected=true]:bg-emerald-50 data-[selected=true]:text-[#22c55e]",
+                          "text-[11px] font-bold uppercase tracking-tight",
+                          "data-[hover=true]:bg-[var(--bg-secondary)] data-[hover=true]:text-[#22c55e]",
+                          "data-[selected=true]:bg-emerald-500/10 data-[selected=true]:text-[#22c55e]",
                           "rounded-sm",
                           "px-3",
                           "py-2.5",
                           "transition-colors duration-200",
                         ].join(" "),
+                        title: "text-[var(--text-secondary)]",
                         selectedIcon: "text-[#22c55e] w-4 h-4 ml-auto",
                       }}
                     >
@@ -486,19 +511,24 @@ const DonorPage = () => {
                         setFilterStatus(selected || "All");
                       }}
                       classNames={{
-                        base: "bg-white border border-slate-200 rounded-sm min-w-[160px] p-1",
+                        base: "rounded-sm min-w-[160px] p-1 border",
+                      }}
+                      style={{
+                        backgroundColor: "var(--bg-primary)",
+                        borderColor: "var(--border-color)",
                       }}
                       itemClasses={{
                         base: [
-                          "text-slate-600 text-[11px] font-bold uppercase tracking-tight",
-                          "data-[hover=true]:bg-slate-50 data-[hover=true]:text-[#22c55e]",
-                          "data-[selected=true]:bg-emerald-50 data-[selected=true]:text-[#22c55e]",
+                          "text-[11px] font-bold uppercase tracking-tight",
+                          "data-[hover=true]:bg-[var(--bg-secondary)] data-[hover=true]:text-[#22c55e]",
+                          "data-[selected=true]:bg-blue-500/10 data-[selected=true]:text-blue-600",
                           "rounded-sm",
                           "px-3",
                           "py-2.5",
                           "transition-colors duration-200",
                         ].join(" "),
-                        selectedIcon: "text-[#22c55e] w-4 h-4 ml-auto",
+                        title: "text-[var(--text-secondary)]",
+                        selectedIcon: "text-blue-600 w-4 h-4 ml-auto",
                       }}
                     >
                       <DropdownItem key="All">All Status</DropdownItem>
@@ -538,8 +568,15 @@ const DonorPage = () => {
                 case "businessName":
                   return (
                     <div
-                      className="flex items-center gap-2 px-2 py-1 rounded-full bg-slate-50 border border-slate-200 hover:border-hf-green/50 hover:bg-white transition-all cursor-pointer group w-fit min-w-0"
-                      onClick={() => handleViewProfile(donor)}
+                      className="flex items-center gap-2 px-2 py-1 rounded-full border transition-all cursor-pointer group w-fit min-w-0"
+                      style={{
+                        backgroundColor: "var(--bg-secondary)",
+                        borderColor: "var(--border-color)",
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleViewProfile(donor);
+                      }}
                     >
                       <div className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white bg-gradient-to-br from-amber-400 to-orange-600 shadow-sm shrink-0">
                         {donor.businessName
@@ -604,8 +641,12 @@ const DonorPage = () => {
                         isIconOnly
                         size="sm"
                         variant="flat"
-                        onPress={() => handleViewProfile(donor)}
-                        className="!bg-transparent !text-slate-600 hover:!text-[#22c55e] transition-all min-w-0 h-8 w-8"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleViewProfile(donor);
+                        }}
+                        className="!bg-transparent hover:!text-[#22c55e] transition-all min-w-0 h-8 w-8"
+                        style={{ color: "var(--text-muted)" }}
                       >
                         <Eye size={14} />
                       </Button>
@@ -632,20 +673,38 @@ const DonorPage = () => {
         {selectedDonor && (
           <div className="space-y-6 pb-10 px-3 sm:px-6">
             {/* Hero Section */}
-            <div className="bg-white p-4 sm:p-6 rounded-md border border-slate-100 shadow-sm space-y-4">
+            <div
+              className="p-4 sm:p-6 rounded-md border shadow-sm space-y-4"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
               <div className="flex items-start justify-between">
                 <div className="space-y-1">
-                  <h3 className="text-2xl font-black tracking-tighter text-slate-900">
+                  <h3
+                    className="text-2xl font-black tracking-tighter"
+                    style={{ color: "var(--text-primary)" }}
+                  >
                     {selectedDonor.businessName}
                   </h3>
                   <div className="flex items-center gap-2">
                     {getStatusBadge(selectedDonor.status)}
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                    <span
+                      className="text-[10px] font-bold uppercase tracking-widest"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       • {selectedDonor.type}
                     </span>
                   </div>
                 </div>
-                <div className="w-12 h-12 bg-amber-50 rounded-md flex items-center justify-center border border-amber-100">
+                <div
+                  className="w-12 h-12 rounded-md flex items-center justify-center border"
+                  style={{
+                    backgroundColor: "var(--bg-tertiary)",
+                    borderColor: "var(--border-color)",
+                  }}
+                >
                   {/* Avatar with Initials */}
                   <div className="w-full h-full rounded-sm bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center text-xl font-black text-white shadow-sm overflow-hidden uppercase italic">
                     {selectedDonor.businessName
@@ -658,16 +717,37 @@ const DonorPage = () => {
               </div>
 
               <div className="grid grid-cols-1 min-[400px]:grid-cols-2 gap-4">
-                <div className="p-3 bg-slate-50 rounded-sm border border-slate-100">
-                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                <div
+                  className="p-3 rounded-sm border"
+                  style={{
+                    backgroundColor: "var(--bg-secondary)",
+                    borderColor: "var(--border-color)",
+                  }}
+                >
+                  <p
+                    className="text-[9px] font-black uppercase tracking-widest mb-1"
+                    style={{ color: "var(--text-muted)" }}
+                  >
                     Total Contributions
                   </p>
-                  <p className="text-sm font-black text-slate-900">
+                  <p
+                    className="text-sm font-black"
+                    style={{ color: "var(--text-primary)" }}
+                  >
                     {formatCurrency(selectedDonor.totalDonations)}
                   </p>
                 </div>
-                <div className="p-3 bg-slate-50 rounded-sm border border-slate-100">
-                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                <div
+                  className="p-3 rounded-sm border"
+                  style={{
+                    backgroundColor: "var(--bg-secondary)",
+                    borderColor: "var(--border-color)",
+                  }}
+                >
+                  <p
+                    className="text-[9px] font-black uppercase tracking-widest mb-1"
+                    style={{ color: "var(--text-muted)" }}
+                  >
                     Reward Points
                   </p>
                   <p className="text-sm font-black text-hf-green">
@@ -679,13 +759,22 @@ const DonorPage = () => {
 
             {/* Information Grid */}
             <div className="space-y-4">
-              <h4 className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2">
+              <h4
+                className="text-[11px] font-black uppercase tracking-[0.2em] flex items-center gap-2"
+                style={{ color: "var(--text-muted)" }}
+              >
                 <User size={14} className="text-hf-green" />
                 Connectivity Details
               </h4>
 
               {isEditMode ? (
-                <div className="bg-white p-5 rounded-md border border-slate-100 shadow-sm space-y-4">
+                <div
+                  className="p-5 rounded-md border shadow-sm space-y-4"
+                  style={{
+                    backgroundColor: "var(--bg-primary)",
+                    borderColor: "var(--border-color)",
+                  }}
+                >
                   <ReusableInput
                     label="Business Name"
                     value={editableBusinessName}
@@ -734,15 +823,28 @@ const DonorPage = () => {
                   ].map((item, idx) => (
                     <div
                       key={idx}
-                      className={`p-4 bg-white rounded-md border border-slate-100 shadow-sm ${item.span ? "md:col-span-2" : ""}`}
+                      className={`p-4 rounded-md border shadow-sm ${item.span ? "md:col-span-2" : ""}`}
+                      style={{
+                        backgroundColor: "var(--bg-primary)",
+                        borderColor: "var(--border-color)",
+                      }}
                     >
                       <div className="flex items-center gap-2 mb-1.5">
-                        <item.Icon size={12} className="text-slate-400" />
-                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                        <item.Icon
+                          size={12}
+                          style={{ color: "var(--text-muted)" }}
+                        />
+                        <span
+                          className="text-[9px] font-black uppercase tracking-widest"
+                          style={{ color: "var(--text-muted)" }}
+                        >
                           {item.label}
                         </span>
                       </div>
-                      <p className="text-[11px] font-bold text-slate-700 leading-relaxed uppercase tracking-tight">
+                      <p
+                        className="text-[11px] font-bold leading-relaxed uppercase tracking-tight"
+                        style={{ color: "var(--text-secondary)" }}
+                      >
                         {item.value}
                       </p>
                     </div>
@@ -754,7 +856,10 @@ const DonorPage = () => {
             {/* Transaction History Section */}
             {!isEditMode && (
               <div className="space-y-4">
-                <h4 className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2">
+                <h4
+                  className="text-[11px] font-black uppercase tracking-[0.2em] flex items-center gap-2"
+                  style={{ color: "var(--text-muted)" }}
+                >
                   <HistoryIcon size={14} className="text-hf-green" />
                   Audit Trail History
                 </h4>
@@ -762,13 +867,23 @@ const DonorPage = () => {
                   {selectedDonor.donationHistory.map((item, index) => (
                     <div
                       key={index}
-                      className="flex flex-col min-[400px]:flex-row justify-between items-start min-[400px]:items-center bg-white p-4 rounded-md border border-slate-100 shadow-sm hover:border-hf-green/30 transition-all gap-3"
+                      className="flex flex-col min-[400px]:flex-row justify-between items-start min-[400px]:items-center p-4 rounded-md border shadow-sm hover:border-hf-green/30 transition-all gap-3"
+                      style={{
+                        backgroundColor: "var(--bg-primary)",
+                        borderColor: "var(--border-color)",
+                      }}
                     >
                       <div className="space-y-1">
-                        <p className="text-[11px] font-black uppercase tracking-wider text-slate-900">
+                        <p
+                          className="text-[11px] font-black uppercase tracking-wider"
+                          style={{ color: "var(--text-primary)" }}
+                        >
                           {item.event}
                         </p>
-                        <p className="text-[9px] font-bold text-slate-400 uppercase">
+                        <p
+                          className="text-[9px] font-bold uppercase"
+                          style={{ color: "var(--text-muted)" }}
+                        >
                           {item.date}
                         </p>
                       </div>
@@ -776,7 +891,10 @@ const DonorPage = () => {
                         <p className="text-[11px] font-black text-hf-green">
                           {formatCurrency(item.amount)}
                         </p>
-                        <p className="text-[8px] font-bold text-slate-300 uppercase">
+                        <p
+                          className="text-[8px] font-bold uppercase"
+                          style={{ color: "var(--text-muted)" }}
+                        >
                           Allocated
                         </p>
                       </div>
@@ -789,20 +907,36 @@ const DonorPage = () => {
             {/* Verification Section */}
             {!isEditMode && (
               <div className="space-y-4">
-                <h4 className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2">
+                <h4
+                  className="text-[11px] font-black uppercase tracking-[0.2em] flex items-center gap-2"
+                  style={{ color: "var(--text-muted)" }}
+                >
                   <ShieldCheck size={14} className="text-blue-500" />
                   Compliance Verification
                 </h4>
                 <div
                   onClick={() => setIsPreviewOpen(true)}
-                  className="group p-4 bg-white rounded-md border border-slate-100 shadow-sm hover:border-blue-500/30 transition-all cursor-pointer flex items-center justify-between"
+                  className="group p-4 rounded-md border shadow-sm hover:border-blue-500/30 transition-all cursor-pointer flex items-center justify-between"
+                  style={{
+                    backgroundColor: "var(--bg-primary)",
+                    borderColor: "var(--border-color)",
+                  }}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-md bg-blue-50 flex items-center justify-center text-blue-500">
+                    <div
+                      className="w-10 h-10 rounded-md flex items-center justify-center text-blue-500 border"
+                      style={{
+                        backgroundColor: "rgba(59, 130, 246, 0.05)",
+                        borderColor: "rgba(59, 130, 246, 0.1)",
+                      }}
+                    >
                       <FileText size={18} />
                     </div>
                     <div>
-                      <p className="text-[11px] font-black text-slate-900 uppercase tracking-tight">
+                      <p
+                        className="text-[11px] font-black uppercase tracking-tight"
+                        style={{ color: "var(--text-primary)" }}
+                      >
                         Business_License.pdf
                       </p>
                       <span className="text-[9px] font-bold text-hf-green uppercase tracking-widest flex items-center gap-1">
@@ -812,7 +946,8 @@ const DonorPage = () => {
                   </div>
                   <Eye
                     size={16}
-                    className="text-slate-300 group-hover:text-blue-500 transition-colors"
+                    className="transition-colors"
+                    style={{ color: "var(--text-muted)" }}
                   />
                 </div>
               </div>
@@ -824,14 +959,19 @@ const DonorPage = () => {
                 <>
                   <button
                     onClick={() => setIsEditMode(false)}
-                    className="flex-1 px-6 py-3.5 text-[10px] font-black text-slate-400 hover:text-slate-600 uppercase tracking-widest transition-colors flex items-center justify-center gap-2 rounded-md border border-slate-200"
+                    className="flex-1 px-6 py-3.5 text-[10px] font-black uppercase tracking-widest transition-colors flex items-center justify-center gap-2 rounded-md border"
+                    style={{
+                      backgroundColor: "var(--bg-tertiary)",
+                      borderColor: "var(--border-color)",
+                      color: "var(--text-muted)",
+                    }}
                   >
                     <RotateCcw size={14} />
                     Cancel
                   </button>
                   <ReusableButton
                     variant="primary"
-                    className="flex-1 !bg-hf-green hover:!bg-[#1ea34a] !text-white !font-black !px-4 !py-3.5 !text-[10px] uppercase tracking-widest !rounded-md shadow-lg shadow-green-500/20"
+                    className="flex-1 !bg-hf-green hover:!bg-[#1ea34a] !text-white !font-black !px-4 !py-3.5 !text-[10px] uppercase tracking-widest !rounded-md"
                     onClick={handleUpdateDonor}
                   >
                     <Save size={14} />
@@ -841,7 +981,7 @@ const DonorPage = () => {
               ) : (
                 <button
                   onClick={() => setIsEditMode(true)}
-                  className="flex-1 px-6 py-3.5 bg-hf-green text-white text-[10px] font-black uppercase tracking-widest hover:bg-[#1ea34a] transition-all flex items-center justify-center gap-3 rounded-md active:scale-95 shadow-lg shadow-green-500/20"
+                  className="flex-1 px-6 py-3.5 bg-hf-green text-white text-[10px] font-black uppercase tracking-widest hover:bg-[#1ea34a] transition-all flex items-center justify-center gap-3 rounded-md active:scale-95"
                 >
                   <Settings size={14} />
                   Modify Profile

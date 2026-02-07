@@ -9,7 +9,9 @@ import {
 } from "@heroui/react";
 import ResuableDrawer from "../../../../global/components/resuable-components/drawer";
 import { ImpactCards } from "../../../../global/components/resuable-components/ImpactCards";
-import ReusableTable from "../../../../global/components/resuable-components/table";
+import ReusableTable, {
+  TableChip,
+} from "../../../../global/components/resuable-components/table";
 import ResuableInput from "../../../../global/components/resuable-components/input";
 import {
   Plus,
@@ -258,16 +260,25 @@ const NgoPage = () => {
       <ReusableTable
         data={filteredNgos}
         enableFilters={false}
+        onRowClick={handleViewNgo}
         additionalFilters={
           <div className="flex items-center gap-2 flex-wrap">
             <Dropdown placement="bottom">
               <DropdownTrigger>
                 <Button
                   variant="flat"
-                  className="border border-slate-200 bg-white rounded-sm h-10 px-4 text-[11px] font-bold text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-none"
-                  style={{ backgroundColor: "white" }}
-                  startContent={<Filter size={14} className="text-slate-400" />}
-                  endContent={<Plus size={14} className="text-slate-400" />}
+                  className="border rounded-sm h-10 px-4 text-[11px] font-bold transition-all shadow-none"
+                  style={{
+                    backgroundColor: "var(--bg-primary)",
+                    borderColor: "var(--border-color)",
+                    color: "var(--text-muted)",
+                  }}
+                  startContent={
+                    <Filter size={14} style={{ color: "var(--text-muted)" }} />
+                  }
+                  endContent={
+                    <Plus size={14} style={{ color: "var(--text-muted)" }} />
+                  }
                 >
                   ADD FILTER
                 </Button>
@@ -276,17 +287,22 @@ const NgoPage = () => {
                 aria-label="Add Filter Options"
                 onAction={(key) => toggleFilter(key as string)}
                 classNames={{
-                  base: "bg-white border border-slate-200 rounded-sm min-w-[180px] p-1",
+                  base: "border rounded-sm min-w-[180px] p-1 shadow-2xl",
+                }}
+                style={{
+                  backgroundColor: "var(--bg-primary)",
+                  borderColor: "var(--border-color)",
                 }}
                 itemClasses={{
                   base: [
-                    "text-slate-600 text-[11px] font-bold uppercase tracking-tight",
-                    "data-[hover=true]:bg-slate-50 data-[hover=true]:text-[#22c55e]",
+                    "text-[11px] font-bold uppercase tracking-tight",
+                    "data-[hover=true]:bg-[var(--bg-secondary)] data-[hover=true]:text-[#22c55e]",
                     "rounded-sm",
                     "px-3",
                     "py-2.5",
                     "transition-colors duration-200",
                   ].join(" "),
+                  title: "text-[var(--text-secondary)]",
                 }}
               >
                 <DropdownItem
@@ -342,19 +358,24 @@ const NgoPage = () => {
                     })),
                   ]}
                   classNames={{
-                    base: "bg-white border border-slate-200 rounded-sm min-w-[160px] p-1",
+                    base: "rounded-sm min-w-[160px] p-1 border",
+                  }}
+                  style={{
+                    backgroundColor: "var(--bg-primary)",
+                    borderColor: "var(--border-color)",
                   }}
                   itemClasses={{
                     base: [
-                      "text-slate-600 text-[11px] font-bold uppercase tracking-tight",
-                      "data-[hover=true]:bg-slate-50 data-[hover=true]:text-[#22c55e]",
-                      "data-[selected=true]:bg-emerald-50 data-[selected=true]:text-[#22c55e]",
+                      "text-[11px] font-bold uppercase tracking-tight",
+                      "data-[hover=true]:bg-[var(--bg-secondary)] data-[hover=true]:text-[#22c55e]",
+                      "data-[selected=true]:bg-emerald-500/10 data-[selected=true]:text-[#22c55e]",
                       "rounded-sm",
                       "px-3",
                       "py-2.5",
                       "transition-colors duration-200",
                     ].join(" "),
                     selectedIcon: "text-[#22c55e] w-4 h-4 ml-auto",
+                    title: "text-[var(--text-secondary)]",
                   }}
                 >
                   {(item: any) => (
@@ -400,18 +421,23 @@ const NgoPage = () => {
                     })),
                   ]}
                   classNames={{
-                    base: "bg-white border border-slate-200 rounded-sm min-w-[200px] p-1",
+                    base: "rounded-sm min-w-[200px] p-1 border",
+                  }}
+                  style={{
+                    backgroundColor: "var(--bg-primary)",
+                    borderColor: "var(--border-color)",
                   }}
                   itemClasses={{
                     base: [
-                      "text-slate-600 text-[11px] font-bold uppercase tracking-tight",
-                      "data-[hover=true]:bg-slate-50 data-[hover=true]:text-[#22c55e]",
-                      "data-[selected=true]:bg-emerald-50 data-[selected=true]:text-[#22c55e]",
+                      "text-[11px] font-bold uppercase tracking-tight",
+                      "data-[hover=true]:bg-[var(--bg-secondary)] data-[hover=true]:text-[#22c55e]",
+                      "data-[selected=true]:bg-emerald-500/10 data-[selected=true]:text-[#22c55e]",
                       "rounded-sm",
                       "px-3",
                       "py-2.5",
                       "transition-colors duration-200",
                     ].join(" "),
+                    title: "text-[var(--text-secondary)]",
                     selectedIcon: "text-[#22c55e] w-4 h-4 ml-auto",
                   }}
                 >
@@ -440,22 +466,20 @@ const NgoPage = () => {
           switch (columnKey) {
             case "name":
               return (
-                <div
-                  className="flex items-center gap-2 px-2 py-1 rounded-full bg-slate-50 border border-slate-200 hover:border-hf-green/50 hover:bg-white transition-all cursor-pointer group w-fit min-w-0"
-                  onClick={() => handleViewNgo(ngo)}
-                >
-                  <div className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white bg-gradient-to-br from-indigo-400 to-blue-600 shadow-sm shrink-0">
-                    {ngo.name
+                <div className="py-1">
+                  <TableChip
+                    text={ngo.name}
+                    initials={ngo.name
                       .split(" ")
                       .map((n) => n[0])
                       .join("")}
-                  </div>
-                  <span
-                    className="font-bold text-xs whitespace-nowrap truncate max-w-[140px] pr-1 group-hover:text-hf-green transition-colors"
-                    style={{ color: "var(--text-primary)" }}
-                  >
-                    {ngo.name}
-                  </span>
+                    iconClassName="bg-gradient-to-br from-indigo-400 to-blue-600"
+                    onClick={(e) => {
+                      e?.stopPropagation();
+                      handleViewNgo(ngo);
+                    }}
+                    maxWidth="max-w-[140px]"
+                  />
                 </div>
               );
             case "registrationNo":
@@ -479,13 +503,25 @@ const NgoPage = () => {
                   {ngo.serviceAreas.slice(0, 2).map((area, index) => (
                     <span
                       key={index}
-                      className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-600 border border-indigo-100"
+                      className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold border"
+                      style={{
+                        backgroundColor: "rgba(99, 102, 241, 0.1)",
+                        color: "#6366f1",
+                        borderColor: "rgba(99, 102, 241, 0.2)",
+                      }}
                     >
                       {area.toUpperCase()}
                     </span>
                   ))}
                   {ngo.serviceAreas.length > 2 && (
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-gray-50 text-gray-400 border border-gray-100">
+                    <span
+                      className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold border"
+                      style={{
+                        backgroundColor: "var(--bg-secondary)",
+                        color: "var(--text-muted)",
+                        borderColor: "var(--border-color)",
+                      }}
+                    >
                       +{ngo.serviceAreas.length - 2}
                     </span>
                   )}
@@ -507,8 +543,12 @@ const NgoPage = () => {
                     isIconOnly
                     size="sm"
                     variant="flat"
-                    onPress={() => handleViewNgo(ngo)}
-                    className="!bg-transparent !text-slate-600 hover:!text-[#22c55e] transition-all min-w-0 h-8 w-8"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleViewNgo(ngo);
+                    }}
+                    className="!bg-transparent hover:!text-[#22c55e] transition-all min-w-0 h-8 w-8"
+                    style={{ color: "var(--text-muted)" }}
                   >
                     <Eye size={14} />
                   </Button>
@@ -556,7 +596,12 @@ const NgoPage = () => {
                     Update Details
                   </Button>
                   <Button
-                    className="flex-1 bg-white border border-slate-200 text-slate-500 font-black h-12 rounded-sm hover:bg-slate-50 transition-all active:scale-95 text-[11px] uppercase tracking-widest"
+                    className="flex-1 border text-[11px] font-black h-12 rounded-sm transition-all active:scale-95 uppercase tracking-widest"
+                    style={{
+                      backgroundColor: "var(--bg-primary)",
+                      borderColor: "var(--border-color)",
+                      color: "var(--text-muted)",
+                    }}
                     onPress={() => setIsEditing(false)}
                   >
                     Cancel
@@ -586,14 +631,26 @@ const NgoPage = () => {
             <div className="pt-4 pb-1.5 px-3 sm:px-6 flex flex-col items-center">
               <div className="relative mb-4 group">
                 <div className="absolute inset-[-10px] bg-hf-green/5 blur-2xl rounded-sm opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                <div className="relative w-24 h-24 p-1.5 rounded-sm bg-emerald-50 transform transition-transform duration-500 group-hover:scale-105">
+                <div
+                  className="relative w-24 h-24 p-1.5 rounded-sm transform transition-transform duration-500 group-hover:scale-105 border"
+                  style={{
+                    backgroundColor: "var(--bg-tertiary)",
+                    borderColor: "var(--border-color)",
+                  }}
+                >
                   <div className="w-full h-full rounded-sm bg-hf-green flex items-center justify-center relative overflow-hidden">
                     <span className="text-4xl font-black text-white italic">
                       {selectedNgo.name.charAt(0)}
                     </span>
                   </div>
                 </div>
-                <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 bg-white p-1 rounded-sm border border-slate-100 ring-2 ring-slate-50 shadow-sm z-20 whitespace-nowrap">
+                <div
+                  className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 p-1 rounded-sm border shadow-sm z-20 whitespace-nowrap"
+                  style={{
+                    backgroundColor: "var(--bg-primary)",
+                    borderColor: "var(--border-color)",
+                  }}
+                >
                   <div className="flex items-center gap-1 px-2 py-0.5 bg-hf-green/10 rounded-sm">
                     <div className="w-1.5 h-1.5 rounded-sm bg-hf-green animate-pulse" />
                     <span className="text-[9px] font-black text-hf-green uppercase tracking-tighter">
@@ -607,7 +664,12 @@ const NgoPage = () => {
                 <div className="space-y-0.5 w-full flex flex-col items-center">
                   {isEditing ? (
                     <input
-                      className="text-2xl font-black text-slate-900 leading-[1.05] tracking-tight bg-slate-50 border-2 border-slate-200 rounded-sm px-4 py-2 focus:outline-none focus:border-hf-green text-center w-full placeholder:text-slate-300"
+                      className="text-2xl font-black leading-[1.05] tracking-tight border-2 rounded-sm px-4 py-2 focus:outline-none focus:border-hf-green text-center w-full placeholder:text-slate-400"
+                      style={{
+                        backgroundColor: "var(--bg-secondary)",
+                        borderColor: "var(--border-color)",
+                        color: "var(--text-primary)",
+                      }}
                       value={editedNgo?.name}
                       onChange={(e) =>
                         setEditedNgo((prev) =>
@@ -617,11 +679,17 @@ const NgoPage = () => {
                       placeholder="NGO Name"
                     />
                   ) : (
-                    <h3 className="text-2xl font-black text-slate-900 leading-[1.05] tracking-tight">
+                    <h3
+                      className="text-2xl font-black leading-[1.05] tracking-tight"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       {selectedNgo.name}
                     </h3>
                   )}
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
+                  <p
+                    className="text-[10px] font-bold uppercase tracking-[0.2em]"
+                    style={{ color: "var(--text-muted)" }}
+                  >
                     Global Identifier: #
                     {selectedNgo.id.toString().padStart(4, "0")}
                   </p>
@@ -634,10 +702,19 @@ const NgoPage = () => {
               <div className="px-3 sm:px-6 space-y-8 relative z-10">
                 <section className="space-y-3">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-sm bg-emerald-50 border border-emerald-100 flex items-center justify-center text-hf-green shadow-sm shrink-0">
+                    <div
+                      className="w-8 h-8 rounded-sm border flex items-center justify-center text-hf-green shadow-sm shrink-0"
+                      style={{
+                        backgroundColor: "var(--bg-tertiary)",
+                        borderColor: "var(--border-color)",
+                      }}
+                    >
                       <Phone size={16} strokeWidth={2.5} />
                     </div>
-                    <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest leading-none">
+                    <h4
+                      className="text-xs font-black uppercase tracking-widest leading-none"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       Connectivity
                     </h4>
                   </div>
@@ -661,15 +738,28 @@ const NgoPage = () => {
                     ].map((item, i) => (
                       <div
                         key={i}
-                        className="group bg-white p-3 rounded-sm border border-slate-200 transition-all hover:border-hf-green hover:bg-slate-50/30 shadow-sm"
+                        className="group p-3 rounded-sm border transition-all hover:border-hf-green hover:bg-[var(--bg-secondary)] shadow-sm"
+                        style={{
+                          backgroundColor: "var(--bg-primary)",
+                          borderColor: "var(--border-color)",
+                        }}
                       >
                         <div className="flex items-center gap-3">
-                          <item.Icon size={18} className="text-slate-400" />
+                          <item.Icon
+                            size={18}
+                            style={{ color: "var(--text-muted)" }}
+                          />
                           <div>
-                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">
+                            <p
+                              className="text-[9px] font-black uppercase tracking-[0.2em] mb-1"
+                              style={{ color: "var(--text-muted)" }}
+                            >
                               {item.label}
                             </p>
-                            <p className="text-xs font-bold text-slate-800 uppercase tracking-tight">
+                            <p
+                              className="text-xs font-bold uppercase tracking-tight"
+                              style={{ color: "var(--text-secondary)" }}
+                            >
                               {item.value}
                             </p>
                           </div>
@@ -681,14 +771,29 @@ const NgoPage = () => {
 
                 <section className="space-y-3">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-sm bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm shrink-0">
+                    <div
+                      className="w-8 h-8 rounded-sm border flex items-center justify-center text-indigo-600 shadow-sm shrink-0"
+                      style={{
+                        backgroundColor: "var(--bg-tertiary)",
+                        borderColor: "var(--border-color)",
+                      }}
+                    >
                       <Zap size={16} strokeWidth={2.5} />
                     </div>
-                    <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest leading-none">
+                    <h4
+                      className="text-xs font-black uppercase tracking-widest leading-none"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       Impact Reach
                     </h4>
                   </div>
-                  <div className="bg-white rounded-sm border border-slate-200 shadow-sm overflow-hidden">
+                  <div
+                    className="rounded-sm border shadow-sm overflow-hidden"
+                    style={{
+                      backgroundColor: "var(--bg-primary)",
+                      borderColor: "var(--border-color)",
+                    }}
+                  >
                     <div className="bg-hf-green p-3 text-white">
                       <p className="text-[9px] font-black text-white/70 uppercase tracking-[0.2em] mb-1">
                         Impact Category
@@ -698,14 +803,22 @@ const NgoPage = () => {
                       </h4>
                     </div>
                     <div className="p-3">
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">
+                      <p
+                        className="text-[9px] font-black uppercase tracking-[0.2em] mb-1"
+                        style={{ color: "var(--text-muted)" }}
+                      >
                         Strategic Focus
                       </p>
                       <div className="flex flex-wrap gap-1.5">
                         {selectedNgo.serviceAreas.map((area, index) => (
                           <span
                             key={index}
-                            className="px-2 py-1 rounded-sm text-[8px] font-black bg-slate-50 text-slate-500 border border-slate-200 uppercase tracking-widest"
+                            className="px-2 py-1 rounded-sm text-[8px] font-black border uppercase tracking-widest"
+                            style={{
+                              backgroundColor: "var(--bg-secondary)",
+                              color: "var(--text-muted)",
+                              borderColor: "var(--border-color)",
+                            }}
                           >
                             {area}
                           </span>

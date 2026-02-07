@@ -34,48 +34,32 @@ interface UpiId {
   isVerified: boolean;
 }
 
-const PaymentMethods = () => {
+const VolunteerPaymentMethods = () => {
   const [activeTab, setActiveTab] = useState<"bank" | "upi">("bank");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditDrawerOpen, setIsEditDrawerOpen] = useState(false);
   const [methodType, setMethodType] = useState<"bank" | "upi">("bank");
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  // Mock Data
+  // Mock Data for Volunteer
   const [bankAccounts, setBankAccounts] = useState<BankAccount[]>([
     {
       id: "1",
       bankName: "HDFC BANK",
-      accountHolder: "JOHN DOE",
-      accountNumber: "**** **** 4590",
+      accountHolder: "ADITYA VERMA",
+      accountNumber: "**** **** 1234",
       ifscCode: "HDFC0001234",
       isPrimary: true,
       isVerified: true,
-    },
-    {
-      id: "2",
-      bankName: "ICICI BANK",
-      accountHolder: "JOHN DOE",
-      accountNumber: "**** **** 8821",
-      ifscCode: "ICIC0005566",
-      isPrimary: false,
-      isVerified: false,
     },
   ]);
 
   const [upiIds, setUpiIds] = useState<UpiId[]>([
     {
       id: "1",
-      vpa: "johndoe@okaxis",
+      vpa: "volunteer@okaxis",
       label: "PRIMARY UPI",
       isPrimary: true,
-      isVerified: true,
-    },
-    {
-      id: "2",
-      vpa: "johndoe.hdfc@okicici",
-      label: "SECONDARY UPI",
-      isPrimary: false,
       isVerified: true,
     },
   ]);
@@ -135,7 +119,7 @@ const PaymentMethods = () => {
     }
     setIsModalOpen(false);
     toast.success("Bank Account Added", {
-      description: `${bankForm.bankName} has been linked.`,
+      description: `${bankForm.bankName} has been linked for reward payouts.`,
     });
     setBankForm({
       bankName: "",
@@ -164,7 +148,7 @@ const PaymentMethods = () => {
     }
     setIsModalOpen(false);
     toast.success("UPI ID Linked", {
-      description: `${upiForm.vpa} is now active.`,
+      description: `${upiForm.vpa} is now active for instant reward transfers.`,
     });
     setUpiForm({ vpa: "", label: "", isPrimary: false });
   };
@@ -172,14 +156,14 @@ const PaymentMethods = () => {
   const deleteBank = (id: string) => {
     setBankAccounts(bankAccounts.filter((b: BankAccount) => b.id !== id));
     toast.error("Bank Account removed", {
-      description: "The settlement vault has been disconnected.",
+      description: "The payout method has been disconnected.",
     });
   };
 
   const deleteUpi = (id: string) => {
     setUpiIds(upiIds.filter((u: UpiId) => u.id !== id));
-    toast.error("UPI Identity removed", {
-      description: "The virtual payment address has been unlinked.",
+    toast.error("UPI ID removed", {
+      description: "The UPI ID has been unlinked.",
     });
   };
 
@@ -191,7 +175,7 @@ const PaymentMethods = () => {
       })),
     );
     toast.success("Primary Account Updated", {
-      description: "Default settlement vault has been changed.",
+      description: "Default reward payout method has been changed.",
     });
   };
 
@@ -202,8 +186,8 @@ const PaymentMethods = () => {
         isPrimary: u.id === id,
       })),
     );
-    toast.success("Primary VPA Updated", {
-      description: "Default virtual identifier changed.",
+    toast.success("Primary UPI ID Updated", {
+      description: "Default reward UPI ID has been changed.",
     });
   };
 
@@ -271,36 +255,35 @@ const PaymentMethods = () => {
     }
 
     setIsEditDrawerOpen(false);
-    toast.success("UPI Identity Modified", {
-      description: "The internal identifier has been successfully updated.",
+    toast.success("UPI ID Modified", {
+      description: "The payment identifier has been updated.",
     });
     setEditingId(null);
   };
 
   return (
     <div
-      className="p-6 md:p-8 space-y-6 max-w-[1400px] mx-auto"
+      className="p-6 md:p-8 space-y-6 max-w-[1400px] mx-auto min-h-screen"
       style={{ backgroundColor: "var(--bg-primary)" }}
     >
-      {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div className="text-start space-y-2">
           <h1
             className="text-4xl font-black tracking-tight uppercase leading-none"
             style={{ color: "var(--text-primary)" }}
           >
-            Payment Methods
+            Payout Vault
           </h1>
           <p
             className="text-[11px] font-bold uppercase tracking-[0.25em]"
             style={{ color: "var(--text-muted)" }}
           >
-            Manage Settlements
+            Manage your reward payout methods
           </p>
         </div>
 
         <div
-          className="flex items-center gap-4 p-1.5 rounded-lg border shadow-sm"
+          className="flex items-center gap-4 p-1.5 rounded-sm border"
           style={{
             backgroundColor: "var(--bg-secondary)",
             borderColor: "var(--border-color)",
@@ -308,10 +291,10 @@ const PaymentMethods = () => {
         >
           <button
             onClick={() => setActiveTab("bank")}
-            className={`px-8 py-2.5 rounded-md text-[10px] font-black uppercase tracking-widest transition-all ${
+            className={`px-8 py-2.5 rounded-sm text-[10px] font-black uppercase tracking-widest transition-all ${
               activeTab === "bank"
                 ? "shadow-sm border"
-                : "hover:bg-[var(--bg-primary)]"
+                : "opacity-40 hover:opacity-100"
             }`}
             style={{
               backgroundColor:
@@ -320,18 +303,18 @@ const PaymentMethods = () => {
                 activeTab === "bank" ? "var(--border-color)" : "transparent",
               color:
                 activeTab === "bank"
-                  ? "var(--text-primary)"
-                  : "var(--text-muted)",
+                  ? "var(--color-emerald)"
+                  : "var(--text-primary)",
             }}
           >
             Bank Accounts
           </button>
           <button
             onClick={() => setActiveTab("upi")}
-            className={`px-8 py-2.5 rounded-md text-[10px] font-black uppercase tracking-widest transition-all ${
+            className={`px-8 py-2.5 rounded-sm text-[10px] font-black uppercase tracking-widest transition-all ${
               activeTab === "upi"
                 ? "shadow-sm border"
-                : "hover:bg-[var(--bg-primary)]"
+                : "opacity-40 hover:opacity-100"
             }`}
             style={{
               backgroundColor:
@@ -340,11 +323,11 @@ const PaymentMethods = () => {
                 activeTab === "upi" ? "var(--border-color)" : "transparent",
               color:
                 activeTab === "upi"
-                  ? "var(--text-primary)"
-                  : "var(--text-muted)",
+                  ? "var(--color-emerald)"
+                  : "var(--text-primary)",
             }}
           >
-            UPI Identities
+            UPI IDs
           </button>
         </div>
       </div>
@@ -357,20 +340,23 @@ const PaymentMethods = () => {
               className="text-xl font-black uppercase tracking-tight"
               style={{ color: "var(--text-primary)" }}
             >
-              {activeTab === "bank" ? "Saved Accounts" : "Linked Virtual IDs"}
+              {activeTab === "bank"
+                ? "Verified Bank Accounts"
+                : "Linked UPI IDs"}
             </h2>
-            <div className="w-12 h-1 bg-green-500 mt-2" />
+            <div className="w-12 h-1 bg-[#22c55e] mt-2" />
           </div>
           <button
             onClick={activeTab === "bank" ? handleAddBank : handleAddUpi}
-            className="group flex items-center gap-3 px-6 py-4 bg-[#22c55e] text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-sm hover:opacity-90 transition-all active:scale-95 shadow-lg shadow-green-500/20"
+            className="group flex items-center gap-3 px-6 py-4 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-sm hover:opacity-90 transition-all active:scale-95 shadow-lg shadow-green-500/10"
+            style={{ backgroundColor: "var(--color-emerald)" }}
           >
             <Plus
               size={16}
               strokeWidth={3}
               className="group-hover:rotate-90 transition-transform"
             />
-            Add New {activeTab === "bank" ? "Method" : "VPA"}
+            Add New {activeTab === "bank" ? "Account" : "UPI ID"}
           </button>
         </div>
 
@@ -388,32 +374,27 @@ const PaymentMethods = () => {
                   {/* Top Bar */}
                   <div className="flex items-start justify-between mb-5">
                     <div
-                      className="w-12 h-12 border flex items-center justify-center rounded-lg"
+                      className="w-12 h-12 flex items-center justify-center rounded-sm border"
                       style={{
-                        backgroundColor: "rgba(14, 165, 233, 0.08)",
-                        borderColor: "rgba(14, 165, 233, 0.2)",
+                        backgroundColor: "var(--bg-secondary)",
+                        borderColor: "var(--border-color)",
                       }}
                     >
-                      <Building2 className="text-sky-400" size={24} />
+                      <Building2 className="text-[#22c55e]" size={24} />
                     </div>
                     <div className="flex items-center gap-3">
                       {account.isPrimary ? (
-                        <span
-                          className="px-2.5 py-1 text-[#22c55e] text-[9px] font-black uppercase tracking-widest rounded-md border"
-                          style={{
-                            backgroundColor: "rgba(34, 197, 94, 0.08)",
-                            borderColor: "rgba(34, 197, 94, 0.2)",
-                          }}
-                        >
+                        <span className="px-2.5 py-1 bg-green-500/10 text-[#22c55e] text-[9px] font-black uppercase tracking-widest rounded-sm border border-green-500/20">
                           Primary
                         </span>
                       ) : (
                         <button
                           onClick={() => setPrimaryBank(account.id)}
-                          className="px-2.5 py-1 text-sky-500 text-[9px] font-black uppercase tracking-widest rounded-md border transition-all active:scale-95"
+                          className="px-2.5 py-1 text-[9px] font-black uppercase tracking-widest rounded-sm border transition-all active:scale-95"
                           style={{
-                            backgroundColor: "rgba(14, 165, 233, 0.08)",
-                            borderColor: "rgba(14, 165, 233, 0.2)",
+                            backgroundColor: "var(--bg-secondary)",
+                            borderColor: "var(--border-color)",
+                            color: "var(--text-muted)",
                           }}
                         >
                           SET PRIMARY
@@ -422,15 +403,13 @@ const PaymentMethods = () => {
                       <div className="flex items-center gap-1.5">
                         <button
                           onClick={() => handleEditBank(account)}
-                          className="p-1.5 transition-all"
-                          style={{ color: "var(--text-muted)" }}
+                          className="p-1.5 text-slate-300 hover:text-slate-600 transition-all"
                         >
                           <Edit2 size={16} />
                         </button>
                         <button
                           onClick={() => deleteBank(account.id)}
-                          className="p-1.5 transition-all hover:text-red-500"
-                          style={{ color: "var(--text-muted)" }}
+                          className="p-1.5 text-slate-300 hover:text-red-500 transition-all"
                         >
                           <Trash2 size={16} />
                         </button>
@@ -438,7 +417,6 @@ const PaymentMethods = () => {
                     </div>
                   </div>
 
-                  {/* Header */}
                   <div className="mb-6 text-start">
                     <h3
                       className="text-lg font-black uppercase tracking-tight leading-none"
@@ -462,10 +440,7 @@ const PaymentMethods = () => {
                   {/* Details Container */}
                   <div className="flex items-start gap-9">
                     <div className="text-start space-y-1">
-                      <p
-                        className="text-[9px] font-black uppercase tracking-widest leading-none"
-                        style={{ color: "var(--text-muted)" }}
-                      >
+                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">
                         Account Number
                       </p>
                       <p
@@ -476,10 +451,7 @@ const PaymentMethods = () => {
                       </p>
                     </div>
                     <div className="text-start space-y-1">
-                      <p
-                        className="text-[9px] font-black uppercase tracking-widest leading-none"
-                        style={{ color: "var(--text-muted)" }}
-                      >
+                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">
                         IFSC Code
                       </p>
                       <div className="flex items-center gap-4">
@@ -521,10 +493,10 @@ const PaymentMethods = () => {
                   }}
                 >
                   <div
-                    className="w-16 h-16 border flex items-center justify-center rounded-lg shrink-0"
+                    className="w-16 h-16 border flex items-center justify-center rounded-sm shrink-0"
                     style={{
-                      backgroundColor: "rgba(34, 197, 94, 0.08)",
-                      borderColor: "rgba(34, 197, 94, 0.2)",
+                      backgroundColor: "var(--bg-secondary)",
+                      borderColor: "var(--border-color)",
                     }}
                   >
                     <QrCode className="text-[#22c55e]" size={32} />
@@ -533,18 +505,16 @@ const PaymentMethods = () => {
                   <div className="flex-1 text-start min-w-0 py-1">
                     <div className="flex items-center justify-between mb-1.5">
                       <div className="flex items-center gap-2">
-                        <p
-                          className="text-[9px] font-black uppercase tracking-[0.2em]"
-                          style={{ color: "var(--text-muted)" }}
-                        >
+                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">
                           {upi.label}
                         </p>
                         {upi.isPrimary ? (
                           <span
-                            className="px-2 py-0.5 text-[#22c55e] text-[8px] font-black uppercase tracking-widest rounded-md border"
+                            className="px-2 py-0.5 text-[8px] font-black uppercase tracking-widest rounded-sm border"
                             style={{
-                              backgroundColor: "rgba(34, 197, 94, 0.08)",
-                              borderColor: "rgba(34, 197, 94, 0.2)",
+                              backgroundColor: "var(--color-emerald-light)",
+                              color: "var(--color-emerald-dark)",
+                              borderColor: "var(--color-emerald)",
                             }}
                           >
                             Primary
@@ -552,10 +522,11 @@ const PaymentMethods = () => {
                         ) : (
                           <button
                             onClick={() => setPrimaryUpi(upi.id)}
-                            className="px-2.5 py-1 text-sky-500 text-[9px] font-black uppercase tracking-widest rounded-md border transition-all active:scale-95"
+                            className="px-2.5 py-1 text-[9px] font-black uppercase tracking-widest rounded-sm border transition-all active:scale-95"
                             style={{
-                              backgroundColor: "rgba(14, 165, 233, 0.08)",
-                              borderColor: "rgba(14, 165, 233, 0.2)",
+                              backgroundColor: "var(--bg-secondary)",
+                              borderColor: "var(--border-color)",
+                              color: "var(--text-muted)",
                             }}
                           >
                             SET PRIMARY
@@ -574,21 +545,19 @@ const PaymentMethods = () => {
                       <div className="flex items-center gap-1.5 text-[#22c55e]">
                         <ShieldCheck size={16} strokeWidth={2.5} />
                         <span className="text-[10px] font-black uppercase tracking-widest">
-                          Secure VPA
+                          Secure UPI
                         </span>
                       </div>
                       <div className="flex items-center gap-1.5">
                         <button
                           onClick={() => handleEditUpi(upi)}
-                          className="p-1.5 transition-all"
-                          style={{ color: "var(--text-muted)" }}
+                          className="p-1.5 text-slate-300 hover:text-slate-600 transition-all"
                         >
                           <Edit2 size={16} />
                         </button>
                         <button
                           onClick={() => deleteUpi(upi.id)}
-                          className="p-1.5 transition-all hover:text-red-500"
-                          style={{ color: "var(--text-muted)" }}
+                          className="p-1.5 text-slate-300 hover:text-red-500 transition-all"
                         >
                           <Trash2 size={16} />
                         </button>
@@ -616,21 +585,20 @@ const PaymentMethods = () => {
                 borderColor: "var(--border-color)",
               }}
             >
-              <CreditCard style={{ color: "var(--text-muted)" }} size={48} />
+              <CreditCard className="text-slate-200" size={48} />
             </div>
             <h3
               className="text-2xl font-black uppercase tracking-tight"
               style={{ color: "var(--text-primary)" }}
             >
-              No Payment Vaults
+              No Payment Methods
             </h3>
             <p
               className="text-[11px] font-bold uppercase tracking-[0.2em] mt-3"
               style={{ color: "var(--text-muted)" }}
             >
-              Initializing secure link for{" "}
-              {activeTab === "bank" ? "Bank settlement" : "Instant UPI"}{" "}
-              transfer
+              Add a {activeTab === "bank" ? "bank account" : "UPI ID"} to
+              receive reward payouts
             </p>
           </div>
         )}
@@ -643,8 +611,8 @@ const PaymentMethods = () => {
         title={methodType === "bank" ? "Add Bank Account" : "Link UPI ID"}
         subtitle={
           methodType === "bank"
-            ? "Secure account for settlements"
-            : "Virtual payment address link"
+            ? "Link a personal bank account for reward redemptions"
+            : "Connect your UPI ID for instant reward payouts"
         }
         size="md"
         icon={
@@ -659,15 +627,15 @@ const PaymentMethods = () => {
           {methodType === "bank" ? (
             <div className="space-y-3">
               <ResuableInput
-                label="Institution Name"
+                label="Bank Name"
                 placeholder="e.g. HDFC BANK"
                 value={bankForm.bankName}
                 onChange={(val) => setBankForm({ ...bankForm, bankName: val })}
                 required
               />
               <ResuableInput
-                label="Account Holder"
-                placeholder="Legal Name as per Records"
+                label="Account Holder Name"
+                placeholder="Your name as per bank records"
                 value={bankForm.accountHolder}
                 onChange={(val) =>
                   setBankForm({ ...bankForm, accountHolder: val })
@@ -676,7 +644,7 @@ const PaymentMethods = () => {
               />
               <ResuableInput
                 label="Account Number"
-                placeholder="Primary Settlement Account"
+                placeholder="Personal Savings/Current Account"
                 value={bankForm.accountNumber}
                 onChange={(val) =>
                   setBankForm({ ...bankForm, accountNumber: val })
@@ -684,7 +652,7 @@ const PaymentMethods = () => {
                 required
               />
               <ResuableInput
-                label="IFSC Identifier"
+                label="IFSC Code"
                 placeholder="e.g. HDFC0001234"
                 value={bankForm.ifscCode}
                 onChange={(val) => setBankForm({ ...bankForm, ifscCode: val })}
@@ -694,24 +662,25 @@ const PaymentMethods = () => {
               <div className="pt-4">
                 <button
                   onClick={saveBank}
-                  className="w-full py-3.5 bg-[#22c55e] text-white text-[11px] font-black uppercase tracking-[0.3em] rounded-sm hover:opacity-90 transition-all shadow-xl shadow-green-500/10 active:scale-[0.98]"
+                  className="w-full py-3.5 text-white text-[11px] font-black uppercase tracking-[0.3em] rounded-sm hover:opacity-90 transition-all shadow-xl shadow-green-500/10 active:scale-[0.98]"
+                  style={{ backgroundColor: "var(--color-emerald)" }}
                 >
-                  Add
+                  Add Account
                 </button>
               </div>
             </div>
           ) : (
             <div className="space-y-3">
               <ResuableInput
-                label="VPA ADDRESS"
-                placeholder="e.g. user@okaxis"
+                label="UPI ID"
+                placeholder="e.g. volunteer@okaxis"
                 value={upiForm.vpa}
                 onChange={(val) => setUpiForm({ ...upiForm, vpa: val })}
                 required
               />
               <ResuableInput
-                label="Identity Label"
-                placeholder="e.g. PRIMARY, BUSINESS"
+                label="Label"
+                placeholder="e.g. PRIMARY, PERSONAL"
                 value={upiForm.label}
                 onChange={(val) => setUpiForm({ ...upiForm, label: val })}
                 required
@@ -719,9 +688,10 @@ const PaymentMethods = () => {
               <div className="pt-4">
                 <button
                   onClick={saveUpi}
-                  className="w-full py-3.5 bg-[#22c55e] text-white text-[11px] font-black uppercase tracking-[0.3em] rounded-sm hover:opacity-90 transition-all shadow-xl shadow-green-500/10 active:scale-[0.98]"
+                  className="w-full py-3.5 text-white text-[11px] font-black uppercase tracking-[0.3em] rounded-sm hover:opacity-90 transition-all shadow-xl shadow-green-500/10 active:scale-[0.98]"
+                  style={{ backgroundColor: "var(--color-emerald)" }}
                 >
-                  Link
+                  Link UPI ID
                 </button>
               </div>
             </div>
@@ -736,24 +706,24 @@ const PaymentMethods = () => {
         title={methodType === "bank" ? "Edit Bank Account" : "Edit UPI ID"}
         subtitle={
           methodType === "bank"
-            ? "Update your bank details"
-            : "Modify your virtual ID"
+            ? "Update your bank account details"
+            : "Modify your UPI ID details"
         }
         size="md"
       >
-        <div className="space-y-4">
+        <div className="p-6 space-y-6">
           {methodType === "bank" ? (
-            <div className="space-y-3">
+            <div className="space-y-4">
               <ResuableInput
-                label="Institution Name"
+                label="Bank Name"
                 placeholder="e.g. HDFC BANK"
                 value={bankForm.bankName}
                 onChange={(val) => setBankForm({ ...bankForm, bankName: val })}
                 required
               />
               <ResuableInput
-                label="Account Holder"
-                placeholder="Legal Name as per Records"
+                label="Account Holder Name"
+                placeholder="Full Name as per Bank records"
                 value={bankForm.accountHolder}
                 onChange={(val) =>
                   setBankForm({ ...bankForm, accountHolder: val })
@@ -762,7 +732,7 @@ const PaymentMethods = () => {
               />
               <ResuableInput
                 label="Account Number"
-                placeholder="Primary Settlement Account"
+                placeholder="Bank Account Number"
                 value={bankForm.accountNumber}
                 onChange={(val) =>
                   setBankForm({ ...bankForm, accountNumber: val })
@@ -770,7 +740,7 @@ const PaymentMethods = () => {
                 required
               />
               <ResuableInput
-                label="IFSC Identifier"
+                label="IFSC Code"
                 placeholder="e.g. HDFC0001234"
                 value={bankForm.ifscCode}
                 onChange={(val) => setBankForm({ ...bankForm, ifscCode: val })}
@@ -791,38 +761,40 @@ const PaymentMethods = () => {
                   onChange={(e) =>
                     setBankForm({ ...bankForm, isPrimary: e.target.checked })
                   }
-                  className="w-4 h-4 accent-green-500"
+                  className="w-4 h-4"
+                  style={{ accentColor: "var(--color-emerald)" }}
                 />
                 <label
                   htmlFor="primaryBank"
                   className="text-[10px] font-black uppercase tracking-widest cursor-pointer"
                   style={{ color: "var(--text-secondary)" }}
                 >
-                  Set as Primary Settlement Vault
+                  Set as Primary Payout Vault
                 </label>
               </div>
 
               <div className="pt-4">
                 <button
                   onClick={updateBank}
-                  className="w-full py-4 bg-[#22c55e] text-white text-[11px] font-black uppercase tracking-[0.2em] rounded-sm hover:opacity-90 transition-all shadow-xl shadow-green-500/10 active:scale-[0.98]"
+                  className="w-full py-4 text-white text-[11px] font-black uppercase tracking-[0.2em] rounded-sm hover:opacity-90 transition-all shadow-xl shadow-green-500/10 active:scale-[0.98]"
+                  style={{ backgroundColor: "var(--color-emerald)" }}
                 >
-                  Update
+                  Update Account
                 </button>
               </div>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-4">
               <ResuableInput
-                label="VPA ADDRESS"
-                placeholder="e.g. user@okaxis"
+                label="UPI ID"
+                placeholder="e.g. volunteer@okaxis"
                 value={upiForm.vpa}
                 onChange={(val) => setUpiForm({ ...upiForm, vpa: val })}
                 required
               />
               <ResuableInput
-                label="Identity Label"
-                placeholder="e.g. PRIMARY, BUSINESS"
+                label="Label"
+                placeholder="e.g. PRIMARY, PERSONAL"
                 value={upiForm.label}
                 onChange={(val) => setUpiForm({ ...upiForm, label: val })}
                 required
@@ -842,23 +814,25 @@ const PaymentMethods = () => {
                   onChange={(e) =>
                     setUpiForm({ ...upiForm, isPrimary: e.target.checked })
                   }
-                  className="w-4 h-4 accent-green-500"
+                  className="w-4 h-4"
+                  style={{ accentColor: "var(--color-emerald)" }}
                 />
                 <label
                   htmlFor="primaryUpi"
                   className="text-[10px] font-black uppercase tracking-widest cursor-pointer"
                   style={{ color: "var(--text-secondary)" }}
                 >
-                  Set as Primary UPI Identity
+                  Set as Primary UPI ID
                 </label>
               </div>
 
               <div className="pt-4">
                 <button
                   onClick={updateUpi}
-                  className="w-full py-4 bg-[#22c55e] text-white text-[11px] font-black uppercase tracking-[0.2em] rounded-sm hover:opacity-90 transition-all shadow-xl shadow-green-500/10 active:scale-[0.98]"
+                  className="w-full py-4 text-white text-[11px] font-black uppercase tracking-[0.2em] rounded-sm hover:opacity-90 transition-all shadow-xl shadow-green-500/10 active:scale-[0.98]"
+                  style={{ backgroundColor: "var(--color-emerald)" }}
                 >
-                  Update
+                  Update UPI ID
                 </button>
               </div>
             </div>
@@ -869,4 +843,4 @@ const PaymentMethods = () => {
   );
 };
 
-export default PaymentMethods;
+export default VolunteerPaymentMethods;

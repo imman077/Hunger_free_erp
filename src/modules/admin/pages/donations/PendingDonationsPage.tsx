@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import ImpactCards from "../../../../global/components/resuable-components/ImpactCards";
-import ReusableTable from "../../../../global/components/resuable-components/table";
+import ReusableTable, {
+  TableChip,
+} from "../../../../global/components/resuable-components/table";
 import type { ColumnDef } from "../../../../global/components/resuable-components/table";
 import ResuableInput from "../../../../global/components/resuable-components/input";
 import { Clock, AlertTriangle, Package, MapPin, UserCheck } from "lucide-react";
@@ -16,7 +18,6 @@ import {
   ModalFooter,
   useDisclosure,
 } from "@heroui/react";
-import { Plus } from "lucide-react";
 
 const PendingDonationsPage: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -186,7 +187,7 @@ const PendingDonationsPage: React.FC = () => {
       label: "Avg. Wait Time",
       val: "4.2h",
       trend: "Processing speed",
-      color: "bg-slate-300",
+      color: "var(--bg-tertiary)",
     },
   ];
 
@@ -221,16 +222,12 @@ const PendingDonationsPage: React.FC = () => {
           .toUpperCase();
 
         return (
-          <div className="flex items-center gap-2.5 pl-1 pr-4 py-1 rounded-full bg-slate-100/50 border border-slate-200 hover:border-hf-green/50 hover:bg-white transition-all cursor-pointer group w-fit min-w-0">
-            <div className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-black text-white bg-hf-green shadow-sm shrink-0">
-              {initials}
-            </div>
-            <span
-              className="font-bold text-xs whitespace-nowrap truncate max-w-[160px] group-hover:text-hf-green transition-colors"
-              style={{ color: "var(--text-primary)" }}
-            >
-              {value}
-            </span>
+          <div className="py-1">
+            <TableChip
+              text={value}
+              initials={initials}
+              maxWidth="max-w-[160px]"
+            />
           </div>
         );
       case "status":
@@ -242,10 +239,17 @@ const PendingDonationsPage: React.FC = () => {
           return (
             <div className="flex justify-center w-full">
               <Chip
-                className="capitalize border-none gap-1 h-6 text-[10px] font-black bg-blue-50 text-blue-600 shadow-none hover:bg-blue-100 transition-colors pr-1"
+                className="capitalize border h-6 text-[10px] font-black shadow-none transition-colors pr-1"
+                style={{
+                  backgroundColor: "rgba(59, 130, 246, 0.1)",
+                  color: "#3b82f6",
+                  borderColor: "rgba(59, 130, 246, 0.2)",
+                }}
                 size="sm"
                 variant="flat"
-                startContent={<UserCheck size={12} className="text-blue-500" />}
+                startContent={
+                  <UserCheck size={12} style={{ color: "#3b82f6" }} />
+                }
                 onClose={() => handleRejectAssignment(item.id)}
               >
                 {value}
@@ -257,8 +261,18 @@ const PendingDonationsPage: React.FC = () => {
         return (
           <div className="flex justify-center w-full">
             <Chip
-              className="capitalize border-none gap-1 h-6 text-[10px] font-black"
-              color={value === "urgent" ? "danger" : "warning"}
+              className="capitalize border h-6 text-[10px] font-black"
+              style={{
+                backgroundColor:
+                  value === "urgent"
+                    ? "rgba(239, 68, 68, 0.1)"
+                    : "rgba(245, 158, 11, 0.1)",
+                color: value === "urgent" ? "#ef4444" : "#f59e0b",
+                borderColor:
+                  value === "urgent"
+                    ? "rgba(239, 68, 68, 0.2)"
+                    : "rgba(245, 158, 11, 0.2)",
+              }}
               size="sm"
               variant="flat"
               startContent={
@@ -332,9 +346,14 @@ const PendingDonationsPage: React.FC = () => {
                     variant="light"
                     className={`w-8 h-8 min-w-0 ${
                       hasAssignedVolunteer
-                        ? "text-slate-200 cursor-not-allowed"
-                        : "text-slate-400 hover:text-purple-500"
+                        ? "cursor-not-allowed opacity-30"
+                        : "hover:text-purple-500"
                     }`}
+                    style={{
+                      color: hasAssignedVolunteer
+                        ? "var(--text-muted)"
+                        : "var(--text-secondary)",
+                    }}
                     onClick={() =>
                       !hasAssignedVolunteer && handleAssignClick(item)
                     }
@@ -392,24 +411,36 @@ const PendingDonationsPage: React.FC = () => {
         placement="center"
         size="md"
         classNames={{
-          backdrop: "bg-[#0b1120]/50 backdrop-blur-sm",
-          base: "border border-slate-200 bg-white rounded-sm",
-          header: "border-b border-slate-100 p-4",
-          footer: "border-t border-slate-100 p-4",
+          backdrop: "bg-[#0b1120]/80 backdrop-blur-sm",
+          base: "border border-[var(--border-color)] bg-[var(--bg-primary)] rounded-sm",
+          header: "border-b border-[var(--border-color)] p-4",
+          footer: "border-t border-[var(--border-color)] p-4",
         }}
       >
         <ModalContent>
           <ModalHeader className="flex flex-col gap-1 items-center text-center py-6">
-            <h3 className="text-sm font-black uppercase tracking-widest text-slate-800">
+            <h3
+              className="text-sm font-black uppercase tracking-widest"
+              style={{ color: "var(--text-primary)" }}
+            >
               Assign Volunteer
             </h3>
-            <p className="text-[10px] font-medium text-slate-400 uppercase tracking-tight">
+            <p
+              className="text-[10px] font-medium uppercase tracking-tight"
+              style={{ color: "var(--text-muted)" }}
+            >
               Select a nearby volunteer for donation #{selectedDonation?.id}
             </p>
           </ModalHeader>
           <ModalBody className="py-6">
             <div className="space-y-6">
-              <div className="p-4 rounded-sm bg-slate-50 border border-slate-100">
+              <div
+                className="p-4 rounded-sm border shadow-inner"
+                style={{
+                  backgroundColor: "var(--bg-tertiary)",
+                  borderColor: "var(--border-color)",
+                }}
+              >
                 <ResuableInput
                   type="number"
                   label="REWARD POINTS"
@@ -417,11 +448,15 @@ const PendingDonationsPage: React.FC = () => {
                   value={pointsToAward}
                   onChange={setPointsToAward}
                   align="left"
+                  inputClassName="!bg-[var(--bg-primary)]"
                   startContent={
-                    <span className="text-blue-500 text-xs font-black">+</span>
+                    <span className="text-blue-400 text-xs font-black">+</span>
                   }
                   endContent={
-                    <span className="text-slate-400 text-[10px] font-bold uppercase tracking-tighter">
+                    <span
+                      className="text-[10px] font-bold uppercase tracking-tighter"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       pts
                     </span>
                   }
@@ -445,7 +480,11 @@ const PendingDonationsPage: React.FC = () => {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className="flex items-center justify-between p-3 rounded-sm border border-slate-100 bg-slate-50/50 hover:bg-white hover:border-hf-green/30 hover:shadow-sm transition-all group"
+                        className="flex items-center justify-between p-3 rounded-sm border transition-all group"
+                        style={{
+                          backgroundColor: "var(--bg-secondary)",
+                          borderColor: "var(--border-color)",
+                        }}
                       >
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-[10px] font-black text-white shadow-sm">
@@ -455,17 +494,30 @@ const PendingDonationsPage: React.FC = () => {
                               .join("")}
                           </div>
                           <div className="flex flex-col">
-                            <span className="text-xs font-black text-slate-700">
+                            <span
+                              className="text-xs font-black"
+                              style={{ color: "var(--text-primary)" }}
+                            >
                               {vol.name}
                             </span>
                             <div className="flex items-center gap-2 mt-0.5">
                               <span className="text-[9px] font-bold text-hf-green flex items-center gap-0.5">
                                 ★ {vol.rating}
                               </span>
-                              <span className="text-[9px] font-medium text-slate-400">
+                              <span
+                                className="text-[9px] font-medium"
+                                style={{ color: "var(--text-muted)" }}
+                              >
                                 • {vol.vehicle}
                               </span>
-                              <span className="text-[9px] font-black text-amber-600 bg-amber-50 px-1 rounded-full">
+                              <span
+                                className="text-[9px] font-black px-1 rounded-full border"
+                                style={{
+                                  backgroundColor: "rgba(217, 119, 6, 0.1)",
+                                  color: "#d97706",
+                                  borderColor: "rgba(217, 119, 6, 0.2)",
+                                }}
+                              >
                                 {vol.distance}
                               </span>
                             </div>
@@ -483,10 +535,19 @@ const PendingDonationsPage: React.FC = () => {
                   </AnimatePresence>
                   {availableVolunteers.length === 0 && (
                     <div className="flex flex-col items-center justify-center py-8 text-center">
-                      <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center mb-2">
-                        <Clock className="w-5 h-5 text-slate-400" />
+                      <div
+                        className="w-10 h-10 rounded-full flex items-center justify-center mb-2"
+                        style={{ backgroundColor: "var(--bg-secondary)" }}
+                      >
+                        <Clock
+                          className="w-5 h-5"
+                          style={{ color: "var(--text-muted)" }}
+                        />
                       </div>
-                      <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                      <p
+                        className="text-xs font-bold uppercase tracking-wider"
+                        style={{ color: "var(--text-muted)" }}
+                      >
                         All local responders are currently busy
                       </p>
                     </div>
@@ -495,10 +556,17 @@ const PendingDonationsPage: React.FC = () => {
               </div>
             </div>
           </ModalBody>
-          <ModalFooter className="flex justify-center border-t border-slate-100 p-4">
+          <ModalFooter
+            className="flex justify-center border-t p-4"
+            style={{ borderColor: "var(--border-color)" }}
+          >
             <Button
               variant="flat"
-              className="bg-slate-100 text-slate-500 font-black text-[10px] uppercase tracking-wider h-9 px-8 rounded-sm hover:bg-slate-200 transition-all"
+              className="font-black text-[10px] uppercase tracking-wider h-9 px-8 rounded-sm transition-all"
+              style={{
+                backgroundColor: "var(--bg-tertiary)",
+                color: "var(--text-secondary)",
+              }}
               onClick={onClose}
             >
               Cancel

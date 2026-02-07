@@ -1,10 +1,20 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Package, Users, AlertCircle } from "lucide-react";
+import {
+  ArrowLeft,
+  Package,
+  Users,
+  AlertCircle,
+  Check,
+  Loader2,
+} from "lucide-react";
 import ResuableInput from "../../../../global/components/resuable-components/input";
 import ResuableButton from "../../../../global/components/resuable-components/button";
 import ResuableDropdown from "../../../../global/components/resuable-components/dropdown";
 import ResuableDatePicker from "../../../../global/components/resuable-components/datepicker";
+import ResuableTextarea from "../../../../global/components/resuable-components/textarea";
+import ResuableModal from "../../../../global/components/resuable-components/modal";
+import FileUploadSlot from "../../../../global/components/resuable-components/FileUploadSlot";
 
 const PostNewNeed = () => {
   const navigate = useNavigate();
@@ -18,7 +28,15 @@ const PostNewNeed = () => {
     requiredBy: "",
     beneficiaries: "",
     location: "",
+    otherCategory: "",
+    itemImage: null as File | null,
   });
+
+  const [isSuggestModalOpen, setIsSuggestModalOpen] = useState(false);
+  const [suggestionReason, setSuggestionReason] = useState("");
+  const [suggestionCategoryName, setSuggestionCategoryName] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const categoryOptions = [
     { value: "food", label: "Food Items" },
@@ -59,7 +77,7 @@ const PostNewNeed = () => {
 
   return (
     <div
-      className="p-8 w-full mx-auto min-h-screen"
+      className="p-8 w-full mx-auto h-fit"
       style={{ backgroundColor: "var(--bg-secondary)" }}
     >
       {/* Header Bar */}
@@ -110,7 +128,7 @@ const PostNewNeed = () => {
               <Package size={28} />
             </div>
             <div>
-              <h2 className="text-2xl font-black text-slate-800 tracking-tight">
+              <h2 className="text-2xl text-left font-black text-slate-800 tracking-tight">
                 Item Details
               </h2>
               <p className="text-xs text-slate-500 font-medium">
@@ -128,13 +146,36 @@ const PostNewNeed = () => {
               required
             />
 
-            <ResuableDropdown
-              label="Category"
-              options={categoryOptions}
-              value={formData.category}
-              onChange={(value) => handleValueChange("category", value)}
-              placeholder="Select category"
-            />
+            <div className="flex flex-col gap-1.5">
+              <ResuableDropdown
+                label="Category"
+                options={categoryOptions}
+                value={formData.category}
+                onChange={(value) => handleValueChange("category", value)}
+                placeholder="Select category"
+              />
+              <button
+                type="button"
+                onClick={() => setIsSuggestModalOpen(true)}
+                className="self-start flex items-center gap-1.5 text-[9px] font-black text-blue-600 hover:text-blue-700 transition-colors uppercase tracking-[0.2em] px-1 hover:underline underline-offset-4 decoration-2"
+              >
+                Request Admin to add new category
+              </button>
+            </div>
+
+            {formData.category === "other" && (
+              <div className="md:col-span-2">
+                <ResuableInput
+                  label="Specify Category"
+                  placeholder="Enter custom category"
+                  value={formData.otherCategory}
+                  onChange={(value) =>
+                    handleValueChange("otherCategory", value)
+                  }
+                  required
+                />
+              </div>
+            )}
 
             <ResuableInput
               label="Quantity"
@@ -164,6 +205,18 @@ const PostNewNeed = () => {
               value={formData.requiredBy}
               onChange={(value) => handleValueChange("requiredBy", value)}
             />
+
+            <div className="md:col-span-2">
+              <FileUploadSlot
+                label="Item Image"
+                subtitle="Upload a sample photo of the item"
+                value={formData.itemImage}
+                onChange={(file) => handleValueChange("itemImage", file as any)}
+                mandatory
+                icon="camera"
+                accept="image/*"
+              />
+            </div>
           </div>
         </div>
 
@@ -182,7 +235,7 @@ const PostNewNeed = () => {
               <h2 className="text-2xl font-black text-slate-800 tracking-tight">
                 Beneficiary Information
               </h2>
-              <p className="text-xs text-slate-500 font-medium">
+              <p className="text-xs text-left text-slate-500 font-medium">
                 Who will benefit from this donation
               </p>
             </div>
@@ -205,57 +258,175 @@ const PostNewNeed = () => {
               required
             />
 
-            <div>
-              <label className="block text-[10px] font-black uppercase tracking-[0.2em] mb-3 text-slate-400">
-                Additional Description
-              </label>
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#22c55e] mt-2">
-                Total Trees Planted
-              </p>
-              <textarea
-                className="w-full px-5 py-4 border border-slate-200 rounded-sm focus:outline-none focus:ring-1 focus:ring-[#22c55e] bg-slate-50 font-semibold text-sm transition-all resize-none"
-                rows={5}
-                placeholder="Provide any additional details about this need..."
-                value={formData.description}
-                onChange={(e) =>
-                  handleValueChange("description", e.target.value)
-                }
-              />
-            </div>
+            <ResuableTextarea
+              label="Additional Description"
+              rows={5}
+              placeholder="Provide any additional details about this need..."
+              value={formData.description}
+              onChange={(value) => handleValueChange("description", value)}
+            />
           </div>
         </div>
 
-        {/* Info Banner */}
-        <div className="bg-blue-50 border border-blue-100 p-6 rounded-sm flex items-center gap-2">
-          <AlertCircle size={16} className="text-blue-600 flex-shrink-0 mt-1" />
-          <div>
-            <h3 className="font-bold text-blue-900 mb-1">
-              Important Information
-            </h3>
-            <p className="text-sm text-blue-700 leading-relaxed">
-              Once posted, this need will be visible to all donors in the
-              network. You'll receive notifications when donors express interest
-              in fulfilling this need. Make sure all information is accurate and
-              up-to-date.
-            </p>
+        {/* System Intelligence Banner - Simplified */}
+        <div className="relative overflow-hidden border border-slate-200 bg-white p-0 rounded-none shadow-sm flex items-stretch">
+          <div className="flex-1 p-6 flex flex-col sm:flex-row items-start gap-6">
+            <div className="w-12 h-12 bg-blue-50 border border-blue-100 rounded-none flex items-center justify-center text-blue-600 shrink-0">
+              <AlertCircle size={24} />
+            </div>
+            <div className="text-left">
+              <div className="flex flex-col gap-1 mb-2">
+                <h3 className="text-lg font-black text-blue-700 tracking-tight leading-tight">
+                  Important Information
+                </h3>
+              </div>
+              <p className="text-[13px] font-medium text-blue-600/80 leading-relaxed max-w-2xl">
+                Donors will see your request immediately after you post it. We
+                will send you notifications when someone shows interest. Please
+                make sure all details are correct.
+              </p>
+            </div>
+          </div>
+          {/* Subtle background element */}
+          <div className="absolute -right-8 -bottom-8 opacity-[0.03] pointer-events-none">
+            <AlertCircle size={160} />
           </div>
         </div>
 
         {/* Submit Button */}
         <div className="flex items-center justify-end gap-4">
-          <ResuableButton
-            variant="ghost"
-            size="lg"
-            onClick={() => navigate("/ngo/dashboard")}
-            type="button"
-          >
-            Cancel
-          </ResuableButton>
           <ResuableButton variant="primary" size="lg" type="submit">
             Post Need
           </ResuableButton>
         </div>
       </form>
+
+      {/* Suggest Category Modal */}
+      <ResuableModal
+        isOpen={isSuggestModalOpen}
+        onOpenChange={setIsSuggestModalOpen}
+        title="Category Suggestion"
+        footer={
+          !isSuccess && (
+            <div className="flex items-center justify-end gap-3">
+              <ResuableButton
+                variant="ghost"
+                size="sm"
+                disabled={isSubmitting}
+                onClick={() => {
+                  setIsSuggestModalOpen(false);
+                  setSuggestionReason("");
+                  setSuggestionCategoryName("");
+                }}
+              >
+                Cancel
+              </ResuableButton>
+              <ResuableButton
+                variant="primary"
+                size="sm"
+                disabled={isSubmitting || !suggestionCategoryName}
+                onClick={() => {
+                  setIsSubmitting(true);
+                  // Simulate system transmission
+                  setTimeout(() => {
+                    setIsSubmitting(false);
+                    setIsSuccess(true);
+                    // Automatic reset and close
+                    setTimeout(() => {
+                      setIsSuccess(false);
+                      setIsSuggestModalOpen(false);
+                      setSuggestionReason("");
+                      setSuggestionCategoryName("");
+                    }, 2500);
+                  }, 1500);
+                }}
+              >
+                {isSubmitting ? (
+                  <div className="flex items-center gap-2">
+                    <Loader2 size={14} className="animate-spin" />
+                    Submitting...
+                  </div>
+                ) : (
+                  "Submit Request"
+                )}
+              </ResuableButton>
+            </div>
+          )
+        }
+      >
+        <div className="space-y-6 py-4">
+          {isSuccess ? (
+            <div className="relative flex flex-col items-center justify-center py-16 animate-in fade-in zoom-in duration-500 overflow-hidden">
+              <div className="relative mb-8">
+                {/* Outer decorative ring */}
+                <div className="absolute inset-0 rounded-full bg-green-100 animate-ping opacity-20 scale-150" />
+                <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center relative z-10 shadow-lg shadow-green-500/20">
+                  <Check className="text-white" size={32} strokeWidth={3} />
+                </div>
+              </div>
+
+              <div className="text-center space-y-3 z-10">
+                <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-green-600 leading-none mb-1">
+                  Sent
+                </h3>
+                <h2 className="text-2xl font-black text-slate-900 tracking-tight leading-none">
+                  Request Sent!
+                </h2>
+                <p className="text-[13px] font-medium text-slate-500 max-w-[320px] leading-relaxed mx-auto">
+                  We've received your suggestion for{" "}
+                  <span className="text-slate-900 font-bold px-1.5 py-0.5 bg-slate-100 rounded-sm">
+                    {suggestionCategoryName}
+                  </span>{" "}
+                  and our team will review it soon.
+                </p>
+              </div>
+
+              {/* Automatic dismissal indicator */}
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-slate-100">
+                <div className="h-full bg-green-500 animate-[progress-shrink_2.5s_linear_forwards]" />
+              </div>
+
+              <p className="absolute bottom-4 text-[9px] font-bold text-slate-300 uppercase tracking-widest">
+                Closing automatically...
+              </p>
+
+              <style>{`
+                @keyframes progress-shrink {
+                  from { width: 100%; }
+                  to { width: 0%; }
+                }
+              `}</style>
+            </div>
+          ) : (
+            <>
+              <div className="space-y-2">
+                <ResuableInput
+                  label="Category name"
+                  placeholder="e.g., Organic Fertilizers"
+                  value={suggestionCategoryName}
+                  onChange={setSuggestionCategoryName}
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <ResuableTextarea
+                  value={suggestionReason}
+                  onChange={setSuggestionReason}
+                  label="Why should we add this?"
+                  placeholder="Briefly describe the importance of this category..."
+                  rows={3}
+                />
+              </div>
+
+              <p className="text-[10px] font-medium text-slate-400 italic">
+                * Our administrators will review this request and update the
+                global list if approved.
+              </p>
+            </>
+          )}
+        </div>
+      </ResuableModal>
     </div>
   );
 };

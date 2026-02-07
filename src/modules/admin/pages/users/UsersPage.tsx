@@ -260,7 +260,13 @@ const UsersPage = () => {
         const avatarBg = roleAvatarColors[user.role] || "bg-slate-400";
 
         return (
-          <div className="flex items-center gap-2 px-2 py-1.5 rounded-full bg-slate-50/50 border border-slate-100 w-fit min-w-0 group">
+          <div
+            className="flex items-center gap-2 px-2 py-1.5 rounded-full border w-fit min-w-0 group"
+            style={{
+              backgroundColor: "var(--bg-secondary)",
+              borderColor: "var(--border-color)",
+            }}
+          >
             {user.avatar ? (
               <Avatar
                 src={user.avatar as any}
@@ -287,17 +293,39 @@ const UsersPage = () => {
           </div>
         );
       case "role":
-        const roleColors: Record<string, string> = {
-          Donor: "bg-amber-50 text-amber-600 border-amber-100",
-          NGO: "bg-indigo-50 text-indigo-600 border-indigo-100",
-          Volunteer: "bg-emerald-50 text-emerald-600 border-emerald-100",
+        const roleColors: Record<
+          string,
+          { bg: string; text: string; border: string }
+        > = {
+          Donor: {
+            bg: "rgba(251, 191, 36, 0.1)",
+            text: "#fbbf24",
+            border: "rgba(251, 191, 36, 0.2)",
+          },
+          NGO: {
+            bg: "rgba(129, 140, 248, 0.1)",
+            text: "#818cf8",
+            border: "rgba(129, 140, 248, 0.2)",
+          },
+          Volunteer: {
+            bg: "rgba(52, 211, 153, 0.1)",
+            text: "#34d399",
+            border: "rgba(52, 211, 153, 0.2)",
+          },
+        };
+        const roleStyle = roleColors[user.role] || {
+          bg: "var(--bg-secondary)",
+          text: "var(--text-muted)",
+          border: "var(--border-color)",
         };
         return (
           <span
-            className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
-              roleColors[user.role] ||
-              "bg-gray-50 text-gray-600 border-gray-100"
-            }`}
+            className="px-2 py-0.5 rounded-full text-[10px] font-bold border"
+            style={{
+              backgroundColor: roleStyle.bg,
+              color: roleStyle.text,
+              borderColor: roleStyle.border,
+            }}
           >
             {user.role.toUpperCase()}
           </span>
@@ -312,27 +340,40 @@ const UsersPage = () => {
           </span>
         );
       case "status":
-        const statusColors: Record<string, string> = {
-          Active: "bg-emerald-50 text-emerald-600 border-emerald-100",
-          New: "bg-blue-50 text-blue-600 border-blue-100",
-          Pending: "bg-amber-50 text-amber-600 border-amber-100",
+        const statusColors: Record<
+          string,
+          { bg: string; text: string; border: string }
+        > = {
+          Active: {
+            bg: "rgba(16, 185, 129, 0.1)",
+            text: "#10b981",
+            border: "rgba(16, 185, 129, 0.2)",
+          },
+          New: {
+            bg: "rgba(59, 130, 246, 0.1)",
+            text: "#3b82f6",
+            border: "rgba(59, 130, 246, 0.2)",
+          },
+          Pending: {
+            bg: "rgba(245, 158, 11, 0.1)",
+            text: "#f59e0b",
+            border: "rgba(245, 158, 11, 0.2)",
+          },
+        };
+        const statusStyle = statusColors[user.status] || {
+          bg: "var(--bg-secondary)",
+          text: "var(--text-muted)",
+          border: "var(--border-color)",
         };
         return (
           <div className="flex items-center justify-center gap-1.5 w-full">
-            {/* <span
-                className={`w-1.5 h-1.5 rounded-full ${
-                  user.status === "Active"
-                    ? "bg-emerald-500"
-                    : user.status === "New"
-                    ? "bg-blue-500"
-                    : "bg-amber-500"
-                }`}
-              /> */}
             <span
-              className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
-                statusColors[user.status] ||
-                "bg-gray-50 text-gray-600 border-gray-100"
-              }`}
+              className="px-2 py-0.5 rounded-full text-[10px] font-bold border"
+              style={{
+                backgroundColor: statusStyle.bg,
+                color: statusStyle.text,
+                borderColor: statusStyle.border,
+              }}
             >
               {user.status.toUpperCase()}
             </span>
@@ -398,10 +439,18 @@ const UsersPage = () => {
         <DropdownTrigger>
           <Button
             variant="flat"
-            className="border border-slate-200 bg-white rounded-sm h-10 px-4 text-[11px] font-bold text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-none"
-            style={{ backgroundColor: "white" }}
-            startContent={<Filter size={14} className="text-slate-400" />}
-            endContent={<Plus size={14} className="text-slate-400" />}
+            className="border rounded-sm h-10 px-4 text-[11px] font-bold transition-all shadow-none"
+            style={{
+              backgroundColor: "var(--bg-primary)",
+              borderColor: "var(--border-color)",
+              color: "var(--text-muted)",
+            }}
+            startContent={
+              <Filter size={14} style={{ color: "var(--text-muted)" }} />
+            }
+            endContent={
+              <Plus size={14} style={{ color: "var(--text-muted)" }} />
+            }
           >
             ADD FILTER
           </Button>
@@ -414,17 +463,22 @@ const UsersPage = () => {
             { key: "status", label: "Status", icon: <Filter size={14} /> },
           ]}
           classNames={{
-            base: "bg-white border border-slate-200 rounded-sm min-w-[180px] p-1",
+            base: "border rounded-sm min-w-[180px] p-1 shadow-2xl",
+          }}
+          style={{
+            backgroundColor: "var(--bg-primary)",
+            borderColor: "var(--border-color)",
           }}
           itemClasses={{
             base: [
-              "text-slate-600 text-[11px] font-bold uppercase tracking-tight",
-              "data-[hover=true]:bg-slate-50 data-[hover=true]:text-hf-green",
+              "text-[11px] font-bold uppercase tracking-tight",
+              "data-[hover=true]:bg-[var(--bg-secondary)] data-[hover=true]:text-hf-green",
               "rounded-sm",
               "px-3",
               "py-2.5",
               "transition-colors duration-200",
             ].join(" "),
+            title: "text-[var(--text-secondary)]",
           }}
         >
           {(item: any) => (

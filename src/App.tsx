@@ -36,15 +36,20 @@ import DonorBenefits from "./modules/donor/pages/rewards/Benefits";
 import NGODashboard from "./modules/ngo/pages/dashboard/Dashboard";
 import NGODonationRequests from "./modules/ngo/pages/donations/DonationRequests";
 import NGOInventory from "./modules/ngo/pages/inventory/Inventory";
+import NGOAddItem from "./modules/ngo/pages/inventory/AddItem";
 import NGOProfile from "./modules/ngo/pages/profile/Profile";
+import NGOPaymentMethods from "./modules/ngo/pages/profile/PaymentMethods";
 import PostNewNeed from "./modules/ngo/pages/needs/PostNewNeed";
 import NGORewards from "./modules/ngo/pages/rewards/Rewards";
+import NGOBenefits from "./modules/ngo/pages/rewards/Benefits";
 
 // Volunteer Imports
 import VolunteerDashboard from "./modules/volunteer/pages/dashboard/Dashboard";
 import VolunteerTasks from "./modules/volunteer/pages/tasks/Tasks";
 import VolunteerProfile from "./modules/volunteer/pages/profile/Profile";
+import VolunteerPaymentMethods from "./modules/volunteer/pages/profile/PaymentMethods";
 import VolunteerRewards from "./modules/volunteer/pages/rewards/Rewards";
+import VolunteerBenefits from "./modules/volunteer/pages/rewards/Benefits";
 
 function App() {
   return (
@@ -58,6 +63,12 @@ function App() {
             fontFamily: "inherit",
             fontSize: "12px",
             fontWeight: "600",
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            padding: "12px 16px",
+            paddingRight: "36px",
+            lineHeight: "1.4",
           },
         }}
       />
@@ -139,8 +150,11 @@ function App() {
             <Route path="dashboard" element={<NGODashboard />} />
             <Route path="requests" element={<NGODonationRequests />} />
             <Route path="inventory" element={<NGOInventory />} />
+            <Route path="inventory/add" element={<NGOAddItem />} />
             <Route path="rewards" element={<NGORewards />} />
+            <Route path="rewards/benefits" element={<NGOBenefits />} />
             <Route path="profile" element={<NGOProfile />} />
+            <Route path="profile/payments" element={<NGOPaymentMethods />} />
             <Route path="needs/post" element={<PostNewNeed />} />
           </Route>
 
@@ -150,7 +164,9 @@ function App() {
             <Route path="dashboard" element={<VolunteerDashboard />} />
             <Route path="tasks" element={<VolunteerTasks />} />
             <Route path="rewards" element={<VolunteerRewards />} />
+            <Route path="rewards/benefits" element={<VolunteerBenefits />} />
             <Route path="profile" element={<VolunteerProfile />} />
+            <Route path="payments" element={<VolunteerPaymentMethods />} />
           </Route>
         </Routes>
       </div>

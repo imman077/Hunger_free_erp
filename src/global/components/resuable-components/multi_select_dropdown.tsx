@@ -88,7 +88,12 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
               value.map((val) => (
                 <div
                   key={val}
-                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[8.5px] font-black bg-emerald-50 text-[#22c55e] border border-emerald-200 hover:bg-emerald-100 transition-all"
+                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[8.5px] font-black border group/chip"
+                  style={{
+                    backgroundColor: "var(--bg-secondary)",
+                    color: "var(--text-secondary)",
+                    borderColor: "var(--border-color)",
+                  }}
                 >
                   <span>{getLabel(val)}</span>
                   <button
@@ -97,7 +102,7 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
                       e.stopPropagation();
                       removeItem(val);
                     }}
-                    className="chip-remove-btn hover:bg-emerald-200 rounded-full p-0.5 transition-colors"
+                    className="chip-remove-btn rounded-full p-0.5 transition-colors hover:bg-emerald-500/10"
                     disabled={disabled}
                   >
                     <X size={12} />
@@ -111,8 +116,14 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
             )}
           </div>
 
-          <div className="flex items-center justify-between pt-2 border-t border-slate-100/50">
-            <span className="text-slate-400 text-[9px] font-black uppercase tracking-widest">
+          <div
+            className="flex items-center justify-between pt-2 border-t"
+            style={{ borderTopColor: "var(--border-color)" }}
+          >
+            <span
+              className="text-[9px] font-black uppercase tracking-widest"
+              style={{ color: "var(--text-muted)" }}
+            >
               {value.length > 0 ? `${value.length} Selected` : "No selections"}
             </span>
             <Plus
@@ -141,7 +152,7 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
                   key={opt.value}
                   type="button"
                   onClick={() => toggleOption(opt.value)}
-                  className="relative w-full px-4 py-3 text-xs font-semibold transition-all border-b last:border-none flex items-center gap-3 hover:bg-slate-50 group"
+                  className="relative w-full px-4 py-3 text-xs font-semibold transition-all border-b last:border-none flex items-center gap-3 group"
                   style={{
                     borderBottomColor: "var(--border-color)",
                     backgroundColor: isSelected
@@ -152,11 +163,15 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
                 >
                   {/* Checkbox */}
                   <div
-                    className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-all ${
-                      isSelected
-                        ? "bg-[#22c55e] border-[#22c55e]"
-                        : "bg-white border-slate-300 group-hover:border-[#22c55e]/50"
-                    }`}
+                    className="w-4 h-4 rounded border-2 flex items-center justify-center transition-all"
+                    style={{
+                      backgroundColor: isSelected
+                        ? "#22c55e"
+                        : "var(--bg-secondary)",
+                      borderColor: isSelected
+                        ? "#22c55e"
+                        : "var(--border-color)",
+                    }}
                   >
                     {isSelected && <Check size={12} className="text-white" />}
                   </div>

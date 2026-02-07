@@ -415,18 +415,18 @@ const VolunteersPage: React.FC = () => {
       { backgroundColor: string; color: string; border: string }
     > = {
       available: {
-        backgroundColor: "rgba(34, 197, 197, 0.1)", // Teal/Green
-        color: "#22c55e",
-        border: "1px solid rgba(34, 197, 197, 0.2)",
+        backgroundColor: "rgba(34, 197, 94, 0.08)",
+        color: "#4ade80",
+        border: "1px solid rgba(34, 197, 94, 0.2)",
       },
       "on-leave": {
-        backgroundColor: "rgba(239, 68, 68, 0.1)",
-        color: "#ef4444",
+        backgroundColor: "rgba(239, 68, 68, 0.08)",
+        color: "#f87171",
         border: "1px solid rgba(239, 68, 68, 0.2)",
       },
       busy: {
-        backgroundColor: "rgba(245, 158, 11, 0.1)",
-        color: "#f59e0b",
+        backgroundColor: "rgba(245, 158, 11, 0.08)",
+        color: "#fbbf24",
         border: "1px solid rgba(245, 158, 11, 0.2)",
       },
     };
@@ -540,16 +540,25 @@ const VolunteersPage: React.FC = () => {
       <ReusableTable
         data={filteredVolunteers}
         enableFilters={false}
+        onRowClick={openDrawer}
         additionalFilters={
           <div className="flex items-center gap-2 flex-wrap">
             <Dropdown placement="bottom">
               <DropdownTrigger>
                 <Button
                   variant="flat"
-                  className="border border-slate-200 bg-white rounded-sm h-10 px-4 text-[11px] font-bold text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-none"
-                  style={{ backgroundColor: "white" }}
-                  startContent={<Filter size={14} className="text-slate-400" />}
-                  endContent={<Plus size={14} className="text-slate-400" />}
+                  className="border rounded-sm h-10 px-4 text-[11px] font-bold transition-all shadow-none"
+                  style={{
+                    backgroundColor: "var(--bg-primary)",
+                    borderColor: "var(--border-color)",
+                    color: "var(--text-muted)",
+                  }}
+                  startContent={
+                    <Filter size={14} style={{ color: "var(--text-muted)" }} />
+                  }
+                  endContent={
+                    <Plus size={14} style={{ color: "var(--text-muted)" }} />
+                  }
                 >
                   ADD FILTER
                 </Button>
@@ -558,17 +567,22 @@ const VolunteersPage: React.FC = () => {
                 aria-label="Add Filter Options"
                 onAction={(key) => toggleFilter(key as string)}
                 classNames={{
-                  base: "bg-white border border-slate-200 rounded-sm min-w-[180px] p-1",
+                  base: "border rounded-sm min-w-[180px] p-1 shadow-2xl",
+                }}
+                style={{
+                  backgroundColor: "var(--bg-primary)",
+                  borderColor: "var(--border-color)",
                 }}
                 itemClasses={{
                   base: [
-                    "text-slate-600 text-[11px] font-bold uppercase tracking-tight",
-                    "data-[hover=true]:bg-slate-50 data-[hover=true]:text-[#22c55e]",
+                    "text-[11px] font-bold uppercase tracking-tight",
+                    "data-[hover=true]:bg-[var(--bg-secondary)] data-[hover=true]:text-[#22c55e]",
                     "rounded-sm",
                     "px-3",
                     "py-2.5",
                     "transition-colors duration-200",
                   ].join(" "),
+                  title: "text-[var(--text-secondary)]",
                 }}
               >
                 <DropdownItem
@@ -624,18 +638,23 @@ const VolunteersPage: React.FC = () => {
                     })),
                   ]}
                   classNames={{
-                    base: "bg-white border border-slate-200 rounded-sm min-w-[160px] p-1",
+                    base: "rounded-sm min-w-[160px] p-1 border",
+                  }}
+                  style={{
+                    backgroundColor: "var(--bg-primary)",
+                    borderColor: "var(--border-color)",
                   }}
                   itemClasses={{
                     base: [
-                      "text-slate-600 text-[11px] font-bold uppercase tracking-tight",
-                      "data-[hover=true]:bg-slate-50 data-[hover=true]:text-[#22c55e]",
-                      "data-[selected=true]:bg-emerald-50 data-[selected=true]:text-[#22c55e]",
+                      "text-[11px] font-bold uppercase tracking-tight",
+                      "data-[hover=true]:bg-[var(--bg-secondary)] data-[hover=true]:text-[#22c55e]",
+                      "data-[selected=true]:bg-emerald-500/10 data-[selected=true]:text-[#22c55e]",
                       "rounded-sm",
                       "px-3",
                       "py-2.5",
                       "transition-colors duration-200",
                     ].join(" "),
+                    title: "text-[var(--text-secondary)]",
                     selectedIcon: "text-[#22c55e] w-4 h-4 ml-auto",
                   }}
                 >
@@ -682,18 +701,23 @@ const VolunteersPage: React.FC = () => {
                     })),
                   ]}
                   classNames={{
-                    base: "bg-white border border-slate-200 rounded-sm min-w-[160px] p-1",
+                    base: "rounded-sm min-w-[160px] p-1 border",
+                  }}
+                  style={{
+                    backgroundColor: "var(--bg-primary)",
+                    borderColor: "var(--border-color)",
                   }}
                   itemClasses={{
                     base: [
-                      "text-slate-600 text-[11px] font-bold uppercase tracking-tight",
-                      "data-[hover=true]:bg-slate-50 data-[hover=true]:text-[#22c55e]",
-                      "data-[selected=true]:bg-emerald-50 data-[selected=true]:text-[#22c55e]",
+                      "text-[11px] font-bold uppercase tracking-tight",
+                      "data-[hover=true]:bg-[var(--bg-secondary)] data-[hover=true]:text-[#22c55e]",
+                      "data-[selected=true]:bg-emerald-500/10 data-[selected=true]:text-[#22c55e]",
                       "rounded-sm",
                       "px-3",
                       "py-2.5",
                       "transition-colors duration-200",
                     ].join(" "),
+                    title: "text-[var(--text-secondary)]",
                     selectedIcon: "text-[#22c55e] w-4 h-4 ml-auto",
                   }}
                 >
@@ -728,8 +752,15 @@ const VolunteersPage: React.FC = () => {
             case "name":
               return (
                 <div
-                  className="flex items-center gap-2 px-2 py-1 rounded-full bg-slate-50 border border-slate-200 hover:border-hf-green/50 hover:bg-white transition-all cursor-pointer group w-fit min-w-0"
-                  onClick={() => openDrawer(vol)}
+                  className="flex items-center gap-2 px-2 py-1 rounded-full border transition-all cursor-pointer group w-fit min-w-0"
+                  style={{
+                    backgroundColor: "var(--bg-secondary)",
+                    borderColor: "var(--border-color)",
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openDrawer(vol);
+                  }}
                 >
                   <div className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white bg-gradient-to-br from-emerald-400 to-teal-600 shadow-sm shrink-0">
                     {vol.name
@@ -751,7 +782,12 @@ const VolunteersPage: React.FC = () => {
                   {vol.volunteerAreas.map((area, index) => (
                     <span
                       key={index}
-                      className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-[#22c55e] border border-emerald-100"
+                      className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold border"
+                      style={{
+                        backgroundColor: "rgba(34, 197, 94, 0.1)",
+                        color: "#22c55e",
+                        borderColor: "rgba(34, 197, 94, 0.2)",
+                      }}
                     >
                       {area.toUpperCase()}
                     </span>
@@ -791,8 +827,12 @@ const VolunteersPage: React.FC = () => {
                     isIconOnly
                     size="sm"
                     variant="flat"
-                    onPress={() => openDrawer(vol)}
-                    className="!bg-transparent !text-slate-600 hover:!text-[#22c55e] transition-all min-w-0 h-8 w-8"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openDrawer(vol);
+                    }}
+                    className="!bg-transparent hover:!text-[#22c55e] transition-all min-w-0 h-8 w-8"
+                    style={{ color: "var(--text-muted)" }}
                   >
                     <Eye size={14} />
                   </Button>
@@ -835,14 +875,15 @@ const VolunteersPage: React.FC = () => {
                 <>
                   <button
                     onClick={() => setIsEditMode(false)}
-                    className="flex-1 px-6 py-3 text-[10px] font-black text-slate-400 hover:text-slate-600 uppercase tracking-widest transition-colors flex items-center justify-center gap-2"
+                    className="flex-1 px-6 py-3 text-[10px] font-black uppercase tracking-widest transition-colors flex items-center justify-center gap-2"
+                    style={{ color: "var(--text-muted)" }}
                   >
                     <RotateCcw size={14} />
                     Cancel
                   </button>
                   <ReusableButton
                     variant="primary"
-                    className="flex-1 !bg-hf-green hover:!bg-emerald-600 px-8 py-3 !rounded-sm text-[10px] font-black uppercase tracking-widest shadow-lg shadow-emerald-200/50"
+                    className="flex-1 !bg-hf-green hover:!bg-emerald-600 px-8 py-3 !rounded-sm text-[10px] font-black uppercase tracking-widest"
                     onClick={() => {
                       setIsEditMode(false);
                     }}
@@ -855,14 +896,15 @@ const VolunteersPage: React.FC = () => {
                 <>
                   <button
                     onClick={() => setIsDrawerOpen(false)}
-                    className="flex-1 px-6 py-4 text-[11px] font-black text-slate-400 hover:text-slate-600 uppercase tracking-[0.2em] transition-colors"
+                    className="flex-1 px-6 py-4 text-[11px] font-black uppercase tracking-[0.2em] transition-colors"
+                    style={{ color: "var(--text-muted)" }}
                   >
                     Dismiss
                   </button>
                   <div className="flex-[2] relative">
                     <ReusableButton
                       variant="primary"
-                      className="w-full !bg-hf-green hover:!bg-emerald-600 px-8 py-4 !rounded-sm text-[10px] font-black uppercase tracking-[0.15em] shadow-xl shadow-emerald-200/50 transition-all active:scale-95 flex items-center justify-center gap-2"
+                      className="w-full !bg-hf-green hover:!bg-emerald-600 px-8 py-4 !rounded-sm text-[10px] font-black uppercase tracking-[0.15em] transition-all active:scale-95 flex items-center justify-center gap-2"
                       onClick={() => setIsEditMode(true)}
                     >
                       <div className="p-1 rounded-full bg-white/20">
@@ -889,7 +931,13 @@ const VolunteersPage: React.FC = () => {
             <div className="pt-4 pb-1.5 flex flex-col items-center">
               <div className="relative mb-4 group">
                 <div className="absolute inset-[-10px] bg-hf-green/5 blur-2xl rounded-sm opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                <div className="relative w-24 h-24 p-1.5 rounded-sm bg-emerald-50 transform transition-transform duration-500 group-hover:scale-105">
+                <div
+                  className="relative w-24 h-24 p-1.5 rounded-sm transform transition-transform duration-500 group-hover:scale-105 border"
+                  style={{
+                    backgroundColor: "var(--bg-tertiary)",
+                    borderColor: "var(--border-color)",
+                  }}
+                >
                   <div className="w-full h-full rounded-sm bg-hf-green flex items-center justify-center relative overflow-hidden">
                     <span className="text-4xl font-black text-white italic">
                       {activeVolunteer.name.charAt(0)}
@@ -897,7 +945,13 @@ const VolunteersPage: React.FC = () => {
                   </div>
                 </div>
                 {/* Status Float */}
-                <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 bg-white p-1 rounded-sm border border-slate-100 ring-2 ring-slate-50 shadow-sm z-20 whitespace-nowrap">
+                <div
+                  className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 p-1 rounded-sm border shadow-sm z-20 whitespace-nowrap"
+                  style={{
+                    backgroundColor: "var(--bg-primary)",
+                    borderColor: "var(--border-color)",
+                  }}
+                >
                   <div className="flex items-center gap-1 px-2 py-0.5 bg-hf-green/10 rounded-sm">
                     <div className="w-1.5 h-1.5 rounded-sm bg-hf-green animate-pulse" />
                     <span className="text-[9px] font-black text-hf-green uppercase tracking-tighter">
@@ -909,10 +963,16 @@ const VolunteersPage: React.FC = () => {
 
               <div className="text-center space-y-3 max-w-sm">
                 <div className="space-y-0.5 w-full flex flex-col items-center">
-                  <h3 className="text-2xl font-black text-slate-900 leading-[1.05] tracking-tight">
+                  <h3
+                    className="text-2xl font-black leading-[1.05] tracking-tight"
+                    style={{ color: "var(--text-primary)" }}
+                  >
                     {activeVolunteer.name}
                   </h3>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
+                  <p
+                    className="text-[10px] font-bold uppercase tracking-[0.2em]"
+                    style={{ color: "var(--text-muted)" }}
+                  >
                     Global Identifier: #VOL-
                     {activeVolunteer.id.toString().padStart(4, "0")}
                   </p>
@@ -927,29 +987,57 @@ const VolunteersPage: React.FC = () => {
               {/* Identity & Timeline Block */}
               <section className="space-y-3">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-sm bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-500 shadow-sm shrink-0">
+                  <div
+                    className="w-8 h-8 rounded-sm border flex items-center justify-center text-blue-500 shadow-sm shrink-0"
+                    style={{
+                      backgroundColor: "rgba(59, 130, 246, 0.05)",
+                      borderColor: "rgba(59, 130, 246, 0.1)",
+                    }}
+                  >
                     <User size={16} strokeWidth={2.5} />
                   </div>
-                  <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest">
+                  <h4
+                    className="text-xs font-black uppercase tracking-widest"
+                    style={{ color: "var(--text-primary)" }}
+                  >
                     Identity & Account
                   </h4>
                 </div>
-                <div className="bg-white px-4 py-1.5 rounded-sm border border-slate-200 shadow-sm divide-y divide-slate-50/50">
-                  <div className="flex justify-between items-center py-2">
-                    <span className="text-[8px] font-black uppercase text-slate-400">
+                <div
+                  className="px-4 py-1.5 rounded-sm border shadow-sm divide-y"
+                  style={{
+                    backgroundColor: "var(--bg-primary)",
+                    borderColor: "var(--border-color)",
+                    borderBottomColor: "var(--border-color)",
+                  }}
+                >
+                  <div
+                    className="flex justify-between items-center py-2"
+                    style={{ borderBottomColor: "var(--border-color)" }}
+                  >
+                    <span
+                      className="text-[8px] font-black uppercase"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       Verification
                     </span>
                     <span
-                      className={`text-[10px] font-black ${activeVolunteer.verificationStatus === "Verified" ? "text-emerald-600" : "text-amber-600"} uppercase`}
+                      className={`text-[10px] font-black ${activeVolunteer.verificationStatus === "Verified" ? "text-emerald-500" : "text-amber-500"} uppercase`}
                     >
                       {activeVolunteer.verificationStatus}
                     </span>
                   </div>
                   <div className="flex justify-between items-center py-2">
-                    <span className="text-[8px] font-black uppercase text-slate-400">
+                    <span
+                      className="text-[8px] font-black uppercase"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       Onboarded
                     </span>
-                    <span className="text-[10px] font-black text-slate-800 uppercase">
+                    <span
+                      className="text-[10px] font-black uppercase"
+                      style={{ color: "var(--text-secondary)" }}
+                    >
                       {activeVolunteer.createdDate}
                     </span>
                   </div>
@@ -960,27 +1048,60 @@ const VolunteersPage: React.FC = () => {
               {!isEditMode && (
                 <section className="space-y-3">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-sm bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shadow-sm shrink-0">
+                    <div
+                      className="w-8 h-8 rounded-sm border flex items-center justify-center text-emerald-500 shadow-sm shrink-0"
+                      style={{
+                        backgroundColor: "rgba(34, 197, 94, 0.05)",
+                        borderColor: "rgba(34, 197, 94, 0.1)",
+                      }}
+                    >
                       <BarChart size={16} strokeWidth={2.5} />
                     </div>
-                    <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest">
+                    <h4
+                      className="text-xs font-black uppercase tracking-widest"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       Performance Metrics
                     </h4>
                   </div>
                   <div className="grid grid-cols-1 min-[450px]:grid-cols-2 gap-1.5">
-                    <div className="bg-white p-3 rounded-sm border border-slate-200 shadow-sm">
-                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                    <div
+                      className="p-3 rounded-sm border shadow-sm"
+                      style={{
+                        backgroundColor: "var(--bg-primary)",
+                        borderColor: "var(--border-color)",
+                      }}
+                    >
+                      <p
+                        className="text-[8px] font-black uppercase tracking-widest mb-1"
+                        style={{ color: "var(--text-muted)" }}
+                      >
                         Success Rate
                       </p>
-                      <p className="text-[11px] font-black text-slate-900 uppercase">
+                      <p
+                        className="text-[11px] font-black uppercase"
+                        style={{ color: "var(--text-primary)" }}
+                      >
                         92%
                       </p>
                     </div>
-                    <div className="bg-white p-3 rounded-sm border border-slate-200 shadow-sm">
-                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                    <div
+                      className="p-3 rounded-sm border shadow-sm"
+                      style={{
+                        backgroundColor: "var(--bg-primary)",
+                        borderColor: "var(--border-color)",
+                      }}
+                    >
+                      <p
+                        className="text-[8px] font-black uppercase tracking-widest mb-1"
+                        style={{ color: "var(--text-muted)" }}
+                      >
                         Total Tasks
                       </p>
-                      <p className="text-[11px] font-black text-slate-900 uppercase">
+                      <p
+                        className="text-[11px] font-black uppercase"
+                        style={{ color: "var(--text-primary)" }}
+                      >
                         {activeVolunteer.totalTasks}
                       </p>
                     </div>
@@ -991,18 +1112,36 @@ const VolunteersPage: React.FC = () => {
               {/* Operational Control block */}
               <section className="space-y-3">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-sm bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-600 shadow-sm shrink-0">
+                  <div
+                    className="w-8 h-8 rounded-sm border flex items-center justify-center text-purple-600 shadow-sm shrink-0"
+                    style={{
+                      backgroundColor: "rgba(147, 51, 234, 0.05)",
+                      borderColor: "rgba(147, 51, 234, 0.1)",
+                    }}
+                  >
                     <Activity size={16} strokeWidth={2.5} />
                   </div>
-                  <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest">
+                  <h4
+                    className="text-xs font-black uppercase tracking-widest"
+                    style={{ color: "var(--text-primary)" }}
+                  >
                     Operational Control
                   </h4>
                 </div>
                 <div className="grid grid-cols-1 min-[450px]:grid-cols-2 gap-1.5">
                   {isEditMode ? (
-                    <div className="col-span-2 space-y-4 bg-white p-4 rounded-sm border border-slate-200 shadow-sm">
+                    <div
+                      className="col-span-2 space-y-4 p-4 rounded-sm border shadow-sm"
+                      style={{
+                        backgroundColor: "var(--bg-primary)",
+                        borderColor: "var(--border-color)",
+                      }}
+                    >
                       <div className="space-y-3">
-                        <label className="text-[8px] font-black uppercase text-slate-400 tracking-widest">
+                        <label
+                          className="text-[8px] font-black uppercase tracking-widest"
+                          style={{ color: "var(--text-muted)" }}
+                        >
                           Weekly Capacity
                         </label>
                         <div className="flex items-center gap-4">
@@ -1012,15 +1151,24 @@ const VolunteersPage: React.FC = () => {
                             max={60}
                             value={weeklyHours}
                             onChange={handleHoursChange}
-                            className="flex-1 h-1.5 bg-slate-100 rounded-sm appearance-none accent-hf-green"
+                            className="flex-1 h-1.5 bg-[var(--bg-secondary)] rounded-sm appearance-none accent-hf-green"
                           />
                           <span className="text-[10px] font-black text-hf-green min-w-[50px]">
                             {weeklyHours}h/wk
                           </span>
                         </div>
                       </div>
-                      <div className="flex items-center justify-between p-3 bg-slate-50 border border-slate-100 rounded-sm">
-                        <span className="text-[8px] font-black uppercase text-slate-400 tracking-widest">
+                      <div
+                        className="flex items-center justify-between p-3 border rounded-sm"
+                        style={{
+                          backgroundColor: "var(--bg-secondary)",
+                          borderColor: "var(--border-color)",
+                        }}
+                      >
+                        <span
+                          className="text-[8px] font-black uppercase tracking-widest"
+                          style={{ color: "var(--text-muted)" }}
+                        >
                           Duty Status
                         </span>
                         <button
@@ -1049,16 +1197,37 @@ const VolunteersPage: React.FC = () => {
                     </div>
                   ) : (
                     <>
-                      <div className="bg-white p-3 rounded-sm border border-slate-200 shadow-sm">
-                        <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                      <div
+                        className="p-3 rounded-sm border shadow-sm"
+                        style={{
+                          backgroundColor: "var(--bg-primary)",
+                          borderColor: "var(--border-color)",
+                        }}
+                      >
+                        <p
+                          className="text-[8px] font-black uppercase tracking-widest mb-1"
+                          style={{ color: "var(--text-muted)" }}
+                        >
                           Weekly Load
                         </p>
-                        <p className="text-[11px] font-black text-slate-900 uppercase">
+                        <p
+                          className="text-[11px] font-black uppercase"
+                          style={{ color: "var(--text-primary)" }}
+                        >
                           {weeklyHours}h/wk
                         </p>
                       </div>
-                      <div className="bg-white p-3 rounded-sm border border-slate-200 shadow-sm">
-                        <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                      <div
+                        className="p-3 rounded-sm border shadow-sm"
+                        style={{
+                          backgroundColor: "var(--bg-primary)",
+                          borderColor: "var(--border-color)",
+                        }}
+                      >
+                        <p
+                          className="text-[8px] font-black uppercase tracking-widest mb-1"
+                          style={{ color: "var(--text-muted)" }}
+                        >
                           Status
                         </p>
                         <p
@@ -1075,16 +1244,31 @@ const VolunteersPage: React.FC = () => {
               {/* Connectivity and Logistics */}
               <section className="space-y-3">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-sm bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 shadow-sm shrink-0">
+                  <div
+                    className="w-8 h-8 rounded-sm border flex items-center justify-center text-amber-500 shadow-sm shrink-0"
+                    style={{
+                      backgroundColor: "rgba(245, 158, 11, 0.05)",
+                      borderColor: "rgba(245, 158, 11, 0.1)",
+                    }}
+                  >
                     <Phone size={16} strokeWidth={2.5} />
                   </div>
-                  <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest">
+                  <h4
+                    className="text-xs font-black uppercase tracking-widest"
+                    style={{ color: "var(--text-primary)" }}
+                  >
                     Connectivity & Logistics
                   </h4>
                 </div>
                 <div className="grid grid-cols-1 gap-1.5">
                   {isEditMode ? (
-                    <div className="bg-white p-4 rounded-sm border border-slate-200 shadow-sm space-y-4">
+                    <div
+                      className="p-4 rounded-sm border shadow-sm space-y-4"
+                      style={{
+                        backgroundColor: "var(--bg-primary)",
+                        borderColor: "var(--border-color)",
+                      }}
+                    >
                       <ReusableInput
                         label="Phone Number"
                         value={editablePhone}
@@ -1112,15 +1296,31 @@ const VolunteersPage: React.FC = () => {
                       />
                     </div>
                   ) : (
-                    <div className="bg-white p-1 rounded-sm border border-slate-200 shadow-sm divide-y divide-slate-100">
+                    <div
+                      className="p-1 rounded-sm border shadow-sm divide-y"
+                      style={{
+                        backgroundColor: "var(--bg-primary)",
+                        borderColor: "var(--border-color)",
+                        borderBottomColor: "var(--border-color)",
+                      }}
+                    >
                       <div className="p-3">
-                        <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                        <p
+                          className="text-[8px] font-black uppercase tracking-widest mb-1"
+                          style={{ color: "var(--text-muted)" }}
+                        >
                           Contact Details
                         </p>
-                        <p className="text-[11px] font-black text-slate-800 uppercase">
+                        <p
+                          className="text-[11px] font-black uppercase"
+                          style={{ color: "var(--text-primary)" }}
+                        >
                           {activeVolunteer.phone}
                         </p>
-                        <p className="text-[11px] font-black text-slate-500 uppercase mt-1">
+                        <p
+                          className="text-[11px] font-black uppercase mt-1"
+                          style={{ color: "var(--text-muted)" }}
+                        >
                           {activeVolunteer.address}
                         </p>
                       </div>
@@ -1134,7 +1334,7 @@ const VolunteersPage: React.FC = () => {
                 <section className="pb-6">
                   <button
                     onClick={onSuspenseOpen}
-                    className={`w-full px-4 py-3 ${activeVolunteer.isSuspended ? "bg-rose-500 hover:bg-rose-600" : "bg-hf-green hover:bg-emerald-600"} text-white rounded-sm text-[10px] font-black uppercase tracking-[0.2em] transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2`}
+                    className={`w-full px-4 py-3 ${activeVolunteer.isSuspended ? "bg-rose-500 hover:bg-rose-600" : "bg-hf-green hover:bg-emerald-600"} text-white rounded-sm text-[10px] font-black uppercase tracking-[0.2em] transition-all active:scale-95 flex items-center justify-center gap-2`}
                   >
                     {activeVolunteer.isSuspended ? (
                       <RotateCcw size={14} />
@@ -1162,17 +1362,18 @@ const VolunteersPage: React.FC = () => {
           base: "w-full max-w-[420px] rounded-3xl p-4 bg-[var(--bg-primary)] shadow-2xl border border-[var(--border-color)]",
           backdrop: "bg-black/60 backdrop-blur-md",
           closeButton:
-            "hover:bg-slate-100 dark:hover:bg-slate-800 absolute right-4 left-auto top-4",
+            "hover:bg-[var(--bg-secondary)] absolute right-4 left-auto top-4",
         }}
       >
         <ModalContent>
           <ModalHeader className="flex flex-col gap-1 text-center items-center">
             <div
-              className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-4 ${
-                activeVolunteer?.isSuspended
-                  ? "bg-rose-50 text-rose-500 shadow-sm"
-                  : "bg-rose-50 text-rose-500"
-              }`}
+              className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4 border"
+              style={{
+                backgroundColor: "rgba(225, 29, 72, 0.05)",
+                borderColor: "rgba(225, 29, 72, 0.1)",
+                color: "#e11d48",
+              }}
             >
               {activeVolunteer?.isSuspended ? (
                 <ShieldCheck size={28} />
@@ -1255,11 +1456,7 @@ const VolunteersPage: React.FC = () => {
               Cancel
             </Button>
             <Button
-              className={`flex-1 text-white rounded-xl text-[10px] font-black uppercase tracking-tight shadow-xl transition-all active:scale-95 ${
-                activeVolunteer?.isSuspended
-                  ? "bg-rose-500 shadow-rose-200 hover:bg-rose-600"
-                  : "bg-rose-500 shadow-rose-200 hover:bg-rose-600"
-              }`}
+              className="flex-1 text-white rounded-xl text-[10px] font-black uppercase tracking-tight transition-all active:scale-95 bg-rose-500 hover:bg-rose-600"
               onPress={handleToggleSuspension}
             >
               Confirm &{" "}

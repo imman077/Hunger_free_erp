@@ -43,12 +43,14 @@ const ImpactCard: React.FC<
 
       <div className="flex flex-col items-center mt-2 relative z-10 text-center">
         <p
-          className={`text-[9px] font-black leading-none px-2 py-1 rounded-full bg-slate-50 border border-slate-100 focus:outline-none focus:ring-2 focus:ring-[#22c55e] focus:ring-offset-2 ${
+          className={`text-[9px] font-black leading-none px-2 py-1 rounded-full border transition-all ${
             color === "bg-[#22c55e]" || color === "bg-emerald-500"
               ? "text-[#22c55e]"
               : "text-slate-500"
           }`}
           style={{
+            backgroundColor: "var(--bg-secondary)",
+            borderColor: "var(--border-color)",
             color:
               color === "bg-[#22c55e]" || color === "bg-emerald-500"
                 ? "#22c55e"
