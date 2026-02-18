@@ -391,7 +391,7 @@ const DonationOverview = () => {
         <DropdownTrigger>
           <Button
             variant="flat"
-            className="border rounded-sm h-10 px-4 text-[11px] font-bold transition-all shadow-none"
+            className="border rounded-sm h-10 px-4 flex-shrink-0 text-[11px] font-bold transition-all shadow-none"
             style={{
               backgroundColor: "var(--bg-primary)",
               borderColor: "var(--border-color)",
@@ -404,7 +404,7 @@ const DonationOverview = () => {
               <Plus size={14} style={{ color: "var(--text-muted)" }} />
             }
           >
-            ADD FILTER
+            <span className="hidden sm:inline ml-1">ADD FILTER</span>
           </Button>
         </DropdownTrigger>
         <DropdownMenu
@@ -451,12 +451,12 @@ const DonationOverview = () => {
           <DropdownTrigger>
             <Button
               variant="flat"
-              className="border border-emerald-100 bg-emerald-50/50 rounded-sm h-10 px-3 text-[11px] font-bold text-hf-green hover:bg-emerald-100 transition-all shadow-none"
+              className="border border-hf-green/20 bg-hf-green/10 rounded-sm h-10 px-3 text-[11px] font-black text-hf-green hover:bg-hf-green/20 transition-all shadow-none"
               endContent={<ChevronDown size={14} />}
             >
               STATUS: {statusFilter.toUpperCase()}
               <div
-                className="ml-2 hover:bg-emerald-200 rounded-full p-0.5 cursor-pointer"
+                className="ml-2 hover:bg-hf-green/20 rounded-full p-0.5 cursor-pointer"
                 onClick={(e) => {
                   e.stopPropagation();
                   toggleFilter("status");
@@ -513,12 +513,12 @@ const DonationOverview = () => {
           <DropdownTrigger>
             <Button
               variant="flat"
-              className="border border-blue-100 bg-blue-50/50 rounded-sm h-10 px-3 text-[11px] font-bold text-blue-600 hover:bg-blue-100 transition-all shadow-none"
+              className="border border-blue-500/20 bg-blue-500/10 rounded-sm h-10 px-3 text-[11px] font-black text-blue-600 dark:text-blue-400 hover:bg-blue-500/20 transition-all shadow-none"
               endContent={<ChevronDown size={14} />}
             >
               TYPE: {foodTypeFilter.toUpperCase()}
               <div
-                className="ml-2 hover:bg-blue-200 rounded-full p-0.5 cursor-pointer"
+                className="ml-2 hover:bg-blue-500/20 rounded-full p-0.5 cursor-pointer"
                 onClick={(e) => {
                   e.stopPropagation();
                   toggleFilter("foodType");
@@ -581,7 +581,7 @@ const DonationOverview = () => {
       <div className="flex items-center justify-between w-full">
         <div className="text-left">
           <h1
-            className="text-2xl font-black tracking-tight"
+            className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight break-words"
             style={{ color: "var(--text-primary)" }}
           >
             Donation Management

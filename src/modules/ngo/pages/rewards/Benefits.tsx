@@ -100,7 +100,10 @@ const NGOBenefits = () => {
   const [previewTier, setPreviewTier] = useState<string>("Titan");
 
   return (
-    <div className="p-6 md:p-10 min-h-screen space-y-10 max-w-[1600px] mx-auto bg-[#f8fafc]">
+    <div
+      className="p-6 md:p-10 min-h-screen space-y-10 max-w-[1600px] mx-auto"
+      style={{ backgroundColor: "var(--bg-primary)" }}
+    >
       {/* Header */}
       <div className="space-y-6">
         <div className="space-y-3">
@@ -119,7 +122,10 @@ const NGOBenefits = () => {
 
           <div className="flex flex-col md:flex-row md:items-end justify-between items-start gap-4">
             <div className="space-y-1 text-left">
-              <h1 className="text-4xl md:text-6xl font-black tracking-tighter uppercase leading-none text-slate-900">
+              <h1
+                className="text-4xl md:text-6xl font-black tracking-tighter uppercase leading-none"
+                style={{ color: "var(--text-primary)" }}
+              >
                 NGO Benefits
               </h1>
               <p className="text-sm font-black uppercase tracking-[0.3em] text-[#22c55e]">
@@ -127,17 +133,36 @@ const NGOBenefits = () => {
               </p>
             </div>
 
-            <div className="px-8 py-6 bg-white border border-slate-200 rounded-sm flex items-center gap-6">
+            <div
+              className="px-8 py-6 border rounded-sm flex items-center gap-6"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
               <div className="text-start">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                <p
+                  className="text-[10px] font-black uppercase tracking-widest mb-1"
+                  style={{ color: "var(--text-muted)" }}
+                >
                   Highest Level
                 </p>
-                <h4 className="text-xl font-black text-slate-800 uppercase">
+                <h4
+                  className="text-xl font-black uppercase"
+                  style={{ color: "var(--text-primary)" }}
+                >
                   Titan
                 </h4>
               </div>
-              <div className="w-12 h-12 bg-emerald-50 border border-emerald-100 rounded-sm flex items-center justify-center">
-                <TrendingUp className="text-[#22c55e]" size={24} />
+              <div
+                className="w-12 h-12 rounded-sm flex items-center justify-center border"
+                style={{
+                  backgroundColor: "rgba(34, 197, 94, 0.08)",
+                  borderColor: "rgba(34, 197, 94, 0.2)",
+                  color: "#22c55e",
+                }}
+              >
+                <TrendingUp size={24} />
               </div>
             </div>
           </div>
@@ -145,12 +170,24 @@ const NGOBenefits = () => {
       </div>
 
       {/* Points System Info Section */}
-      <div className="bg-white border border-slate-200 rounded-sm p-8 flex flex-col lg:flex-row items-center justify-between gap-10">
+      <div
+        className="border rounded-sm p-8 flex flex-col lg:flex-row items-center justify-between gap-10"
+        style={{
+          backgroundColor: "var(--bg-primary)",
+          borderColor: "var(--border-color)",
+        }}
+      >
         <div className="space-y-3 max-w-md w-full text-left">
-          <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tight">
+          <h2
+            className="text-2xl font-black uppercase tracking-tight"
+            style={{ color: "var(--text-primary)" }}
+          >
             {previewTier} Level Benefits
           </h2>
-          <p className="text-sm font-medium text-slate-500 leading-relaxed">
+          <p
+            className="text-sm font-medium leading-relaxed"
+            style={{ color: "var(--text-muted)" }}
+          >
             {previewTier === "Beginner"
               ? "Start helping people and earn points for every donation you receive."
               : `Get a permanent ${tiers.find((t) => t.name === previewTier)?.bonus}% extra money for your grants as a ${previewTier} member.`}
@@ -172,10 +209,17 @@ const NGOBenefits = () => {
             return (
               <div
                 key={idx}
-                className="flex-1 bg-slate-50 border border-slate-100 rounded-sm p-5 min-w-[200px] group"
+                className="flex-1 rounded-sm p-5 min-w-[200px] border"
+                style={{
+                  backgroundColor: "var(--bg-secondary)",
+                  borderColor: "var(--border-color)",
+                }}
               >
                 <div className="flex justify-between items-start mb-3">
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                  <p
+                    className="text-[10px] font-black uppercase tracking-widest"
+                    style={{ color: "var(--text-muted)" }}
+                  >
                     {item.label}
                   </p>
                 </div>
@@ -205,7 +249,11 @@ const NGOBenefits = () => {
           <div
             key={tier.name}
             onClick={() => setPreviewTier(tier.name)}
-            className="cursor-pointer border border-slate-200 hover:border-[#22c55e]/30 rounded-sm p-8 bg-white transition-all duration-200 relative overflow-hidden group shadow-sm"
+            className="cursor-pointer border hover:border-[#22c55e]/30 rounded-sm p-8 transition-all duration-200 relative overflow-hidden group shadow-sm"
+            style={{
+              backgroundColor: "var(--bg-primary)",
+              borderColor: "var(--border-color)",
+            }}
           >
             {/* Background Decorative Element */}
             <div
@@ -214,21 +262,33 @@ const NGOBenefits = () => {
 
             <div className="relative z-10 flex flex-col h-full">
               <div className="flex items-center justify-between">
-                <div className="p-4 bg-slate-50 border border-slate-200 rounded-sm">
+                <div
+                  className="p-4 rounded-sm border"
+                  style={{
+                    backgroundColor: "var(--bg-secondary)",
+                    borderColor: "var(--border-color)",
+                  }}
+                >
                   {tier.icon}
                 </div>
                 <div className="text-right">
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1.5">
                     Target
                   </p>
-                  <p className="text-sm font-black text-slate-800 tracking-tight">
+                  <p
+                    className="text-sm font-black tracking-tight"
+                    style={{ color: "var(--text-primary)" }}
+                  >
                     {tier.points} PTS
                   </p>
                 </div>
               </div>
 
               <div className="space-y-1 mt-6">
-                <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight">
+                <h3
+                  className="text-2xl font-black uppercase tracking-tight"
+                  style={{ color: "var(--text-primary)" }}
+                >
                   {tier.name}
                 </h3>
                 <div

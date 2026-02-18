@@ -277,16 +277,25 @@ const DonationRequests = () => {
 
   return (
     <div className="w-full space-y-6 max-w-[1400px] mx-auto p-4 md:p-8 bg-transparent">
-      <div className="bg-white rounded-xl border border-slate-100 shadow-sm relative">
+      <div
+        className="rounded-xl border shadow-sm relative"
+        style={{
+          backgroundColor: "var(--bg-primary)",
+          borderColor: "var(--border-color)",
+        }}
+      >
         {/* Isolated Decoration Layer */}
         <div className="absolute inset-0 overflow-hidden rounded-xl pointer-events-none">
           <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[300px] h-[300px] bg-[#22c55e] opacity-[0.03] blur-[100px] rounded-full" />
         </div>
 
-        <div className="relative z-10 px-6 py-6 border-b border-slate-50 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="relative z-10 px-6 py-6 border-b border-[var(--border-color)] flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-5 text-start w-full md:w-auto">
             <div className="space-y-1">
-              <h1 className="text-2xl md:text-3xl font-black tracking-tighter text-slate-800 uppercase leading-none">
+              <h1
+                className="text-2xl md:text-3xl font-black tracking-tighter uppercase leading-none"
+                style={{ color: "var(--text-primary)" }}
+              >
                 Donation <span className="text-[#22c55e]">Hub</span>
               </h1>
             </div>
@@ -304,9 +313,21 @@ const DonationRequests = () => {
         </div>
 
         {/* Global Control Bar */}
-        <div className="relative z-10 px-6 py-4 bg-slate-50/50 flex flex-col xl:flex-row items-center justify-between gap-6 border-t border-slate-100">
+        <div
+          className="relative z-10 px-6 py-4 flex flex-col xl:flex-row items-center justify-between gap-6 border-t"
+          style={{
+            backgroundColor: "var(--bg-secondary)",
+            borderColor: "var(--border-color)",
+          }}
+        >
           {/* Left: Context Navigation */}
-          <div className="flex items-center gap-1 p-1 bg-white border border-slate-200 rounded-xl shadow-sm w-full xl:w-auto">
+          <div
+            className="flex items-center gap-1 p-1 rounded-xl shadow-sm w-full xl:w-auto border"
+            style={{
+              backgroundColor: "var(--bg-primary)",
+              borderColor: "var(--border-color)",
+            }}
+          >
             {[
               { id: "marketplace", label: "All Requests" },
               { id: "my-requests", label: "My Requests" },
@@ -317,8 +338,14 @@ const DonationRequests = () => {
                 className={`flex items-center justify-center gap-3 px-6 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all transition-duration-300 w-1/2 xl:w-auto ${
                   activeTab === tab.id
                     ? "bg-[#22c55e] text-white shadow-lg shadow-green-500/20"
-                    : "text-slate-400 hover:text-slate-600 hover:bg-slate-50"
+                    : "hover:bg-[var(--bg-tertiary)]"
                 }`}
+                style={{
+                  backgroundColor:
+                    activeTab === tab.id ? undefined : "var(--bg-primary)",
+                  borderColor: "var(--border-color)",
+                  color: activeTab === tab.id ? "white" : "var(--text-muted)",
+                }}
               >
                 {tab.label}
               </button>
@@ -344,7 +371,7 @@ const DonationRequests = () => {
                   }...`}
                   className="w-full pl-11 pr-4 py-2.5 rounded-xl text-[11px] font-bold focus:outline-none focus:ring-2 focus:ring-[#22c55e]/20 transition-all shadow-sm border"
                   style={{
-                    backgroundColor: "var(--bg-secondary)",
+                    backgroundColor: "var(--bg-primary)",
                     borderColor: "var(--border-color)",
                     color: "var(--text-primary)",
                   }}
@@ -354,7 +381,13 @@ const DonationRequests = () => {
 
             <div className="flex items-center gap-3 shrink-0">
               {/* View Switcher */}
-              <div className="flex items-center gap-1 p-1 bg-white border border-slate-200 rounded-xl shadow-sm">
+              <div
+                className="flex items-center gap-1 p-1 rounded-xl shadow-sm border"
+                style={{
+                  backgroundColor: "var(--bg-primary)",
+                  borderColor: "var(--border-color)",
+                }}
+              >
                 {[
                   { id: "table", icon: Table, label: "Table" },
                   { id: "card", icon: LayoutGrid, label: "Cards" },
@@ -365,8 +398,15 @@ const DonationRequests = () => {
                     className={`flex items-center gap-2.5 px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${
                       viewMode === view.id
                         ? "bg-[#22c55e] text-white shadow-lg shadow-green-500/20"
-                        : "text-slate-400 hover:text-slate-600 hover:bg-slate-50"
+                        : "hover:bg-[var(--bg-secondary)]"
                     }`}
+                    style={{
+                      backgroundColor:
+                        viewMode === view.id ? undefined : "var(--bg-primary)",
+                      borderColor: "var(--border-color)",
+                      color:
+                        viewMode === view.id ? "white" : "var(--text-muted)",
+                    }}
                   >
                     <view.icon size={14} />
                     <span className="hidden sm:inline">{view.label}</span>
@@ -376,7 +416,13 @@ const DonationRequests = () => {
 
               {viewMode === "card" && activeTab === "marketplace" && (
                 <div className="relative group/filter">
-                  <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-slate-100 shadow-xl rounded-xl opacity-0 invisible group-hover/filter:opacity-100 group-hover/filter:visible transition-all z-50 overflow-hidden">
+                  <div
+                    className="absolute right-0 top-full mt-2 w-48 shadow-xl rounded-xl opacity-0 invisible group-hover/filter:opacity-100 group-hover/filter:visible transition-all z-50 overflow-hidden border"
+                    style={{
+                      backgroundColor: "var(--bg-primary)",
+                      borderColor: "var(--border-color)",
+                    }}
+                  >
                     <div className="p-2 space-y-1">
                       {[
                         { value: "ALL", label: "All Entities" },
@@ -388,8 +434,8 @@ const DonationRequests = () => {
                           onClick={() => setRoleFilter(opt.value as any)}
                           className={`w-full text-left px-4 py-2.5 text-[10px] font-black uppercase tracking-widest rounded-lg transition-colors ${
                             roleFilter === opt.value
-                              ? "bg-emerald-50 text-[#22c55e]"
-                              : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"
+                              ? "bg-emerald-500/10 text-[#22c55e]"
+                              : "text-[var(--text-muted)] hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)]"
                           }`}
                         >
                           {opt.label}
@@ -397,7 +443,14 @@ const DonationRequests = () => {
                       ))}
                     </div>
                   </div>
-                  <button className="flex items-center justify-center w-10 h-10 bg-white border border-slate-200 text-slate-400 hover:text-[#22c55e] hover:border-[#22c55e]/30 rounded-xl transition-all shadow-sm">
+                  <button
+                    className="flex items-center justify-center w-10 h-10 rounded-xl transition-all shadow-sm border"
+                    style={{
+                      backgroundColor: "var(--bg-primary)",
+                      borderColor: "var(--border-color)",
+                      color: "var(--text-muted)",
+                    }}
+                  >
                     <Filter size={16} />
                   </button>
                 </div>
@@ -410,7 +463,13 @@ const DonationRequests = () => {
       {/* Dynamic Content Based on View Mode */}
       <div className="h-auto">
         {viewMode === "table" && (
-          <div className="bg-white border border-slate-100 rounded-md shadow-sm p-2 overflow-hidden">
+          <div
+            className="border rounded-md shadow-sm p-2 overflow-hidden"
+            style={{
+              backgroundColor: "var(--bg-primary)",
+              borderColor: "var(--border-color)",
+            }}
+          >
             <ReusableTable
               variant="compact"
               data={finalFilteredDonations}
@@ -443,7 +502,14 @@ const DonationRequests = () => {
                   case "id":
                     return (
                       <div className="py-1">
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest tabular-nums bg-slate-50 border border-slate-100 px-2 py-1 rounded-sm">
+                        <span
+                          className="text-[10px] font-black uppercase tracking-widest tabular-nums border px-2 py-1 rounded-sm"
+                          style={{
+                            backgroundColor: "var(--bg-secondary)",
+                            borderColor: "var(--border-color)",
+                            color: "var(--text-muted)",
+                          }}
+                        >
                           #HF-{donation.id}024
                         </span>
                       </div>
@@ -456,7 +522,7 @@ const DonationRequests = () => {
                           icon={
                             <span className="text-lg">{donation.icon}</span>
                           }
-                          iconClassName="bg-white border border-slate-100 shadow-sm"
+                          iconClassName="shadow-sm border"
                           maxWidth="max-w-[280px]"
                         />
                       </div>
@@ -479,11 +545,21 @@ const DonationRequests = () => {
                     return (
                       <div className="py-1">
                         <span
-                          className={`text-[8px] font-black uppercase tracking-widest px-2 py-1 rounded-sm ${
-                            donation.sourceType === "DONOR"
-                              ? "bg-emerald-50 text-emerald-600"
-                              : "bg-blue-50 text-blue-600"
-                          }`}
+                          className="text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md border shadow-sm"
+                          style={{
+                            backgroundColor:
+                              donation.sourceType === "DONOR"
+                                ? "rgba(16, 185, 129, 0.08)"
+                                : "rgba(59, 130, 246, 0.08)",
+                            borderColor:
+                              donation.sourceType === "DONOR"
+                                ? "rgba(16, 185, 129, 0.2)"
+                                : "rgba(59, 130, 246, 0.2)",
+                            color:
+                              donation.sourceType === "DONOR"
+                                ? "#10b981"
+                                : "#3b82f6",
+                          }}
                         >
                           {donation.sourceType}
                         </span>
@@ -491,7 +567,10 @@ const DonationRequests = () => {
                     );
                   case "metadata":
                     return activeTab === "marketplace" ? (
-                      <div className="flex items-center gap-1.5 text-slate-500 py-1">
+                      <div
+                        className="flex items-center gap-1.5 py-1"
+                        style={{ color: "var(--text-secondary)" }}
+                      >
                         <MapPin size={12} className="text-[#22c55e]" />
                         <span className="text-[11px] font-extrabold tracking-tight tabular-nums">
                           {donation.distance}
@@ -499,14 +578,24 @@ const DonationRequests = () => {
                       </div>
                     ) : (
                       <div className="py-1">
-                        <span className="px-2.5 py-1 rounded-full bg-blue-50 text-blue-600 border border-blue-100 text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 w-fit">
+                        <span
+                          className="px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 w-fit border"
+                          style={{
+                            backgroundColor: "rgba(59, 130, 246, 0.08)",
+                            borderColor: "rgba(59, 130, 246, 0.2)",
+                            color: "var(--color-blue)",
+                          }}
+                        >
                           <Activity size={10} /> {donation.status}
                         </span>
                       </div>
                     );
                   case "time":
                     return (
-                      <div className="flex items-center gap-1.5 text-slate-400 py-1">
+                      <div
+                        className="flex items-center gap-1.5 py-1"
+                        style={{ color: "var(--text-muted)" }}
+                      >
                         <Clock size={11} />
                         <span className="text-[10px] font-black uppercase tracking-[0.1em] tabular-nums">
                           {donation.time}
@@ -516,11 +605,19 @@ const DonationRequests = () => {
                   case "urgency":
                     return (
                       <span
-                        className={`px-2.5 py-0.5 rounded-sm text-[8px] font-black uppercase tracking-widest border ${
-                          donation.urgency === "High"
-                            ? "bg-amber-50 text-amber-600 border-amber-100"
-                            : "bg-green-50 text-[#22c55e] border-green-100"
-                        }`}
+                        className="px-2.5 py-0.5 rounded-sm text-[8px] font-black uppercase tracking-widest border"
+                        style={{
+                          backgroundColor:
+                            donation.urgency === "High"
+                              ? "rgba(245, 158, 11, 0.08)"
+                              : "rgba(34, 197, 94, 0.08)",
+                          borderColor:
+                            donation.urgency === "High"
+                              ? "rgba(245, 158, 11, 0.2)"
+                              : "rgba(34, 197, 94, 0.2)",
+                          color:
+                            donation.urgency === "High" ? "#f59e0b" : "#22c55e",
+                        }}
                       >
                         {donation.urgency}
                       </span>
@@ -548,7 +645,12 @@ const DonationRequests = () => {
                               e.stopPropagation();
                               handleViewTracking(donation);
                             }}
-                            className="!bg-white border border-slate-100 text-slate-400 hover:text-[#22c55e] hover:border-[#22c55e]/30 transition-all min-w-0 h-8 w-8 shadow-sm"
+                            className="transition-all min-w-0 h-8 w-8 shadow-sm border"
+                            style={{
+                              backgroundColor: "var(--bg-primary)",
+                              borderColor: "var(--border-color)",
+                              color: "var(--text-muted)",
+                            }}
                             title="View Intelligence Details"
                           >
                             <Eye size={15} />
@@ -574,24 +676,42 @@ const DonationRequests = () => {
                     handleViewTracking(donation);
                   }
                 }}
-                className={`group bg-white border border-slate-100 rounded-2xl overflow-hidden flex flex-col transition-all duration-500 shadow-sm hover:shadow-xl hover:shadow-green-500/5 relative ${
+                className={`group border rounded-2xl overflow-hidden flex flex-col transition-all duration-500 shadow-sm hover:shadow-xl hover:shadow-green-500/5 relative ${
                   activeTab === "my-requests"
                     ? "cursor-pointer hover:border-[#22c55e]/30"
                     : ""
                 }`}
+                style={{
+                  backgroundColor: "var(--bg-primary)",
+                  borderColor: "var(--border-color)",
+                }}
               >
                 <div className="p-5 flex-grow flex flex-col items-center text-center">
                   {/* Top Indicator */}
                   <div className="w-full flex justify-between items-center mb-4">
-                    <div className="w-8 h-8 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center text-lg shadow-sm group-hover:scale-110 transition-transform duration-500">
+                    <div
+                      className="w-8 h-8 rounded-lg border flex items-center justify-center text-lg shadow-sm group-hover:scale-110 transition-transform duration-500"
+                      style={{
+                        backgroundColor: "var(--bg-secondary)",
+                        borderColor: "var(--border-color)",
+                      }}
+                    >
                       {donation.icon}
                     </div>
                     <span
-                      className={`px-2.5 py-0.5 rounded-full text-[7px] font-black uppercase tracking-widest border ${
-                        donation.urgency === "High"
-                          ? "bg-amber-50 text-amber-600 border-amber-100"
-                          : "bg-green-50 text-[#22c55e] border-green-100"
-                      }`}
+                      className="px-2.5 py-0.5 rounded-full text-[7px] font-black uppercase tracking-widest border"
+                      style={{
+                        backgroundColor:
+                          donation.urgency === "High"
+                            ? "rgba(245, 158, 11, 0.08)"
+                            : "rgba(34, 197, 94, 0.08)",
+                        borderColor:
+                          donation.urgency === "High"
+                            ? "rgba(245, 158, 11, 0.2)"
+                            : "rgba(34, 197, 94, 0.2)",
+                        color:
+                          donation.urgency === "High" ? "#f59e0b" : "#22c55e",
+                      }}
                     >
                       {donation.urgency}
                     </span>
@@ -600,17 +720,27 @@ const DonationRequests = () => {
                   {/* Title */}
                   <h4
                     className={`text-[15px] font-black tracking-tight leading-tight mb-3 px-2 ${
-                      activeTab === "marketplace"
-                        ? "text-[#22c55e]"
-                        : "text-slate-800"
+                      activeTab === "marketplace" ? "text-[#22c55e]" : ""
                     }`}
+                    style={{
+                      color:
+                        activeTab === "marketplace"
+                          ? undefined
+                          : "var(--text-primary)",
+                    }}
                   >
                     {donation.title}
                   </h4>
 
                   {/* Metadata Row */}
                   <div className="flex flex-col items-center gap-2 w-full">
-                    <div className="flex items-center gap-2 bg-slate-50/50 pl-1.5 pr-3 py-1 rounded-full border border-slate-100">
+                    <div
+                      className="flex items-center gap-2 pl-1.5 pr-3 py-1 rounded-full border"
+                      style={{
+                        backgroundColor: "var(--bg-secondary)",
+                        borderColor: "var(--border-color)",
+                      }}
+                    >
                       <div
                         className={`w-5 h-5 rounded-full flex items-center justify-center text-[8px] font-black text-white border border-white/20 uppercase ${
                           donation.sourceType === "DONOR"
@@ -620,13 +750,19 @@ const DonationRequests = () => {
                       >
                         {donation.source.substring(0, 2)}
                       </div>
-                      <span className="text-[10px] font-bold text-slate-600 uppercase tracking-tight">
+                      <span
+                        className="text-[10px] font-bold uppercase tracking-tight"
+                        style={{ color: "var(--text-primary)" }}
+                      >
                         {donation.source}
                       </span>
                     </div>
 
                     {activeTab === "marketplace" && (
-                      <div className="flex items-center gap-1 text-slate-400">
+                      <div
+                        className="flex items-center gap-1"
+                        style={{ color: "var(--text-muted)" }}
+                      >
                         <MapPin size={10} className="text-[#22c55e]" />
                         <span className="text-[9px] font-black uppercase tracking-wider">
                           {donation.distance}
@@ -638,9 +774,22 @@ const DonationRequests = () => {
 
                 {/* Footer Action Area */}
                 <div className="px-5 pb-5 pt-0 bg-transparent flex flex-col items-center gap-3">
-                  <div className="flex items-center gap-1 px-3 py-1 bg-slate-50/50 rounded-full border border-slate-100/50">
-                    <Clock size={8} className="text-slate-400" />
-                    <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">
+                  <div
+                    className="flex items-center gap-1 px-3 py-1 rounded-full border"
+                    style={{
+                      backgroundColor: "var(--bg-secondary)",
+                      borderColor: "var(--border-color)",
+                    }}
+                  >
+                    <Clock
+                      size={8}
+                      className="text-muted"
+                      style={{ color: "var(--text-muted)" }}
+                    />
+                    <span
+                      className="text-[8px] font-bold uppercase tracking-widest"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       {donation.time}
                     </span>
                   </div>
@@ -659,7 +808,12 @@ const DonationRequests = () => {
                           e.stopPropagation();
                           handleViewTracking(donation);
                         }}
-                        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-slate-200 text-slate-600 hover:text-[#22c55e] hover:border-[#22c55e]/30 rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all shadow-sm active:scale-95"
+                        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all shadow-sm active:scale-95 border"
+                        style={{
+                          backgroundColor: "var(--bg-primary)",
+                          borderColor: "var(--border-color)",
+                          color: "var(--text-secondary)",
+                        }}
                       >
                         <Eye size={12} /> Live Trace
                       </button>
@@ -681,7 +835,13 @@ const DonationRequests = () => {
           {selectedRequest && (
             <div className="space-y-6 px-5 md:px-7 pb-10">
               {/* Hero Section */}
-              <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm space-y-3 relative overflow-hidden">
+              <div
+                className="p-5 rounded-xl border shadow-sm space-y-3 relative overflow-hidden"
+                style={{
+                  backgroundColor: "var(--bg-primary)",
+                  borderColor: "var(--border-color)",
+                }}
+              >
                 <div className="absolute top-3 right-3 flex gap-1 items-center">
                   <div className="w-1.5 h-1.5 rounded-full bg-[#22c55e] animate-pulse" />
                   <span className="text-[8px] font-black text-[#22c55e] uppercase tracking-widest">
@@ -691,49 +851,88 @@ const DonationRequests = () => {
 
                 <div className="flex items-start justify-between">
                   <div className="space-y-1">
-                    <h3 className="text-xl font-black tracking-tighter text-slate-900 uppercase">
+                    <h3
+                      className="text-xl font-black tracking-tighter uppercase"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       {selectedRequest.title}
                     </h3>
                     <div className="flex items-center gap-2">
                       <span className="px-2 py-0.5 bg-[#22c55e]/10 text-[#22c55e] text-[9px] font-black uppercase tracking-widest rounded-full border border-[#22c55e]/20">
                         {selectedRequest.status}
                       </span>
-                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                      <span
+                        className="text-[10px] font-bold uppercase tracking-widest"
+                        style={{ color: "var(--text-muted)" }}
+                      >
                         • {selectedRequest.urgency} Urgency
                       </span>
                     </div>
                   </div>
-                  <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-100 shrink-0">
+                  <div
+                    className="w-12 h-12 rounded-xl flex items-center justify-center border shrink-0"
+                    style={{
+                      backgroundColor: "var(--bg-secondary)",
+                      borderColor: "var(--border-color)",
+                    }}
+                  >
                     <span className="text-2xl">{selectedRequest.icon}</span>
                   </div>
                 </div>
 
-                <p className="text-[11px] text-slate-500 font-medium leading-relaxed">
+                <p
+                  className="text-[11px] font-medium leading-relaxed"
+                  style={{ color: "var(--text-secondary)" }}
+                >
                   {selectedRequest.description ||
                     "Active donation request being processed through the HungerFree Intelligence Network."}
                 </p>
               </div>
 
               {/* Resource Intelligence Grid */}
-              <div className="bg-slate-50/50 rounded-xl p-4 border border-slate-100 grid grid-cols-3 gap-2">
+              <div
+                className="rounded-xl p-4 border grid grid-cols-3 gap-2"
+                style={{
+                  backgroundColor: "var(--bg-secondary)",
+                  borderColor: "var(--border-color)",
+                }}
+              >
                 <div className="space-y-1">
-                  <span className="text-[7px] font-black text-slate-400 uppercase tracking-widest block">
+                  <span
+                    className="text-[7px] font-black uppercase tracking-widest block"
+                    style={{ color: "var(--text-muted)" }}
+                  >
                     QUANTITY
                   </span>
-                  <span className="text-[10px] font-bold text-slate-700">
+                  <span
+                    className="text-[10px] font-bold"
+                    style={{ color: "var(--text-primary)" }}
+                  >
                     {selectedRequest.quantity || "Pending Estimation"}
                   </span>
                 </div>
-                <div className="space-y-1 border-x border-slate-100 px-2">
-                  <span className="text-[7px] font-black text-slate-400 uppercase tracking-widest block">
+                <div
+                  className="space-y-1 border-x px-2"
+                  style={{ borderColor: "var(--border-color)" }}
+                >
+                  <span
+                    className="text-[7px] font-black uppercase tracking-widest block"
+                    style={{ color: "var(--text-muted)" }}
+                  >
                     RESOURCE TYPE
                   </span>
-                  <span className="text-[10px] font-bold text-slate-700">
+                  <span
+                    className="text-[10px] font-bold"
+                    style={{ color: "var(--text-primary)" }}
+                  >
                     {selectedRequest.resourceType || "General Food"}
                   </span>
                 </div>
                 <div className="space-y-1 pl-2">
-                  <span className="text-[7px] font-black text-slate-400 uppercase tracking-widest block">
+                  <span
+                    className="text-[7px] font-black uppercase tracking-widest block"
+                    style={{ color: "var(--text-muted)" }}
+                  >
                     QUALITY
                   </span>
                   <span className="text-[10px] font-bold text-emerald-600">
@@ -745,11 +944,14 @@ const DonationRequests = () => {
               {/* Progress Timeline Section - ONLY AFTER ACCEPTANCE */}
               {selectedRequest.status !== "Available" && (
                 <div className="space-y-4">
-                  <h4 className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2">
+                  <h4
+                    className="text-[11px] font-black uppercase tracking-[0.2em] flex items-center gap-2"
+                    style={{ color: "var(--text-muted)" }}
+                  >
                     <Clock size={14} className="text-[#22c55e]" />
                     Live Tracking Activity
                   </h4>
-                  <div className="relative space-y-4 before:absolute before:inset-0 before:ml-2.5 before:h-full before:w-0.5 before:bg-slate-100">
+                  <div className="relative space-y-4 before:absolute before:inset-0 before:ml-2.5 before:h-full before:w-0.5 before:bg-[var(--border-color)]">
                     {[
                       {
                         status: selectedRequest.isOwn
@@ -791,28 +993,38 @@ const DonationRequests = () => {
                         className="relative flex items-center gap-4 pl-1"
                       >
                         <div
-                          className={`z-10 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 bg-white ${
+                          className={`z-10 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 ${
                             step.completed
                               ? "border-[#22c55e]"
-                              : "border-slate-200"
+                              : "border-[var(--border-color)]"
                           }`}
+                          style={{ backgroundColor: "var(--bg-primary)" }}
                         >
                           {step.completed && (
                             <div className="h-1.5 w-1.5 rounded-full bg-[#22c55e]" />
                           )}
                         </div>
-                        <div className="flex flex-1 justify-between items-center gap-3 bg-white p-2.5 rounded-xl border border-slate-100 shadow-sm hover:border-[#22c55e]/30 transition-all min-w-0">
+                        <div
+                          className="flex flex-1 justify-between items-center gap-3 p-2.5 rounded-xl border shadow-sm transition-all min-w-0"
+                          style={{
+                            backgroundColor: "var(--bg-primary)",
+                            borderColor: "var(--border-color)",
+                          }}
+                        >
                           <div className="min-w-0">
                             <p
                               className={`text-[10px] font-black uppercase tracking-wider truncate mb-0.5 ${
                                 step.completed
-                                  ? "text-slate-900"
-                                  : "text-slate-300"
+                                  ? "text-[var(--text-primary)]"
+                                  : "text-[var(--text-muted)]"
                               }`}
                             >
                               {step.status}
                             </p>
-                            <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tight">
+                            <p
+                              className="text-[8px] font-bold uppercase tracking-tight"
+                              style={{ color: "var(--text-muted)" }}
+                            >
                               {step.date}
                             </p>
                           </div>
@@ -820,7 +1032,7 @@ const DonationRequests = () => {
                             className={`text-[10px] font-black tabular-nums shrink-0 ${
                               step.completed
                                 ? "text-[#22c55e]"
-                                : "text-slate-300"
+                                : "text-[var(--text-muted)]"
                             }`}
                           >
                             {step.time}
@@ -834,18 +1046,39 @@ const DonationRequests = () => {
 
               {/* Points Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-6 rounded-2xl border border-slate-100 bg-white space-y-4 hover:shadow-lg transition-all duration-500">
-                  <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
-                    <div className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center">
+                <div
+                  className="p-6 rounded-2xl border space-y-4 hover:shadow-lg transition-all duration-500"
+                  style={{
+                    backgroundColor: "var(--bg-primary)",
+                    borderColor: "var(--border-color)",
+                  }}
+                >
+                  <div
+                    className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em]"
+                    style={{ color: "var(--text-muted)" }}
+                  >
+                    <div
+                      className="w-8 h-8 rounded-full flex items-center justify-center border"
+                      style={{
+                        backgroundColor: "var(--bg-secondary)",
+                        borderColor: "var(--border-color)",
+                      }}
+                    >
                       <MapPin size={16} className="text-[#22c55e]" />
                     </div>
                     Pickup Point
                   </div>
                   <div className="space-y-1">
-                    <p className="text-[13px] font-black text-slate-900 uppercase tracking-tight">
+                    <p
+                      className="text-[13px] font-black uppercase tracking-tight"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       {selectedRequest.source}
                     </p>
-                    <p className="text-[11px] font-semibold text-slate-600 leading-relaxed">
+                    <p
+                      className="text-[11px] font-semibold leading-relaxed"
+                      style={{ color: "var(--text-secondary)" }}
+                    >
                       {selectedRequest.status === "Available"
                         ? "Address Hidden (Revealed after acceptance)"
                         : selectedRequest.pickupAddress || "Verified Location"}
@@ -853,18 +1086,39 @@ const DonationRequests = () => {
                   </div>
                 </div>
 
-                <div className="p-6 rounded-2xl border border-slate-100 bg-white space-y-4 hover:shadow-lg transition-all duration-500">
-                  <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
-                    <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center">
+                <div
+                  className="p-6 rounded-2xl border space-y-4 hover:shadow-lg transition-all duration-500"
+                  style={{
+                    backgroundColor: "var(--bg-primary)",
+                    borderColor: "var(--border-color)",
+                  }}
+                >
+                  <div
+                    className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em]"
+                    style={{ color: "var(--text-muted)" }}
+                  >
+                    <div
+                      className="w-8 h-8 rounded-full flex items-center justify-center border"
+                      style={{
+                        backgroundColor: "var(--bg-secondary)",
+                        borderColor: "var(--border-color)",
+                      }}
+                    >
                       <Building2 size={16} className="text-blue-500" />
                     </div>
                     Delivery Point
                   </div>
                   <div className="space-y-1">
-                    <p className="text-[13px] font-black text-slate-900 uppercase tracking-tight">
+                    <p
+                      className="text-[13px] font-black uppercase tracking-tight"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       Hope Shelter Main
                     </p>
-                    <p className="text-[11px] font-semibold text-slate-600 leading-relaxed">
+                    <p
+                      className="text-[11px] font-semibold leading-relaxed"
+                      style={{ color: "var(--text-secondary)" }}
+                    >
                       {selectedRequest.deliveryAddress || "NGO Main Hub"}
                     </p>
                   </div>
@@ -873,21 +1127,46 @@ const DonationRequests = () => {
 
               {/* Personnel Section */}
               {selectedRequest.status !== "Available" && (
-                <div className="p-8 rounded-2xl border border-slate-100 bg-white space-y-6 shadow-sm">
-                  <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
+                <div
+                  className="p-8 rounded-2xl border space-y-6 shadow-sm"
+                  style={{
+                    backgroundColor: "var(--bg-primary)",
+                    borderColor: "var(--border-color)",
+                  }}
+                >
+                  <h4
+                    className="text-[10px] font-black uppercase tracking-[0.3em]"
+                    style={{ color: "var(--text-muted)" }}
+                  >
                     Assigned Personnel
                   </h4>
                   <div className="flex items-center justify-between gap-4">
                     <div className="flex items-center gap-4 min-w-0">
-                      <div className="w-14 h-14 rounded-full bg-slate-50 border-4 border-slate-100 flex items-center justify-center text-[#22c55e] font-black text-xl shadow-sm shrink-0 uppercase">
+                      <div
+                        className="w-14 h-14 rounded-full border-4 flex items-center justify-center text-[#22c55e] font-black text-xl shadow-sm shrink-0 uppercase"
+                        style={{
+                          backgroundColor: "var(--bg-secondary)",
+                          borderColor: "var(--bg-primary)",
+                        }}
+                      >
                         {selectedRequest.volunteer?.name.charAt(0) || "V"}
                       </div>
                       <div className="space-y-1 min-w-0">
-                        <p className="text-[13px] font-black text-slate-900 uppercase tracking-tight truncate">
+                        <p
+                          className="text-[13px] font-black uppercase tracking-tight truncate"
+                          style={{ color: "var(--text-primary)" }}
+                        >
                           {selectedRequest.volunteer?.name || "Field Agent"}
                         </p>
                         <div className="flex items-center gap-3 whitespace-nowrap">
-                          <span className="text-[10px] font-bold text-slate-400 flex items-center gap-1.5 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-100">
+                          <span
+                            className="text-[10px] font-bold flex items-center gap-1.5 px-2 py-0.5 rounded-md border"
+                            style={{
+                              backgroundColor: "var(--bg-secondary)",
+                              borderColor: "var(--border-color)",
+                              color: "var(--text-muted)",
+                            }}
+                          >
                             <Star
                               className="fill-yellow-400 text-yellow-400"
                               size={10}
@@ -897,11 +1176,12 @@ const DonationRequests = () => {
                           {selectedRequest.volunteer?.phone && (
                             <a
                               href={`tel:${selectedRequest.volunteer.phone.replace(/\s+/g, "")}`}
-                              className="text-[10px] font-black text-slate-400/80 flex items-center gap-1.5 py-0.5 tracking-tight group cursor-pointer hover:text-[#22c55e] transition-colors"
+                              className="text-[10px] font-black flex items-center gap-1.5 py-0.5 tracking-tight group cursor-pointer transition-colors"
+                              style={{ color: "var(--text-muted)" }}
                             >
                               <Phone
                                 size={11}
-                                className="text-slate-300 group-hover:text-[#22c55e] transition-colors"
+                                className="opacity-50 group-hover:text-[#22c55e] group-hover:opacity-100 transition-all"
                               />
                               {selectedRequest.volunteer.phone}
                             </a>
@@ -912,7 +1192,12 @@ const DonationRequests = () => {
                     {selectedRequest.volunteer?.phone && (
                       <a
                         href={`tel:${selectedRequest.volunteer.phone.replace(/\s+/g, "")}`}
-                        className="w-11 h-11 rounded-full bg-white border border-slate-100 text-[#22c55e] flex items-center justify-center shadow-lg shadow-[#22c55e]/5 hover:shadow-[#22c55e]/20 hover:scale-105 active:scale-95 transition-all outline-none ring-offset-2 ring-green-100 hover:ring-2 shrink-0"
+                        className="w-11 h-11 rounded-full flex items-center justify-center shadow-lg shadow-[#22c55e]/5 hover:shadow-[#22c55e]/20 hover:scale-105 active:scale-95 transition-all outline-none ring-offset-2 ring-green-100 hover:ring-2 shrink-0 border"
+                        style={{
+                          backgroundColor: "var(--bg-primary)",
+                          borderColor: "var(--border-color)",
+                          color: "#22c55e",
+                        }}
                       >
                         <Phone size={18} />
                       </a>
@@ -922,15 +1207,33 @@ const DonationRequests = () => {
               )}
 
               {/* Info Note */}
-              <div className="flex items-center gap-4 p-5 bg-blue-50 border border-blue-100 rounded-2xl group hover:border-blue-200 transition-colors duration-300">
-                <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shrink-0 shadow-sm border border-blue-100 group-hover:scale-110 transition-transform">
+              <div
+                className="flex items-center gap-4 p-5 rounded-2xl group transition-colors duration-300 border"
+                style={{
+                  backgroundColor: "rgba(59, 130, 246, 0.05)",
+                  borderColor: "rgba(59, 130, 246, 0.2)",
+                }}
+              >
+                <div
+                  className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 shadow-sm border group-hover:scale-110 transition-transform"
+                  style={{
+                    backgroundColor: "var(--bg-primary)",
+                    borderColor: "rgba(59, 130, 246, 0.2)",
+                  }}
+                >
                   <Info className="text-blue-500" size={18} />
                 </div>
                 <div className="space-y-1">
-                  <p className="text-[11px] font-bold text-blue-800 leading-relaxed">
+                  <p
+                    className="text-[11px] font-bold leading-relaxed"
+                    style={{ color: "var(--color-blue)" }}
+                  >
                     Intelligence Tracking Active
                   </p>
-                  <p className="text-[10px] font-medium text-blue-600/80 leading-relaxed">
+                  <p
+                    className="text-[10px] font-medium leading-relaxed opacity-80"
+                    style={{ color: "var(--color-blue)" }}
+                  >
                     Your donation is currently being tracked by our Intelligence
                     System. Live updates are provided by our field volunteers
                     via mobile app.
@@ -988,7 +1291,7 @@ const DonationRequests = () => {
                 onMouseLeave={handleMouseLeaveSuccess}
               >
                 <div className="relative mb-8">
-                  <div className="absolute inset-0 rounded-full bg-emerald-100 animate-ping opacity-20 scale-150" />
+                  <div className="absolute inset-0 rounded-full bg-emerald-100 dark:bg-emerald-900/40 animate-ping opacity-20 scale-150" />
                   <div className="w-16 h-16 bg-[#22c55e] rounded-full flex items-center justify-center relative z-10 shadow-lg shadow-green-500/20">
                     <Check className="text-white" size={32} strokeWidth={3} />
                   </div>
@@ -998,12 +1301,24 @@ const DonationRequests = () => {
                   <h3 className="text-[9px] font-black uppercase tracking-[0.4em] text-[#22c55e] leading-none mb-1">
                     Synchronized
                   </h3>
-                  <h2 className="text-xl font-black text-slate-900 tracking-tight leading-none uppercase">
+                  <h2
+                    className="text-xl font-black tracking-tight leading-none uppercase"
+                    style={{ color: "var(--text-primary)" }}
+                  >
                     Logistics Synchronized!
                   </h2>
-                  <p className="text-[12px] font-bold text-slate-500 max-w-[320px] leading-relaxed mx-auto">
+                  <p
+                    className="text-[12px] font-bold max-w-[320px] leading-relaxed mx-auto"
+                    style={{ color: "var(--text-secondary)" }}
+                  >
                     Resource{" "}
-                    <span className="text-slate-900 font-black px-1.5 py-0.5 bg-slate-100 rounded-sm">
+                    <span
+                      className="font-black px-1.5 py-0.5 rounded-sm"
+                      style={{
+                        backgroundColor: "var(--bg-secondary)",
+                        color: "var(--text-primary)",
+                      }}
+                    >
                       #{acceptingDonation?.id}
                     </span>{" "}
                     has been accepted and mission assigned to{" "}
@@ -1014,7 +1329,10 @@ const DonationRequests = () => {
                   </p>
                 </div>
 
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-slate-50">
+                <div
+                  className="absolute bottom-0 left-0 right-0 h-1"
+                  style={{ backgroundColor: "var(--bg-secondary)" }}
+                >
                   <div
                     className={`h-full bg-[#22c55e] ${isTimerPaused ? "animate-none" : "animate-[progress-shrink_2.5s_linear_forwards]"}`}
                     style={{
@@ -1026,7 +1344,10 @@ const DonationRequests = () => {
                   />
                 </div>
 
-                <p className="absolute bottom-2 text-[9px] font-bold text-slate-300 uppercase tracking-widest mt-4">
+                <p
+                  className="absolute bottom-2 text-[9px] font-bold uppercase tracking-widest mt-4"
+                  style={{ color: "var(--text-muted)" }}
+                >
                   {isTimerPaused ? "Timer Paused" : "Closing automatically..."}
                 </p>
 
@@ -1039,31 +1360,67 @@ const DonationRequests = () => {
               </div>
             ) : (
               <div className="space-y-2">
-                <div className="p-2.5 bg-slate-50 border border-slate-100 rounded-2xl flex items-start gap-2.5">
-                  <div className="w-9 h-9 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center text-lg shrink-0">
+                <div
+                  className="p-2.5 border rounded-2xl flex items-start gap-2.5"
+                  style={{
+                    backgroundColor: "var(--bg-secondary)",
+                    borderColor: "var(--border-color)",
+                  }}
+                >
+                  <div
+                    className="w-9 h-9 rounded-xl shadow-sm border flex items-center justify-center text-lg shrink-0"
+                    style={{
+                      backgroundColor: "var(--bg-primary)",
+                      borderColor: "var(--border-color)",
+                    }}
+                  >
                     {acceptingDonation?.icon}
                   </div>
                   <div className="min-w-0">
-                    <h4 className="text-[13px] font-black text-slate-800 uppercase tracking-tight leading-tight mb-0.5 truncate">
+                    <h4
+                      className="text-[13px] font-black uppercase tracking-tight leading-tight mb-0.5 truncate"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       {acceptingDonation?.title}
                     </h4>
-                    <p className="text-[9px] font-black text-slate-400 flex items-center gap-1">
-                      <Building2 size={10} className="text-slate-300" />
+                    <p
+                      className="text-[9px] font-black flex items-center gap-1"
+                      style={{ color: "var(--text-muted)" }}
+                    >
+                      <Building2 size={10} className="opacity-50" />
                       {acceptingDonation?.source}
                     </p>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <div className="flex items-start gap-2.5 text-emerald-600 bg-emerald-50/50 p-2.5 rounded-xl border border-emerald-100/50">
-                    <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center shrink-0 border border-emerald-100 shadow-sm">
+                  <div
+                    className="flex items-start gap-2.5 p-2.5 rounded-xl border"
+                    style={{
+                      backgroundColor: "rgba(34, 197, 94, 0.08)",
+                      borderColor: "rgba(34, 197, 94, 0.2)",
+                    }}
+                  >
+                    <div
+                      className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 border shadow-sm"
+                      style={{
+                        backgroundColor: "var(--bg-primary)",
+                        borderColor: "rgba(34, 197, 94, 0.2)",
+                      }}
+                    >
                       <Navigation size={12} className="text-[#22c55e]" />
                     </div>
                     <div className="space-y-0.5">
-                      <p className="text-[9px] font-black uppercase tracking-[0.1em]">
+                      <p
+                        className="text-[9px] font-black uppercase tracking-[0.1em]"
+                        style={{ color: "var(--color-emerald-dark)" }}
+                      >
                         Logistic Optimization
                       </p>
-                      <p className="text-[9px] font-bold text-emerald-800/80 leading-relaxed">
+                      <p
+                        className="text-[9px] font-bold leading-relaxed opacity-80"
+                        style={{ color: "var(--color-emerald-dark)" }}
+                      >
                         By accepting, our system will automatically broadcast
                         this mission to nearby field agents for immediate
                         pickup.
@@ -1072,12 +1429,27 @@ const DonationRequests = () => {
                   </div>
 
                   {/* Nearby Volunteer Selection */}
-                  <div className="p-2.5 bg-slate-50 border border-slate-100 rounded-xl space-y-1.5">
+                  <div
+                    className="p-2.5 border rounded-xl space-y-1.5"
+                    style={{
+                      backgroundColor: "var(--bg-secondary)",
+                      borderColor: "var(--border-color)",
+                    }}
+                  >
                     <div className="flex items-center justify-between">
-                      <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">
+                      <span
+                        className="text-[8px] font-black uppercase tracking-widest"
+                        style={{ color: "var(--text-muted)" }}
+                      >
                         Nearby Field Agents
                       </span>
-                      <span className="text-[8px] font-black text-[#22c55e] bg-white px-1 py-0.5 rounded-full border border-emerald-100 shadow-sm">
+                      <span
+                        className="text-[8px] font-black bg-white dark:bg-slate-900 border px-1 py-0.5 rounded-full shadow-sm"
+                        style={{
+                          color: "var(--color-emerald)",
+                          borderColor: "rgba(34, 197, 94, 0.2)",
+                        }}
+                      >
                         {nearbyVolunteers.length} Active
                       </span>
                     </div>
@@ -1089,31 +1461,56 @@ const DonationRequests = () => {
                           onClick={() => setSelectedVolunteer(vol)}
                           className={`flex items-center justify-between p-1.5 rounded-lg cursor-pointer transition-all duration-300 border ${
                             selectedVolunteer.id === vol.id
-                              ? "bg-white border-[#22c55e]/30 shadow-sm"
+                              ? "shadow-sm"
                               : "bg-transparent border-transparent grayscale-[0.5] opacity-70 hover:opacity-100"
                           }`}
+                          style={{
+                            backgroundColor:
+                              selectedVolunteer.id === vol.id
+                                ? "var(--bg-primary)"
+                                : undefined,
+                            borderColor:
+                              selectedVolunteer.id === vol.id
+                                ? "rgba(34, 197, 94, 0.3)"
+                                : undefined,
+                          }}
                         >
                           <div className="flex items-center gap-2">
                             <div
-                              className={`w-6 h-6 rounded-full flex items-center justify-center text-[8px] font-black border uppercase shadow-inner transition-colors ${
-                                selectedVolunteer.id === vol.id
-                                  ? "bg-emerald-50 text-[#22c55e] border-emerald-100"
-                                  : "bg-slate-100 text-slate-500 border-white"
-                              }`}
+                              className="w-6 h-6 rounded-full flex items-center justify-center text-[8px] font-black border uppercase shadow-inner transition-colors"
+                              style={{
+                                backgroundColor:
+                                  selectedVolunteer.id === vol.id
+                                    ? "rgba(34, 197, 94, 0.08)"
+                                    : "var(--bg-primary)",
+                                borderColor:
+                                  selectedVolunteer.id === vol.id
+                                    ? "rgba(34, 197, 94, 0.2)"
+                                    : "var(--border-color)",
+                                color:
+                                  selectedVolunteer.id === vol.id
+                                    ? "#22c55e"
+                                    : "var(--text-muted)",
+                              }}
                             >
                               {vol.initials}
                             </div>
                             <div>
                               <p
-                                className={`text-[11px] font-black uppercase tracking-tight transition-colors ${
-                                  selectedVolunteer.id === vol.id
-                                    ? "text-slate-800"
-                                    : "text-slate-500"
-                                }`}
+                                className="text-[11px] font-black uppercase tracking-tight transition-colors"
+                                style={{
+                                  color:
+                                    selectedVolunteer.id === vol.id
+                                      ? "var(--text-primary)"
+                                      : "var(--text-secondary)",
+                                }}
                               >
                                 {vol.name}
                               </p>
-                              <p className="text-[8px] font-black text-slate-400">
+                              <p
+                                className="text-[8px] font-black"
+                                style={{ color: "var(--text-muted)" }}
+                              >
                                 {vol.distance} • ★ {vol.rating}
                               </p>
                             </div>
@@ -1132,11 +1529,20 @@ const DonationRequests = () => {
                   </div>
 
                   <div className="grid grid-cols-3 gap-2">
-                    <div className="p-2.5 bg-white border border-slate-100 rounded-xl space-y-1 shadow-sm">
-                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.1em]">
+                    <div
+                      className="p-2.5 border rounded-xl space-y-1 shadow-sm"
+                      style={{
+                        backgroundColor: "var(--bg-primary)",
+                        borderColor: "var(--border-color)",
+                      }}
+                    >
+                      <p
+                        className="text-[8px] font-black uppercase tracking-[0.1em]"
+                        style={{ color: "var(--text-muted)" }}
+                      >
                         Urgency
                       </p>
-                      <div className="flex items-center gap-1.5 pt-1 border-t border-slate-50">
+                      <div className="flex items-center gap-1.5 pt-1 border-t border-[var(--border-color)]">
                         <AlertTriangle
                           size={10}
                           className={
@@ -1152,23 +1558,47 @@ const DonationRequests = () => {
                         </p>
                       </div>
                     </div>
-                    <div className="p-2.5 bg-white border border-slate-100 rounded-xl space-y-1 shadow-sm">
-                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.1em]">
+                    <div
+                      className="p-2.5 border rounded-xl space-y-1 shadow-sm"
+                      style={{
+                        backgroundColor: "var(--bg-primary)",
+                        borderColor: "var(--border-color)",
+                      }}
+                    >
+                      <p
+                        className="text-[8px] font-black uppercase tracking-[0.1em]"
+                        style={{ color: "var(--text-muted)" }}
+                      >
                         Quantity
                       </p>
-                      <div className="pt-1 border-t border-slate-50 flex items-center gap-1">
-                        <Box size={10} className="text-slate-400" />
-                        <p className="text-[12px] font-black text-slate-700 uppercase tracking-tight">
+                      <div className="pt-1 border-t border-[var(--border-color)] flex items-center gap-1">
+                        <Box size={10} style={{ color: "var(--text-muted)" }} />
+                        <p
+                          className="text-[12px] font-black uppercase tracking-tight"
+                          style={{ color: "var(--text-primary)" }}
+                        >
                           {acceptingDonation?.quantity || "Units"}
                         </p>
                       </div>
                     </div>
-                    <div className="p-2.5 bg-white border border-slate-100 rounded-xl space-y-1 shadow-sm">
-                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.1em]">
+                    <div
+                      className="p-2.5 border rounded-xl space-y-1 shadow-sm"
+                      style={{
+                        backgroundColor: "var(--bg-primary)",
+                        borderColor: "var(--border-color)",
+                      }}
+                    >
+                      <p
+                        className="text-[8px] font-black uppercase tracking-[0.1em]"
+                        style={{ color: "var(--text-muted)" }}
+                      >
                         Value
                       </p>
-                      <div className="pt-1 border-t border-slate-50">
-                        <p className="text-[12px] font-black text-slate-700 uppercase tracking-tight">
+                      <div className="pt-1 border-t border-[var(--border-color)]">
+                        <p
+                          className="text-[12px] font-black uppercase tracking-tight"
+                          style={{ color: "var(--text-primary)" }}
+                        >
                           Premium
                         </p>
                       </div>

@@ -70,7 +70,7 @@ const AnalyticsPage: React.FC = () => {
       <header className="flex justify-between items-end">
         <div className="text-start">
           <h1
-            className="text-4xl font-black tracking-tight"
+            className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight break-words"
             style={{ color: "var(--text-primary)" }}
           >
             Impact Analytics

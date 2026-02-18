@@ -265,13 +265,13 @@ const PendingDonationsPage: React.FC = () => {
               style={{
                 backgroundColor:
                   value === "urgent"
-                    ? "rgba(239, 68, 68, 0.1)"
-                    : "rgba(245, 158, 11, 0.1)",
-                color: value === "urgent" ? "#ef4444" : "#f59e0b",
+                    ? "rgba(239, 68, 68, 0.15)"
+                    : "rgba(245, 158, 11, 0.15)",
+                color: value === "urgent" ? "#f87171" : "#fbbf24",
                 borderColor:
                   value === "urgent"
-                    ? "rgba(239, 68, 68, 0.2)"
-                    : "rgba(245, 158, 11, 0.2)",
+                    ? "rgba(239, 68, 68, 0.3)"
+                    : "rgba(245, 158, 11, 0.3)",
               }}
               size="sm"
               variant="flat"

@@ -16,9 +16,8 @@ const AdminLayoutContent: React.FC = () => {
 
       <main
         className={
-          "fixed top-20 bottom-0 right-0 no-scrollbar transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] overflow-auto " +
-          (expanded ? "md:left-[260px]" : "md:left-[70px]") +
-          " left-0"
+          "fixed top-16 md:top-20 bottom-0 right-0 no-scrollbar transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] overflow-auto " +
+          (expanded ? "left-0 md:left-[260px]" : "left-0 md:left-[70px]")
         }
         style={{ backgroundColor: "var(--bg-primary)" }}
       >

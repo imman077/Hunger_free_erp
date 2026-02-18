@@ -1,27 +1,37 @@
 import React from "react";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "../contexts/ThemeContext";
+import IconButton from "@mui/material/IconButton";
 
 const ThemeToggle: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <button
+    <IconButton
       onClick={toggleTheme}
-      className="p-2 rounded-lg transition-all duration-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-      style={{
-        backgroundColor: "var(--bg-hover)",
-        color: "var(--text-primary)",
+      sx={{
+        padding: "0",
+        width: { xs: "36px", md: "44px" },
+        height: { xs: "36px", md: "44px" },
+        backgroundColor: "var(--bg-tertiary)",
+        borderRadius: "12px",
+        border: "1px solid var(--border-color)",
+        boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
+        "&:hover": {
+          backgroundColor: "var(--bg-hover)",
+          transform: "translateY(-1px)",
+        },
+        transition: "all 0.2s ease-in-out",
       }}
       aria-label="Toggle theme"
       title={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
     >
       {theme === "light" ? (
-        <Moon size={20} className="transition-transform duration-300" />
+        <Moon size={18} className="text-slate-600 dark:text-slate-300" />
       ) : (
-        <Sun size={20} className="transition-transform duration-300" />
+        <Sun size={18} className="text-slate-600 dark:text-slate-300" />
       )}
-    </button>
+    </IconButton>
   );
 };
 

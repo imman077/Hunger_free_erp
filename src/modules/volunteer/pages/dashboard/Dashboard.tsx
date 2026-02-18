@@ -7,8 +7,6 @@ import {
   Trophy,
   Package,
   ShieldCheck,
-  Calendar,
-  ChevronRight,
 } from "lucide-react";
 import ImpactCards from "../../../../global/components/resuable-components/ImpactCards";
 import {
@@ -177,7 +175,10 @@ const VolunteerDashboard = () => {
                     >
                       Progress to {nextTier.name}
                     </span>
-                    <span className="text-[8px] font-black text-green-600 uppercase tabular-nums">
+                    <span
+                      className="text-[8px] font-black uppercase tabular-nums"
+                      style={{ color: "#22c55e" }}
+                    >
                       {Math.round(progressToNext)}%
                     </span>
                   </div>
@@ -212,7 +213,7 @@ const VolunteerDashboard = () => {
 
       <div className="px-6 grid grid-cols-1 lg:grid-cols-12 gap-4 pt-0 items-stretch">
         {/* Recent Tasks (8 cols) */}
-        <div className="lg:col-span-8 flex flex-col h-full">
+        <div className="lg:col-span-12 flex flex-col h-full">
           <div
             className="rounded-md p-5 md:p-6 space-y-6 flex flex-col h-full overflow-hidden shadow-sm border"
             style={{
@@ -227,7 +228,10 @@ const VolunteerDashboard = () => {
               >
                 Ongoing & Recent Tasks
               </h2>
-              <button className="text-[8px] font-black text-green-600 hover:text-green-700 uppercase tracking-widest transition-colors focus:outline-none">
+              <button
+                className="text-[8px] font-black uppercase tracking-widest transition-colors focus:outline-none hover:opacity-80"
+                style={{ color: "#22c55e" }}
+              >
                 FIND NEW TASKS
               </button>
             </div>
@@ -238,14 +242,17 @@ const VolunteerDashboard = () => {
                 return (
                   <div
                     key={idx}
-                    className="group flex items-center justify-between p-4 rounded-md transition-all duration-300 hover:bg-slate-500/5 cursor-pointer border border-slate-100 hover:border-green-500/20 shadow-sm"
-                    style={{ borderColor: "var(--border-color)" }}
+                    className="group flex items-center justify-between p-4 rounded-md transition-all duration-300 hover:bg-slate-500/5 cursor-pointer border hover:border-green-500/20 shadow-sm"
+                    style={{
+                      backgroundColor: "var(--bg-primary)",
+                      borderColor: "var(--border-color)",
+                    }}
                   >
                     <div className="flex items-center gap-5 min-w-0">
                       <div
-                        className={`w-12 h-12 rounded-md shrink-0 flex items-center justify-center transition-all duration-300 group-hover:scale-105 ${
+                        className={`w-12 h-12 rounded-md shrink-0 flex items-center justify-center transition-all duration-300 group-hover:scale-105 border ${
                           isCompleted
-                            ? "bg-emerald-500/10 text-green-600 border border-emerald-500/10"
+                            ? "bg-emerald-500/10 text-[#22c55e] border-emerald-500/10"
                             : "bg-orange-500/10 text-orange-500 border-orange-500/10"
                         }`}
                       >
@@ -257,7 +264,7 @@ const VolunteerDashboard = () => {
 
                       <div className="min-w-0 text-start">
                         <h3
-                          className="text-sm font-black tracking-tight truncate group-hover:text-green-600 transition-colors mb-1 leading-none"
+                          className="text-sm font-black tracking-tight truncate transition-colors mb-1 leading-none group-hover:text-[#22c55e]"
                           style={{ color: "var(--text-primary)" }}
                         >
                           {activity.title}
@@ -296,7 +303,7 @@ const VolunteerDashboard = () => {
                       <span
                         className={`px-3 py-1 rounded-sm text-[8px] font-black uppercase tracking-[0.2em] border shadow-sm ${
                           isCompleted
-                            ? "text-green-600 bg-green-500/10 border-green-500/20"
+                            ? "text-[#22c55e] bg-green-500/10 border-green-500/20"
                             : "text-orange-600 bg-orange-500/10 border-orange-500/20"
                         }`}
                       >
@@ -308,123 +315,6 @@ const VolunteerDashboard = () => {
               })}
             </div>
           </div>
-        </div>
-
-        {/* Operational Status (4 cols) */}
-        <div className="lg:col-span-4 space-y-4 h-full flex flex-col">
-          {/* Transport Card */}
-          <section
-            className="p-6 rounded-md shadow-sm border"
-            style={{
-              backgroundColor: "var(--bg-primary)",
-              borderColor: "var(--border-color)",
-            }}
-          >
-            <h3
-              className="text-[11px] font-black tracking-tight uppercase mb-5 flex items-center justify-between"
-              style={{ color: "var(--text-primary)" }}
-            >
-              Transport Status
-              <TrendingUp size={14} className="text-green-500" />
-            </h3>
-            <div
-              className="flex items-center gap-4 p-3 rounded-md border group transition-colors hover:bg-green-500/5"
-              style={{
-                backgroundColor: "var(--bg-secondary)",
-                borderColor: "var(--border-color)",
-              }}
-            >
-              <div
-                className="w-12 h-12 rounded-md border flex items-center justify-center text-3xl shrink-0 group-hover:border-green-500/30"
-                style={{
-                  backgroundColor: "var(--bg-primary)",
-                  borderColor: "var(--border-color)",
-                }}
-              >
-                🚲
-              </div>
-              <div className="text-left">
-                <h5
-                  className="text-sm font-black leading-none"
-                  style={{ color: "var(--text-primary)" }}
-                >
-                  Electric Bicycle
-                </h5>
-                <p
-                  className="text-[9px] font-black mt-1 uppercase tracking-widest leading-none"
-                  style={{ color: "var(--text-muted)" }}
-                >
-                  Model: EcoRider 3000
-                </p>
-                <div className="mt-2.5 flex items-center gap-2">
-                  <span className="px-1.5 py-0.5 bg-green-500/10 text-green-600 text-[8px] font-black rounded-sm border border-green-500/10">
-                    VERIFIED
-                  </span>
-                </div>
-              </div>
-              <ChevronRight
-                size={16}
-                className="ml-auto opacity-30 group-hover:opacity-100 group-hover:text-green-500 transition-all cursor-pointer"
-              />
-            </div>
-          </section>
-
-          {/* Availability Card */}
-          <section
-            className="p-6 rounded-md shadow-sm h-full border"
-            style={{
-              backgroundColor: "var(--bg-primary)",
-              borderColor: "var(--border-color)",
-            }}
-          >
-            <h3
-              className="text-[11px] font-black tracking-tight uppercase mb-5 flex items-center justify-between"
-              style={{ color: "var(--text-primary)" }}
-            >
-              Schedule: Week 06
-              <Calendar size={14} className="text-green-500" />
-            </h3>
-            <div className="grid grid-cols-7 gap-1 flex-1">
-              {["M", "T", "W", "T", "F", "S", "S"].map((day, idx) => {
-                const isActive = [0, 2, 4, 5].includes(idx);
-                return (
-                  <div
-                    key={idx}
-                    className={`aspect-square flex flex-col items-center justify-center rounded-sm border transition-all ${
-                      isActive
-                        ? "bg-green-500/10 border-green-500/20 shadow-sm"
-                        : "opacity-20 translate-y-0"
-                    }`}
-                    style={{
-                      borderColor: isActive
-                        ? "var(--color-emerald)"
-                        : "var(--border-color)",
-                    }}
-                  >
-                    <span
-                      className={`text-[8px] font-black ${
-                        isActive ? "text-green-600" : ""
-                      }`}
-                      style={{ color: !isActive ? "var(--text-muted)" : "" }}
-                    >
-                      {day}
-                    </span>
-                    <div
-                      className={`w-1 h-1 rounded-full mt-1 ${
-                        isActive ? "bg-green-500" : "bg-slate-500/30"
-                      }`}
-                    />
-                  </div>
-                );
-              })}
-            </div>
-            <p
-              className="text-[9px] font-bold mt-4 leading-tight italic"
-              style={{ color: "var(--text-muted)" }}
-            >
-              Active days determine task priority and points multipliers.
-            </p>
-          </section>
         </div>
       </div>
 
@@ -445,7 +335,10 @@ const VolunteerDashboard = () => {
               >
                 Leveling & Milestones
               </h2>
-              <button className="text-[8px] font-black text-green-600 hover:text-green-700 uppercase tracking-widest transition-colors focus:outline-none">
+              <button
+                className="text-[8px] font-black uppercase tracking-widest transition-colors focus:outline-none hover:opacity-80"
+                style={{ color: "#22c55e" }}
+              >
                 ALL ACHIEVEMENTS
               </button>
             </div>
@@ -510,26 +403,53 @@ const VolunteerDashboard = () => {
 
         {/* Activity Details (4 cols) */}
         <div className="lg:col-span-4 flex flex-col h-full">
-          <section className="bg-white border border-slate-100 p-6 rounded-md shadow-sm h-full flex flex-col">
-            <h3 className="text-[11px] font-black tracking-tight uppercase text-slate-800 mb-6 flex items-center justify-between">
+          <section
+            className="p-6 rounded-md shadow-sm h-full flex flex-col border"
+            style={{
+              backgroundColor: "var(--bg-primary)",
+              borderColor: "var(--border-color)",
+            }}
+          >
+            <h3
+              className="text-[11px] font-black tracking-tight uppercase mb-6 flex items-center justify-between"
+              style={{ color: "var(--text-primary)" }}
+            >
               Account History Log
               <Clock size={14} className="text-green-500" />
             </h3>
             <div className="relative space-y-6 flex-1">
-              <div className="absolute left-[11px] top-1.5 bottom-1.5 w-px bg-slate-100" />
+              <div
+                className="absolute left-[11px] top-1.5 bottom-1.5 w-px"
+                style={{ backgroundColor: "var(--border-color)" }}
+              />
               {activities.map((activity, i) => (
                 <div key={i} className="relative pl-8 group">
-                  <div className="absolute left-0 top-0 w-6 h-6 rounded-sm border border-slate-100 flex items-center justify-center bg-white z-10 transition-colors group-hover:border-green-500">
+                  <div
+                    className="absolute left-0 top-0 w-6 h-6 rounded-sm border flex items-center justify-center z-10 transition-colors group-hover:border-green-500"
+                    style={{
+                      backgroundColor: "var(--bg-primary)",
+                      borderColor: "var(--border-color)",
+                    }}
+                  >
                     <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
                   </div>
                   <div className="text-left">
-                    <h4 className="text-[10px] font-black text-slate-700 leading-none mb-1 group-hover:text-green-600 transition-colors uppercase">
+                    <h4
+                      className="text-[10px] font-black leading-none mb-1 transition-colors uppercase group-hover:text-[#22c55e]"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       {activity.title}
                     </h4>
-                    <p className="text-[8px] font-black text-slate-300 uppercase tracking-widest mb-1">
+                    <p
+                      className="text-[8px] font-black uppercase tracking-widest mb-1"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       {activity.time}
                     </p>
-                    <p className="text-[10px] text-slate-500 leading-tight font-medium">
+                    <p
+                      className="text-[10px] leading-tight font-medium"
+                      style={{ color: "var(--text-secondary)" }}
+                    >
                       {activity.desc}
                     </p>
                   </div>

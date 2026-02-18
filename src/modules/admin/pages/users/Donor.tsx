@@ -290,21 +290,24 @@ const DonorPage = () => {
       >
         <div className="w-full">
           {/* Header */}
-          <div className="mb-5 flex items-center justify-between w-full">
+          <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 w-full">
             <div className="text-left">
               <h1
-                className="text-xl font-bold tracking-tight"
+                className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight break-words"
                 style={{ color: "var(--text-primary)" }}
               >
                 Donor Management
               </h1>
-              <p className="mt-2" style={{ color: "var(--text-muted)" }}>
+              <p
+                className="mt-1 md:mt-2 text-xs md:text-sm"
+                style={{ color: "var(--text-muted)" }}
+              >
                 Manage your donors and their contributions
               </p>
             </div>
             <Button
               color="primary"
-              className="bg-hf-green text-white rounded-sm h-10 px-6 font-bold hover:bg-[#1ea34a] transition-all active:scale-95"
+              className="bg-hf-green text-white rounded-sm h-10 px-6 font-bold hover:bg-[#1ea34a] transition-all active:scale-95 self-start sm:self-center shrink-0"
               style={{ backgroundColor: "#22c55e", color: "white" }}
               endContent={<Plus size={18} />}
               onPress={() => navigate("/admin/users/donors/create")}
@@ -362,7 +365,7 @@ const DonorPage = () => {
                   <DropdownTrigger>
                     <Button
                       variant="flat"
-                      className="border rounded-sm h-10 px-4 text-[11px] font-bold transition-all shadow-none"
+                      className="border rounded-sm h-10 px-4 flex-shrink-0 text-[11px] font-bold transition-all shadow-none"
                       style={{
                         backgroundColor: "var(--bg-primary)",
                         borderColor: "var(--border-color)",
@@ -381,7 +384,7 @@ const DonorPage = () => {
                         />
                       }
                     >
-                      ADD FILTER
+                      <span className="hidden sm:inline ml-1">ADD FILTER</span>
                     </Button>
                   </DropdownTrigger>
                   <DropdownMenu
@@ -428,12 +431,12 @@ const DonorPage = () => {
                     <DropdownTrigger>
                       <Button
                         variant="flat"
-                        className="border border-emerald-100 bg-emerald-50/50 rounded-sm h-10 px-3 text-[11px] font-bold text-[#22c55e] hover:bg-emerald-100 transition-all shadow-none"
+                        className="border border-hf-green/20 bg-hf-green/10 rounded-sm h-10 px-3 text-[11px] font-black text-[#22c55e] hover:bg-hf-green/20 transition-all shadow-none"
                         endContent={<ChevronDown size={14} />}
                       >
                         TYPE: {filterType.toUpperCase()}
                         <div
-                          className="ml-2 hover:bg-emerald-200 rounded-full p-0.5 cursor-pointer"
+                          className="ml-2 hover:bg-hf-green/20 rounded-full p-0.5 cursor-pointer"
                           onClick={(e) => {
                             e.stopPropagation();
                             toggleFilter("type");
@@ -487,12 +490,12 @@ const DonorPage = () => {
                     <DropdownTrigger>
                       <Button
                         variant="flat"
-                        className="border border-blue-100 bg-blue-50/50 rounded-sm h-10 px-3 text-[11px] font-bold text-blue-600 hover:bg-blue-100 transition-all shadow-none"
+                        className="border border-blue-500/20 bg-blue-500/10 rounded-sm h-10 px-3 text-[11px] font-black text-blue-600 dark:text-blue-400 hover:bg-blue-500/20 transition-all shadow-none"
                         endContent={<ChevronDown size={14} />}
                       >
                         STATUS: {filterStatus.toUpperCase()}
                         <div
-                          className="ml-2 hover:bg-blue-200 rounded-full p-0.5 cursor-pointer"
+                          className="ml-2 hover:bg-blue-500/20 rounded-full p-0.5 cursor-pointer"
                           onClick={(e) => {
                             e.stopPropagation();
                             toggleFilter("status");
@@ -680,10 +683,10 @@ const DonorPage = () => {
                 borderColor: "var(--border-color)",
               }}
             >
-              <div className="flex items-start justify-between">
-                <div className="space-y-1">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="space-y-1 w-full">
                   <h3
-                    className="text-2xl font-black tracking-tighter"
+                    className="text-2xl font-black tracking-tighter break-words"
                     style={{ color: "var(--text-primary)" }}
                   >
                     {selectedDonor.businessName}
@@ -699,7 +702,7 @@ const DonorPage = () => {
                   </div>
                 </div>
                 <div
-                  className="w-12 h-12 rounded-md flex items-center justify-center border"
+                  className="w-12 h-12 rounded-md flex items-center justify-center border shrink-0"
                   style={{
                     backgroundColor: "var(--bg-tertiary)",
                     borderColor: "var(--border-color)",
@@ -954,12 +957,12 @@ const DonorPage = () => {
             )}
 
             {/* Action Footer */}
-            <div className="flex gap-3 pt-6">
+            <div className="flex flex-col sm:flex-row gap-3 pt-6">
               {isEditMode ? (
                 <>
                   <button
                     onClick={() => setIsEditMode(false)}
-                    className="flex-1 px-6 py-3.5 text-[10px] font-black uppercase tracking-widest transition-colors flex items-center justify-center gap-2 rounded-md border"
+                    className="flex-1 px-6 py-3.5 text-[10px] font-black uppercase tracking-widest transition-colors flex items-center justify-center gap-2 rounded-md border order-2 sm:order-1"
                     style={{
                       backgroundColor: "var(--bg-tertiary)",
                       borderColor: "var(--border-color)",
@@ -971,7 +974,7 @@ const DonorPage = () => {
                   </button>
                   <ReusableButton
                     variant="primary"
-                    className="flex-1 !bg-hf-green hover:!bg-[#1ea34a] !text-white !font-black !px-4 !py-3.5 !text-[10px] uppercase tracking-widest !rounded-md"
+                    className="flex-1 !bg-hf-green hover:!bg-[#1ea34a] !text-white !font-black !px-4 !py-3.5 !text-[10px] uppercase tracking-widest !rounded-md order-1 sm:order-2"
                     onClick={handleUpdateDonor}
                   >
                     <Save size={14} />

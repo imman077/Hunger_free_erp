@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import ResuableButton from "../../../../global/components/resuable-components/button";
 import ResuableDrawer from "../../../../global/components/resuable-components/drawer";
 import FilePreviewModal from "../../../../global/components/resuable-components/FilePreviewModal";
+import ResuableModal from "../../../../global/components/resuable-components/modal";
 import { ImpactCards } from "../../../../global/components/resuable-components/ImpactCards";
 import {
   ShieldCheck,
@@ -20,6 +21,9 @@ import {
   Download,
   Calendar,
   Wallet,
+  TrendingUp,
+  ChevronRight,
+  Bike,
 } from "lucide-react";
 
 /**
@@ -34,6 +38,11 @@ const VolunteerProfile = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [requestId, setRequestId] = useState("");
   const [requestMessage, setRequestMessage] = useState("");
+
+  // Schedule States
+  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+  const [selectedDays, setSelectedDays] = useState<number[]>([0, 2, 4, 5]);
+  const [requestReason, setRequestReason] = useState("");
 
   // Document Preview State
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
@@ -50,6 +59,11 @@ const VolunteerProfile = () => {
       label: "Contact Info",
       icon: <User size={16} />,
       fields: ["Full Name", "Primary Email", "Phone Number", "Base Location"],
+    },
+    transport: {
+      label: "Transport",
+      icon: <Bike size={16} />,
+      fields: ["Vehicle Type", "Model Name", "License Plate", "Insurance Info"],
     },
     legal: {
       label: "Verification",
@@ -190,9 +204,6 @@ const VolunteerProfile = () => {
   ];
 
   // Alignment Helpers
-  const labelText = "text-[10px] font-black tracking-[0.1em]";
-  const valueText = "text-sm font-bold tracking-tight";
-  const rowItem = "flex items-center gap-3 w-full";
 
   return (
     <div
@@ -275,40 +286,66 @@ const VolunteerProfile = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* LEFT: PERSONAL INFORMATION */}
           <aside className="lg:col-span-4 w-full">
-            <div className="bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden text-start lg:h-[calc(100vh-270px)] min-h-[440px] flex flex-col">
-              <div className="h-[52px] px-6 bg-slate-50/50 border-b border-slate-100 flex items-center">
-                <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest flex items-center gap-2">
+            <div
+              className="border rounded-lg shadow-sm overflow-hidden text-start lg:h-[calc(100vh-270px)] min-h-[440px] flex flex-col"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
+              <div
+                className="h-[52px] px-6 border-b flex items-center"
+                style={{
+                  backgroundColor: "var(--bg-secondary)",
+                  borderColor: "var(--border-color)",
+                }}
+              >
+                <h3
+                  className="text-xs font-black uppercase tracking-widest flex items-center gap-2"
+                  style={{ color: "var(--text-primary)" }}
+                >
                   <User size={14} className="text-[#22c55e]" /> Contact Details
                 </h3>
               </div>
               <div className="p-5 flex-grow overflow-y-auto thin-scrollbar flex flex-col gap-5">
                 {/* Contact Info */}
                 <div className="space-y-4">
-                  <p className={labelText}>Primary Identity</p>
+                  <p
+                    className="text-[10px] font-black uppercase tracking-[0.1em]"
+                    style={{ color: "var(--text-muted)" }}
+                  >
+                    Primary Identity
+                  </p>
                   <div className="space-y-2">
-                    <div className={rowItem}>
+                    <div className="flex items-center gap-3 w-full">
                       <div
                         className="w-8 h-8 rounded flex items-center justify-center text-slate-400"
-                        style={{ backgroundColor: "var(--bg-secondary)" }}
+                        style={{
+                          backgroundColor: "var(--bg-secondary)",
+                          borderColor: "var(--border-color)",
+                        }}
                       >
                         <User size={14} />
                       </div>
                       <span
-                        className={valueText}
+                        className="text-sm font-bold tracking-tight"
                         style={{ color: "var(--text-primary)" }}
                       >
                         {profile.name}
                       </span>
                     </div>
-                    <div className={rowItem}>
+                    <div className="flex items-center gap-3 w-full">
                       <div
                         className="w-8 h-8 rounded flex items-center justify-center text-slate-400"
-                        style={{ backgroundColor: "var(--bg-secondary)" }}
+                        style={{
+                          backgroundColor: "var(--bg-secondary)",
+                          borderColor: "var(--border-color)",
+                        }}
                       >
                         <Mail size={14} />
                       </div>
                       <span
-                        className={`${valueText} lowercase opacity-60`}
+                        className="text-sm font-bold tracking-tight lowercase opacity-60"
                         style={{ color: "var(--text-primary)" }}
                       >
                         {profile.email}
@@ -322,20 +359,23 @@ const VolunteerProfile = () => {
                   style={{ borderTop: "1px solid var(--border-color)" }}
                 >
                   <p
-                    className={labelText}
+                    className="text-[10px] font-black uppercase tracking-[0.1em]"
                     style={{ color: "var(--text-muted)" }}
                   >
                     Contact Number
                   </p>
-                  <div className={rowItem}>
+                  <div className="flex items-center gap-3 w-full">
                     <div
                       className="w-8 h-8 rounded flex items-center justify-center text-slate-400"
-                      style={{ backgroundColor: "var(--bg-secondary)" }}
+                      style={{
+                        backgroundColor: "var(--bg-secondary)",
+                        borderColor: "var(--border-color)",
+                      }}
                     >
                       <Phone size={14} />
                     </div>
                     <span
-                      className={valueText}
+                      className="text-sm font-bold tracking-tight"
                       style={{ color: "var(--text-secondary)" }}
                     >
                       {profile.phone}
@@ -348,13 +388,19 @@ const VolunteerProfile = () => {
                   style={{ borderTop: "1px solid var(--border-color)" }}
                 >
                   <p
-                    className={labelText}
+                    className="text-[10px] font-black uppercase tracking-[0.1em]"
                     style={{ color: "var(--text-muted)" }}
                   >
                     Base Hub / Location
                   </p>
                   <div className="flex gap-4">
-                    <div className="w-8 h-8 rounded bg-green-500/10 flex items-center justify-center text-[#22c55e] shrink-0">
+                    <div
+                      className="w-8 h-8 rounded border flex items-center justify-center text-[#22c55e] shrink-0"
+                      style={{
+                        backgroundColor: "rgba(34, 197, 94, 0.08)",
+                        borderColor: "rgba(34, 197, 94, 0.2)",
+                      }}
+                    >
                       <MapPin size={14} />
                     </div>
                     <p
@@ -395,6 +441,7 @@ const VolunteerProfile = () => {
                   {[
                     { id: "identity", label: "Volunteer Info" },
                     { id: "documents", label: "Credential Vault" },
+                    { id: "schedule", label: "Weekly Schedule" },
                   ].map((tab) => (
                     <button
                       key={tab.id}
@@ -464,7 +511,7 @@ const VolunteerProfile = () => {
                           className={`space-y-2 ${field.span ? "md:col-span-2" : ""}`}
                         >
                           <p
-                            className={labelText}
+                            className="text-[10px] font-black uppercase tracking-[0.1em]"
                             style={{ color: "var(--text-muted)" }}
                           >
                             {field.label}
@@ -477,16 +524,17 @@ const VolunteerProfile = () => {
                             }}
                           >
                             <div
-                              className="flex items-center justify-center w-7 h-7 rounded-md border text-slate-400"
+                              className="flex items-center justify-center w-7 h-7 rounded-md border"
                               style={{
                                 backgroundColor: "var(--bg-primary)",
                                 borderColor: "var(--border-color)",
+                                color: "var(--text-muted)",
                               }}
                             >
                               {field.icon}
                             </div>
                             <span
-                              className={`${valueText} text-[13px] flex items-center gap-2`}
+                              className="text-sm font-bold tracking-tight text-[13px] flex items-center gap-2"
                               style={{ color: "var(--text-primary)" }}
                             >
                               {field.val}
@@ -503,20 +551,41 @@ const VolunteerProfile = () => {
                     </div>
 
                     {/* SECTION 2: PAYMENT DETAILS */}
-                    <div className="pt-4 border-t border-slate-100 space-y-4">
+                    <div
+                      className="pt-4 border-t space-y-4"
+                      style={{ borderColor: "var(--border-color)" }}
+                    >
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-[#22c55e] border border-emerald-100 shadow-sm">
+                        <div
+                          className="w-8 h-8 rounded-lg flex items-center justify-center text-[#22c55e] border shadow-sm"
+                          style={{
+                            backgroundColor: "rgba(34, 197, 94, 0.08)",
+                            borderColor: "rgba(34, 197, 94, 0.2)",
+                          }}
+                        >
                           <Wallet size={16} />
                         </div>
                         <div className="flex flex-col">
-                          <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900">
+                          <h4
+                            className="text-[10px] font-black uppercase tracking-[0.2em]"
+                            style={{ color: "var(--text-primary)" }}
+                          >
                             Primary Payment Details
                           </h4>
-                          <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">
+                          <span
+                            className="text-[8px] font-bold uppercase tracking-widest"
+                            style={{ color: "var(--text-muted)" }}
+                          >
                             Your verified payout accounts
                           </span>
                         </div>
-                        <div className="ml-auto flex items-center gap-1.5 px-2 py-1 bg-blue-50/50 rounded-md border border-blue-100">
+                        <div
+                          className="ml-auto flex items-center gap-1.5 px-2 py-1 rounded-md border"
+                          style={{
+                            backgroundColor: "rgba(59, 130, 246, 0.08)",
+                            borderColor: "rgba(59, 130, 246, 0.2)",
+                          }}
+                        >
                           <ShieldCheck size={10} className="text-blue-500" />
                           <span className="text-[8px] font-black text-blue-600 uppercase tracking-widest">
                             Verified & Active
@@ -538,13 +607,32 @@ const VolunteerProfile = () => {
                           },
                         ].map((field, i) => (
                           <div key={i} className="space-y-2">
-                            <p className={labelText}>{field.label}</p>
-                            <div className="flex items-center gap-3 bg-slate-50/50 p-2.5 rounded-md border border-slate-100 hover:border-slate-200 transition-colors">
-                              <div className="flex items-center justify-center w-7 h-7 rounded-md bg-white border border-slate-100 text-slate-400">
+                            <p
+                              className="text-[10px] font-black uppercase tracking-[0.1em]"
+                              style={{ color: "var(--text-muted)" }}
+                            >
+                              {field.label}
+                            </p>
+                            <div
+                              className="flex items-center gap-3 p-2.5 rounded-md border transition-colors"
+                              style={{
+                                backgroundColor: "var(--bg-secondary)",
+                                borderColor: "var(--border-color)",
+                              }}
+                            >
+                              <div
+                                className="flex items-center justify-center w-7 h-7 rounded-md border"
+                                style={{
+                                  backgroundColor: "var(--bg-primary)",
+                                  borderColor: "var(--border-color)",
+                                  color: "var(--text-muted)",
+                                }}
+                              >
                                 {field.icon}
                               </div>
                               <span
-                                className={`${valueText} text-[13px] flex items-center gap-2`}
+                                className="text-sm font-bold tracking-tight text-[13px] flex items-center gap-2"
+                                style={{ color: "var(--text-primary)" }}
                               >
                                 {field.val}
                                 <ShieldCheck
@@ -562,7 +650,12 @@ const VolunteerProfile = () => {
 
                 {activeTab === "documents" && (
                   <div className="space-y-6 animate-in fade-in duration-300">
-                    <p className={labelText}>Credential Documents</p>
+                    <p
+                      className="text-[10px] font-black uppercase tracking-[0.1em]"
+                      style={{ color: "var(--text-muted)" }}
+                    >
+                      Credential Documents
+                    </p>
                     <div className="grid grid-cols-1 gap-4">
                       {[
                         {
@@ -586,17 +679,34 @@ const VolunteerProfile = () => {
                       ].map((doc, i) => (
                         <div
                           key={i}
-                          className="group flex items-center justify-between p-3 bg-slate-50/50 border border-slate-100 rounded-md hover:bg-white hover:border-emerald-200 transition-all duration-300"
+                          className="group flex items-center justify-between p-3 rounded-md border transition-all duration-300"
+                          style={{
+                            backgroundColor: "var(--bg-secondary)",
+                            borderColor: "var(--border-color)",
+                          }}
                         >
                           <div className="flex items-center gap-3 text-start">
-                            <div className="w-8 h-8 rounded-md bg-white border border-slate-100 flex items-center justify-center text-slate-400 group-hover:text-emerald-500 transition-colors text-start">
+                            <div
+                              className="w-8 h-8 rounded-md border flex items-center justify-center group-hover:text-emerald-500 transition-colors text-start"
+                              style={{
+                                backgroundColor: "var(--bg-primary)",
+                                borderColor: "var(--border-color)",
+                                color: "var(--text-muted)",
+                              }}
+                            >
                               <FileText size={14} />
                             </div>
                             <div className="text-start">
-                              <p className="text-xs font-bold text-slate-800 uppercase tracking-tight text-start">
+                              <p
+                                className="text-xs font-bold uppercase tracking-tight text-start"
+                                style={{ color: "var(--text-primary)" }}
+                              >
                                 {doc.name}
                               </p>
-                              <p className="text-[9px] font-bold text-slate-400 uppercase text-start">
+                              <p
+                                className="text-[9px] font-bold uppercase text-start"
+                                style={{ color: "var(--text-muted)" }}
+                              >
                                 Validated: {doc.date}
                               </p>
                             </div>
@@ -606,23 +716,36 @@ const VolunteerProfile = () => {
                             <span
                               className={`px-2.5 py-0.5 rounded-md text-[8px] font-black uppercase tracking-widest border transition-colors ${
                                 doc.status === "Verified"
-                                  ? "bg-green-50 text-green-600 border-green-100"
-                                  : "bg-amber-50 text-amber-600 border-amber-100"
+                                  ? "text-green-600"
+                                  : "text-amber-600"
                               }`}
+                              style={{
+                                backgroundColor:
+                                  doc.status === "Verified"
+                                    ? "rgba(34, 197, 94, 0.08)"
+                                    : "rgba(245, 158, 11, 0.08)",
+                                borderColor:
+                                  doc.status === "Verified"
+                                    ? "rgba(34, 197, 94, 0.2)"
+                                    : "rgba(245, 158, 11, 0.2)",
+                              }}
                             >
                               {doc.status}
                             </span>
 
-                            <div className="flex items-center gap-0.5 pl-3 border-l border-slate-200">
+                            <div
+                              className="flex items-center gap-0.5 pl-3 border-l"
+                              style={{ borderColor: "var(--border-color)" }}
+                            >
                               <button
                                 onClick={() => handleViewDocument(doc)}
-                                className="p-1.5 hover:bg-emerald-50 text-slate-400 hover:text-emerald-600 rounded-lg transition-all"
+                                className="p-1.5 hover:bg-emerald-50/20 text-slate-400 hover:text-emerald-600 rounded-lg transition-all"
                               >
                                 <Eye size={14} />
                               </button>
                               <button
                                 onClick={() => handleDownloadDocument(doc)}
-                                className="p-1.5 hover:bg-blue-50 text-slate-400 hover:text-blue-600 rounded-lg transition-all"
+                                className="p-1.5 hover:bg-blue-50/20 text-slate-400 hover:text-blue-600 rounded-lg transition-all"
                               >
                                 <Download size={14} />
                               </button>
@@ -633,21 +756,186 @@ const VolunteerProfile = () => {
                     </div>
                   </div>
                 )}
+
+                {activeTab === "schedule" && (
+                  <div className="space-y-6 animate-in fade-in duration-300">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {/* Transport Card */}
+                      <section
+                        className="p-6 rounded-md shadow-sm border"
+                        style={{
+                          backgroundColor: "var(--bg-secondary)",
+                          borderColor: "var(--border-color)",
+                        }}
+                      >
+                        <h3
+                          className="text-[11px] font-black tracking-tight uppercase mb-5 flex items-center justify-between"
+                          style={{ color: "var(--text-primary)" }}
+                        >
+                          Transport Status
+                          <button
+                            onClick={() => {
+                              setRequestCategory("transport");
+                              setIsRequestDrawerOpen(true);
+                            }}
+                            className="p-1 hover:bg-green-500/10 rounded-sm transition-colors group/edit-btn"
+                          >
+                            <Edit
+                              size={14}
+                              className="text-green-500 group-hover/edit-btn:scale-110 transition-transform"
+                            />
+                          </button>
+                        </h3>
+                        <div
+                          className="flex items-center gap-4 p-3 rounded-md border group transition-colors hover:bg-green-500/5"
+                          style={{
+                            backgroundColor: "var(--bg-primary)",
+                            borderColor: "var(--border-color)",
+                          }}
+                        >
+                          <div
+                            className="w-12 h-12 rounded-md border flex items-center justify-center text-3xl shrink-0 group-hover:border-green-500/30"
+                            style={{
+                              backgroundColor: "var(--bg-secondary)",
+                              borderColor: "var(--border-color)",
+                            }}
+                          >
+                            🚲
+                          </div>
+                          <div className="text-left">
+                            <h5
+                              className="text-sm font-black leading-none"
+                              style={{ color: "var(--text-primary)" }}
+                            >
+                              Electric Bicycle
+                            </h5>
+                            <p
+                              className="text-[9px] font-black mt-1 uppercase tracking-widest leading-none"
+                              style={{ color: "var(--text-muted)" }}
+                            >
+                              Model: EcoRider 3000
+                            </p>
+                            <div className="mt-2.5 flex items-center gap-2">
+                              <span className="px-1.5 py-0.5 bg-green-500/10 text-green-600 text-[8px] font-black rounded-sm border border-green-500/10">
+                                VERIFIED
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </section>
+
+                      {/* Availability Card */}
+                      <section
+                        className="p-6 rounded-md shadow-sm border"
+                        style={{
+                          backgroundColor: "var(--bg-secondary)",
+                          borderColor: "var(--border-color)",
+                        }}
+                      >
+                        <h3
+                          className="text-[11px] font-black tracking-tight uppercase mb-5 flex items-center justify-between"
+                          style={{ color: "var(--text-primary)" }}
+                        >
+                          Schedule: Week 06
+                          <button
+                            onClick={() => setIsScheduleModalOpen(true)}
+                            className="p-1 hover:bg-green-500/10 rounded-sm transition-colors group/edit-btn"
+                          >
+                            <Calendar
+                              size={14}
+                              className="text-green-500 group-hover/edit-btn:scale-110 transition-transform"
+                            />
+                          </button>
+                        </h3>
+                        <div className="grid grid-cols-7 gap-1">
+                          {["M", "T", "W", "T", "F", "S", "S"].map(
+                            (day, idx) => {
+                              const isActive = [0, 2, 4, 5].includes(idx);
+                              return (
+                                <div
+                                  key={idx}
+                                  className={`aspect-square flex flex-col items-center justify-center rounded-sm border transition-all ${
+                                    isActive
+                                      ? "bg-green-500/10 border-green-500/20 shadow-sm"
+                                      : ""
+                                  }`}
+                                  style={{
+                                    borderColor: isActive
+                                      ? "var(--color-emerald)"
+                                      : "var(--border-color)",
+                                    backgroundColor: isActive
+                                      ? ""
+                                      : "var(--bg-primary)",
+                                  }}
+                                >
+                                  <span
+                                    className={`text-[9px] font-black ${
+                                      isActive ? "text-green-600" : ""
+                                    }`}
+                                    style={{
+                                      color: !isActive
+                                        ? "var(--text-muted)"
+                                        : "",
+                                    }}
+                                  >
+                                    {day}
+                                  </span>
+                                  <div
+                                    className={`w-1 h-1 rounded-full mt-1 ${
+                                      isActive
+                                        ? "bg-green-500"
+                                        : "bg-slate-500/10"
+                                    }`}
+                                  />
+                                </div>
+                              );
+                            },
+                          )}
+                        </div>
+                        <p
+                          className="text-[9px] font-bold mt-4 leading-tight italic"
+                          style={{ color: "var(--text-muted)" }}
+                        >
+                          Active days determine task priority and points
+                          multipliers.
+                        </p>
+                      </section>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </section>
         </div>
 
         {/* PAGE FOOTER: SECURITY NOTE */}
-        <div className="p-4 bg-blue-50/50 rounded-lg border border-blue-100 flex items-start gap-4 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500 text-start">
-          <div className="p-2.5 bg-white rounded-md border border-blue-200 shadow-inner shrink-0 text-blue-500">
+        <div
+          className="p-4 rounded-lg border flex items-start gap-4 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500 text-start"
+          style={{
+            backgroundColor: "rgba(59, 130, 246, 0.03)",
+            borderColor: "rgba(59, 130, 246, 0.1)",
+          }}
+        >
+          <div
+            className="p-2.5 rounded-md border shadow-inner shrink-0 text-blue-500"
+            style={{
+              backgroundColor: "rgba(59, 130, 246, 0.08)",
+              borderColor: "rgba(59, 130, 246, 0.2)",
+            }}
+          >
             <ShieldCheck size={18} />
           </div>
           <div className="space-y-1 text-start">
-            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900 text-start">
+            <h4
+              className="text-[10px] font-black uppercase tracking-[0.2em] text-start"
+              style={{ color: "var(--text-primary)" }}
+            >
               Update Verification Process
             </h4>
-            <p className="text-[11px] font-bold text-blue-800/80 leading-relaxed tracking-tight text-start">
+            <p
+              className="text-[11px] font-bold leading-relaxed tracking-tight text-start"
+              style={{ color: "var(--text-secondary)" }}
+            >
               To maintain the integrity of our volunteer network, sensitive
               changes to your profile information require administrative review.
               Updates are typically processed within 24 business hours.
@@ -667,26 +955,47 @@ const VolunteerProfile = () => {
         <div className="p-8 h-full flex flex-col">
           {isSubmitted ? (
             <div className="flex-grow flex flex-col items-center justify-center space-y-6 animate-in zoom-in-95 fade-in duration-500 text-center">
-              <div className="w-20 h-20 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center">
+              <div
+                className="w-20 h-20 rounded-full border flex items-center justify-center"
+                style={{
+                  backgroundColor: "rgba(16, 185, 129, 0.08)",
+                  borderColor: "rgba(16, 185, 129, 0.2)",
+                }}
+              >
                 <BadgeCheck size={40} className="text-[#22c55e]" />
               </div>
 
               <div className="space-y-2">
-                <h3 className="text-base font-black text-slate-900 uppercase tracking-widest">
+                <h3
+                  className="text-base font-black uppercase tracking-widest"
+                  style={{ color: "var(--text-primary)" }}
+                >
                   Request Dispatched
                 </h3>
-                <p className="text-xs font-bold text-slate-500 max-w-[280px] mx-auto leading-relaxed">
+                <p
+                  className="text-xs font-bold max-w-[280px] mx-auto leading-relaxed"
+                  style={{ color: "var(--text-muted)" }}
+                >
                   Your update request has been successfully queued for review.
                 </p>
               </div>
 
-              <div className="w-full p-4 bg-slate-50 rounded-2xl border border-slate-100 space-y-4">
+              <div
+                className="w-full p-4 rounded-2xl border space-y-4"
+                style={{
+                  backgroundColor: "var(--bg-secondary)",
+                  borderColor: "var(--border-color)",
+                }}
+              >
                 <div className="space-y-3">
                   <div className="flex justify-between items-center px-1">
                     <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">
                       Request ID
                     </span>
-                    <span className="text-[11px] font-black text-slate-900 font-mono">
+                    <span
+                      className="text-[11px] font-black font-mono"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       {requestId}
                     </span>
                   </div>
@@ -700,21 +1009,33 @@ const VolunteerProfile = () => {
                   </div>
                 </div>
 
-                <div className="pt-3 border-t border-slate-200/60 space-y-2 text-start">
+                <div
+                  className="pt-3 border-t space-y-2 text-start"
+                  style={{ borderColor: "var(--border-color)" }}
+                >
                   <div className="flex items-center justify-between">
                     <span className="text-[9px] font-black uppercase tracking-widest text-slate-400 block">
                       Note Sent
                     </span>
                     <button
                       onClick={() => setIsSubmitted(false)}
-                      className="flex items-center gap-1 px-2 py-1 text-[8px] font-black uppercase tracking-widest text-[#22c55e] hover:bg-emerald-50 rounded-md transition-all"
+                      className="flex items-center gap-1 px-2 py-1 text-[8px] font-black uppercase tracking-widest text-[#22c55e] hover:bg-emerald-50/20 rounded-md transition-all"
                     >
                       <Edit size={10} />
                       Edit
                     </button>
                   </div>
-                  <div className="max-h-28 overflow-y-auto thin-scrollbar p-3 bg-white/50 border border-slate-200/50 rounded-lg text-start">
-                    <pre className="text-[10px] font-bold text-slate-600 whitespace-pre-wrap leading-relaxed">
+                  <div
+                    className="max-h-28 overflow-y-auto thin-scrollbar p-3 border rounded-lg text-start"
+                    style={{
+                      backgroundColor: "var(--bg-primary)",
+                      borderColor: "var(--border-color)",
+                    }}
+                  >
+                    <pre
+                      className="text-[10px] font-bold whitespace-pre-wrap leading-relaxed"
+                      style={{ color: "var(--text-secondary)" }}
+                    >
                       {requestMessage || "No additional commentary provided."}
                     </pre>
                   </div>
@@ -734,15 +1055,33 @@ const VolunteerProfile = () => {
             </div>
           ) : (
             <div className="space-y-6 flex-grow flex flex-col text-start">
-              <div className="flex items-start gap-3 p-3 bg-blue-50/50 border border-blue-100 rounded-lg">
-                <div className="p-1.5 bg-white rounded-md border border-blue-200 shrink-0 text-blue-500">
+              <div
+                className="flex items-start gap-3 p-3 rounded-lg border"
+                style={{
+                  backgroundColor: "rgba(59, 130, 246, 0.03)",
+                  borderColor: "rgba(59, 130, 246, 0.1)",
+                }}
+              >
+                <div
+                  className="p-1.5 rounded-md border shrink-0 text-blue-500"
+                  style={{
+                    backgroundColor: "rgba(59, 130, 246, 0.08)",
+                    borderColor: "rgba(59, 130, 246, 0.2)",
+                  }}
+                >
                   <MessageSquare size={14} />
                 </div>
                 <div className="space-y-0.5">
-                  <h4 className="text-[9px] font-black uppercase tracking-widest text-blue-900">
+                  <h4
+                    className="text-[9px] font-black uppercase tracking-widest"
+                    style={{ color: "var(--text-primary)" }}
+                  >
                     Security Confirmation
                   </h4>
-                  <p className="text-[10px] font-bold text-blue-800/70 leading-relaxed tracking-tight">
+                  <p
+                    className="text-[10px] font-bold leading-relaxed tracking-tight"
+                    style={{ color: "var(--text-secondary)" }}
+                  >
                     For your protection, profile updates are subject to manual
                     validation by our trust and safety team.
                   </p>
@@ -759,12 +1098,30 @@ const VolunteerProfile = () => {
                       <button
                         key={id}
                         onClick={() => switchCategory(id)}
-                        className="flex flex-col items-center justify-center h-28 bg-white border border-slate-100 rounded-xl hover:border-[#22c55e]/50 hover:bg-slate-50 transition-all group shadow-sm active:scale-95"
+                        className="flex flex-col items-center justify-center h-28 border rounded-xl transition-all group shadow-sm active:scale-95"
+                        style={{
+                          backgroundColor: "var(--bg-primary)",
+                          borderColor: "var(--border-color)",
+                        }}
                       >
-                        <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-[#22c55e] transition-colors mb-2">
-                          {item.icon}
+                        <div
+                          className="w-10 h-10 rounded-full border flex items-center justify-center transition-colors mb-2"
+                          style={{
+                            backgroundColor: "var(--bg-secondary)",
+                            borderColor: "var(--border-color)",
+                          }}
+                        >
+                          <div
+                            className="text-slate-400 group-hover:text-[#22c55e]"
+                            style={{ color: "var(--text-muted)" }}
+                          >
+                            {item.icon}
+                          </div>
                         </div>
-                        <span className="text-[9px] font-black uppercase tracking-widest text-slate-500 group-hover:text-slate-900 text-center px-3">
+                        <span
+                          className="text-[9px] font-black uppercase tracking-widest text-center px-3 group-hover:text-[#22c55e]"
+                          style={{ color: "var(--text-muted)" }}
+                        >
                           {item.label}
                         </span>
                       </button>
@@ -795,8 +1152,17 @@ const VolunteerProfile = () => {
                           className={`w-full h-9 px-3 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all border text-center truncate ${
                             isSelected
                               ? "bg-[#22c55e] text-white border-[#22c55e] shadow-md shadow-emerald-500/20"
-                              : "bg-white text-slate-500 border-slate-100 hover:border-slate-300"
+                              : "hover:border-slate-300"
                           }`}
+                          style={{
+                            backgroundColor: isSelected
+                              ? "#22c55e"
+                              : "var(--bg-primary)",
+                            borderColor: isSelected
+                              ? "#16a34a"
+                              : "var(--border-color)",
+                            color: isSelected ? "white" : "var(--text-muted)",
+                          }}
                         >
                           {field}
                         </button>
@@ -805,14 +1171,22 @@ const VolunteerProfile = () => {
                   </div>
 
                   <div className="space-y-3">
-                    <p className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 px-1">
+                    <p
+                      className="text-[9px] font-black uppercase tracking-[0.2em] px-1"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       Reason for Update
                     </p>
                     <textarea
                       value={requestMessage}
                       onChange={(e) => setRequestMessage(e.target.value)}
                       placeholder="Please clarify the reason for your update request..."
-                      className="w-full h-32 p-4 bg-slate-50/50 border border-slate-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#22c55e]/20 focus:border-[#22c55e] text-xs font-bold text-slate-800 placeholder:text-slate-400 resize-none transition-all"
+                      className="w-full h-32 p-4 border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#22c55e]/20 focus:border-[#22c55e] text-xs font-bold placeholder:text-slate-400 resize-none transition-all thin-scrollbar"
+                      style={{
+                        backgroundColor: "var(--bg-secondary)",
+                        borderColor: "var(--border-color)",
+                        color: "var(--text-primary)",
+                      }}
                     />
                   </div>
                 </div>
@@ -843,6 +1217,100 @@ const VolunteerProfile = () => {
         file={selectedFile?.url || null}
         fileName={selectedFile?.name}
       />
+
+      <ResuableModal
+        isOpen={isScheduleModalOpen}
+        onOpenChange={setIsScheduleModalOpen}
+        title="Request Schedule Change"
+        subtitle="Submit a proposal to admin for your weekly availability update."
+        size="md"
+        icon={<Calendar size={20} />}
+      >
+        <div className="space-y-6">
+          <div className="space-y-3">
+            <label
+              className="text-[10px] font-black uppercase tracking-widest"
+              style={{ color: "var(--text-muted)" }}
+            >
+              Propose New Availability
+            </label>
+            <div className="grid grid-cols-7 gap-2">
+              {["M", "T", "W", "T", "F", "S", "S"].map((day, idx) => {
+                const isDaySelected = selectedDays.includes(idx);
+                return (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      setSelectedDays((prev) =>
+                        prev.includes(idx)
+                          ? prev.filter((i) => i !== idx)
+                          : [...prev, idx],
+                      );
+                    }}
+                    className={`aspect-square flex flex-col items-center justify-center rounded-sm border transition-all ${
+                      isDaySelected
+                        ? "bg-green-500/10 border-green-500/30 shadow-sm"
+                        : ""
+                    }`}
+                    style={{
+                      borderColor: isDaySelected
+                        ? "var(--color-emerald)"
+                        : "var(--border-color)",
+                      backgroundColor: isDaySelected
+                        ? ""
+                        : "var(--bg-secondary)",
+                    }}
+                  >
+                    <span
+                      className={`text-[10px] font-black ${isDaySelected ? "text-green-600" : ""}`}
+                      style={{
+                        color: !isDaySelected ? "var(--text-muted)" : "",
+                      }}
+                    >
+                      {day}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <label
+              className="text-[10px] font-black uppercase tracking-widest"
+              style={{ color: "var(--text-muted)" }}
+            >
+              Reason for Change
+            </label>
+            <textarea
+              value={requestReason}
+              onChange={(e) => setRequestReason(e.target.value)}
+              placeholder="e.g. Updated college timetable, vehicle maintenance..."
+              className="w-full p-4 rounded-sm border text-xs font-medium focus:outline-none focus:border-green-500/50 min-h-[100px] resize-none"
+              style={{
+                backgroundColor: "var(--bg-secondary)",
+                borderColor: "var(--border-color)",
+                color: "var(--text-primary)",
+              }}
+            />
+          </div>
+
+          <button
+            onClick={() => {
+              toast.success("Request Submitted", {
+                description:
+                  "Your schedule change request has been sent to admin for approval.",
+              });
+              setIsScheduleModalOpen(false);
+              setRequestReason("");
+            }}
+            disabled={!requestReason.trim()}
+            className="w-full py-4 bg-[#22c55e] text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-sm hover:opacity-90 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-green-500/20"
+          >
+            Submit Request to Admin
+          </button>
+        </div>
+      </ResuableModal>
     </div>
   );
 };

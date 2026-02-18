@@ -499,10 +499,10 @@ const ReusableTable: React.FC<ERPGridTableProps> = ({
         )}
 
         <div className="flex flex-col gap-3">
-          <div className="flex flex-col sm:flex-row items-center gap-3 justify-between">
-            <div className="flex flex-col sm:flex-row items-center gap-2 flex-1">
+          <div className="flex flex-wrap items-center gap-3 justify-between">
+            <div className="flex items-center gap-2 flex-1 min-w-[200px]">
               {enableSearch && (
-                <div className="relative w-full sm:max-w-xs">
+                <div className="relative w-full sm:max-w-xs min-w-[150px]">
                   <Input
                     isClearable
                     className="w-full"
@@ -533,25 +533,17 @@ const ReusableTable: React.FC<ERPGridTableProps> = ({
                   />
                 </div>
               )}
-              {additionalFilters}
-
-              {enableFilters && statusOptions.length > 1 && (
-                <Dropdown placement="bottom">
+              {showColumnSettings && (
+                <Dropdown placement="bottom-start">
                   <DropdownTrigger>
                     <Button
                       variant="flat"
-                      className="border rounded-sm h-10 px-4 text-[11px] font-bold transition-all"
+                      className="border rounded-sm h-10 px-4 flex-shrink-0 text-[11px] font-bold transition-all"
                       style={{
                         backgroundColor: "var(--bg-primary)",
                         borderColor: "var(--border-color)",
                         color: "var(--text-muted)",
                       }}
-                      startContent={
-                        <FilterIcon
-                          style={{ color: "var(--text-muted)" }}
-                          size={14}
-                        />
-                      }
                       endContent={
                         <ChevronDownIconSvg
                           style={{ color: "var(--text-muted)" }}
@@ -559,9 +551,81 @@ const ReusableTable: React.FC<ERPGridTableProps> = ({
                         />
                       }
                     >
-                      {selectedStatus === "all"
-                        ? "STATUS: ALL"
-                        : `STATUS: ${selectedStatus.toUpperCase()}`}
+                      <span className="hidden sm:inline">COLUMNS</span>
+                    </Button>
+                  </DropdownTrigger>
+                  <DropdownMenu
+                    disallowEmptySelection
+                    aria-label="Table Columns"
+                    closeOnSelect={false}
+                    selectedKeys={visibleColumns}
+                    selectionMode="multiple"
+                    onSelectionChange={setVisibleColumns}
+                    classNames={{
+                      base: "border rounded-sm min-w-[180px] p-1 shadow-2xl",
+                    }}
+                    style={{
+                      backgroundColor: "var(--bg-primary)",
+                      borderColor: "var(--border-color)",
+                      color: "var(--text-primary)",
+                    }}
+                    itemClasses={{
+                      base: [
+                        "text-[11px] font-bold uppercase tracking-tight",
+                        "data-[hover=true]:bg-hf-green/10 data-[hover=true]:text-hf-green",
+                        "data-[selected=true]:bg-emerald-500/10 data-[selected=true]:text-hf-green",
+                        "rounded-sm",
+                        "px-3",
+                        "py-2.5",
+                        "transition-all duration-200",
+                      ].join(" "),
+                      selectedIcon: "text-hf-green w-4 h-4 ml-auto",
+                    }}
+                  >
+                    {columns.map((column) => (
+                      <DropdownItem key={column.uid} showDivider={false}>
+                        {column.name}
+                      </DropdownItem>
+                    ))}
+                  </DropdownMenu>
+                </Dropdown>
+              )}
+            </div>
+
+            <div className="flex flex-wrap items-center justify-end gap-2">
+              {additionalFilters}
+
+              {enableFilters && statusOptions.length > 1 && (
+                <Dropdown placement="bottom-end">
+                  <DropdownTrigger>
+                    <Button
+                      variant="flat"
+                      className={`border rounded-sm h-10 px-4 flex-shrink-0 text-[11px] font-bold transition-all ${
+                        selectedStatus !== "all"
+                          ? "border-hf-green/30 bg-hf-green/10 text-hf-green hover:bg-hf-green/20"
+                          : "border-[var(--border-color)] bg-[var(--bg-primary)] text-[var(--text-muted)] hover:bg-[var(--bg-secondary)]"
+                      }`}
+                      startContent={
+                        <FilterIcon
+                          className={
+                            selectedStatus !== "all"
+                              ? "text-hf-green"
+                              : "text-[var(--text-muted)]"
+                          }
+                          size={14}
+                        />
+                      }
+                      endContent={
+                        <ChevronDownIconSvg
+                          className={`text-[10px] ${selectedStatus !== "all" ? "text-hf-green" : "text-[var(--text-muted)]"}`}
+                        />
+                      }
+                    >
+                      <span className="hidden sm:inline ml-1">
+                        {selectedStatus === "all"
+                          ? "STATUS: ALL"
+                          : `STATUS: ${selectedStatus.toUpperCase()}`}
+                      </span>
                     </Button>
                   </DropdownTrigger>
                   <DropdownMenu
@@ -659,83 +723,24 @@ const ReusableTable: React.FC<ERPGridTableProps> = ({
                 </div>
               )}
             </div>
-
-            <div className="flex gap-2 items-center">
-              {showColumnSettings && (
-                <Dropdown placement="bottom-end">
-                  <DropdownTrigger>
-                    <Button
-                      variant="flat"
-                      className="border rounded-sm h-10 px-4 text-[11px] font-bold transition-all"
-                      style={{
-                        backgroundColor: "var(--bg-primary)",
-                        borderColor: "var(--border-color)",
-                        color: "var(--text-muted)",
-                      }}
-                      endContent={
-                        <ChevronDownIconSvg
-                          style={{ color: "var(--text-muted)" }}
-                          className="text-[10px]"
-                        />
-                      }
-                    >
-                      COLUMNS
-                    </Button>
-                  </DropdownTrigger>
-                  <DropdownMenu
-                    disallowEmptySelection
-                    aria-label="Table Columns"
-                    closeOnSelect={false}
-                    selectedKeys={visibleColumns}
-                    selectionMode="multiple"
-                    onSelectionChange={setVisibleColumns}
-                    classNames={{
-                      base: "border rounded-sm min-w-[180px] p-1 shadow-2xl",
-                    }}
-                    style={{
-                      backgroundColor: "var(--bg-primary)",
-                      borderColor: "var(--border-color)",
-                    }}
-                    itemClasses={{
-                      base: [
-                        "text-[11px] font-bold uppercase tracking-tight",
-                        "data-[hover=true]:bg-hf-green/10 data-[hover=true]:text-hf-green",
-                        "data-[selected=true]:bg-emerald-500/10 data-[selected=true]:text-hf-green",
-                        "rounded-sm",
-                        "px-3",
-                        "py-2.5",
-                        "transition-all duration-200",
-                      ].join(" "),
-                      selectedIcon: "text-hf-green w-4 h-4 ml-auto",
-                    }}
-                  >
-                    {columns.map((column) => (
-                      <DropdownItem key={column.uid} showDivider={false}>
-                        {column.name}
-                      </DropdownItem>
-                    ))}
-                  </DropdownMenu>
-                </Dropdown>
-              )}
-            </div>
           </div>
 
           <div
-            className="flex items-center justify-between px-3 py-1.5 rounded-sm border"
+            className="flex flex-row items-center justify-between gap-2 px-3 py-2 rounded-sm border overflow-hidden"
             style={{
               backgroundColor: "var(--bg-secondary)",
               borderColor: "var(--border-color)",
             }}
           >
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 shrink-0">
               <span
-                className="text-[10px] font-black uppercase tracking-widest"
+                className="text-[9px] md:text-[10px] font-black uppercase tracking-widest whitespace-nowrap"
                 style={{ color: "var(--text-muted)" }}
               >
-                TOTAL RECORDS:
+                <span className="hidden sm:inline">TOTAL </span>RECORDS:
               </span>
               <span
-                className="text-[11px] font-black px-2 py-0.5 rounded-sm border shadow-sm"
+                className="text-[10px] md:text-[11px] font-black px-2 py-0.5 rounded-sm border shadow-sm shrink-0"
                 style={{
                   backgroundColor: "var(--bg-primary)",
                   borderColor: "var(--border-color)",
@@ -747,12 +752,12 @@ const ReusableTable: React.FC<ERPGridTableProps> = ({
             </div>
             {enablePagination && (
               <label
-                className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest"
+                className="flex items-center gap-2 text-[9px] md:text-[10px] font-black uppercase tracking-widest whitespace-nowrap shrink-0"
                 style={{ color: "var(--text-muted)" }}
               >
-                SHOW ROWS:
+                <span className="hidden sm:inline">SHOW </span>ROWS:
                 <select
-                  className="outline-none text-[11px] font-black cursor-pointer border rounded-sm px-2 py-0.5 transition-all shadow-sm"
+                  className="outline-none text-[10px] md:text-[11px] font-black cursor-pointer border rounded-sm px-2 py-0.5 transition-all shadow-sm shrink-0"
                   style={{
                     backgroundColor: "var(--bg-primary)",
                     borderColor: "var(--border-color)",

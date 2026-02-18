@@ -22,6 +22,11 @@ import CreateDonor from "./modules/admin/pages/users/CreateDonor";
 import CreateNgo from "./modules/admin/pages/users/CreateNgo";
 import CreateVolunteer from "./modules/admin/pages/users/CreateVolunteer";
 import ConfigurationPage from "./modules/admin/pages/settings/ConfigurationPage";
+import NGOEnquiryPage from "./modules/admin/pages/enquiries/NGOEnquiryPage";
+import VolunteerEnquiryPage from "./modules/admin/pages/enquiries/VolunteerEnquiryPage";
+import RewardEnquiryPage from "./modules/admin/pages/enquiries/RewardEnquiryPage";
+import DonorEnquiryPage from "./modules/admin/pages/enquiries/DonorEnquiryPage";
+import EnquiriesHub from "./modules/admin/pages/enquiries/EnquiriesHub";
 
 // Donor Imports
 import DonorDashboard from "./modules/donor/pages/dashboard/Dashboard";
@@ -130,6 +135,16 @@ function App() {
               path="settings/configuration"
               element={<ConfigurationPage />}
             />
+
+            {/* Enquiry Section */}
+            <Route path="enquiries" element={<EnquiriesHub />} />
+            <Route path="enquiries/donors" element={<DonorEnquiryPage />} />
+            <Route path="enquiries/ngos" element={<NGOEnquiryPage />} />
+            <Route
+              path="enquiries/volunteers"
+              element={<VolunteerEnquiryPage />}
+            />
+            <Route path="enquiries/rewards" element={<RewardEnquiryPage />} />
           </Route>
 
           {/* Donor Section */}

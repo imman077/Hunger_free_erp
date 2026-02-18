@@ -51,31 +51,51 @@ const PrizeModal: React.FC<PrizeModalProps> = ({
       hideCloseButton
       size="sm"
       classNames={{
-        backdrop: "bg-slate-900/40 backdrop-blur-xl",
-        base: "bg-white rounded-sm border border-slate-200",
+        backdrop: "bg-black/60 backdrop-blur-xl",
+        base: "border-[1px]",
         body: "p-0",
         wrapper: "z-[100]",
+      }}
+      style={{
+        backgroundColor: "var(--bg-primary)",
+        borderColor: "var(--border-color)",
       }}
     >
       <ModalContent>
         <ModalBody className="p-10 text-center">
           <div className="mb-6 flex justify-center">
-            <div className="w-24 h-24 bg-emerald-50 rounded-sm flex items-center justify-center text-5xl border border-emerald-200">
+            <div
+              className="w-24 h-24 rounded-sm flex items-center justify-center text-5xl border"
+              style={{
+                backgroundColor: "var(--bg-secondary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
               {prize.icon}
             </div>
           </div>
 
-          <h2 className="text-[10px] font-black text-slate-400 tracking-[0.5em] uppercase mb-4">
+          <h2
+            className="text-[10px] font-black tracking-[0.5em] uppercase mb-4"
+            style={{ color: "var(--text-muted)" }}
+          >
             Draw Result
           </h2>
 
           <div className="mb-10">
             <h3
-              className={`text-4xl font-black mb-3 tracking-tighter uppercase ${prize.label === "GRAND PRIZE" ? "text-[#22c55e]" : "text-slate-800"}`}
+              className={`text-4xl font-black mb-3 tracking-tighter uppercase ${prize.label === "GRAND PRIZE" ? "text-[#22c55e]" : ""}`}
+              style={{
+                color:
+                  prize.label === "GRAND PRIZE" ? "" : "var(--text-primary)",
+              }}
             >
               {prize.label}
             </h3>
-            <p className="text-slate-500 font-medium px-4 leading-relaxed italic">
+            <p
+              className="font-medium px-4 leading-relaxed italic"
+              style={{ color: "var(--text-secondary)" }}
+            >
               "{reaction}"
             </p>
           </div>
@@ -111,8 +131,14 @@ const Wheel: React.FC<WheelProps> = ({
 
   return (
     <div className="relative w-[280px] h-[280px] md:w-[440px] md:h-[440px] mx-auto select-none font-sans">
-      <div className="absolute inset-[-12px] md:inset-[-16px] rounded-full border-[12px] md:border-[20px] border-[#0f172a] shadow-[0_45px_90px_-20px_rgba(0,0,0,0.5)] z-10 pointer-events-none"></div>
-      <div className="absolute inset-[-12px] md:inset-[-16px] rounded-full border-[2px] border-white/10 z-11 pointer-events-none"></div>
+      <div
+        className="absolute inset-[-12px] md:inset-[-16px] rounded-full border-[12px] md:border-[20px] shadow-[0_45px_90px_-20px_rgba(0,0,0,0.5)] z-10 pointer-events-none"
+        style={{ borderColor: "var(--bg-secondary)" }}
+      ></div>
+      <div
+        className="absolute inset-[-12px] md:inset-[-16px] rounded-full border-[2px] z-11 pointer-events-none opacity-20"
+        style={{ borderColor: "var(--text-primary)" }}
+      ></div>
 
       <div
         className="relative w-full h-full rounded-full overflow-hidden transition-transform cubic-bezier(0.15, 0, 0.05, 1)"
@@ -155,7 +181,7 @@ const Wheel: React.FC<WheelProps> = ({
                   <text
                     x="50"
                     y="11"
-                    fill={isJackpot ? "#ffffff" : "#0f172a"}
+                    fill={isJackpot ? "#ffffff" : "var(--text-primary)"}
                     className="font-black"
                     style={{
                       fontSize: isJackpot ? "3.2px" : "4.8px",
@@ -231,7 +257,7 @@ const Wheel: React.FC<WheelProps> = ({
 
       <div className="absolute top-[-26px] md:top-[-34px] left-1/2 -translate-x-1/2 z-30 pointer-events-none drop-shadow-2xl">
         <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
-          <path d="M30 54L52 12H8L30 54Z" fill="#1e293b" />
+          <path d="M30 54L52 12H8L30 54Z" fill="var(--bg-secondary)" />
           <circle
             cx="30"
             cy="12"
@@ -246,7 +272,8 @@ const Wheel: React.FC<WheelProps> = ({
         <button
           onClick={onSpin}
           disabled={isSpinning}
-          className="relative w-20 h-20 md:w-36 md:h-36 rounded-full bg-[#22c55e] border-[6px] md:border-[10px] border-white shadow-[0_35px_70px_rgba(34,197,94,0.3),inset_0_2px_10px_rgba(255,255,255,0.2)] flex items-center justify-center transition-all hover:scale-105 active:scale-95 disabled:opacity-100 disabled:cursor-not-allowed group"
+          className="relative w-20 h-20 md:w-36 md:h-36 rounded-full bg-[#22c55e] border-[6px] md:border-[10px] shadow-[0_35px_70px_rgba(34,197,94,0.3),inset_0_2px_10px_rgba(255,255,255,0.2)] flex items-center justify-center transition-all hover:scale-105 active:scale-95 disabled:opacity-100 disabled:cursor-not-allowed group text-center"
+          style={{ borderColor: "var(--bg-primary)" }}
         >
           <div className="flex flex-col items-center relative z-10">
             <span className="text-white font-black text-sm md:text-2xl tracking-[0.2em] leading-none group-hover:scale-110 transition-transform text-center">
@@ -279,14 +306,14 @@ const VolunteerRewards = () => {
   const [isPrizeModalOpen, setIsPrizeModalOpen] = useState(false);
 
   const prizes: Prize[] = [
-    { id: 1, label: "₹1,000", icon: "💰", color: "#f8fafc" },
-    { id: 2, label: "₹5,000", icon: "⚡", color: "#f0fdf4" },
-    { id: 3, label: "₹2,500", icon: "💎", color: "#ffffff" },
-    { id: 4, label: "GRAND PRIZE", icon: "🏆", color: "#0f172a" },
-    { id: 5, label: "₹500", icon: "🎁", color: "#f8fafc" },
-    { id: 6, label: "₹10,000", icon: "🔥", color: "#f0fdf4" },
-    { id: 7, label: "₹1,500", icon: "✨", color: "#ffffff" },
-    { id: 8, label: "₹25,000", icon: "🌟", color: "#f0fdf4" },
+    { id: 1, label: "₹1,000", icon: "💰", color: "var(--bg-secondary)" },
+    { id: 2, label: "₹5,000", icon: "⚡", color: "var(--bg-tertiary)" },
+    { id: 3, label: "₹2,500", icon: "💎", color: "var(--bg-primary)" },
+    { id: 4, label: "GRAND PRIZE", icon: "🏆", color: "#22c55e" },
+    { id: 5, label: "₹500", icon: "🎁", color: "var(--bg-secondary)" },
+    { id: 6, label: "₹10,000", icon: "🔥", color: "var(--bg-tertiary)" },
+    { id: 7, label: "₹1,500", icon: "✨", color: "var(--bg-primary)" },
+    { id: 8, label: "₹25,000", icon: "🌟", color: "var(--bg-tertiary)" },
   ];
 
   const handleSpin = () => {
@@ -584,16 +611,34 @@ const VolunteerRewards = () => {
 
         <div className="flex items-center gap-4">
           {/* Impact Points Card */}
-          <div className="flex items-center gap-3.5 bg-white border border-slate-200 p-4 rounded-sm text-left">
-            <div className="w-11 h-11 bg-emerald-50 border border-emerald-200 flex items-center justify-center rounded-sm">
+          <div
+            className="flex items-center gap-3.5 border p-4 rounded-sm text-left"
+            style={{
+              backgroundColor: "var(--bg-primary)",
+              borderColor: "var(--border-color)",
+            }}
+          >
+            <div
+              className="w-11 h-11 border flex items-center justify-center rounded-sm"
+              style={{
+                backgroundColor: "var(--bg-secondary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
               <Star className="text-[#22c55e]" size={22} fill="currentColor" />
             </div>
             <div className="text-start">
-              <p className="text-[9px] font-black uppercase tracking-widest mb-1 text-slate-400">
+              <p
+                className="text-[9px] font-black uppercase tracking-widest mb-1"
+                style={{ color: "var(--text-muted)" }}
+              >
                 Reward Points
               </p>
               <div className="flex items-baseline gap-1.5">
-                <span className="text-xl font-black text-slate-800 tabular-nums leading-none">
+                <span
+                  className="text-xl font-black tabular-nums leading-none"
+                  style={{ color: "var(--text-primary)" }}
+                >
                   {userStats.totalPoints.toLocaleString()}
                 </span>
                 <span className="text-[9px] font-black text-[#22c55e] uppercase">
@@ -605,21 +650,37 @@ const VolunteerRewards = () => {
 
           {/* Payout Vault Card */}
           <div
-            className="flex items-center gap-3.5 bg-white border border-slate-200 p-4 rounded-sm text-left hover:border-[#22c55e]/30 transition-all cursor-pointer group"
+            className="flex items-center gap-3.5 border p-4 rounded-sm text-left hover:border-[#22c55e]/30 transition-all cursor-pointer group"
             onClick={() => navigate("vault")}
+            style={{
+              backgroundColor: "var(--bg-primary)",
+              borderColor: "var(--border-color)",
+            }}
           >
-            <div className="w-11 h-11 bg-emerald-50 border border-emerald-200 flex items-center justify-center rounded-sm">
+            <div
+              className="w-11 h-11 border flex items-center justify-center rounded-sm"
+              style={{
+                backgroundColor: "var(--bg-secondary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
               <Building2
                 className="text-[#22c55e] group-hover:scale-110 transition-transform"
                 size={22}
               />
             </div>
             <div className="text-start">
-              <p className="text-[9px] font-black uppercase tracking-widest mb-1 text-slate-400">
+              <p
+                className="text-[9px] font-black uppercase tracking-widest mb-1"
+                style={{ color: "var(--text-muted)" }}
+              >
                 Payout Vault
               </p>
               <div className="flex items-center gap-1">
-                <span className="text-xs font-black text-slate-800 uppercase leading-none">
+                <span
+                  className="text-xs font-black uppercase leading-none"
+                  style={{ color: "var(--text-primary)" }}
+                >
                   Manage Bank
                 </span>
                 <ChevronRight size={14} className="text-[#22c55e]" />
@@ -632,14 +693,23 @@ const VolunteerRewards = () => {
       {/* Tier Progression & Draw Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <section
-          className="lg:col-span-3 border border-slate-200 p-8 md:p-10 rounded-sm bg-white"
-          style={{ borderColor: "var(--border-color)" }}
+          className="lg:col-span-3 border p-8 md:p-10 rounded-sm"
+          style={{
+            backgroundColor: "var(--bg-primary)",
+            borderColor: "var(--border-color)",
+          }}
         >
           <div className="space-y-1 mb-8 text-left">
-            <h2 className="text-2xl font-black uppercase tracking-tight text-slate-900">
+            <h2
+              className="text-2xl font-black uppercase tracking-tight"
+              style={{ color: "var(--text-primary)" }}
+            >
               Your Progress
             </h2>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+            <p
+              className="text-[10px] font-black uppercase tracking-widest"
+              style={{ color: "var(--text-muted)" }}
+            >
               Unlock new levels to get more
             </p>
           </div>
@@ -659,11 +729,21 @@ const VolunteerRewards = () => {
                     <div
                       className={`w-12 h-12 flex items-center justify-center border transition-all duration-500 rounded-sm ${
                         isCurrent
-                          ? "bg-[#22c55e] border-white ring-4 ring-emerald-50"
-                          : isPast
-                            ? "border-[#22c55e] bg-emerald-50/30"
-                            : "border-slate-200 bg-white"
+                          ? "bg-[#22c55e] border-white ring-4 ring-emerald-50/10"
+                          : ""
                       }`}
+                      style={{
+                        backgroundColor: isCurrent
+                          ? ""
+                          : isPast
+                            ? "rgba(34, 197, 94, 0.05)"
+                            : "var(--bg-primary)",
+                        borderColor: isCurrent
+                          ? "white"
+                          : isPast
+                            ? "rgba(34, 197, 94, 0.2)"
+                            : "var(--border-color)",
+                      }}
                     >
                       {isPast ? (
                         <CheckCircle className="text-[#22c55e]" size={20} />
@@ -674,13 +754,17 @@ const VolunteerRewards = () => {
                           fill="currentColor"
                         />
                       ) : (
-                        <Lock className="text-slate-300" size={16} />
+                        <Lock
+                          size={16}
+                          style={{ color: "var(--text-muted)" }}
+                        />
                       )}
                     </div>
                     <p
                       className={`text-[10px] font-black uppercase tracking-widest mt-3 ${
-                        isCurrent ? "text-[#22c55e]" : "text-slate-400"
+                        isCurrent ? "text-[#22c55e]" : ""
                       }`}
+                      style={{ color: isCurrent ? "" : "var(--text-muted)" }}
                     >
                       {tier.name}
                     </p>
@@ -690,16 +774,34 @@ const VolunteerRewards = () => {
             </div>
           </div>
 
-          <div className="flex flex-col md:flex-row items-center justify-between p-6 bg-emerald-50/30 rounded-sm border border-emerald-200 border-dashed mt-8">
+          <div
+            className="flex flex-col md:flex-row items-center justify-between p-6 rounded-sm border border-dashed mt-8"
+            style={{
+              backgroundColor: "rgba(34, 197, 94, 0.03)",
+              borderColor: "rgba(34, 197, 94, 0.2)",
+            }}
+          >
             <div className="flex items-center gap-4 mb-4 md:mb-0">
-              <div className="p-3 bg-white rounded-sm border border-emerald-100">
+              <div
+                className="p-3 rounded-sm border"
+                style={{
+                  backgroundColor: "var(--bg-primary)",
+                  borderColor: "rgba(34, 197, 94, 0.2)",
+                }}
+              >
                 <Zap className="text-[#22c55e]" size={20} />
               </div>
               <div className="text-start">
-                <p className="text-xs font-black uppercase tracking-tight text-slate-800">
+                <p
+                  className="text-xs font-black uppercase tracking-tight"
+                  style={{ color: "var(--text-primary)" }}
+                >
                   Status: {userStats.currentTier}
                 </p>
-                <p className="text-[11px] font-semibold text-slate-500 italic leading-none mt-1.5">
+                <p
+                  className="text-[11px] font-semibold italic leading-none mt-1.5"
+                  style={{ color: "var(--text-secondary)" }}
+                >
                   Only {userStats.pointsToNextTier.toLocaleString()} points away
                   from {userStats.nextTier} perks!
                 </p>
@@ -707,7 +809,7 @@ const VolunteerRewards = () => {
             </div>
             <ResuableButton
               variant="primary"
-              className="px-8 py-3 !rounded-sm text-[11px] font-black uppercase tracking-widest flex items-center gap-2.5"
+              className="px-8 py-3 !rounded-sm text-[11px] font-black uppercase tracking-widest flex items-center gap-2.5 shadow-lg shadow-emerald-500/20"
               onClick={() => navigate("benefits")}
             >
               View Benefits <ChevronRight size={16} />
@@ -716,30 +818,48 @@ const VolunteerRewards = () => {
         </section>
 
         {/* Vertical Draw Card */}
-        <div className="lg:col-span-1 bg-white p-8 md:p-10 rounded-sm flex flex-col items-center justify-between relative overflow-hidden border border-slate-200 text-center">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-full blur-3xl -mr-16 -mt-16" />
+        <div
+          className="lg:col-span-1 p-8 md:p-10 rounded-sm flex flex-col items-center justify-between relative overflow-hidden border text-center"
+          style={{
+            backgroundColor: "var(--bg-primary)",
+            borderColor: "var(--border-color)",
+          }}
+        >
+          <div className="absolute top-0 right-0 w-32 h-32 bg-[#22c55e]/5 rounded-full blur-3xl -mr-16 -mt-16" />
 
           <div className="relative z-10 w-full space-y-1">
             <p className="text-[10px] font-black uppercase tracking-widest text-[#22c55e]">
               Weekly Win
             </p>
-            <h3 className="text-2xl font-black tracking-tight uppercase leading-none text-slate-900">
+            <h3
+              className="text-2xl font-black tracking-tight uppercase leading-none"
+              style={{ color: "var(--text-primary)" }}
+            >
               Prize Draw
             </h3>
           </div>
 
-          <div className="relative z-10 py-8 border-y border-slate-50 w-full">
-            <p className="text-4xl font-black tabular-nums tracking-tighter text-slate-900">
+          <div
+            className="relative z-10 py-8 border-y w-full"
+            style={{ borderColor: "var(--border-color)" }}
+          >
+            <p
+              className="text-4xl font-black tabular-nums tracking-tighter"
+              style={{ color: "var(--text-primary)" }}
+            >
               ₹50,000
             </p>
-            <p className="text-[10px] font-black uppercase text-slate-400 mt-2 tracking-[0.3em]">
+            <p
+              className="text-[10px] font-black uppercase mt-2 tracking-[0.3em]"
+              style={{ color: "var(--text-muted)" }}
+            >
               Pool Prize
             </p>
           </div>
 
           <button
             onClick={() => setIsSpinModalOpen(true)}
-            className="relative z-10 w-full py-4 bg-[#22c55e] text-white text-[11px] font-black uppercase tracking-[0.2em] rounded-sm hover:bg-[#1da850] transition-all active:scale-95 shadow-lg shadow-emerald-500/10"
+            className="relative z-10 w-full py-4 bg-[#22c55e] text-white text-[11px] font-black uppercase tracking-[0.2em] rounded-sm hover:bg-[#1da850] transition-all active:scale-95 shadow-lg shadow-emerald-500/20"
           >
             Enter Now
           </button>
@@ -750,7 +870,10 @@ const VolunteerRewards = () => {
       <div className="grid grid-cols-1 gap-12 pt-4">
         <section className="space-y-12 text-left">
           <div className="space-y-2">
-            <h3 className="text-3xl md:text-5xl font-black tracking-tighter uppercase text-slate-900">
+            <h3
+              className="text-3xl md:text-5xl font-black tracking-tighter uppercase"
+              style={{ color: "var(--text-primary)" }}
+            >
               Rewards Shop
             </h3>
             <p className="text-[11px] font-black text-[#22c55e] uppercase tracking-[0.5em]">
@@ -761,7 +884,10 @@ const VolunteerRewards = () => {
           {/* Cash Prizes */}
           <div className="space-y-6">
             <div className="space-y-1">
-              <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-400 leading-none">
+              <h4
+                className="text-[11px] font-black uppercase tracking-[0.3em] leading-none"
+                style={{ color: "var(--text-muted)" }}
+              >
                 Cash Payouts
               </h4>
               <p className="text-[10px] font-black text-[#22c55e] uppercase tracking-widest">
@@ -772,27 +898,40 @@ const VolunteerRewards = () => {
               {rewards.cash.map((c) => (
                 <div
                   key={c.id}
-                  className="border border-slate-200 p-6 flex items-center justify-between group hover:border-[#22c55e]/30 transition-all rounded-sm bg-white shadow-sm"
+                  className="border p-6 flex items-center justify-between group hover:border-[#22c55e]/30 transition-all rounded-sm shadow-sm"
+                  style={{
+                    backgroundColor: "var(--bg-primary)",
+                    borderColor: "var(--border-color)",
+                  }}
                 >
                   <div className="text-start">
                     <div className="flex items-center gap-3 mb-1">
-                      <span className="text-2xl font-black text-slate-800 tabular-nums leading-none">
+                      <span
+                        className="text-2xl font-black tabular-nums leading-none"
+                        style={{ color: "var(--text-primary)" }}
+                      >
                         {c.amount}
                       </span>
-                      <span className="text-[9px] font-black text-[#22c55e] uppercase bg-emerald-50 px-2 py-0.5 rounded-sm border border-emerald-200">
+                      <span className="text-[9px] font-black text-[#22c55e] uppercase bg-emerald-500/10 px-2 py-0.5 rounded-sm border border-emerald-500/20">
                         Cash
                       </span>
                     </div>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                    <p
+                      className="text-[10px] font-black uppercase tracking-widest"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       {c.name}
                     </p>
                   </div>
                   <div className="flex flex-col items-center">
-                    <span className="text-[10px] font-black text-slate-800 mb-1 uppercase tabular-nums">
+                    <span
+                      className="text-[10px] font-black mb-1 uppercase tabular-nums"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       {c.points.toLocaleString()} PTS
                     </span>
                     {pendingClaims.includes(c.id) ? (
-                      <div className="px-4 py-2 bg-emerald-50 text-[#22c55e] text-[8px] font-black uppercase tracking-wider rounded-sm border border-emerald-100 cursor-default flex items-center gap-1.5 translate-y-[-2px]">
+                      <div className="px-4 py-2 bg-emerald-500/10 text-[#22c55e] text-[8px] font-black uppercase tracking-wider rounded-sm border border-emerald-500/10 cursor-default flex items-center gap-1.5 translate-y-[-2px]">
                         <div className="w-1.5 h-1.5 bg-[#22c55e] rounded-full animate-pulse" />
                         In Vault
                       </div>
@@ -813,7 +952,10 @@ const VolunteerRewards = () => {
           {/* Travel Rewards */}
           <div className="space-y-6">
             <div className="space-y-1">
-              <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-400 leading-none">
+              <h4
+                className="text-[11px] font-black uppercase tracking-[0.3em] leading-none"
+                style={{ color: "var(--text-muted)" }}
+              >
                 Travel Rewards
               </h4>
               <p className="text-[10px] font-black text-[#22c55e] uppercase tracking-widest">
@@ -824,28 +966,40 @@ const VolunteerRewards = () => {
               {rewards.tours.map((t) => (
                 <div
                   key={t.id}
-                  className={`border border-slate-200 p-6 flex items-center justify-between group hover:border-[#22c55e]/30 transition-all rounded-sm ${
-                    !t.available
-                      ? "opacity-60 grayscale bg-slate-50/50"
-                      : "bg-white shadow-sm"
+                  className={`border p-6 flex items-center justify-between group hover:border-[#22c55e]/30 transition-all rounded-sm ${
+                    !t.available ? "opacity-60 grayscale" : "shadow-sm"
                   }`}
-                  style={{ borderColor: "var(--border-color)" }}
+                  style={{
+                    backgroundColor: t.available
+                      ? "var(--bg-primary)"
+                      : "var(--bg-secondary)",
+                    borderColor: "var(--border-color)",
+                  }}
                 >
                   <div className="text-start">
                     <div className="flex items-center gap-3 mb-1">
-                      <span className="text-xl font-black text-slate-800 uppercase tracking-tight leading-none">
+                      <span
+                        className="text-xl font-black uppercase tracking-tight leading-none"
+                        style={{ color: "var(--text-primary)" }}
+                      >
                         {t.name}
                       </span>
-                      <span className="text-[9px] font-black text-[#22c55e] uppercase bg-emerald-50 px-2 py-0.5 rounded-sm border border-emerald-200">
+                      <span className="text-[9px] font-black text-[#22c55e] uppercase bg-emerald-500/10 px-2 py-0.5 rounded-sm border border-emerald-500/20">
                         Trip
                       </span>
                     </div>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                    <p
+                      className="text-[10px] font-black uppercase tracking-widest"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       {t.desc}
                     </p>
                   </div>
                   <div className="flex flex-col items-center">
-                    <span className="text-[10px] font-black text-slate-800 mb-1 uppercase tabular-nums">
+                    <span
+                      className="text-[10px] font-black mb-1 uppercase tabular-nums"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       {t.points.toLocaleString()} PTS
                     </span>
                     {t.available && (
@@ -865,7 +1019,10 @@ const VolunteerRewards = () => {
           {/* Gifts & Shop */}
           <div className="space-y-6">
             <div className="space-y-1">
-              <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-400 leading-none">
+              <h4
+                className="text-[11px] font-black uppercase tracking-[0.3em] leading-none"
+                style={{ color: "var(--text-muted)" }}
+              >
                 Gifts & Shop
               </h4>
               <p className="text-[10px] font-black text-[#22c55e] uppercase tracking-widest">
@@ -876,28 +1033,40 @@ const VolunteerRewards = () => {
               {rewards.youth.map((y) => (
                 <div
                   key={y.id}
-                  className={`border border-slate-200 p-6 flex items-center justify-between group hover:border-[#22c55e]/30 transition-all rounded-sm ${
-                    !y.available
-                      ? "opacity-60 grayscale bg-slate-50/50"
-                      : "bg-white shadow-sm"
+                  className={`border p-6 flex items-center justify-between group hover:border-[#22c55e]/30 transition-all rounded-sm ${
+                    !y.available ? "opacity-60 grayscale" : "shadow-sm"
                   }`}
-                  style={{ borderColor: "var(--border-color)" }}
+                  style={{
+                    backgroundColor: y.available
+                      ? "var(--bg-primary)"
+                      : "var(--bg-secondary)",
+                    borderColor: "var(--border-color)",
+                  }}
                 >
                   <div className="text-start">
                     <div className="flex items-center gap-3 mb-1">
-                      <span className="text-xl font-black text-slate-800 uppercase tracking-tight leading-none">
+                      <span
+                        className="text-xl font-black uppercase tracking-tight leading-none"
+                        style={{ color: "var(--text-primary)" }}
+                      >
                         {y.name}
                       </span>
-                      <span className="text-[9px] font-black text-[#22c55e] uppercase bg-emerald-50 px-2 py-0.5 rounded-sm border border-emerald-200">
+                      <span className="text-[9px] font-black text-[#22c55e] uppercase bg-emerald-500/10 px-2 py-0.5 rounded-sm border border-emerald-500/20">
                         Item
                       </span>
                     </div>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                    <p
+                      className="text-[10px] font-black uppercase tracking-widest"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       {y.desc}
                     </p>
                   </div>
                   <div className="flex flex-col items-center">
-                    <span className="text-[10px] font-black text-slate-800 mb-1 uppercase tabular-nums">
+                    <span
+                      className="text-[10px] font-black mb-1 uppercase tabular-nums"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       {y.points.toLocaleString()} PTS
                     </span>
                     {y.available && (
@@ -922,17 +1091,29 @@ const VolunteerRewards = () => {
         onClose={() => setIsClaimDrawerOpen(false)}
         title="Confirm Redeem"
       >
-        <div className="flex flex-col h-full">
-          <div className="p-8 space-y-8 flex-1 overflow-y-auto">
+        <div className="flex flex-col h-full overflow-hidden">
+          <div className="p-8 space-y-8 flex-1 overflow-y-auto thin-scrollbar">
             {selectedReward && (
-              <div className="p-6 bg-emerald-50 rounded-sm border border-emerald-100 text-center">
+              <div
+                className="p-6 rounded-sm border text-center"
+                style={{
+                  backgroundColor: "rgba(34, 197, 94, 0.05)",
+                  borderColor: "rgba(34, 197, 94, 0.1)",
+                }}
+              >
                 <p className="text-[10px] font-black text-[#22c55e] uppercase tracking-[0.3em] mb-2">
                   Confirming Payout
                 </p>
-                <p className="text-4xl font-black text-slate-800 uppercase tracking-tighter mb-1">
+                <p
+                  className="text-4xl font-black uppercase tracking-tighter mb-1"
+                  style={{ color: "var(--text-primary)" }}
+                >
                   {selectedReward.amount || selectedReward.name}
                 </p>
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                <p
+                  className="text-[10px] font-black uppercase tracking-widest"
+                  style={{ color: "var(--text-muted)" }}
+                >
                   {selectedReward.name}
                 </p>
               </div>
@@ -940,25 +1121,52 @@ const VolunteerRewards = () => {
 
             {selectedReward && selectedReward.amount && (
               <div className="space-y-4">
-                <h4 className="text-[11px] font-black uppercase tracking-widest text-slate-800">
+                <h4
+                  className="text-[11px] font-black uppercase tracking-widest"
+                  style={{ color: "var(--text-primary)" }}
+                >
                   Payment Details
                 </h4>
 
                 <div
-                  className={`p-4 border rounded-sm cursor-pointer transition-all ${selectedPayout === "bank" ? "border-[#22c55e] bg-emerald-50/30" : "border-slate-200 hover:border-[#22c55e]/30"}`}
+                  className={`p-4 border rounded-sm cursor-pointer transition-all ${selectedPayout === "bank" ? "border-[#22c55e] bg-emerald-500/5" : "hover:border-[#22c55e]/30"}`}
                   onClick={() => setSelectedPayout("bank")}
+                  style={{
+                    backgroundColor:
+                      selectedPayout === "bank" ? "" : "var(--bg-secondary)",
+                    borderColor:
+                      selectedPayout === "bank"
+                        ? "#22c55e"
+                        : "var(--border-color)",
+                  }}
                 >
                   <div className="flex items-center gap-4">
                     <div
-                      className={`p-2 rounded-sm border ${selectedPayout === "bank" ? "bg-[#22c55e] text-white border-[#22c55e]" : "bg-slate-50 text-slate-400 border-slate-100"}`}
+                      className={`p-2 rounded-sm border ${selectedPayout === "bank" ? "bg-[#22c55e] text-white border-[#22c55e]" : ""}`}
+                      style={{
+                        backgroundColor:
+                          selectedPayout === "bank" ? "" : "var(--bg-primary)",
+                        borderColor:
+                          selectedPayout === "bank"
+                            ? ""
+                            : "var(--border-color)",
+                        color:
+                          selectedPayout === "bank" ? "" : "var(--text-muted)",
+                      }}
                     >
                       <Building2 size={20} />
                     </div>
                     <div className="text-start">
-                      <p className="text-xs font-black text-slate-800 uppercase leading-none">
+                      <p
+                        className="text-xs font-black uppercase leading-none"
+                        style={{ color: "var(--text-primary)" }}
+                      >
                         {primaryBank.bankName}
                       </p>
-                      <p className="text-[10px] font-bold text-slate-400 mt-1">
+                      <p
+                        className="text-[10px] font-bold mt-1"
+                        style={{ color: "var(--text-muted)" }}
+                      >
                         {primaryBank.accountNumber}
                       </p>
                     </div>
@@ -972,20 +1180,42 @@ const VolunteerRewards = () => {
                 </div>
 
                 <div
-                  className={`p-4 border rounded-sm cursor-pointer transition-all ${selectedPayout === "upi" ? "border-[#22c55e] bg-emerald-50/30" : "border-slate-200 hover:border-[#22c55e]/30"}`}
+                  className={`p-4 border rounded-sm cursor-pointer transition-all ${selectedPayout === "upi" ? "border-[#22c55e] bg-emerald-500/5" : "hover:border-[#22c55e]/30"}`}
                   onClick={() => setSelectedPayout("upi")}
+                  style={{
+                    backgroundColor:
+                      selectedPayout === "upi" ? "" : "var(--bg-secondary)",
+                    borderColor:
+                      selectedPayout === "upi"
+                        ? "#22c55e"
+                        : "var(--border-color)",
+                  }}
                 >
                   <div className="flex items-center gap-4">
                     <div
-                      className={`p-2 rounded-sm border ${selectedPayout === "upi" ? "bg-[#22c55e] text-white border-[#22c55e]" : "bg-slate-50 text-slate-400 border-slate-100"}`}
+                      className={`p-2 rounded-sm border ${selectedPayout === "upi" ? "bg-[#22c55e] text-white border-[#22c55e]" : ""}`}
+                      style={{
+                        backgroundColor:
+                          selectedPayout === "upi" ? "" : "var(--bg-primary)",
+                        borderColor:
+                          selectedPayout === "upi" ? "" : "var(--border-color)",
+                        color:
+                          selectedPayout === "upi" ? "" : "var(--text-muted)",
+                      }}
                     >
                       <QrCode size={20} />
                     </div>
                     <div className="text-start">
-                      <p className="text-xs font-black text-slate-800 uppercase leading-none">
+                      <p
+                        className="text-xs font-black uppercase leading-none"
+                        style={{ color: "var(--text-primary)" }}
+                      >
                         UPI Payment
                       </p>
-                      <p className="text-[10px] font-bold text-slate-400 mt-1">
+                      <p
+                        className="text-[10px] font-bold mt-1"
+                        style={{ color: "var(--text-muted)" }}
+                      >
                         {primaryUpi.vpa}
                       </p>
                     </div>
@@ -1004,7 +1234,10 @@ const VolunteerRewards = () => {
               rewards.tours.some((t) => t.id === selectedReward.id) && (
                 <div className="space-y-6">
                   <div className="space-y-4">
-                    <h4 className="text-[11px] font-black uppercase tracking-widest text-slate-800">
+                    <h4
+                      className="text-[11px] font-black uppercase tracking-widest"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       Preferred Date
                     </h4>
                     <ResuableDatePicker
@@ -1015,7 +1248,10 @@ const VolunteerRewards = () => {
                   </div>
 
                   <div className="space-y-4">
-                    <h4 className="text-[11px] font-black uppercase tracking-widest text-slate-800">
+                    <h4
+                      className="text-[11px] font-black uppercase tracking-widest"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       Contact Information
                     </h4>
                     <div className="space-y-3">
@@ -1055,7 +1291,10 @@ const VolunteerRewards = () => {
               rewards.youth.some((y) => y.id === selectedReward.id) && (
                 <div className="space-y-6">
                   <div className="space-y-4">
-                    <h4 className="text-[11px] font-black uppercase tracking-widest text-slate-800">
+                    <h4
+                      className="text-[11px] font-black uppercase tracking-widest"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       Delivery Details
                     </h4>
                     <div className="space-y-3">
@@ -1106,9 +1345,22 @@ const VolunteerRewards = () => {
                 </div>
               )}
 
-            <div className="p-4 bg-slate-50 rounded-sm border border-slate-100 flex items-start gap-4">
-              <Info size={16} className="text-slate-400 shrink-0 mt-0.5" />
-              <p className="text-[10px] font-medium text-slate-500 leading-relaxed italic">
+            <div
+              className="p-4 rounded-sm border flex items-start gap-4"
+              style={{
+                backgroundColor: "var(--bg-secondary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
+              <Info
+                size={16}
+                className="shrink-0 mt-0.5"
+                style={{ color: "var(--text-muted)" }}
+              />
+              <p
+                className="text-[10px] font-medium leading-relaxed italic"
+                style={{ color: "var(--text-secondary)" }}
+              >
                 {selectedReward &&
                 rewards.tours.some((t) => t.id === selectedReward.id)
                   ? "Our travel desk will contact you within 48 hours of redemption to confirm flight availability and hotel booking details."
@@ -1120,7 +1372,13 @@ const VolunteerRewards = () => {
             </div>
           </div>
 
-          <div className="p-8 border-t bg-slate-50/50">
+          <div
+            className="p-8 border-t"
+            style={{
+              backgroundColor: "var(--bg-secondary)",
+              borderColor: "var(--border-color)",
+            }}
+          >
             {showClaimSuccess ? (
               <div className="w-full py-4 bg-[#22c55e] text-white text-[11px] font-black uppercase tracking-widest rounded-sm flex items-center justify-center gap-3">
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />

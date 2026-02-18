@@ -403,13 +403,15 @@ const VolunteerPaymentMethods = () => {
                       <div className="flex items-center gap-1.5">
                         <button
                           onClick={() => handleEditBank(account)}
-                          className="p-1.5 text-slate-300 hover:text-slate-600 transition-all"
+                          className="p-1.5 transition-all"
+                          style={{ color: "var(--text-muted)" }}
                         >
                           <Edit2 size={16} />
                         </button>
                         <button
                           onClick={() => deleteBank(account.id)}
-                          className="p-1.5 text-slate-300 hover:text-red-500 transition-all"
+                          className="p-1.5 hover:text-red-500 transition-all"
+                          style={{ color: "var(--text-muted)" }}
                         >
                           <Trash2 size={16} />
                         </button>
@@ -440,7 +442,10 @@ const VolunteerPaymentMethods = () => {
                   {/* Details Container */}
                   <div className="flex items-start gap-9">
                     <div className="text-start space-y-1">
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">
+                      <p
+                        className="text-[9px] font-black uppercase tracking-widest leading-none"
+                        style={{ color: "var(--text-muted)" }}
+                      >
                         Account Number
                       </p>
                       <p
@@ -451,7 +456,10 @@ const VolunteerPaymentMethods = () => {
                       </p>
                     </div>
                     <div className="text-start space-y-1">
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">
+                      <p
+                        className="text-[9px] font-black uppercase tracking-widest leading-none"
+                        style={{ color: "var(--text-muted)" }}
+                      >
                         IFSC Code
                       </p>
                       <div className="flex items-center gap-4">
@@ -505,7 +513,10 @@ const VolunteerPaymentMethods = () => {
                   <div className="flex-1 text-start min-w-0 py-1">
                     <div className="flex items-center justify-between mb-1.5">
                       <div className="flex items-center gap-2">
-                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">
+                        <p
+                          className="text-[9px] font-black uppercase tracking-[0.2em]"
+                          style={{ color: "var(--text-muted)" }}
+                        >
                           {upi.label}
                         </p>
                         {upi.isPrimary ? (
@@ -551,13 +562,15 @@ const VolunteerPaymentMethods = () => {
                       <div className="flex items-center gap-1.5">
                         <button
                           onClick={() => handleEditUpi(upi)}
-                          className="p-1.5 text-slate-300 hover:text-slate-600 transition-all"
+                          className="p-1.5 transition-all"
+                          style={{ color: "var(--text-muted)" }}
                         >
                           <Edit2 size={16} />
                         </button>
                         <button
                           onClick={() => deleteUpi(upi.id)}
-                          className="p-1.5 text-slate-300 hover:text-red-500 transition-all"
+                          className="p-1.5 hover:text-red-500 transition-all"
+                          style={{ color: "var(--text-muted)" }}
                         >
                           <Trash2 size={16} />
                         </button>
@@ -585,7 +598,7 @@ const VolunteerPaymentMethods = () => {
                 borderColor: "var(--border-color)",
               }}
             >
-              <CreditCard className="text-slate-200" size={48} />
+              <CreditCard style={{ color: "var(--text-muted)" }} size={48} />
             </div>
             <h3
               className="text-2xl font-black uppercase tracking-tight"

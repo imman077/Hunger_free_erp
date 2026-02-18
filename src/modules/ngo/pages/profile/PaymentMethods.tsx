@@ -269,32 +269,60 @@ const PaymentMethods = () => {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div className="text-start space-y-2">
-          <h1 className="text-4xl font-black tracking-tight uppercase text-slate-900 leading-none">
+          <h1
+            className="text-4xl font-black tracking-tight uppercase leading-none"
+            style={{ color: "var(--text-primary)" }}
+          >
             Payment Methods
           </h1>
-          <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.25em]">
+          <p
+            className="text-[11px] font-bold uppercase tracking-[0.25em]"
+            style={{ color: "var(--text-muted)" }}
+          >
             Manage your Payouts
           </p>
         </div>
 
-        <div className="flex items-center gap-4 bg-slate-50 p-1.5 rounded-lg border border-slate-200">
+        <div
+          className="flex items-center gap-4 p-1.5 rounded-lg border"
+          style={{
+            backgroundColor: "var(--bg-secondary)",
+            borderColor: "var(--border-color)",
+          }}
+        >
           <button
             onClick={() => setActiveTab("bank")}
             className={`px-8 py-2.5 rounded-md text-[10px] font-black uppercase tracking-widest transition-all ${
-              activeTab === "bank"
-                ? "bg-white text-slate-900 shadow-sm border border-slate-200"
-                : "text-slate-400 hover:text-slate-600"
+              activeTab === "bank" ? "shadow-sm border" : "hover:opacity-80"
             }`}
+            style={{
+              backgroundColor:
+                activeTab === "bank" ? "var(--bg-primary)" : "transparent",
+              borderColor:
+                activeTab === "bank" ? "var(--border-color)" : "transparent",
+              color:
+                activeTab === "bank"
+                  ? "var(--text-primary)"
+                  : "var(--text-muted)",
+            }}
           >
             Bank Accounts
           </button>
           <button
             onClick={() => setActiveTab("upi")}
             className={`px-8 py-2.5 rounded-md text-[10px] font-black uppercase tracking-widest transition-all ${
-              activeTab === "upi"
-                ? "bg-white text-slate-900 shadow-sm border border-slate-200"
-                : "text-slate-400 hover:text-slate-600"
+              activeTab === "upi" ? "shadow-sm border" : "hover:opacity-80"
             }`}
+            style={{
+              backgroundColor:
+                activeTab === "upi" ? "var(--bg-primary)" : "transparent",
+              borderColor:
+                activeTab === "upi" ? "var(--border-color)" : "transparent",
+              color:
+                activeTab === "upi"
+                  ? "var(--text-primary)"
+                  : "var(--text-muted)",
+            }}
           >
             UPI IDs
           </button>
@@ -305,7 +333,10 @@ const PaymentMethods = () => {
       <div className="space-y-5">
         <div className="flex items-center justify-between">
           <div className="text-start">
-            <h2 className="text-xl font-black uppercase tracking-tight text-slate-800">
+            <h2
+              className="text-xl font-black uppercase tracking-tight"
+              style={{ color: "var(--text-primary)" }}
+            >
               {activeTab === "bank" ? "Saved Bank Accounts" : "Linked UPI IDs"}
             </h2>
             <div className="w-12 h-1 bg-[#22c55e] mt-2" />
@@ -328,22 +359,44 @@ const PaymentMethods = () => {
             ? bankAccounts.map((account: BankAccount) => (
                 <div
                   key={account.id}
-                  className="bg-white border border-slate-200 p-6 rounded-sm shadow-sm hover:shadow-md transition-all relative group"
+                  className="border p-6 rounded-sm shadow-sm hover:shadow-md transition-all relative group"
+                  style={{
+                    backgroundColor: "var(--bg-secondary)",
+                    borderColor: "var(--border-color)",
+                  }}
                 >
                   {/* Top Bar */}
                   <div className="flex items-start justify-between mb-5">
-                    <div className="w-12 h-12 bg-emerald-50/50 border border-emerald-100 flex items-center justify-center rounded-lg">
+                    <div
+                      className="w-12 h-12 border flex items-center justify-center rounded-lg"
+                      style={{
+                        backgroundColor: "rgba(34, 197, 94, 0.05)",
+                        borderColor: "rgba(34, 197, 94, 0.1)",
+                      }}
+                    >
                       <Building2 className="text-[#22c55e]" size={24} />
                     </div>
                     <div className="flex items-center gap-3">
                       {account.isPrimary ? (
-                        <span className="px-2.5 py-1 bg-green-50 text-[#22c55e] text-[9px] font-black uppercase tracking-widest rounded-md border border-green-100">
+                        <span
+                          className="px-2.5 py-1 text-[9px] font-black uppercase tracking-widest rounded-md border"
+                          style={{
+                            backgroundColor: "rgba(34, 197, 94, 0.05)",
+                            color: "#22c55e",
+                            borderColor: "rgba(34, 197, 94, 0.2)",
+                          }}
+                        >
                           Primary
                         </span>
                       ) : (
                         <button
                           onClick={() => setPrimaryBank(account.id)}
-                          className="px-2.5 py-1 bg-emerald-50 text-emerald-500 text-[9px] font-black uppercase tracking-widest rounded-md border border-emerald-100 hover:bg-emerald-100 transition-all active:scale-95"
+                          className="px-2.5 py-1 text-[9px] font-black uppercase tracking-widest rounded-md border transition-all active:scale-95"
+                          style={{
+                            backgroundColor: "var(--bg-primary)",
+                            color: "#22c55e",
+                            borderColor: "rgba(34, 197, 94, 0.2)",
+                          }}
                         >
                           SET PRIMARY
                         </button>
@@ -351,13 +404,14 @@ const PaymentMethods = () => {
                       <div className="flex items-center gap-1.5">
                         <button
                           onClick={() => handleEditBank(account)}
-                          className="p-1.5 text-slate-300 hover:text-slate-600 transition-all"
+                          className="p-1.5 transition-all"
+                          style={{ color: "var(--text-muted)" }}
                         >
                           <Edit2 size={16} />
                         </button>
                         <button
                           onClick={() => deleteBank(account.id)}
-                          className="p-1.5 text-slate-300 hover:text-red-500 transition-all"
+                          className="p-1.5 transition-all text-red-500/50 hover:text-red-500"
                         >
                           <Trash2 size={16} />
                         </button>
@@ -367,32 +421,56 @@ const PaymentMethods = () => {
 
                   {/* Header */}
                   <div className="mb-6 text-start">
-                    <h3 className="text-lg font-black text-slate-900 uppercase tracking-tight leading-none">
+                    <h3
+                      className="text-lg font-black uppercase tracking-tight leading-none"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       {account.bankName}
                     </h3>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em] mt-2">
+                    <p
+                      className="text-[10px] font-bold uppercase tracking-[0.15em] mt-2"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       {account.accountHolder}
                     </p>
                   </div>
 
-                  <div className="w-full h-px bg-slate-50 mb-5" />
+                  <div
+                    className="w-full h-px mb-5"
+                    style={{
+                      backgroundColor: "var(--border-color)",
+                      opacity: 0.5,
+                    }}
+                  />
 
                   {/* Details Container */}
                   <div className="flex items-start gap-9">
                     <div className="text-start space-y-1">
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">
+                      <p
+                        className="text-[9px] font-black uppercase tracking-widest leading-none"
+                        style={{ color: "var(--text-muted)" }}
+                      >
                         Account Number
                       </p>
-                      <p className="text-[14px] font-black text-slate-900 tabular-nums tracking-wider leading-none">
+                      <p
+                        className="text-[14px] font-black tabular-nums tracking-wider leading-none"
+                        style={{ color: "var(--text-primary)" }}
+                      >
                         {account.accountNumber}
                       </p>
                     </div>
                     <div className="text-start space-y-1">
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">
+                      <p
+                        className="text-[9px] font-black uppercase tracking-widest leading-none"
+                        style={{ color: "var(--text-muted)" }}
+                      >
                         IFSC Code
                       </p>
                       <div className="flex items-center gap-4">
-                        <p className="text-[14px] font-black text-slate-900 uppercase tracking-tight leading-none">
+                        <p
+                          className="text-[14px] font-black uppercase tracking-tight leading-none"
+                          style={{ color: "var(--text-primary)" }}
+                        >
                           {account.ifscCode}
                         </p>
 
@@ -420,33 +498,61 @@ const PaymentMethods = () => {
             : upiIds.map((upi: UpiId) => (
                 <div
                   key={upi.id}
-                  className="bg-white border border-slate-200 p-6 rounded-sm shadow-sm hover:shadow-md transition-all relative group flex items-start gap-5"
+                  className="border p-6 rounded-sm shadow-sm hover:shadow-md transition-all relative group flex items-start gap-5"
+                  style={{
+                    backgroundColor: "var(--bg-secondary)",
+                    borderColor: "var(--border-color)",
+                  }}
                 >
-                  <div className="w-16 h-16 bg-green-50/50 border border-green-100 flex items-center justify-center rounded-lg shrink-0">
+                  <div
+                    className="w-16 h-16 border flex items-center justify-center rounded-lg shrink-0"
+                    style={{
+                      backgroundColor: "rgba(34, 197, 94, 0.05)",
+                      borderColor: "rgba(34, 197, 94, 0.1)",
+                    }}
+                  >
                     <QrCode className="text-[#22c55e]" size={32} />
                   </div>
 
                   <div className="flex-1 text-start min-w-0 py-1">
                     <div className="flex items-center justify-between mb-1.5">
                       <div className="flex items-center gap-2">
-                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">
+                        <p
+                          className="text-[9px] font-black uppercase tracking-[0.2em]"
+                          style={{ color: "var(--text-muted)" }}
+                        >
                           {upi.label}
                         </p>
                         {upi.isPrimary ? (
-                          <span className="px-2 py-0.5 bg-green-50 text-[#22c55e] text-[8px] font-black uppercase tracking-widest rounded-md border border-green-100">
+                          <span
+                            className="px-2 py-0.5 text-[8px] font-black uppercase tracking-widest rounded-md border"
+                            style={{
+                              backgroundColor: "rgba(34, 197, 94, 0.05)",
+                              color: "#22c55e",
+                              borderColor: "rgba(34, 197, 94, 0.2)",
+                            }}
+                          >
                             Primary
                           </span>
                         ) : (
                           <button
                             onClick={() => setPrimaryUpi(upi.id)}
-                            className="px-2.5 py-1 bg-emerald-50 text-emerald-500 text-[9px] font-black uppercase tracking-widest rounded-md border border-emerald-100 hover:bg-emerald-100 transition-all active:scale-95"
+                            className="px-2.5 py-1 text-[9px] font-black uppercase tracking-widest rounded-md border transition-all active:scale-95"
+                            style={{
+                              backgroundColor: "var(--bg-primary)",
+                              color: "#22c55e",
+                              borderColor: "rgba(34, 197, 94, 0.2)",
+                            }}
                           >
                             SET PRIMARY
                           </button>
                         )}
                       </div>
                     </div>
-                    <h3 className="text-lg font-black text-slate-900 truncate uppercase tracking-tight">
+                    <h3
+                      className="text-lg font-black truncate uppercase tracking-tight"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       {upi.vpa}
                     </h3>
 
@@ -460,13 +566,14 @@ const PaymentMethods = () => {
                       <div className="flex items-center gap-1.5">
                         <button
                           onClick={() => handleEditUpi(upi)}
-                          className="p-1.5 text-slate-300 hover:text-slate-600 transition-all"
+                          className="p-1.5 transition-all"
+                          style={{ color: "var(--text-muted)" }}
                         >
                           <Edit2 size={16} />
                         </button>
                         <button
                           onClick={() => deleteUpi(upi.id)}
-                          className="p-1.5 text-slate-300 hover:text-red-500 transition-all"
+                          className="p-1.5 text-red-500/50 hover:text-red-500 transition-all"
                         >
                           <Trash2 size={16} />
                         </button>
@@ -480,14 +587,36 @@ const PaymentMethods = () => {
         {/* Empty State */}
         {((activeTab === "bank" && bankAccounts.length === 0) ||
           (activeTab === "upi" && upiIds.length === 0)) && (
-          <div className="py-32 flex flex-col items-center justify-center border border-slate-200 border-dashed rounded-sm bg-[#FAFAFA]/50">
-            <div className="w-24 h-24 bg-white shadow-sm border border-slate-100 flex items-center justify-center rounded-3xl mb-8">
-              <CreditCard className="text-slate-200" size={48} />
+          <div
+            className="py-32 flex flex-col items-center justify-center border border-dashed rounded-sm"
+            style={{
+              backgroundColor: "var(--bg-secondary)",
+              opacity: 0.8,
+              borderColor: "var(--border-color)",
+            }}
+          >
+            <div
+              className="w-24 h-24 shadow-sm border flex items-center justify-center rounded-3xl mb-8"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
+              <CreditCard
+                style={{ color: "var(--text-muted)", opacity: 0.2 }}
+                size={48}
+              />
             </div>
-            <h3 className="text-2xl font-black uppercase text-slate-800 tracking-tight">
+            <h3
+              className="text-2xl font-black uppercase tracking-tight"
+              style={{ color: "var(--text-primary)" }}
+            >
               No Payment Methods
             </h3>
-            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-3">
+            <p
+              className="text-[11px] font-bold uppercase tracking-[0.2em] mt-3"
+              style={{ color: "var(--text-muted)" }}
+            >
               Add a {activeTab === "bank" ? "bank account" : "UPI ID"} to
               receive payments
             </p>
@@ -636,7 +765,13 @@ const PaymentMethods = () => {
                 required
               />
 
-              <div className="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-sm">
+              <div
+                className="flex items-center gap-3 p-3 border rounded-sm"
+                style={{
+                  backgroundColor: "var(--bg-secondary)",
+                  borderColor: "var(--border-color)",
+                }}
+              >
                 <input
                   type="checkbox"
                   id="primaryBank"
@@ -648,7 +783,8 @@ const PaymentMethods = () => {
                 />
                 <label
                   htmlFor="primaryBank"
-                  className="text-[10px] font-black uppercase tracking-widest text-slate-600 cursor-pointer"
+                  className="text-[10px] font-black uppercase tracking-widest cursor-pointer"
+                  style={{ color: "var(--text-secondary)" }}
                 >
                   Set as Primary Payout Account
                 </label>
@@ -680,7 +816,13 @@ const PaymentMethods = () => {
                 required
               />
 
-              <div className="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-sm">
+              <div
+                className="flex items-center gap-3 p-3 border rounded-sm"
+                style={{
+                  backgroundColor: "var(--bg-secondary)",
+                  borderColor: "var(--border-color)",
+                }}
+              >
                 <input
                   type="checkbox"
                   id="primaryUpi"
@@ -692,7 +834,8 @@ const PaymentMethods = () => {
                 />
                 <label
                   htmlFor="primaryUpi"
-                  className="text-[10px] font-black uppercase tracking-widest text-slate-600 cursor-pointer"
+                  className="text-[10px] font-black uppercase tracking-widest cursor-pointer"
+                  style={{ color: "var(--text-secondary)" }}
                 >
                   Set as Primary UPI ID
                 </label>

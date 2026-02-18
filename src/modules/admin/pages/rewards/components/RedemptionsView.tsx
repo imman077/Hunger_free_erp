@@ -345,7 +345,7 @@ const RedemptionsView: React.FC = () => {
               <Plus size={14} style={{ color: "var(--text-muted)" }} />
             }
           >
-            ADD FILTER
+            <span className="hidden sm:inline ml-1">ADD FILTER</span>
           </ResuableButton>
         </DropdownTrigger>
         <DropdownMenu

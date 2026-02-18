@@ -114,7 +114,10 @@ const VolunteerBenefits = () => {
   const [previewTier, setPreviewTier] = useState<string>("Legend");
 
   return (
-    <div className="p-6 md:p-10 min-h-screen space-y-10 max-w-[1600px] mx-auto bg-[#f8fafc]">
+    <div
+      className="p-6 md:p-10 min-h-screen space-y-10 max-w-[1600px] mx-auto"
+      style={{ backgroundColor: "var(--bg-secondary)" }}
+    >
       {/* Header */}
       <div className="space-y-6">
         <div className="space-y-3">
@@ -133,7 +136,10 @@ const VolunteerBenefits = () => {
 
           <div className="flex flex-col md:flex-row md:items-end justify-between items-start gap-4">
             <div className="space-y-1 text-left">
-              <h1 className="text-4xl md:text-6xl font-black tracking-tighter uppercase leading-none text-slate-900">
+              <h1
+                className="text-4xl md:text-6xl font-black tracking-tighter uppercase leading-none"
+                style={{ color: "var(--text-primary)" }}
+              >
                 Tier Benefits
               </h1>
               <p className="text-sm font-black uppercase tracking-[0.3em] text-[#22c55e]">
@@ -141,16 +147,34 @@ const VolunteerBenefits = () => {
               </p>
             </div>
 
-            <div className="px-8 py-6 bg-white border border-slate-200 rounded-sm flex items-center gap-6">
+            <div
+              className="px-8 py-6 border rounded-sm flex items-center gap-6"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
               <div className="text-start">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                <p
+                  className="text-[10px] font-black uppercase tracking-widest mb-1"
+                  style={{ color: "var(--text-muted)" }}
+                >
                   Highest Level
                 </p>
-                <h4 className="text-xl font-black text-slate-800 uppercase">
+                <h4
+                  className="text-xl font-black uppercase"
+                  style={{ color: "var(--text-primary)" }}
+                >
                   Level 7
                 </h4>
               </div>
-              <div className="w-12 h-12 bg-emerald-50 border border-emerald-100 rounded-sm flex items-center justify-center">
+              <div
+                className="w-12 h-12 border rounded-sm flex items-center justify-center"
+                style={{
+                  backgroundColor: "var(--bg-secondary)",
+                  borderColor: "var(--border-color)",
+                }}
+              >
                 <TrendingUp className="text-[#22c55e]" size={24} />
               </div>
             </div>
@@ -159,12 +183,24 @@ const VolunteerBenefits = () => {
       </div>
 
       {/* Points System Info Section */}
-      <div className="bg-white border border-slate-200 rounded-sm p-8 flex flex-col lg:flex-row items-center justify-between gap-10">
+      <div
+        className="border rounded-sm p-8 flex flex-col lg:flex-row items-center justify-between gap-10"
+        style={{
+          backgroundColor: "var(--bg-primary)",
+          borderColor: "var(--border-color)",
+        }}
+      >
         <div className="space-y-3 max-w-md w-full text-left">
-          <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tight">
+          <h2
+            className="text-2xl font-black uppercase tracking-tight"
+            style={{ color: "var(--text-primary)" }}
+          >
             {previewTier} Perks
           </h2>
-          <p className="text-sm font-medium text-slate-500 leading-relaxed">
+          <p
+            className="text-sm font-medium leading-relaxed"
+            style={{ color: "var(--text-secondary)" }}
+          >
             {previewTier === "Level 1"
               ? "Start your volunteer journey by completing tasks. Every action helps the community and earns you points."
               : `As a ${previewTier} volunteer, you get a permanent ${tiers.find((t) => t.name === previewTier)?.bonus}% points boost on all tasks.`}
@@ -186,25 +222,41 @@ const VolunteerBenefits = () => {
             return (
               <div
                 key={idx}
-                className="flex-1 bg-slate-50 border border-slate-100 rounded-sm p-5 min-w-[200px] group"
+                className="flex-1 border rounded-sm p-5 min-w-[200px] group transition-all"
+                style={{
+                  backgroundColor: "var(--bg-secondary)",
+                  borderColor: "var(--border-color)",
+                }}
               >
                 <div className="flex justify-between items-start mb-3">
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                  <p
+                    className="text-[10px] font-black uppercase tracking-widest"
+                    style={{ color: "var(--text-muted)" }}
+                  >
                     {item.label}
                   </p>
                 </div>
                 <div className="flex items-baseline gap-1">
                   <span
-                    className={`text-2xl font-black tabular-nums ${previewTier !== "Level 1" ? "text-emerald-600" : "text-slate-900"}`}
+                    className="text-2xl font-black tabular-nums"
+                    style={{
+                      color:
+                        previewTier !== "Level 1"
+                          ? "#22c55e"
+                          : "var(--text-primary)",
+                    }}
                   >
                     {multipliedPoints}
                   </span>
-                  <span className="text-[10px] font-black text-slate-400 uppercase">
+                  <span
+                    className="text-[10px] font-black uppercase"
+                    style={{ color: "var(--text-muted)" }}
+                  >
                     PTS
                   </span>
                 </div>
                 {bonusPercent > 0 && (
-                  <p className="text-[9px] font-black text-emerald-600/70 uppercase tracking-tighter mt-1">
+                  <p className="text-[9px] font-black text-[#22c55e]/70 uppercase tracking-tighter mt-1">
                     +{bonusPercent}% {previewTier} Boost
                   </p>
                 )}
@@ -219,7 +271,11 @@ const VolunteerBenefits = () => {
           <div
             key={tier.name}
             onClick={() => setPreviewTier(tier.name)}
-            className="cursor-pointer border border-slate-200 hover:border-[#22c55e]/30 rounded-sm p-8 bg-white transition-all duration-200 relative overflow-hidden group shadow-sm"
+            className="cursor-pointer border hover:border-[#22c55e]/30 rounded-sm p-8 transition-all duration-200 relative overflow-hidden group shadow-sm"
+            style={{
+              backgroundColor: "var(--bg-primary)",
+              borderColor: "var(--border-color)",
+            }}
           >
             {/* Background Decorative Element */}
             <div
@@ -228,21 +284,36 @@ const VolunteerBenefits = () => {
 
             <div className="relative z-10 flex flex-col h-full">
               <div className="flex items-center justify-between">
-                <div className="p-4 bg-slate-50 border border-slate-200 rounded-sm group-hover:bg-white transition-colors">
+                <div
+                  className="p-4 border rounded-sm group-hover:bg-[#22c55e]/5 transition-colors"
+                  style={{
+                    backgroundColor: "var(--bg-secondary)",
+                    borderColor: "var(--border-color)",
+                  }}
+                >
                   {tier.icon}
                 </div>
                 <div className="text-right">
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1.5">
+                  <p
+                    className="text-[10px] font-black uppercase tracking-widest leading-none mb-1.5"
+                    style={{ color: "var(--text-muted)" }}
+                  >
                     Target
                   </p>
-                  <p className="text-sm font-black text-slate-800 tracking-tight">
+                  <p
+                    className="text-sm font-black tracking-tight"
+                    style={{ color: "var(--text-primary)" }}
+                  >
                     {tier.points} PTS
                   </p>
                 </div>
               </div>
 
               <div className="space-y-1 mt-6">
-                <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight">
+                <h3
+                  className="text-2xl font-black uppercase tracking-tight"
+                  style={{ color: "var(--text-primary)" }}
+                >
                   {tier.name}
                 </h3>
                 <div
@@ -250,18 +321,27 @@ const VolunteerBenefits = () => {
                 />
               </div>
 
-              <div className="pt-6 mt-8 border-t border-slate-50">
+              <div
+                className="pt-6 mt-8 border-t"
+                style={{ borderColor: "var(--border-color)" }}
+              >
                 <div className="flex items-baseline gap-2">
                   <span
                     className={`text-4xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-br ${tier.color}`}
                   >
                     +{tier.bonus}%
                   </span>
-                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                  <span
+                    className="text-[10px] font-black uppercase tracking-widest"
+                    style={{ color: "var(--text-muted)" }}
+                  >
                     Point Boost
                   </span>
                 </div>
-                <p className="text-[11px] font-bold text-slate-500 mt-2 leading-tight">
+                <p
+                  className="text-[11px] font-bold mt-2 leading-tight"
+                  style={{ color: "var(--text-secondary)" }}
+                >
                   Permanent multiplier for all your contributions.
                 </p>
               </div>

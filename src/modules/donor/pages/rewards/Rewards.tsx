@@ -327,14 +327,14 @@ const DonorRewards = () => {
   const [wonPrize, setWonPrize] = useState<Prize | null>(null);
 
   const prizes: Prize[] = [
-    { id: 1, label: "₹1,000", icon: "💰", color: "#ffffff" },
-    { id: 2, label: "₹500", icon: "💎", color: "#f0fdf4" },
-    { id: 3, label: "₹5,000", icon: "🏆", color: "#ffffff" },
-    { id: 4, label: "₹2,500", icon: "🎁", color: "#f0fdf4" },
-    { id: 5, label: "₹1,000", icon: "💰", color: "#ffffff" },
+    { id: 1, label: "₹1,000", icon: "💰", color: "var(--bg-secondary)" },
+    { id: 2, label: "₹500", icon: "💎", color: "var(--bg-tertiary)" },
+    { id: 3, label: "₹5,000", icon: "🏆", color: "var(--bg-primary)" },
+    { id: 4, label: "₹2,500", icon: "🎁", color: "var(--bg-secondary)" },
+    { id: 5, label: "₹1,000", icon: "💰", color: "var(--bg-tertiary)" },
     { id: 6, label: "GRAND JACKPOT", icon: "✨", color: "#22c55e" },
-    { id: 7, label: "₹500", icon: "💎", color: "#ffffff" },
-    { id: 8, label: "₹2,000", icon: "🎁", color: "#f0fdf4" },
+    { id: 7, label: "₹500", icon: "💎", color: "var(--bg-secondary)" },
+    { id: 8, label: "₹2,000", icon: "🎁", color: "var(--bg-tertiary)" },
   ];
 
   const handleSpin = () => {

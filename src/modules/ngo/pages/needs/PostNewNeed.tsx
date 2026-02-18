@@ -98,12 +98,21 @@ const PostNewNeed = () => {
             </button>
             <div className="h-10 w-px bg-gray-200 hidden sm:block" />
             <div>
-              <h1 className="text-4xl font-black text-gray-900 tracking-tighter leading-none mb-1">
+              <h1
+                className="text-4xl font-black tracking-tighter leading-none mb-1"
+                style={{ color: "var(--text-primary)" }}
+              >
                 Post New Need
               </h1>
             </div>
           </div>
-          <div className="bg-emerald-50 border border-emerald-100 px-4 py-2 rounded-sm flex items-center gap-3 shadow-sm">
+          <div
+            className="px-4 py-2 rounded-sm flex items-center gap-3 shadow-sm border"
+            style={{
+              backgroundColor: "rgba(34, 197, 94, 0.08)",
+              borderColor: "rgba(34, 197, 94, 0.2)",
+            }}
+          >
             <div className="w-2 h-2 rounded-full bg-[#22c55e] animate-pulse" />
             <span className="text-[10px] font-black text-[#22c55e] uppercase tracking-widest">
               Form Active
@@ -118,20 +127,37 @@ const PostNewNeed = () => {
       >
         {/* Card 01: Item Info */}
         <div
-          className="border rounded-sm bg-white shadow-sm"
+          className="border rounded-sm shadow-sm"
           style={{
+            backgroundColor: "var(--bg-primary)",
             borderColor: "var(--border-color)",
           }}
         >
-          <div className="border-b border-gray-100 p-8 flex items-center gap-5">
-            <div className="w-14 h-14 bg-emerald-50 border border-emerald-100 rounded-sm flex items-center justify-center text-[#22c55e]">
+          <div
+            className="border-b p-8 flex items-center gap-5"
+            style={{ borderColor: "var(--border-color)" }}
+          >
+            <div
+              className="w-14 h-14 rounded-sm flex items-center justify-center border"
+              style={{
+                backgroundColor: "rgba(34, 197, 94, 0.08)",
+                borderColor: "rgba(34, 197, 94, 0.2)",
+                color: "#22c55e",
+              }}
+            >
               <Package size={28} />
             </div>
             <div>
-              <h2 className="text-2xl text-left font-black text-slate-800 tracking-tight">
+              <h2
+                className="text-2xl text-left font-black tracking-tight"
+                style={{ color: "var(--text-primary)" }}
+              >
                 Item Details
               </h2>
-              <p className="text-xs text-slate-500 font-medium">
+              <p
+                className="text-xs font-medium"
+                style={{ color: "var(--text-muted)" }}
+              >
                 Specify what you need and how much
               </p>
             </div>
@@ -222,20 +248,37 @@ const PostNewNeed = () => {
 
         {/* Card 02: Beneficiary Info */}
         <div
-          className="border rounded-sm bg-white shadow-sm"
+          className="border rounded-sm shadow-sm"
           style={{
+            backgroundColor: "var(--bg-primary)",
             borderColor: "var(--border-color)",
           }}
         >
-          <div className="border-b border-gray-100 p-8 flex items-center gap-5">
-            <div className="w-14 h-14 bg-slate-50 border border-slate-100 rounded-sm flex items-center justify-center text-slate-600">
+          <div
+            className="border-b p-8 flex items-center gap-5"
+            style={{ borderColor: "var(--border-color)" }}
+          >
+            <div
+              className="w-14 h-14 rounded-sm flex items-center justify-center border"
+              style={{
+                backgroundColor: "var(--bg-secondary)",
+                borderColor: "var(--border-color)",
+                color: "var(--text-muted)",
+              }}
+            >
               <Users size={28} />
             </div>
             <div>
-              <h2 className="text-2xl font-black text-slate-800 tracking-tight">
+              <h2
+                className="text-2xl font-black tracking-tight"
+                style={{ color: "var(--text-primary)" }}
+              >
                 Beneficiary Information
               </h2>
-              <p className="text-xs text-left text-slate-500 font-medium">
+              <p
+                className="text-xs text-left font-medium"
+                style={{ color: "var(--text-muted)" }}
+              >
                 Who will benefit from this donation
               </p>
             </div>
@@ -269,9 +312,22 @@ const PostNewNeed = () => {
         </div>
 
         {/* System Intelligence Banner - Simplified */}
-        <div className="relative overflow-hidden border border-slate-200 bg-white p-0 rounded-none shadow-sm flex items-stretch">
+        <div
+          className="relative overflow-hidden border p-0 rounded-none shadow-sm flex items-stretch"
+          style={{
+            backgroundColor: "rgba(59, 130, 246, 0.03)",
+            borderColor: "rgba(59, 130, 246, 0.2)",
+          }}
+        >
           <div className="flex-1 p-6 flex flex-col sm:flex-row items-start gap-6">
-            <div className="w-12 h-12 bg-blue-50 border border-blue-100 rounded-none flex items-center justify-center text-blue-600 shrink-0">
+            <div
+              className="w-12 h-12 rounded-none flex items-center justify-center border shrink-0"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "rgba(59, 130, 246, 0.2)",
+                color: "#3b82f6",
+              }}
+            >
               <AlertCircle size={24} />
             </div>
             <div className="text-left">
@@ -280,7 +336,10 @@ const PostNewNeed = () => {
                   Important Information
                 </h3>
               </div>
-              <p className="text-[13px] font-medium text-blue-600/80 leading-relaxed max-w-2xl">
+              <p
+                className="text-[13px] font-medium leading-relaxed max-w-2xl"
+                style={{ color: "rgba(59, 130, 246, 0.9)" }}
+              >
                 Donors will see your request immediately after you post it. We
                 will send you notifications when someone shows interest. Please
                 make sure all details are correct.
@@ -369,12 +428,24 @@ const PostNewNeed = () => {
                 <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-green-600 leading-none mb-1">
                   Sent
                 </h3>
-                <h2 className="text-2xl font-black text-slate-900 tracking-tight leading-none">
+                <h2
+                  className="text-2xl font-black tracking-tight leading-none"
+                  style={{ color: "var(--text-primary)" }}
+                >
                   Request Sent!
                 </h2>
-                <p className="text-[13px] font-medium text-slate-500 max-w-[320px] leading-relaxed mx-auto">
+                <p
+                  className="text-[13px] font-medium max-w-[320px] leading-relaxed mx-auto"
+                  style={{ color: "var(--text-muted)" }}
+                >
                   We've received your suggestion for{" "}
-                  <span className="text-slate-900 font-bold px-1.5 py-0.5 bg-slate-100 rounded-sm">
+                  <span
+                    className="font-bold px-1.5 py-0.5 rounded-sm"
+                    style={{
+                      backgroundColor: "var(--bg-secondary)",
+                      color: "var(--text-primary)",
+                    }}
+                  >
                     {suggestionCategoryName}
                   </span>{" "}
                   and our team will review it soon.
@@ -419,7 +490,10 @@ const PostNewNeed = () => {
                 />
               </div>
 
-              <p className="text-[10px] font-medium text-slate-400 italic">
+              <p
+                className="text-[10px] font-medium italic"
+                style={{ color: "var(--text-muted)" }}
+              >
                 * Our administrators will review this request and update the
                 global list if approved.
               </p>

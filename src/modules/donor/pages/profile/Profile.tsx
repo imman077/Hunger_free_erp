@@ -206,7 +206,7 @@ const DonorProfile = () => {
       label: "Profile Finish",
       val: "85%",
       trend: "Upload Pending",
-      color: "bg-slate-500",
+      color: "bg-[#94a3b8]",
     },
   ];
 
@@ -743,8 +743,8 @@ const DonorProfile = () => {
                               style={{
                                 backgroundColor:
                                   doc.status === "Verified"
-                                    ? "rgba(34, 197, 94, 0.08)"
-                                    : "rgba(245, 158, 11, 0.08)",
+                                    ? "rgba(34, 197, 94, 0.1)"
+                                    : "rgba(245, 158, 11, 0.1)",
                                 borderColor:
                                   doc.status === "Verified"
                                     ? "rgba(34, 197, 94, 0.2)"
@@ -799,9 +799,10 @@ const DonorProfile = () => {
             style={{
               backgroundColor: "rgba(245, 158, 11, 0.08)",
               borderColor: "rgba(245, 158, 11, 0.2)",
+              color: "#f59e0b",
             }}
           >
-            <ShieldCheck size={18} className="text-amber-500" />
+            <ShieldCheck size={20} />
           </div>
           <div className="space-y-1">
             <h4
@@ -833,22 +834,14 @@ const DonorProfile = () => {
           {isSubmitted ? (
             /* SUCCESS FEEDBACK VIEW */
             <div className="flex-grow flex flex-col items-center justify-center space-y-6 animate-in zoom-in-95 fade-in duration-500">
-              <div className="relative">
-                <div
-                  className="w-20 h-20 rounded-full border flex items-center justify-center animate-bounce duration-1000"
-                  style={{
-                    backgroundColor: "rgba(34, 197, 94, 0.08)",
-                    borderColor: "rgba(34, 197, 94, 0.2)",
-                  }}
-                >
-                  <BadgeCheck size={40} className="text-[#22c55e]" />
-                </div>
-                <div
-                  className="absolute top-0 right-0 w-5 h-5 bg-[#22c55e] border-4 rounded-full flex items-center justify-center"
-                  style={{ borderColor: "var(--bg-primary)" }}
-                >
-                  <ShieldCheck size={8} className="text-white" />
-                </div>
+              <div
+                className="w-20 h-20 rounded-full border flex items-center justify-center"
+                style={{
+                  backgroundColor: "rgba(34, 197, 94, 0.08)",
+                  borderColor: "rgba(34, 197, 94, 0.2)",
+                }}
+              >
+                <BadgeCheck size={40} className="text-[#22c55e]" />
               </div>
 
               <div className="text-center space-y-2">

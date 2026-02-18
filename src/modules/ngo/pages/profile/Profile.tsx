@@ -207,33 +207,60 @@ const NGOProfile = () => {
   ];
 
   // Alignment Helpers
-  const labelText = "text-[10px] font-black text-slate-400 tracking-[0.1em]";
-  const valueText = "text-sm font-bold text-slate-800 tracking-tight";
-  const rowItem = "flex items-center gap-3 w-full";
 
   return (
-    <div className="min-h-screen bg-slate-50/50 flex flex-col pb-20 font-sans">
+    <div
+      className="min-h-screen flex flex-col pb-20 font-sans"
+      style={{ backgroundColor: "var(--bg-secondary)" }}
+    >
       {/* 1. CLEAN HEADER */}
-      <header className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
+      <header
+        className="sticky top-0 z-50 border-b shadow-sm"
+        style={{
+          backgroundColor: "var(--bg-primary)",
+          borderColor: "var(--border-color)",
+        }}
+      >
         <div className="max-w-7xl mx-auto px-6 md:px-8 py-4 flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
-            <div className="w-20 h-20 rounded-lg border border-slate-200 p-1 bg-[#22c55e] shadow-sm overflow-hidden flex items-center justify-center">
+            <div
+              className="w-20 h-20 rounded-lg border p-1 shadow-sm overflow-hidden flex items-center justify-center"
+              style={{
+                backgroundColor: "#22c55e",
+                borderColor: "var(--border-color)",
+              }}
+            >
               <span className="text-3xl font-black text-white">GH</span>
             </div>
 
             <div className="space-y-2">
               <div className="flex items-center justify-center md:justify-start gap-2">
-                <span className="px-2.5 py-1 bg-green-50 text-green-600 text-[10px] font-black tracking-widest rounded-md border border-green-100 flex items-center gap-1.5">
+                <span
+                  className="px-2.5 py-1 text-green-600 text-[10px] font-black tracking-widest rounded-md border flex items-center gap-1.5"
+                  style={{
+                    backgroundColor: "rgba(34, 197, 94, 0.08)",
+                    borderColor: "rgba(34, 197, 94, 0.2)",
+                  }}
+                >
                   <ShieldCheck size={12} /> {profile.verificationLevel}
                 </span>
-                <span className="text-slate-400 text-[10px] font-bold tracking-widest">
+                <span
+                  className="text-[10px] font-bold tracking-widest"
+                  style={{ color: "var(--text-muted)" }}
+                >
                   Reg Id: {profile.registrationId}
                 </span>
               </div>
-              <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight uppercase leading-none">
+              <h1
+                className="text-2xl md:text-3xl font-black tracking-tight uppercase leading-none"
+                style={{ color: "var(--text-primary)" }}
+              >
                 {profile.ngoName}
               </h1>
-              <p className="text-slate-500 font-bold text-xs tracking-widest">
+              <p
+                className="font-bold text-xs tracking-widest"
+                style={{ color: "var(--text-muted)" }}
+              >
                 {profile.ngoType}
               </p>
             </div>
@@ -268,9 +295,24 @@ const NGOProfile = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* LEFT: ENTITY INFORMATION */}
           <aside className="lg:col-span-4 w-full text-start">
-            <div className="bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden text-start lg:h-[calc(100vh-270px)] min-h-[440px] flex flex-col">
-              <div className="h-[52px] px-6 bg-slate-50/50 border-b border-slate-100 flex items-center">
-                <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest flex items-center gap-2">
+            <div
+              className="border rounded-lg shadow-sm overflow-hidden text-start lg:h-[calc(100vh-270px)] min-h-[440px] flex flex-col"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
+              <div
+                className="h-[52px] px-6 border-b flex items-center"
+                style={{
+                  backgroundColor: "var(--bg-secondary)",
+                  borderColor: "var(--border-color)",
+                }}
+              >
+                <h3
+                  className="text-xs font-black uppercase tracking-widest flex items-center gap-2"
+                  style={{ color: "var(--text-primary)" }}
+                >
                   <User size={14} className="text-[#22c55e]" /> Organization
                   Details
                 </h3>
@@ -278,20 +320,43 @@ const NGOProfile = () => {
               <div className="p-5 flex-grow overflow-y-auto thin-scrollbar flex flex-col gap-5">
                 {/* Primary Contact */}
                 <div className="space-y-4">
-                  <p className={labelText}>Managing Director</p>
+                  <p
+                    className="text-[10px] font-black uppercase tracking-[0.1em]"
+                    style={{ color: "var(--text-muted)" }}
+                  >
+                    Managing Director
+                  </p>
                   <div className="space-y-2">
-                    <div className={rowItem}>
-                      <div className="w-8 h-8 rounded bg-slate-50 flex items-center justify-center text-slate-400">
+                    <div className="flex items-center gap-3 w-full">
+                      <div
+                        className="w-8 h-8 rounded border flex items-center justify-center text-slate-400"
+                        style={{
+                          backgroundColor: "var(--bg-secondary)",
+                          borderColor: "var(--border-color)",
+                        }}
+                      >
                         <User size={14} />
                       </div>
-                      <span className={valueText}>{profile.managerName}</span>
+                      <span
+                        className="text-sm font-bold tracking-tight"
+                        style={{ color: "var(--text-primary)" }}
+                      >
+                        {profile.managerName}
+                      </span>
                     </div>
-                    <div className={rowItem}>
-                      <div className="w-8 h-8 rounded bg-slate-50 flex items-center justify-center text-slate-400">
+                    <div className="flex items-center gap-3 w-full">
+                      <div
+                        className="w-8 h-8 rounded border flex items-center justify-center text-slate-400"
+                        style={{
+                          backgroundColor: "var(--bg-secondary)",
+                          borderColor: "var(--border-color)",
+                        }}
+                      >
                         <Mail size={14} />
                       </div>
                       <span
-                        className={`${valueText} lowercase decoration-slate-200`}
+                        className="text-sm font-bold lowercase tracking-tight"
+                        style={{ color: "var(--text-primary)" }}
                       >
                         {profile.email}
                       </span>
@@ -300,24 +365,60 @@ const NGOProfile = () => {
                 </div>
 
                 {/* Secondary Contact */}
-                <div className="pt-4 border-t border-slate-50 space-y-3">
-                  <p className={labelText}>Contact Number</p>
-                  <div className={rowItem}>
-                    <div className="w-8 h-8 rounded bg-slate-50 flex items-center justify-center text-slate-400">
+                <div
+                  className="pt-4 border-t space-y-3"
+                  style={{ borderColor: "var(--border-color)" }}
+                >
+                  <p
+                    className="text-[10px] font-black uppercase tracking-[0.1em]"
+                    style={{ color: "var(--text-muted)" }}
+                  >
+                    Contact Number
+                  </p>
+                  <div className="flex items-center gap-3 w-full">
+                    <div
+                      className="w-8 h-8 rounded border flex items-center justify-center text-slate-400"
+                      style={{
+                        backgroundColor: "var(--bg-secondary)",
+                        borderColor: "var(--border-color)",
+                      }}
+                    >
                       <Phone size={14} />
                     </div>
-                    <span className={valueText}>{profile.phone}</span>
+                    <span
+                      className="text-sm font-bold tracking-tight"
+                      style={{ color: "var(--text-primary)" }}
+                    >
+                      {profile.phone}
+                    </span>
                   </div>
                 </div>
 
                 {/* Registered Address */}
-                <div className="pt-4 border-t border-slate-50 space-y-3">
-                  <p className={labelText}>Operating Office</p>
+                <div
+                  className="pt-4 border-t space-y-3"
+                  style={{ borderColor: "var(--border-color)" }}
+                >
+                  <p
+                    className="text-[10px] font-black uppercase tracking-[0.1em]"
+                    style={{ color: "var(--text-muted)" }}
+                  >
+                    Operating Office
+                  </p>
                   <div className="flex gap-4">
-                    <div className="w-8 h-8 rounded bg-green-50 flex items-center justify-center text-[#22c55e] shrink-0">
+                    <div
+                      className="w-8 h-8 rounded border flex items-center justify-center text-[#22c55e] shrink-0"
+                      style={{
+                        backgroundColor: "rgba(34, 197, 94, 0.08)",
+                        borderColor: "rgba(34, 197, 94, 0.2)",
+                      }}
+                    >
                       <MapPin size={14} />
                     </div>
-                    <p className="text-[13px] font-bold text-slate-700 leading-relaxed tracking-tight">
+                    <p
+                      className="text-[13px] font-bold leading-relaxed tracking-tight"
+                      style={{ color: "var(--text-secondary)" }}
+                    >
                       456 Charity Lane, Lower East Side,
                       <br />
                       New York, NY 10002
@@ -332,10 +433,28 @@ const NGOProfile = () => {
 
           {/* RIGHT: NGO DETAILS */}
           <section className="lg:col-span-8 w-full text-start">
-            <div className="bg-white border border-slate-200 rounded-lg shadow-sm lg:h-[calc(100vh-270px)] min-h-[440px] flex flex-col">
+            <div
+              className="border rounded-lg shadow-sm lg:h-[calc(100vh-270px)] min-h-[440px] flex flex-col"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
               {/* TABS HEADER */}
-              <div className="h-[52px] px-1 bg-slate-50/50 border-b border-slate-100 flex items-center">
-                <div className="flex items-center gap-1 p-1 bg-slate-200/40 rounded-lg">
+              <div
+                className="h-[52px] px-1 border-b flex items-center"
+                style={{
+                  backgroundColor: "var(--bg-secondary)",
+                  borderColor: "var(--border-color)",
+                }}
+              >
+                <div
+                  className="flex items-center gap-1 p-1 rounded-lg border"
+                  style={{
+                    backgroundColor: "var(--bg-primary)",
+                    borderColor: "var(--border-color)",
+                  }}
+                >
                   {[
                     { id: "identity", label: "NGO Information" },
                     { id: "documents", label: "Credential Vault" },
@@ -345,9 +464,23 @@ const NGOProfile = () => {
                       onClick={() => setActiveTab(tab.id)}
                       className={`px-4 py-1.5 rounded-md text-[9px] font-black uppercase tracking-widest transition-all ${
                         activeTab === tab.id
-                          ? "bg-white text-[#22c55e] shadow-sm border border-slate-100"
-                          : "text-slate-400 hover:text-slate-600 hover:bg-slate-200/20"
+                          ? "shadow-sm border"
+                          : "hover:bg-slate-200/20"
                       }`}
+                      style={{
+                        backgroundColor:
+                          activeTab === tab.id
+                            ? "var(--bg-secondary)"
+                            : "transparent",
+                        borderColor:
+                          activeTab === tab.id
+                            ? "var(--border-color)"
+                            : "transparent",
+                        color:
+                          activeTab === tab.id
+                            ? "var(--text-primary)"
+                            : "var(--text-muted)",
+                      }}
                     >
                       {tab.label}
                     </button>
@@ -393,13 +526,31 @@ const NGOProfile = () => {
                           key={i}
                           className={`space-y-2 ${field.span ? "md:col-span-2" : ""}`}
                         >
-                          <p className={labelText}>{field.label}</p>
-                          <div className="flex items-center gap-3 bg-slate-50/50 p-2.5 rounded-md border border-slate-100 hover:border-slate-200 transition-colors">
-                            <div className="flex items-center justify-center w-7 h-7 rounded-md bg-white border border-slate-100 text-slate-400">
+                          <p
+                            className="text-[10px] font-black uppercase tracking-[0.1em]"
+                            style={{ color: "var(--text-muted)" }}
+                          >
+                            {field.label}
+                          </p>
+                          <div
+                            className="flex items-center gap-3 p-2.5 rounded-md border transition-colors"
+                            style={{
+                              backgroundColor: "var(--bg-secondary)",
+                              borderColor: "var(--border-color)",
+                            }}
+                          >
+                            <div
+                              className="flex items-center justify-center w-7 h-7 rounded-md border text-slate-400"
+                              style={{
+                                backgroundColor: "var(--bg-primary)",
+                                borderColor: "var(--border-color)",
+                              }}
+                            >
                               {field.icon}
                             </div>
                             <span
-                              className={`${valueText} text-[13px] flex items-center gap-2`}
+                              className="text-sm font-bold tracking-tight text-[13px] flex items-center gap-2"
+                              style={{ color: "var(--text-primary)" }}
                             >
                               {field.val}
                               {field.isVerified && (
@@ -415,20 +566,41 @@ const NGOProfile = () => {
                     </div>
 
                     {/* SECTION 2: PAYOUT INTELLIGENCE */}
-                    <div className="pt-4 border-t border-slate-100 space-y-4">
+                    <div
+                      className="pt-4 border-t space-y-4"
+                      style={{ borderColor: "var(--border-color)" }}
+                    >
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-[#22c55e] border border-emerald-100 shadow-sm">
+                        <div
+                          className="w-8 h-8 rounded-lg flex items-center justify-center text-[#22c55e] border shadow-sm"
+                          style={{
+                            backgroundColor: "rgba(34, 197, 94, 0.08)",
+                            borderColor: "rgba(34, 197, 94, 0.2)",
+                          }}
+                        >
                           <Wallet size={16} />
                         </div>
                         <div className="flex flex-col">
-                          <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900">
+                          <h4
+                            className="text-[10px] font-black uppercase tracking-[0.2em]"
+                            style={{ color: "var(--text-primary)" }}
+                          >
                             Verified Payout Methods
                           </h4>
-                          <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">
+                          <span
+                            className="text-[8px] font-bold uppercase tracking-widest"
+                            style={{ color: "var(--text-muted)" }}
+                          >
                             Primary accounts for grant settlements
                           </span>
                         </div>
-                        <div className="ml-auto flex items-center gap-1.5 px-2 py-1 bg-blue-50/50 rounded-md border border-blue-100">
+                        <div
+                          className="ml-auto flex items-center gap-1.5 px-2 py-1 rounded-md border"
+                          style={{
+                            backgroundColor: "rgba(59, 130, 246, 0.08)",
+                            borderColor: "rgba(59, 130, 246, 0.2)",
+                          }}
+                        >
                           <ShieldCheck size={10} className="text-blue-500" />
                           <span className="text-[8px] font-black text-blue-600 uppercase tracking-widest">
                             Verified & Active
@@ -450,13 +622,31 @@ const NGOProfile = () => {
                           },
                         ].map((field, i) => (
                           <div key={i} className="space-y-2">
-                            <p className={labelText}>{field.label}</p>
-                            <div className="flex items-center gap-3 bg-slate-50/50 p-2.5 rounded-md border border-slate-100 hover:border-slate-200 transition-colors">
-                              <div className="flex items-center justify-center w-7 h-7 rounded-md bg-white border border-slate-100 text-slate-400">
+                            <p
+                              className="text-[10px] font-black uppercase tracking-[0.1em]"
+                              style={{ color: "var(--text-muted)" }}
+                            >
+                              {field.label}
+                            </p>
+                            <div
+                              className="flex items-center gap-3 p-2.5 rounded-md border transition-colors"
+                              style={{
+                                backgroundColor: "var(--bg-secondary)",
+                                borderColor: "var(--border-color)",
+                              }}
+                            >
+                              <div
+                                className="flex items-center justify-center w-7 h-7 rounded-md border text-slate-400"
+                                style={{
+                                  backgroundColor: "var(--bg-primary)",
+                                  borderColor: "var(--border-color)",
+                                }}
+                              >
                                 {field.icon}
                               </div>
                               <span
-                                className={`${valueText} text-[13px] flex items-center gap-2`}
+                                className="text-sm font-bold tracking-tight text-[13px] flex items-center gap-2"
+                                style={{ color: "var(--text-primary)" }}
                               >
                                 {field.val}
                                 <ShieldCheck
@@ -474,7 +664,12 @@ const NGOProfile = () => {
 
                 {activeTab === "documents" && (
                   <div className="space-y-6 animate-in fade-in duration-300">
-                    <p className={labelText}>Organization Credentials</p>
+                    <p
+                      className="text-[10px] font-black uppercase tracking-[0.1em]"
+                      style={{ color: "var(--text-muted)" }}
+                    >
+                      Organization Credentials
+                    </p>
                     <div className="grid grid-cols-1 gap-4">
                       {[
                         {
@@ -498,17 +693,33 @@ const NGOProfile = () => {
                       ].map((doc, i) => (
                         <div
                           key={i}
-                          className="group flex items-center justify-between p-3 bg-slate-50/50 border border-slate-100 rounded-md hover:bg-white hover:border-emerald-200 transition-all duration-300"
+                          className="group flex items-center justify-between p-3 rounded-md border transition-all duration-300"
+                          style={{
+                            backgroundColor: "var(--bg-secondary)",
+                            borderColor: "var(--border-color)",
+                          }}
                         >
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-md bg-white border border-slate-100 flex items-center justify-center text-slate-400 group-hover:text-emerald-500 transition-colors">
+                            <div
+                              className="w-8 h-8 rounded-md border flex items-center justify-center text-slate-400 group-hover:text-emerald-500 transition-colors"
+                              style={{
+                                backgroundColor: "var(--bg-primary)",
+                                borderColor: "var(--border-color)",
+                              }}
+                            >
                               <FileText size={14} />
                             </div>
                             <div>
-                              <p className="text-xs font-bold text-slate-800 uppercase tracking-tight">
+                              <p
+                                className="text-xs font-bold uppercase tracking-tight"
+                                style={{ color: "var(--text-primary)" }}
+                              >
                                 {doc.name}
                               </p>
-                              <p className="text-[9px] font-bold text-slate-400 uppercase">
+                              <p
+                                className="text-[9px] font-bold uppercase"
+                                style={{ color: "var(--text-muted)" }}
+                              >
                                 Validated: {doc.date}
                               </p>
                             </div>
@@ -518,17 +729,30 @@ const NGOProfile = () => {
                             <span
                               className={`px-2.5 py-0.5 rounded-md text-[8px] font-black uppercase tracking-widest border transition-colors ${
                                 doc.status === "Verified"
-                                  ? "bg-green-50 text-green-600 border-green-100"
-                                  : "bg-amber-50 text-amber-600 border-amber-100"
+                                  ? "text-green-600"
+                                  : "text-amber-600"
                               }`}
+                              style={{
+                                backgroundColor:
+                                  doc.status === "Verified"
+                                    ? "rgba(34, 197, 94, 0.08)"
+                                    : "rgba(245, 158, 11, 0.08)",
+                                borderColor:
+                                  doc.status === "Verified"
+                                    ? "rgba(34, 197, 94, 0.2)"
+                                    : "rgba(245, 158, 11, 0.2)",
+                              }}
                             >
                               {doc.status}
                             </span>
 
-                            <div className="flex items-center gap-0.5 pl-3 border-l border-slate-200">
+                            <div
+                              className="flex items-center gap-0.5 pl-3 border-l"
+                              style={{ borderColor: "var(--border-color)" }}
+                            >
                               <button
                                 onClick={() => handleViewDocument(doc)}
-                                className="p-1.5 hover:bg-emerald-50 text-slate-400 hover:text-emerald-600 rounded-lg transition-all"
+                                className="p-1.5 hover:bg-emerald-50/20 text-slate-400 hover:text-emerald-600 rounded-lg transition-all"
                               >
                                 <Eye size={14} />
                               </button>
@@ -553,15 +777,33 @@ const NGOProfile = () => {
         {/* PAGE FOOTER */}
         <div className="flex flex-col gap-4">
           {/* SECURE CHANNEL NOTICE */}
-          <div className="p-4 bg-blue-50/50 rounded-lg border border-blue-100 flex items-start gap-4 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="p-2.5 bg-white rounded-md border border-blue-200 shadow-inner shrink-0 text-blue-500">
+          <div
+            className="p-4 rounded-lg border flex items-start gap-4 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500"
+            style={{
+              backgroundColor: "rgba(59, 130, 246, 0.03)",
+              borderColor: "rgba(59, 130, 246, 0.1)",
+            }}
+          >
+            <div
+              className="p-2.5 rounded-md border shadow-inner shrink-0 text-blue-500"
+              style={{
+                backgroundColor: "rgba(59, 130, 246, 0.08)",
+                borderColor: "rgba(59, 130, 246, 0.2)",
+              }}
+            >
               <MessageSquare size={18} />
             </div>
             <div className="space-y-1 text-start">
-              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900">
+              <h4
+                className="text-[10px] font-black uppercase tracking-[0.2em]"
+                style={{ color: "var(--text-primary)" }}
+              >
                 Update Process
               </h4>
-              <p className="text-[11px] font-bold text-blue-800/80 leading-relaxed tracking-tight">
+              <p
+                className="text-[11px] font-bold leading-relaxed tracking-tight"
+                style={{ color: "var(--text-secondary)" }}
+              >
                 We manually check all updates to keep your NGO profile safe and
                 verified for grants. Review usually completes within 24 hours to
                 ensure data integrity for global donors.
@@ -582,27 +824,48 @@ const NGOProfile = () => {
         <div className="p-8 h-full flex flex-col">
           {isSubmitted ? (
             <div className="flex-grow flex flex-col items-center justify-center space-y-6 animate-in zoom-in-95 fade-in duration-500 text-center">
-              <div className="w-20 h-20 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center">
+              <div
+                className="w-20 h-20 rounded-full border flex items-center justify-center"
+                style={{
+                  backgroundColor: "rgba(16, 185, 129, 0.08)",
+                  borderColor: "rgba(16, 185, 129, 0.2)",
+                }}
+              >
                 <BadgeCheck size={40} className="text-[#22c55e]" />
               </div>
 
               <div className="space-y-2">
-                <h3 className="text-base font-black text-slate-900 uppercase tracking-widest">
+                <h3
+                  className="text-base font-black uppercase tracking-widest"
+                  style={{ color: "var(--text-primary)" }}
+                >
                   Request Sent
                 </h3>
-                <p className="text-xs font-bold text-slate-500 max-w-[280px] mx-auto leading-relaxed">
+                <p
+                  className="text-xs font-bold max-w-[280px] mx-auto leading-relaxed"
+                  style={{ color: "var(--text-muted)" }}
+                >
                   We've received your update. Our team will review and process
                   it shortly.
                 </p>
               </div>
 
-              <div className="w-full p-4 bg-slate-50 rounded-2xl border border-slate-100 space-y-4">
+              <div
+                className="w-full p-4 rounded-2xl border space-y-4"
+                style={{
+                  backgroundColor: "var(--bg-secondary)",
+                  borderColor: "var(--border-color)",
+                }}
+              >
                 <div className="space-y-3">
                   <div className="flex justify-between items-center px-1">
                     <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">
                       Request ID
                     </span>
-                    <span className="text-[11px] font-black text-slate-900 font-mono">
+                    <span
+                      className="text-[11px] font-black font-mono"
+                      style={{ color: "var(--text-primary)" }}
+                    >
                       {requestId}
                     </span>
                   </div>
@@ -617,21 +880,33 @@ const NGOProfile = () => {
                 </div>
 
                 {/* Note Summary Receipt */}
-                <div className="pt-3 border-t border-slate-200/60 space-y-2 text-start">
+                <div
+                  className="pt-3 border-t space-y-2 text-start"
+                  style={{ borderColor: "var(--border-color)" }}
+                >
                   <div className="flex items-center justify-between">
                     <span className="text-[9px] font-black uppercase tracking-widest text-slate-400 block">
                       Note Sent
                     </span>
                     <button
                       onClick={() => setIsSubmitted(false)}
-                      className="flex items-center gap-1 px-2 py-1 text-[8px] font-black uppercase tracking-widest text-[#22c55e] hover:bg-emerald-50 rounded-md transition-all"
+                      className="flex items-center gap-1 px-2 py-1 text-[8px] font-black uppercase tracking-widest text-[#22c55e] hover:bg-emerald-50/20 rounded-md transition-all"
                     >
                       <Edit size={10} />
                       Edit
                     </button>
                   </div>
-                  <div className="max-h-28 overflow-y-auto thin-scrollbar p-3 bg-white/50 border border-slate-200/50 rounded-lg text-start">
-                    <pre className="text-[10px] font-bold text-slate-600 whitespace-pre-wrap leading-relaxed">
+                  <div
+                    className="max-h-28 overflow-y-auto thin-scrollbar p-3 border rounded-lg text-start"
+                    style={{
+                      backgroundColor: "var(--bg-primary)",
+                      borderColor: "var(--border-color)",
+                    }}
+                  >
+                    <pre
+                      className="text-[10px] font-bold whitespace-pre-wrap leading-relaxed"
+                      style={{ color: "var(--text-secondary)" }}
+                    >
                       {requestMessage || "No additional note provided."}
                     </pre>
                   </div>
@@ -651,15 +926,33 @@ const NGOProfile = () => {
             </div>
           ) : (
             <div className="space-y-6 flex-grow flex flex-col text-start">
-              <div className="flex items-start gap-3 p-3 bg-blue-50/50 border border-blue-100 rounded-lg">
-                <div className="p-1.5 bg-white rounded-md border border-blue-200 shrink-0 text-blue-500">
+              <div
+                className="flex items-start gap-3 p-3 rounded-lg border"
+                style={{
+                  backgroundColor: "rgba(59, 130, 246, 0.03)",
+                  borderColor: "rgba(59, 130, 246, 0.1)",
+                }}
+              >
+                <div
+                  className="p-1.5 rounded-md border shrink-0 text-blue-500"
+                  style={{
+                    backgroundColor: "rgba(59, 130, 246, 0.08)",
+                    borderColor: "rgba(59, 130, 246, 0.2)",
+                  }}
+                >
                   <MessageSquare size={14} />
                 </div>
                 <div className="space-y-0.5">
-                  <h4 className="text-[9px] font-black uppercase tracking-widest text-blue-900">
+                  <h4
+                    className="text-[9px] font-black uppercase tracking-widest"
+                    style={{ color: "var(--text-primary)" }}
+                  >
                     Security Note
                   </h4>
-                  <p className="text-[10px] font-bold text-blue-800/70 leading-relaxed tracking-tight">
+                  <p
+                    className="text-[10px] font-bold leading-relaxed tracking-tight"
+                    style={{ color: "var(--text-secondary)" }}
+                  >
                     We manually check all updates to keep your NGO profile safe
                     and verified for grants. Review usually takes 24 hours.
                   </p>
@@ -676,12 +969,30 @@ const NGOProfile = () => {
                       <button
                         key={id}
                         onClick={() => switchCategory(id)}
-                        className="flex flex-col items-center justify-center h-28 bg-white border border-slate-100 rounded-xl hover:border-[#22c55e]/50 hover:bg-slate-50 transition-all group shadow-sm active:scale-95"
+                        className="flex flex-col items-center justify-center h-28 rounded-xl border transition-all group shadow-sm active:scale-95"
+                        style={{
+                          backgroundColor: "var(--bg-primary)",
+                          borderColor: "var(--border-color)",
+                        }}
                       >
-                        <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-[#22c55e] transition-colors mb-2">
-                          {item.icon}
+                        <div
+                          className="w-10 h-10 rounded-full flex items-center justify-center transition-colors mb-2"
+                          style={{
+                            backgroundColor: "var(--bg-secondary)",
+                            borderColor: "var(--border-color)",
+                          }}
+                        >
+                          <div
+                            className="text-slate-400 group-hover:text-[#22c55e]"
+                            style={{ color: "var(--text-muted)" }}
+                          >
+                            {item.icon}
+                          </div>
                         </div>
-                        <span className="text-[9px] font-black uppercase tracking-widest text-slate-500 group-hover:text-slate-900 text-center px-3">
+                        <span
+                          className="text-[9px] font-black uppercase tracking-widest text-center px-3 group-hover:text-[#22c55e]"
+                          style={{ color: "var(--text-muted)" }}
+                        >
                           {item.label}
                         </span>
                       </button>
@@ -712,8 +1023,17 @@ const NGOProfile = () => {
                           className={`w-full h-9 px-3 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all border text-center truncate ${
                             isSelected
                               ? "bg-[#22c55e] text-white border-[#22c55e] shadow-md shadow-emerald-500/20"
-                              : "bg-white text-slate-500 border-slate-100 hover:border-slate-300"
+                              : "hover:border-slate-300"
                           }`}
+                          style={{
+                            backgroundColor: isSelected
+                              ? "#22c55e"
+                              : "var(--bg-primary)",
+                            borderColor: isSelected
+                              ? "#16a34a"
+                              : "var(--border-color)",
+                            color: isSelected ? "white" : "var(--text-muted)",
+                          }}
                         >
                           {field}
                         </button>
@@ -729,7 +1049,12 @@ const NGOProfile = () => {
                       value={requestMessage}
                       onChange={(e) => setRequestMessage(e.target.value)}
                       placeholder="Tell us why you are making this change..."
-                      className="w-full h-32 p-4 bg-slate-50/50 border border-slate-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#22c55e]/20 focus:border-[#22c55e] text-xs font-bold text-slate-800 placeholder:text-slate-400 resize-none transition-all"
+                      className="w-full h-32 p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#22c55e]/20 focus:border-[#22c55e] text-xs font-bold placeholder:text-slate-400 resize-none transition-all border"
+                      style={{
+                        backgroundColor: "var(--bg-secondary)",
+                        borderColor: "var(--border-color)",
+                        color: "var(--text-primary)",
+                      }}
                     />
                   </div>
                 </div>

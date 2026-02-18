@@ -209,21 +209,24 @@ const NgoPage = () => {
       style={{ backgroundColor: "var(--bg-primary)" }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between w-full">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 w-full">
         <div className="text-left">
           <h1
-            className="text-xl font-bold tracking-tight"
+            className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight break-words"
             style={{ color: "var(--text-primary)" }}
           >
             NGO Management
           </h1>
-          <p className="mt-2" style={{ color: "var(--text-muted)" }}>
+          <p
+            className="mt-1 md:mt-2 text-xs md:text-sm"
+            style={{ color: "var(--text-muted)" }}
+          >
             Monitor and manage NGO registrations
           </p>
         </div>
         <Button
           color="primary"
-          className="bg-hf-green text-white rounded-sm h-10 px-6 font-bold hover:bg-emerald-600 transition-all active:scale-95"
+          className="bg-hf-green text-white rounded-sm h-10 px-6 font-bold hover:bg-emerald-600 transition-all active:scale-95 self-start sm:self-center shrink-0"
           style={{ backgroundColor: "#22c55e", color: "white" }}
           endContent={<Plus size={18} />}
           onPress={() => navigate("/admin/users/ngos/create")}
@@ -267,7 +270,7 @@ const NgoPage = () => {
               <DropdownTrigger>
                 <Button
                   variant="flat"
-                  className="border rounded-sm h-10 px-4 text-[11px] font-bold transition-all shadow-none"
+                  className="border rounded-sm h-10 px-4 flex-shrink-0 text-[11px] font-bold transition-all shadow-none"
                   style={{
                     backgroundColor: "var(--bg-primary)",
                     borderColor: "var(--border-color)",
@@ -280,7 +283,7 @@ const NgoPage = () => {
                     <Plus size={14} style={{ color: "var(--text-muted)" }} />
                   }
                 >
-                  ADD FILTER
+                  <span className="hidden sm:inline ml-1">ADD FILTER</span>
                 </Button>
               </DropdownTrigger>
               <DropdownMenu
@@ -327,12 +330,12 @@ const NgoPage = () => {
                 <DropdownTrigger>
                   <Button
                     variant="flat"
-                    className="border border-emerald-100 bg-emerald-50/50 rounded-sm h-10 px-3 text-[11px] font-bold text-[#22c55e] hover:bg-emerald-100 transition-all shadow-none"
+                    className="border border-hf-green/20 bg-hf-green/10 rounded-sm h-10 px-3 text-[11px] font-black text-[#22c55e] hover:bg-hf-green/20 transition-all shadow-none"
                     endContent={<ChevronDown size={14} />}
                   >
                     STATUS: {filterStatus.toUpperCase()}
                     <div
-                      className="ml-2 hover:bg-emerald-200 rounded-full p-0.5 cursor-pointer"
+                      className="ml-2 hover:bg-hf-green/20 rounded-full p-0.5 cursor-pointer"
                       onClick={(e) => {
                         e.stopPropagation();
                         toggleFilter("status");
@@ -390,12 +393,12 @@ const NgoPage = () => {
                 <DropdownTrigger>
                   <Button
                     variant="flat"
-                    className="border border-blue-100 bg-blue-50/50 rounded-sm h-10 px-3 text-[11px] font-bold text-blue-600 hover:bg-blue-100 transition-all shadow-none"
+                    className="border border-blue-500/20 bg-blue-500/10 rounded-sm h-10 px-3 text-[11px] font-black text-blue-600 dark:text-blue-400 hover:bg-blue-500/20 transition-all shadow-none"
                     endContent={<ChevronDown size={14} />}
                   >
                     BENEFICIARIES: {filterBeneficiaries.toUpperCase()}
                     <div
-                      className="ml-2 hover:bg-blue-200 rounded-full p-0.5 cursor-pointer"
+                      className="ml-2 hover:bg-blue-500/20 rounded-full p-0.5 cursor-pointer"
                       onClick={(e) => {
                         e.stopPropagation();
                         toggleFilter("beneficiaries");
@@ -578,7 +581,7 @@ const NgoPage = () => {
         size="md"
         footer={
           selectedNgo && (
-            <div className="flex items-center gap-2 w-full max-w-md mx-auto">
+            <div className="flex flex-col sm:flex-row items-center gap-2 w-full max-w-md mx-auto">
               {!isEditing ? (
                 <Button
                   className="w-full bg-hf-green text-white font-black h-12 rounded-sm hover:bg-emerald-600 transition-all active:scale-95 text-[11px] uppercase tracking-widest"
@@ -590,13 +593,13 @@ const NgoPage = () => {
               ) : (
                 <>
                   <Button
-                    className="flex-[2] bg-hf-green text-white font-black h-12 rounded-sm hover:bg-emerald-600 transition-all active:scale-95 text-[11px] uppercase tracking-widest"
+                    className="w-full sm:flex-[2] bg-hf-green text-white font-black h-12 rounded-sm hover:bg-emerald-600 transition-all active:scale-95 text-[11px] uppercase tracking-widest order-1 sm:order-1"
                     onPress={handleSaveNgo}
                   >
                     Update Details
                   </Button>
                   <Button
-                    className="flex-1 border text-[11px] font-black h-12 rounded-sm transition-all active:scale-95 uppercase tracking-widest"
+                    className="w-full sm:flex-1 border text-[11px] font-black h-12 rounded-sm transition-all active:scale-95 uppercase tracking-widest order-2 sm:order-2"
                     style={{
                       backgroundColor: "var(--bg-primary)",
                       borderColor: "var(--border-color)",

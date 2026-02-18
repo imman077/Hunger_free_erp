@@ -4,7 +4,6 @@ import {
   ChevronLeft,
   Package,
   ClipboardList,
-  Save,
   Check,
   Loader2,
 } from "lucide-react";
@@ -93,37 +92,65 @@ const AddItem = () => {
   return (
     <div className="w-full space-y-8 max-w-[1000px] mx-auto p-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* Tactical Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-slate-50 pb-8">
+      <div
+        className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b pb-8"
+        style={{ borderColor: "var(--border-color)" }}
+      >
         <div className="space-y-1">
           <button
             onClick={() => navigate("/ngo/inventory")}
-            className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-[#22c55e] transition-colors mb-4"
+            className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] transition-colors mb-4"
+            style={{ color: "var(--text-muted)" }}
           >
-            <ChevronLeft size={14} className="text-[#22c55e]" />
+            <ChevronLeft size={14} className="text-hf-green" />
             Back to Inventory
           </button>
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/10 border border-emerald-100/50">
-              <Package size={24} className="text-[#22c55e]" />
+            <div
+              className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg border"
+              style={{
+                backgroundColor: "var(--bg-secondary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
+              <Package size={24} className="text-hf-green" />
             </div>
-            <h1 className="text-4xl font-black text-slate-800 tracking-tighter uppercase leading-none">
-              Add New <span className="text-[#22c55e]">Item</span>
+            <h1
+              className="text-4xl font-black tracking-tighter uppercase leading-none"
+              style={{ color: "var(--text-primary)" }}
+            >
+              Add New <span className="text-hf-green">Item</span>
             </h1>
           </div>
         </div>
 
-        <div className="flex items-center gap-4 bg-white px-4 py-2 rounded-2xl border border-slate-100 shadow-sm self-start md:self-center">
+        <div
+          className="flex items-center gap-4 px-4 py-2 rounded-2xl border shadow-sm self-start md:self-center"
+          style={{
+            backgroundColor: "var(--bg-primary)",
+            borderColor: "var(--border-color)",
+          }}
+        >
           <div className="flex flex-col items-end">
-            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-0.5">
+            <span
+              className="text-[9px] font-black uppercase tracking-widest leading-none mb-0.5"
+              style={{ color: "var(--text-muted)" }}
+            >
               System Status
             </span>
-            <span className="text-[11px] font-black text-[#22c55e] uppercase tracking-wider">
+            <span className="text-[11px] font-black text-hf-green uppercase tracking-wider">
               Online
             </span>
           </div>
           <div className="relative">
-            <div className="w-2.5 h-2.5 rounded-full bg-[#22c55e] border-2 border-white shadow-sm shadow-[#22c55e]/20" />
-            <div className="absolute inset-0 w-2.5 h-2.5 rounded-full bg-[#22c55e] animate-ping opacity-20" />
+            <div
+              className="w-2.5 h-2.5 rounded-full border-2 shadow-sm"
+              style={{
+                backgroundColor: "var(--color-emerald)",
+                borderColor: "var(--bg-primary)",
+              }}
+            />
+            <div className="absolute inset-0 w-2.5 h-2.5 rounded-full bg-hf-green animate-ping opacity-20" />
           </div>
         </div>
       </div>
@@ -135,14 +162,26 @@ const AddItem = () => {
       >
         {/* Left Column: Essential Data */}
         <div className="lg:col-span-12 space-y-6">
-          <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm relative overflow-hidden group">
+          <div
+            className="p-8 rounded-3xl border shadow-sm relative overflow-hidden group"
+            style={{
+              backgroundColor: "var(--bg-primary)",
+              borderColor: "var(--border-color)",
+            }}
+          >
             {/* Background Decoration */}
-            <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-emerald-50 opacity-20 blur-3xl rounded-full group-hover:opacity-30 transition-opacity" />
+            <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-hf-green opacity-5 blur-3xl rounded-full group-hover:opacity-10 transition-opacity" />
 
             <div className="relative space-y-8">
-              <div className="flex items-center gap-3 border-b border-slate-50 pb-6">
-                <ClipboardList size={20} className="text-[#22c55e]" />
-                <h2 className="text-sm font-black uppercase tracking-[0.2em] text-slate-800">
+              <div
+                className="flex items-center gap-3 border-b pb-6"
+                style={{ borderColor: "var(--border-color)" }}
+              >
+                <ClipboardList size={20} className="text-hf-green" />
+                <h2
+                  className="text-sm font-black uppercase tracking-[0.2em]"
+                  style={{ color: "var(--text-primary)" }}
+                >
                   Item Details
                 </h2>
               </div>
@@ -168,7 +207,7 @@ const AddItem = () => {
                   <button
                     type="button"
                     onClick={() => setIsSuggestModalOpen(true)}
-                    className="flex items-center gap-1.5 text-[8px] font-black text-[#22c55e] hover:text-[#1da850] transition-colors uppercase tracking-[0.2em] px-1 mt-1.5 hover:underline underline-offset-4 decoration-2"
+                    className="flex items-center gap-1.5 text-[8px] font-black text-hf-green hover:underline underline-offset-4 decoration-2 uppercase tracking-[0.2em] px-1 mt-1.5 transition-colors"
                   >
                     Request new category from admin
                   </button>
@@ -240,7 +279,14 @@ const AddItem = () => {
                     className="opacity-75 cursor-not-allowed"
                     endContent={
                       formData.expiryDate && (
-                        <span className="text-[7px] font-black uppercase tracking-widest text-[#22c55e] bg-emerald-50 px-2 py-1 rounded-full border border-emerald-100 mr-2">
+                        <span
+                          className="text-[7px] font-black uppercase tracking-widest px-2 py-1 rounded-full border mr-2"
+                          style={{
+                            backgroundColor: "var(--bg-secondary)",
+                            borderColor: "var(--border-color)",
+                            color: "var(--color-emerald)",
+                          }}
+                        >
                           Auto Calculated
                         </span>
                       )
@@ -249,7 +295,10 @@ const AddItem = () => {
                 </div>
               </div>
 
-              <div className="pt-6 border-t border-slate-50">
+              <div
+                className="pt-6 border-t"
+                style={{ borderColor: "var(--border-color)" }}
+              >
                 <ResuableTextarea
                   label="Additional Notes"
                   placeholder="Add any extra details or instructions here..."
@@ -264,14 +313,15 @@ const AddItem = () => {
                 <button
                   type="button"
                   onClick={() => navigate("/ngo/inventory")}
-                  className="px-8 py-3.5 text-[11px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-600 transition-colors"
+                  className="px-8 py-3.5 text-[11px] font-black uppercase tracking-widest transition-colors"
+                  style={{ color: "var(--text-muted)" }}
                 >
                   Cancel
                 </button>
                 <ResuableButton
                   type="submit"
                   disabled={isSubmitting}
-                  className={`flex items-center gap-2.5 px-10 py-4 bg-[#22c55e] text-white rounded-2xl shadow-xl shadow-emerald-500/10 hover:bg-[#1da850] transition-all active:scale-95 ${
+                  className={`flex items-center gap-2.5 px-10 py-4 bg-hf-green text-white rounded-2xl shadow-xl shadow-hf-green/10 hover:bg-hf-green/90 transition-all active:scale-95 ${
                     isSubmitting ? "opacity-70" : ""
                   }`}
                 >
@@ -348,22 +398,34 @@ const AddItem = () => {
             <div className="relative flex flex-col items-center justify-center py-16 animate-in fade-in zoom-in duration-500 overflow-hidden">
               <div className="relative mb-8">
                 {/* Outer decorative ring */}
-                <div className="absolute inset-0 rounded-full bg-green-100 animate-ping opacity-20 scale-150" />
-                <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center relative z-10 shadow-lg shadow-green-500/20">
+                <div className="absolute inset-0 rounded-full bg-hf-green animate-ping opacity-10 scale-150" />
+                <div className="w-16 h-16 bg-hf-green rounded-full flex items-center justify-center relative z-10 shadow-lg shadow-hf-green/20">
                   <Check className="text-white" size={32} strokeWidth={3} />
                 </div>
               </div>
 
               <div className="text-center space-y-3 z-10 px-4">
-                <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-green-600 leading-none mb-1">
+                <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-hf-green leading-none mb-1">
                   Sent
                 </h3>
-                <h2 className="text-2xl font-black text-slate-900 tracking-tight leading-none">
+                <h2
+                  className="text-2xl font-black tracking-tight leading-none"
+                  style={{ color: "var(--text-primary)" }}
+                >
                   Request Sent!
                 </h2>
-                <p className="text-[13px] font-medium text-slate-500 max-w-[320px] leading-relaxed mx-auto">
+                <p
+                  className="text-[13px] font-medium max-w-[320px] leading-relaxed mx-auto"
+                  style={{ color: "var(--text-muted)" }}
+                >
                   We've received your suggestion for{" "}
-                  <span className="text-slate-900 font-bold px-1.5 py-0.5 bg-slate-100 rounded-sm">
+                  <span
+                    className="font-bold px-1.5 py-0.5 rounded-sm"
+                    style={{
+                      backgroundColor: "var(--bg-secondary)",
+                      color: "var(--text-primary)",
+                    }}
+                  >
                     {suggestionCategoryName}
                   </span>{" "}
                   and our team will review it soon.
@@ -371,11 +433,17 @@ const AddItem = () => {
               </div>
 
               {/* Automatic dismissal indicator */}
-              <div className="absolute bottom-0 left-0 right-0 h-1 bg-slate-100">
-                <div className="h-full bg-green-500 animate-[progress-shrink_2.5s_linear_forwards]" />
+              <div
+                className="absolute bottom-0 left-0 right-0 h-1"
+                style={{ backgroundColor: "var(--bg-tertiary)" }}
+              >
+                <div className="h-full bg-hf-green animate-[progress-shrink_2.5s_linear_forwards]" />
               </div>
 
-              <p className="absolute bottom-4 text-[9px] font-bold text-slate-300 uppercase tracking-widest">
+              <p
+                className="absolute bottom-4 text-[9px] font-bold uppercase tracking-widest"
+                style={{ color: "var(--text-muted)" }}
+              >
                 Closing automatically...
               </p>
 
@@ -408,7 +476,10 @@ const AddItem = () => {
                 />
               </div>
 
-              <p className="text-[10px] font-medium text-slate-400 italic">
+              <p
+                className="text-[10px] font-medium italic"
+                style={{ color: "var(--text-muted)" }}
+              >
                 * Our administrators will review this request and update the
                 global list if approved.
               </p>

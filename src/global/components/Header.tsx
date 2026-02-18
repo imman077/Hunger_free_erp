@@ -1,151 +1,102 @@
-"use client";
-
-import React, { useState } from "react";
-import { styled } from "@mui/material/styles";
+import { useState } from "react";
 import Badge from "@mui/material/Badge";
 import Avatar from "@mui/material/Avatar";
-import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
-import {
-  BellIcon,
-  HomeIcon,
-  UsersIcon,
-  HeartIcon,
-  ChartBarIcon,
-  SettingsIcon,
-  MenuIcon,
-  XIcon,
-  CheckCircleIcon,
-  TrashIcon,
-} from "lucide-react";
+import { BellIcon, CheckCheck, User, LogOut, Settings } from "lucide-react";
 import { useSidebar } from "../contexts/SidebarContext";
-import MenuItem from "@mui/material/MenuItem";
-import Menu from "@mui/material/Menu";
 import { formatDistanceToNow } from "date-fns";
 import ThemeToggle from "./ThemeToggle";
-import { Breadcrumbs, BreadcrumbItem } from "@heroui/react";
-import { useLocation } from "react-router-dom";
+import {
+  Tabs,
+  Tab,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+} from "@heroui/react";
+import { Icon } from "./resuable-components/Icon";
 
-/* ---------------- MUI Styled Badge ---------------- */
-const StyledBadge = styled(Badge)(({ theme }) => ({
-  "& .MuiBadge-badge": {
-    backgroundColor: "#22c55e",
-    color: "#22c55e",
-    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
-    "&::after": {
-      position: "absolute",
-      top: 0,
-      left: 0,
-      width: "100%",
-      height: "100%",
-      borderRadius: "50%",
-      animation: "ripple 1.2s infinite ease-in-out",
-      border: "1px solid currentColor",
-      content: '""',
-    },
-  },
-}));
+/* ---------------- Interfaces ---------------- */
 
-interface HeaderItemProps {
-  icon: React.ReactNode;
-  label: string;
+interface Notification {
+  id: number;
+  type: "success" | "warning" | "info" | "error";
+  title: string;
+  message: string;
+  time: Date;
+  isRead: boolean;
+  icon: string;
+  avatar?: string;
+  user?: string;
 }
 
-const HeaderItem: React.FC<HeaderItemProps> = ({ icon, label }) => {
-  return (
-    <div className="flex items-center gap-4 px-4 py-2 cursor-pointer text-gray-900 hover:text-green-600">
-      <span className="flex items-center justify-center h-10 w-10">{icon}</span>
-      <span className="text-base font-medium">{label}</span>
-    </div>
-  );
-};
-
 // Professional Notification Data
-const notificationData = [
+const notificationData: Notification[] = [
   {
     id: 1,
     type: "success",
-    title: "New Donation Received",
-    message: "John Doe donated $500 to the Food Drive campaign",
-    time: new Date(Date.now() - 5 * 60 * 1000), // 5 minutes ago
+    user: "Isaiah Rivera",
+    avatar: "https://i.pravatar.cc/150?u=1",
+    title: "has registered",
+    message: "New donation profile created successfully",
+    time: new Date(Date.now() - 2 * 60 * 1000),
     isRead: false,
     icon: "check",
   },
   {
     id: 2,
-    type: "warning",
-    title: "Low Inventory Alert",
-    message: "Food supplies running low in Downtown Shelter",
-    time: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
+    type: "info",
+    user: "Samuel Young",
+    avatar: "https://i.pravatar.cc/150?u=2",
+    title: "has registered",
+    message: "New volunteer application received",
+    time: new Date(Date.now() - 20 * 60 * 1000),
     isRead: false,
-    icon: "alert",
+    icon: "info",
   },
   {
     id: 3,
-    type: "info",
-    title: "New Volunteer Registered",
-    message: "Sarah Wilson signed up as a volunteer",
-    time: new Date(Date.now() - 4 * 60 * 60 * 1000), // 4 hours ago
+    type: "warning",
+    user: "Christian Brooks",
+    avatar: "https://i.pravatar.cc/150?u=3",
+    title: "request for KYC verifications",
+    message: "Supporting documents pending review",
+    time: new Date(Date.now() - 60 * 60 * 1000),
     isRead: true,
-    icon: "info",
+    icon: "alert",
   },
   {
     id: 4,
     type: "success",
-    title: "Campaign Goal Reached",
-    message: "Winter Food Drive reached 120% of its target",
-    time: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), // 1 day ago
-    isRead: true,
+    user: "Levi Collins",
+    avatar: "https://i.pravatar.cc/150?u=4",
+    title: "has registered",
+    message: "NGO partnership verified",
+    time: new Date(Date.now() - 2 * 60 * 60 * 1000),
+    isRead: false,
     icon: "check",
   },
   {
     id: 5,
-    type: "warning",
-    title: "Delivery Delay",
-    message: "Scheduled delivery to Northside Shelter delayed by 2 hours",
-    time: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
-    isRead: true,
-    icon: "alert",
-  },
-  {
-    id: 6,
     type: "info",
-    title: "System Update",
-    message: "Monthly maintenance completed successfully",
-    time: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
-    isRead: true,
+    user: "Isabella Anderson",
+    avatar: "https://i.pravatar.cc/150?u=5",
+    title: "has registered",
+    message: "Donor account active",
+    time: new Date(Date.now() - 24 * 60 * 60 * 1000),
+    isRead: false,
     icon: "info",
   },
 ];
 
-const Header: React.FC = () => {
-  const { expanded } = useSidebar();
-  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+const Header = () => {
+  const { expanded, setMobileOpen } = useSidebar();
   const [notificationDrawerOpen, setNotificationDrawerOpen] = useState(false);
+  const [notificationExpanded, setNotificationExpanded] = useState(false);
   const [notifications, setNotifications] = useState(notificationData);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
-  React.useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 768) {
-        setMobileDrawerOpen(false);
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  const handleAvatarClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
+  const [selectedTab, setSelectedTab] = useState<any>("all");
 
   const handleNotificationClick = () => {
-    console.log("Bell icon clicked!");
     setNotificationDrawerOpen(true);
   };
 
@@ -153,448 +104,396 @@ const Header: React.FC = () => {
     return notifications.filter((notification) => !notification.isRead).length;
   };
 
-  const clearAllNotifications = () => {
-    setNotifications([]);
-  };
-
-  const deleteNotification = (id: number) => {
+  const markAllAsRead = () => {
     setNotifications((prev) =>
-      prev.filter((notification) => notification.id !== id)
+      prev.map((notification) => ({ ...notification, isRead: true })),
     );
   };
-
-  const location = useLocation();
-  const pathnames = location.pathname.split("/").filter((x) => x);
 
   return (
     <>
       <header
         className={
-          "fixed top-0 right-0 h-20 z-40 flex items-center justify-between px-6 transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] " +
-          (expanded ? "md:left-[260px]" : "md:left-[70px]") +
-          " left-0 right-0"
+          "fixed top-0 right-0 h-16 md:h-20 z-40 flex items-center justify-between px-3 md:px-6 transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] border-b " +
+          (expanded ? "left-0 md:left-[260px]" : "left-0 md:left-[70px]")
         }
         style={{
           backgroundColor: "var(--bg-primary)",
-          borderBottom: "1px solid var(--border-color)",
+          borderColor: "var(--border-color)",
         }}
       >
-        {/* Left section - Mobile menu and title */}
-        <div className="flex items-center gap-4">
-          {/* MOBILE HAMBURGER (visible only < md) */}
-          <div className="md:hidden mr-4">
-            <IconButton onClick={() => setMobileDrawerOpen(true)}>
-              <MenuIcon color="black" />
-            </IconButton>
-          </div>
-
-          <Breadcrumbs
-            underline="hover"
-            itemClasses={{
-              item: "text-emerald-600 transition-colors hover:text-emerald-700 font-medium",
-              separator: "text-slate-400 mx-1",
+        {/* Left section - hamburger on mobile only */}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setMobileOpen(true)}
+            className="md:hidden flex items-center justify-center w-9 h-9 rounded-xl border transition-all"
+            style={{
+              borderColor: "var(--border-color)",
+              backgroundColor: "var(--bg-tertiary)",
+              color: "var(--text-primary)",
             }}
           >
-            <BreadcrumbItem
-              key="home"
-              href="/"
-              className="text-emerald-600 font-medium"
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
             >
-              Home
-            </BreadcrumbItem>
-            {pathnames.map((value, index) => {
-              const to = `/${pathnames.slice(0, index + 1).join("/")}`;
-              const isLast = index === pathnames.length - 1;
-              return (
-                <BreadcrumbItem
-                  key={to}
-                  href={to}
-                  className={`capitalize text-emerald-600 ${
-                    isLast ? "font-bold" : "font-medium"
-                  }`}
-                >
-                  {value.replace(/-/g, " ")}
-                </BreadcrumbItem>
-              );
-            })}
-          </Breadcrumbs>
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+
+          <div className="md:hidden">
+            <ThemeToggle />
+          </div>
         </div>
 
         {/* Right section - Notifications and avatar */}
-        <div className="flex flex-row gap-8 items-center">
-          <ThemeToggle />
+        <div className="flex flex-row gap-2 md:gap-3 items-center">
+          <div className="hidden md:block">
+            <ThemeToggle />
+          </div>
           {/* Bell Notification */}
           <IconButton
             onClick={handleNotificationClick}
             sx={{
-              padding: "8px",
-              "&:hover": { backgroundColor: "rgba(0,0,0,0.04)" },
+              padding: "0",
+              width: { xs: "36px", md: "44px" },
+              height: { xs: "36px", md: "44px" },
+              backgroundColor: "var(--bg-tertiary)",
+              borderRadius: "12px",
+              border: "1px solid var(--border-color)",
+              boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
+              transition: "all 0.2s ease-in-out",
+              "&:hover": {
+                backgroundColor: "var(--bg-hover)",
+                transform: "translateY(-1px)",
+              },
             }}
           >
             <Badge
-              badgeContent={getUnreadCount()}
+              overlap="circular"
+              variant="dot"
               sx={{
                 "& .MuiBadge-badge": {
-                  backgroundColor: "#22c55e",
-                  color: "white",
-                  fontSize: "0.75rem",
-                  height: "18px",
-                  minWidth: "18px",
+                  backgroundColor: "#3b82f6",
+                  top: 2,
+                  right: 2,
+                  border: "2px solid white",
                 },
               }}
             >
-              <BellIcon
-                className="h-6 w-6"
-                style={{ color: "var(--text-primary)" }}
-              />
+              <BellIcon className="h-5 w-5 text-slate-600 dark:text-slate-300" />
             </Badge>
           </IconButton>
 
-          {/* Avatar Dropdown Trigger - Shown when sidebar is collapsed */}
-          {!expanded && (
-            <div>
-              <div onClick={handleAvatarClick} className="cursor-pointer z-50">
-                <StyledBadge
-                  overlap="circular"
-                  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                  variant="dot"
-                >
-                  <Avatar
-                    alt="User"
-                    src="https://mui.com/static/images/avatar/1.jpg"
-                    sx={{
-                      width: { xs: 32, sm: 40 },
-                      height: { xs: 32, sm: 40 },
-                    }}
-                  />
-                </StyledBadge>
-              </div>
+          {/* Vertical Separator - hidden on mobile */}
+          <div className="hidden sm:block h-8 w-px bg-slate-100 dark:bg-slate-800" />
 
-              <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleMenuClose}
-                anchorOrigin={{
-                  vertical: "bottom",
-                  horizontal: "right",
-                }}
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                slotProps={{
-                  paper: {
-                    sx: {
-                      mt: 1,
-                      borderRadius: 2,
-                      width: "180px",
-                      maxWidth: "180px",
-                      boxShadow: 3,
-                      "@media (max-width: 640px)": {
-                        width: "160px",
-                        maxWidth: "160px",
-                        "& .MuiMenuItem-root": {
-                          fontSize: "0.95rem",
-                          minHeight: "44px",
-                          padding: "10px 14px",
-                        },
-                      },
-                    },
-                  },
-                }}
-                disableScrollLock={false}
-                MenuListProps={{
-                  sx: {
-                    padding: "4px 0",
-                    "& .MuiMenuItem-root": {
-                      fontSize: "0.95rem",
-                      minHeight: "40px",
-                      "@media (max-width: 640px)": {
-                        minHeight: "44px",
-                        fontSize: "0.95rem",
-                      },
-                    },
-                  },
-                }}
+          {/* Avatar Profile */}
+          <Dropdown placement="bottom-end">
+            <DropdownTrigger>
+              <div className="flex items-center gap-1.5 md:gap-2 cursor-pointer hover:opacity-80 transition-opacity">
+                <Avatar
+                  alt="User"
+                  src="https://mui.com/static/images/avatar/1.jpg"
+                  sx={{
+                    width: { xs: 32, md: 40 },
+                    height: { xs: 32, md: 40 },
+                    borderRadius: "full",
+                    border: "2px solid white",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                  }}
+                />
+                <Icon
+                  name="chevron-down"
+                  className="hidden sm:block w-3.5 h-3.5 text-slate-400"
+                />
+              </div>
+            </DropdownTrigger>
+            <DropdownMenu
+              aria-label="Profile actions"
+              variant="flat"
+              classNames={{
+                base: "p-1 min-w-[200px] border rounded-xl shadow-2xl",
+              }}
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+              }}
+              itemClasses={{
+                base: [
+                  "rounded-lg",
+                  "text-slate-500",
+                  "transition-all",
+                  "data-[hover=true]:bg-slate-100",
+                  "dark:data-[hover=true]:bg-slate-800",
+                  "data-[hover=true]:text-emerald-500",
+                  "py-2.5",
+                  "px-3",
+                ],
+              }}
+            >
+              <DropdownItem
+                key="profile-header"
+                className="h-14 gap-2 opacity-100 pointer-events-none mb-1 border-b border-dashed border-slate-100 dark:border-slate-800 rounded-none pb-3"
               >
-                <MenuItem onClick={handleMenuClose}>My Profile</MenuItem>
-                <MenuItem onClick={handleMenuClose}>Settings</MenuItem>
-                <MenuItem onClick={handleMenuClose} sx={{ color: "red" }}>
-                  Logout
-                </MenuItem>
-              </Menu>
-            </div>
-          )}
+                <div className="flex flex-col">
+                  <p className="text-xs font-black uppercase tracking-widest text-[#22c55e]">
+                    Logged in as
+                  </p>
+                  <p className="font-bold text-sm text-[var(--text-primary)]">
+                    Admin Hub
+                  </p>
+                </div>
+              </DropdownItem>
+              <DropdownItem
+                key="view-profile"
+                startContent={<User size={18} />}
+                className="font-semibold text-sm"
+              >
+                View Profile
+              </DropdownItem>
+              <DropdownItem
+                key="settings"
+                startContent={<Settings size={18} />}
+                className="font-semibold text-sm"
+              >
+                Account Settings
+              </DropdownItem>
+              <DropdownItem
+                key="logout"
+                color="danger"
+                className="text-danger font-semibold text-sm mt-1 pt-3 border-t border-dashed border-slate-100 dark:border-slate-800 rounded-none"
+                startContent={<LogOut size={18} />}
+              >
+                Sign Out
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
         </div>
       </header>
 
-      {/* ---------------- NOTIFICATION DRAWER ---------------- */}
-      <div
-        className={`fixed top-0 right-0 h-full w-full max-w-[380px] z-[100] transform transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col ${
-          notificationDrawerOpen ? "translate-x-0" : "translate-x-full"
-        }`}
-        style={{
-          backgroundColor: "var(--bg-primary)",
-          boxShadow: "var(--shadow-lg)",
-          borderLeft: "1px solid var(--border-color)",
-        }}
-      >
-        {/* HEADER SECTION */}
-        <div className="p-5 pb-0 flex flex-col gap-4 flex-shrink-0">
-          <div className="flex items-center justify-between">
-            <div className="flex flex-col">
-              <h3
-                className="text-base font-extrabold tracking-tight leading-none mb-1"
+      {/* ---------------- NOTIFICATION CENTER (CUSTOM POPOVER) ---------------- */}
+      {notificationDrawerOpen && (
+        <>
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 z-[9998]"
+            onClick={() => {
+              setNotificationDrawerOpen(false);
+              setNotificationExpanded(false);
+            }}
+          />
+
+          {/* Notification Popover */}
+          <div
+            className={`fixed z-[9999] mt-20 right-4 top-0 rounded-xl border shadow-[0_32px_120px_rgba(0,0,0,0.15)] flex flex-col overflow-hidden transition-all duration-300 ${
+              notificationExpanded
+                ? "w-[calc(100vw-32px)] md:w-[800px] h-[calc(100vh-120px)] md:right-8"
+                : "w-[calc(100vw-32px)] md:w-[420px] h-[620px] max-h-[85vh] md:right-12"
+            }`}
+            style={{
+              backgroundColor: "var(--bg-primary)",
+              borderColor: "var(--border-color)",
+            }}
+          >
+            {/* Header */}
+            <div
+              className="flex-shrink-0 px-6 py-5 flex items-center justify-between border-b"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
+              <span
+                className="font-bold text-xl"
                 style={{ color: "var(--text-primary)" }}
               >
                 Notifications
-              </h3>
-              <div className="flex items-center gap-1.5">
-                {getUnreadCount() > 0 ? (
-                  <>
-                    <div
-                      className="w-1.5 h-1.5 rounded-full bg-hf-green animate-pulse"
-                      style={{ backgroundColor: "#22c55e" }}
-                    />
-                    <span
-                      className="text-[10px] font-black uppercase tracking-widest"
-                      style={{ color: "var(--text-muted)" }}
-                    >
-                      {getUnreadCount()} Active
-                    </span>
-                  </>
-                ) : (
-                  <span
-                    className="text-xs font-bold uppercase tracking-widest"
-                    style={{ color: "var(--text-muted)" }}
-                  >
-                    No New Messages
-                  </span>
-                )}
-              </div>
-            </div>
-            <button
-              onClick={() => setNotificationDrawerOpen(false)}
-              className="w-9 h-9 flex items-center justify-center rounded-xl transition-all border"
-              style={{
-                color: "var(--text-secondary)",
-                borderColor: "var(--border-color)",
-                backgroundColor: "var(--bg-secondary)",
-              }}
-            >
-              <XIcon className="w-4.5 h-4.5" />
-            </button>
-          </div>
-
-          {/* UTILITY ACTION BAR */}
-          <div className="flex items-center justify-between py-1">
-            <div className="flex gap-1.5">
+              </span>
               <button
                 onClick={() => {
-                  setNotifications((prev) =>
-                    prev.map((n) => ({ ...n, isRead: true }))
-                  );
+                  setNotificationDrawerOpen(false);
+                  setNotificationExpanded(false);
                 }}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-emerald-50 border border-slate-200/60 rounded-lg text-xs font-black text-slate-600 hover:text-hf-green tracking-wider transition-all"
+                className="p-1.5 hover:opacity-70 rounded-sm transition-all"
+                style={{ color: "var(--text-muted)" }}
               >
-                <CheckCircleIcon
-                  className="w-3 h-3 text-hf-green"
-                  style={{ color: "#22c55e" }}
-                />
-                Mark as Read
-              </button>
-              <button
-                onClick={clearAllNotifications}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-rose-50 border border-slate-200/60 rounded-lg text-xs font-black text-slate-600 hover:text-rose-500 tracking-wider transition-all"
-              >
-                <TrashIcon className="w-3 h-3" />
-                Clear
+                <Icon name="close" className="w-5 h-5" />
               </button>
             </div>
-          </div>
-        </div>
 
-        <div className="h-3 bg-gradient-to-b from-white to-transparent shrink-0 z-10" />
-
-        {/* NOTIFICATION FEED */}
-        <div className="flex-1 overflow-y-auto no-scrollbar px-5 pb-5 space-y-2.5">
-          {notifications.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-center p-8">
-              <BellIcon className="h-16 w-16 text-slate-200 mb-4" />
-              <p className="text-[13px] font-bold text-slate-400 uppercase tracking-widest">
-                No notifications
-              </p>
-            </div>
-          ) : (
-            notifications.map((n) => (
+            {/* Tabs */}
+            <div
+              className="flex-shrink-0 px-6 py-2"
+              style={{ backgroundColor: "var(--bg-primary)" }}
+            >
               <div
-                key={n.id}
-                className={`group relative flex gap-3.5 p-3 rounded-2xl border transition-all duration-300 cursor-pointer overflow-hidden
-                  ${!n.isRead ? "shadow-sm" : "opacity-60 grayscale-[0.3]"}`}
+                className="border p-1 rounded-lg"
                 style={{
-                  backgroundColor: n.isRead
-                    ? "var(--bg-secondary)"
-                    : "var(--bg-primary)",
+                  backgroundColor: "var(--bg-secondary)",
                   borderColor: "var(--border-color)",
                 }}
               >
-                {/* Type/Priority Vertical Pillar */}
-                <div
-                  className={`w-0.5 rounded-full shrink-0 ${
-                    n.type === "success"
-                      ? "bg-hf-green"
-                      : n.type === "warning"
-                      ? "bg-amber-500"
-                      : "bg-blue-500"
-                  }`}
-                  style={
-                    n.type === "success" ? { backgroundColor: "#22c55e" } : {}
-                  }
-                />
-
-                <div className="flex-1 min-w-0">
-                  <div className="flex justify-between items-start mb-1">
-                    <span
-                      className={`text-[7px] font-black uppercase tracking-[0.1em] px-1.5 py-0.5 rounded-md ${
-                        n.type === "success"
-                          ? "bg-hf-green text-white"
-                          : n.type === "warning"
-                          ? "bg-amber-500 text-white"
-                          : "bg-blue-500 text-white"
-                      }`}
-                      style={
-                        n.type === "success"
-                          ? { backgroundColor: "#22c55e" }
-                          : {}
-                      }
-                    >
-                      {n.type === "success" ? "SYSTEM" : n.type.toUpperCase()}
-                    </span>
-                  </div>
-
-                  <h4
-                    className="text-[13px] font-bold mb-0.5 group-hover:text-hf-green transition-colors leading-snug truncate"
-                    style={
-                      {
-                        "--hover-color": "#22c55e",
-                        color: "var(--text-primary)",
-                      } as React.CSSProperties
+                <Tabs
+                  variant="light"
+                  size="sm"
+                  fullWidth
+                  selectedKey={selectedTab}
+                  onSelectionChange={setSelectedTab}
+                  classNames={{
+                    tabList:
+                      "gap-0 items-center h-9 p-0 shadow-none bg-transparent",
+                    cursor: "shadow-sm rounded-md border",
+                    tab: "h-full",
+                    tabContent:
+                      "group-data-[selected=true]:!text-[var(--text-primary)] !text-[var(--text-secondary)] font-bold text-[11px] uppercase tracking-widest",
+                  }}
+                >
+                  <Tab key="all" title="All" />
+                  <Tab
+                    key="unread"
+                    title={
+                      <div className="flex items-center gap-2">
+                        <span className="!text-inherit">Unread</span>
+                        <span
+                          className={`${getUnreadCount() > 0 ? "bg-[#3b82f6] text-white" : "bg-slate-200 text-slate-500"} text-[10px] px-2 py-0.5 rounded-full font-black min-w-[20px] text-center`}
+                        >
+                          {getUnreadCount() > 9 ? "9+" : getUnreadCount()}
+                        </span>
+                      </div>
                     }
-                  >
-                    {n.title}
-                  </h4>
-                  <p
-                    className="text-[11px] font-medium leading-tight"
-                    style={{ color: "var(--text-secondary)" }}
-                  >
-                    {n.message}
-                  </p>
-
-                  <div className="mt-2.5 flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all translate-y-1 group-hover:translate-y-0">
-                      <button className="flex items-center gap-1.5 px-2 py-1 bg-slate-900 text-white rounded-md text-[8px] font-black uppercase tracking-widest hover:bg-black transition-all">
-                        Review
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          deleteNotification(n.id);
-                        }}
-                        className="p-1 hover:text-rose-500 hover:bg-rose-50 rounded-md transition-all"
-                        style={{ color: "var(--text-muted)" }}
-                      >
-                        <TrashIcon className="w-3 h-3" />
-                      </button>
-                    </div>
-                    <span
-                      className="text-[9px] font-semibold tabular-nums"
-                      style={{ color: "var(--text-muted)" }}
-                    >
-                      {formatDistanceToNow(n.time, { addSuffix: false })}
-                    </span>
-                  </div>
-                </div>
-
-                {!n.isRead && (
-                  <div className="absolute top-3 right-3">
-                    <div
-                      className="w-1.5 h-1.5 rounded-full bg-hf-green shadow-sm shadow-hf-green/50"
-                      style={{ backgroundColor: "#8aaf98ff" }}
-                    />
-                  </div>
-                )}
+                  />
+                </Tabs>
               </div>
-            ))
-          )}
-
-          {notifications.length > 0 && (
-            <div className="py-6 text-center">
-              <div className="w-8 h-[2px] bg-slate-100 mx-auto rounded-full mb-3" />
-              <p className="text-xs font-black text-slate-300 uppercase tracking-[0.2em]">
-                End of registry
-              </p>
             </div>
-          )}
-        </div>
 
-        {/* Backdrop for closing */}
-        {notificationDrawerOpen && (
-          <div
-            className="fixed inset-0 bg-black/5 z-[-1] cursor-default"
-            onClick={() => setNotificationDrawerOpen(false)}
-          />
-        )}
-      </div>
+            {/* Notification List - Scrollable */}
+            <div
+              className={`flex-1 overflow-y-auto thin-scrollbar px-2 py-4 ${notificationExpanded ? "grid grid-cols-1 md:grid-cols-2 gap-2" : "space-y-1.5"}`}
+            >
+              {notifications.length === 0 ? (
+                <div
+                  className="flex flex-col items-center justify-center py-20 opacity-20"
+                  style={{ color: "var(--text-primary)" }}
+                >
+                  <BellIcon size={40} className="stroke-[1] mb-4" />
+                  <p className="text-sm font-bold">No notifications</p>
+                </div>
+              ) : (
+                notifications
+                  .filter((n) => {
+                    if (selectedTab === "unread") return !n.isRead;
+                    return true;
+                  })
+                  .map((n) => (
+                    <div
+                      key={n.id}
+                      onClick={() => {
+                        setNotifications((prev) =>
+                          prev.map((item) =>
+                            item.id === n.id ? { ...item, isRead: true } : item,
+                          ),
+                        );
+                      }}
+                      className={`group relative mx-2 px-4 py-3 transition-all duration-200 cursor-pointer flex items-center gap-4 rounded-xl border
+                        ${
+                          !n.isRead
+                            ? "bg-emerald-500/5 border-emerald-500/10 shadow-[0_2px_12px_-3px_rgba(34,197,94,0.1)]"
+                            : "bg-transparent border-transparent hover:bg-slate-500/5 hover:border-slate-500/10"
+                        }`}
+                    >
+                      {/* Avatar */}
+                      <div className="shrink-0">
+                        <Avatar
+                          src={n.avatar}
+                          sx={{
+                            width: 44,
+                            height: 44,
+                            borderRadius: "14px",
+                            border: "2px solid var(--bg-primary)",
+                            boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                          }}
+                        />
+                      </div>
 
-      {/* ---------------- MOBILE LEFT DRAWER ---------------- */}
-      <Drawer
-        anchor="left"
-        open={mobileDrawerOpen}
-        onClose={() => setMobileDrawerOpen(false)}
-        sx={{
-          "& .MuiDrawer-paper": {
-            width: "75%",
-            maxWidth: "250px",
-          },
-        }}
-      >
-        <div className="p-2">
-          <div className="flex items-start justify-start py-3">
-            <img
-              alt="Hunger Free"
-              src="/Icon2.svg"
-              className="h-16 w-20 transition-all duration-300"
-            />
+                      {/* Content Section */}
+                      <div className="flex-1 min-w-0 pr-6">
+                        <p className="text-[13px] leading-snug">
+                          <span
+                            className="font-bold"
+                            style={{ color: "var(--text-primary)" }}
+                          >
+                            {n.user || "System"}
+                          </span>{" "}
+                          <span
+                            className="font-medium"
+                            style={{ color: "var(--text-secondary)" }}
+                          >
+                            {n.title}
+                          </span>
+                        </p>
+                        <p
+                          className="text-[10px] font-black uppercase tracking-widest mt-1 opacity-40"
+                          style={{ color: "var(--text-primary)" }}
+                        >
+                          {formatDistanceToNow(n.time, { addSuffix: true })}
+                        </p>
+                      </div>
+
+                      {/* Unread Indicator Dot */}
+                      {!n.isRead && (
+                        <div className="w-1.5 h-6 rounded-full bg-emerald-500 shrink-0" />
+                      )}
+                    </div>
+                  ))
+              )}
+            </div>
+
+            {/* Footer - Fixed at Bottom */}
+            <div
+              className="flex-shrink-0 p-4 border-t grid grid-cols-2 gap-3"
+              style={{
+                backgroundColor: "var(--bg-primary)",
+                borderColor: "var(--border-color)",
+              }}
+            >
+              <button
+                onClick={markAllAsRead}
+                className="flex items-center justify-center gap-2 h-11 border rounded-xl text-[11px] font-black uppercase tracking-wider transition-all shadow-sm active:scale-95"
+                style={{
+                  backgroundColor: "var(--bg-secondary)",
+                  borderColor: "var(--border-color)",
+                  color: "var(--text-primary)",
+                }}
+              >
+                <CheckCheck size={16} className="text-emerald-500" />
+                Mark Read
+              </button>
+              <button
+                onClick={() => setNotificationExpanded(!notificationExpanded)}
+                className="h-11 border rounded-xl text-[11px] font-black uppercase tracking-wider transition-all shadow-sm active:scale-95"
+                style={{
+                  backgroundColor: "var(--bg-secondary)",
+                  borderColor: "var(--border-color)",
+                  color: "var(--text-primary)",
+                }}
+              >
+                {notificationExpanded ? "Show Less" : "View All"}
+              </button>
+            </div>
           </div>
+        </>
+      )}
 
-          <nav className="flex flex-col mt-3 space-y-2 w-full">
-            <HeaderItem
-              icon={<HomeIcon className="h-6 w-6" />}
-              label="Dashboard"
-            />
-            <HeaderItem
-              icon={<UsersIcon className="h-6 w-6" />}
-              label="Users"
-            />
-            <HeaderItem
-              icon={<HeartIcon className="h-6 w-6" />}
-              label="Donations"
-            />
-            <HeaderItem
-              icon={<BellIcon className="h-6 w-6" />}
-              label="Alerts"
-            />
-            <HeaderItem
-              icon={<ChartBarIcon className="h-6 w-6" />}
-              label="Analytics"
-            />
-            <HeaderItem
-              icon={<SettingsIcon className="h-6 w-6" />}
-              label="Settings"
-            />
-          </nav>
-        </div>
-      </Drawer>
+      {/* ---------------- MOBILE LEFT DRAWER REMOVED (HANDLED BY SIDEBAR) ---------------- */}
+      <div />
     </>
   );
 };

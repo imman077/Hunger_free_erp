@@ -26,6 +26,7 @@ interface ResuableModalProps {
     | "full";
   backdrop?: "opaque" | "blur" | "transparent";
   scrollBehavior?: "normal" | "inside" | "outside";
+  radius?: "none" | "sm" | "md" | "lg";
   placement?:
     | "auto"
     | "top"
@@ -34,7 +35,6 @@ interface ResuableModalProps {
     | "top-center"
     | "bottom-center";
   hideCloseButton?: boolean;
-  radius?: "none" | "sm" | "md" | "lg";
   className?: string;
   classNames?: {
     wrapper?: string;
@@ -74,6 +74,7 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
   headerContent,
   data,
   showTrendingLayout = false,
+  radius = "md",
 }) => {
   const [activeTab, setActiveTab] = useState<"Profile" | "History">("Profile");
 
@@ -104,16 +105,20 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
       radius="none"
       className={className}
       classNames={{
-        backdrop: `!fixed !inset-0 !w-screen !h-screen bg-black/50 backdrop-blur-md ${
-          classNames.backdrop || ""
-        }`,
-        base: `!border-none !outline-none !ring-0 !ring-transparent shadow-2xl overflow-hidden rounded-sm ${
+        backdrop: `!fixed !inset-0 !w-screen !h-screen ${
+          backdrop === "blur"
+            ? "bg-black/50 backdrop-blur-md"
+            : backdrop === "opaque"
+              ? "bg-black/80"
+              : "bg-transparent"
+        } ${classNames.backdrop || ""}`,
+        base: `!border-none !outline-none !ring-0 !ring-transparent shadow-2xl overflow-hidden ${
           showTrendingLayout ? "max-w-[850px] !h-[680px]" : ""
-        } ${classNames.base || ""}`,
+        } ${radius === "none" ? "rounded-none" : "rounded-[24px]"} ${classNames.base || ""}`,
         body: `p-0 ${classNames.body || ""}`,
         wrapper: `!fixed !inset-0 z-[9999] flex items-center justify-center ${
-          classNames.wrapper || ""
-        }`,
+          placement === "top" ? "!items-start" : ""
+        } ${classNames.wrapper || ""}`,
       }}
       style={{
         backgroundColor: "var(--bg-primary)",

@@ -17,7 +17,7 @@ ChartJS.register(
   PointElement,
   LineElement,
   Tooltip,
-  Legend
+  Legend,
 );
 
 export default function LineChart() {
@@ -43,5 +43,43 @@ export default function LineChart() {
     ],
   };
 
-  return <Line data={data} />;
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false,
+      },
+      tooltip: {
+        backgroundColor: "rgba(0,0,0,0.8)",
+        titleFont: { size: 12, weight: "bold" as const },
+        bodyFont: { size: 12 },
+        padding: 12,
+        cornerRadius: 8,
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        grid: {
+          color: "rgba(156, 163, 175, 0.1)",
+        },
+        ticks: {
+          font: { size: 10, weight: "bold" as const },
+          color: "rgba(156, 163, 175, 0.5)",
+        },
+      },
+      x: {
+        grid: {
+          display: false,
+        },
+        ticks: {
+          font: { size: 10, weight: "bold" as const },
+          color: "rgba(156, 163, 175, 0.5)",
+        },
+      },
+    },
+  };
+
+  return <Line data={data} options={options} />;
 }

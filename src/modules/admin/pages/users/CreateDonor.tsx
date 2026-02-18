@@ -104,16 +104,16 @@ const CreateDonor = () => {
 
   return (
     <div
-      className="p-8 md:p-10 w-full mx-auto min-h-screen"
+      className="p-4 md:p-10 w-full mx-auto min-h-screen"
       style={{ backgroundColor: "var(--bg-secondary)" }}
     >
       {/* Header Bar */}
-      <div className="max-w-5xl mx-auto mb-10">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-8">
+      <div className="max-w-5xl mx-auto mb-6 md:mb-10">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="flex items-center gap-4 md:gap-8">
             <button
               onClick={() => navigate("/admin/users/donors")}
-              className="w-10 h-10 rounded-full flex items-center justify-center border transition-all group shadow-sm"
+              className="w-10 h-10 shrink-0 rounded-full flex items-center justify-center border transition-all group shadow-sm"
               style={{
                 backgroundColor: "var(--bg-primary)",
                 borderColor: "var(--border-color)",
@@ -129,23 +129,23 @@ const CreateDonor = () => {
               className="h-10 w-px hidden sm:block"
               style={{ backgroundColor: "var(--border-color)" }}
             />
-            <div>
+            <div className="min-w-0">
               <h1
-                className="text-3xl md:text-5xl font-black tracking-tighter leading-none italic"
+                className="text-2xl md:text-5xl font-black tracking-tighter leading-none italic truncate"
                 style={{ color: "var(--text-primary)" }}
               >
                 Create Donor
               </h1>
               <p
-                className="text-[10px] font-bold mt-2 uppercase tracking-[0.3em]"
+                className="text-[9px] md:text-[10px] font-bold mt-2 uppercase tracking-[0.2em] md:tracking-[0.3em]"
                 style={{ color: "var(--text-muted)" }}
               >
-                Administrator Console • Onboarding Flow
+                Admin • Add New Donor Entry
               </p>
             </div>
           </div>
-          <div
-            className="border px-5 py-2.5 rounded-full flex items-center gap-3 shadow-sm"
+          {/* <div
+            className="border px-4 py-2 rounded-full flex items-center gap-3 shadow-sm self-start md:self-center"
             style={{
               backgroundColor: "var(--bg-primary)",
               borderColor: "var(--border-color)",
@@ -153,12 +153,12 @@ const CreateDonor = () => {
           >
             <div className="w-2 h-2 rounded-full bg-[#22c55e] animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
             <span
-              className="text-[10px] font-black uppercase tracking-widest pt-0.5"
+              className="text-[9px] md:text-[10px] font-black uppercase tracking-widest pt-0.5"
               style={{ color: "var(--text-secondary)" }}
             >
-              Secure Live Entry
+              Safe & Encrypted
             </span>
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -175,39 +175,39 @@ const CreateDonor = () => {
           }}
         >
           <div
-            className="border-b p-8 flex items-center gap-5"
+            className="border-b p-5 md:p-8 flex items-center gap-4 md:gap-5"
             style={{
               borderColor: "var(--border-color)",
               backgroundColor: "var(--bg-tertiary)",
             }}
           >
             <div
-              className="w-14 h-14 border rounded-xl flex items-center justify-center text-[#22c55e] shadow-sm"
+              className="w-12 h-12 md:w-14 md:h-14 border rounded-xl flex items-center justify-center text-[#22c55e] shadow-sm shrink-0"
               style={{
                 backgroundColor: "var(--bg-primary)",
                 borderColor: "var(--border-color)",
               }}
             >
-              <Package size={28} />
+              <Package size={24} className="md:w-[28px] md:h-[28px]" />
             </div>
             <div>
               <h2
-                className="text-base font-black uppercase tracking-tighter leading-none"
+                className="text-sm md:text-base font-black uppercase tracking-tighter leading-none"
                 style={{ color: "var(--text-primary)" }}
               >
-                01. Donor Identity
+                01. General Info
               </h2>
               <p
-                className="text-[10px] font-bold uppercase tracking-[0.2em] mt-2"
+                className="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.15em] md:tracking-[0.2em] mt-2"
                 style={{ color: "var(--text-muted)" }}
               >
-                Primary Business Profile & Categorization
+                Basic business name and type
               </p>
             </div>
           </div>
 
-          <div className="p-10 space-y-10">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <div className="p-6 md:p-10 space-y-8 md:space-y-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
               <ResuableInput
                 label="Business / Donor Name"
                 value={formData.businessName}
@@ -248,39 +248,39 @@ const CreateDonor = () => {
           }}
         >
           <div
-            className="border-b p-8 flex items-center gap-5"
+            className="border-b p-5 md:p-8 flex items-center gap-4 md:gap-5"
             style={{
               borderColor: "var(--border-color)",
               backgroundColor: "var(--bg-tertiary)",
             }}
           >
             <div
-              className="w-14 h-14 border rounded-xl flex items-center justify-center text-[#22c55e] shadow-sm"
+              className="w-12 h-12 md:w-14 md:h-14 border rounded-xl flex items-center justify-center text-[#22c55e] shadow-sm shrink-0"
               style={{
                 backgroundColor: "var(--bg-primary)",
                 borderColor: "var(--border-color)",
               }}
             >
-              <MapPin size={28} />
+              <MapPin size={24} className="md:w-[28px] md:h-[28px]" />
             </div>
             <div>
               <h2
-                className="text-base font-black uppercase tracking-tighter leading-none"
+                className="text-sm md:text-base font-black uppercase tracking-tighter leading-none"
                 style={{ color: "var(--text-primary)" }}
               >
-                02. Communication & Presence
+                02. Contact & Address
               </h2>
               <p
-                className="text-[10px] font-bold uppercase tracking-[0.2em] mt-2"
+                className="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.15em] md:tracking-[0.2em] mt-2"
                 style={{ color: "var(--text-muted)" }}
               >
-                Contact details and physical operational address
+                How to reach and location details
               </p>
             </div>
           </div>
 
-          <div className="p-10 space-y-10">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <div className="p-6 md:p-10 space-y-8 md:space-y-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
               <ResuableInput
                 label="Email Address"
                 type="email"
@@ -321,63 +321,63 @@ const CreateDonor = () => {
           }}
         >
           <div
-            className="border-b p-8 flex items-center gap-5"
+            className="border-b p-5 md:p-8 flex items-center gap-4 md:gap-5"
             style={{
               borderColor: "var(--border-color)",
               backgroundColor: "var(--bg-tertiary)",
             }}
           >
             <div
-              className="w-14 h-14 border rounded-xl flex items-center justify-center text-blue-500 shadow-sm"
+              className="w-12 h-12 md:w-14 md:h-14 border rounded-xl flex items-center justify-center text-blue-500 shadow-sm shrink-0"
               style={{
                 backgroundColor: "var(--bg-primary)",
                 borderColor: "var(--border-color)",
               }}
             >
-              <ShieldCheck size={28} />
+              <ShieldCheck size={24} className="md:w-[28px] md:h-[28px]" />
             </div>
             <div>
               <h2
-                className="text-base font-black uppercase tracking-tighter leading-none"
+                className="text-sm md:text-base font-black uppercase tracking-tighter leading-none"
                 style={{ color: "var(--text-primary)" }}
               >
-                03. Proof & Compliance
+                03. Upload Documents
               </h2>
               <p
-                className="text-[10px] font-bold uppercase tracking-[0.2em] mt-2"
+                className="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.15em] md:tracking-[0.2em] mt-2"
                 style={{ color: "var(--text-muted)" }}
               >
-                Mandatory legal and business verification documents
+                Required files for verification
               </p>
             </div>
           </div>
 
-          <div className="p-10 space-y-10">
+          <div className="p-6 md:p-10 space-y-8 md:space-y-10">
             {!formData.donorType ? (
               <div
-                className="py-24 border-2 border-dashed rounded-xl flex flex-col items-center justify-center text-center animate-in fade-in zoom-in duration-500"
+                className="py-12 md:py-24 border-2 border-dashed rounded-xl flex flex-col items-center justify-center text-center animate-in fade-in zoom-in duration-500"
                 style={{
                   borderColor: "var(--border-color)",
                   backgroundColor: "var(--bg-secondary)",
                 }}
               >
                 <div
-                  className="w-16 h-16 rounded-full shadow-sm flex items-center justify-center mb-6"
+                  className="w-12 h-12 md:w-16 md:h-16 rounded-full shadow-sm flex items-center justify-center mb-4 md:mb-6"
                   style={{
                     backgroundColor: "var(--bg-primary)",
                     color: "var(--text-muted)",
                   }}
                 >
-                  <ShieldCheck size={32} />
+                  <ShieldCheck size={28} className="md:w-32 md:h-32" />
                 </div>
                 <h3
-                  className="text-sm font-black uppercase tracking-widest"
+                  className="text-[12px] md:text-sm font-black uppercase tracking-widest"
                   style={{ color: "var(--text-secondary)" }}
                 >
                   Select Donor Type
                 </h3>
                 <p
-                  className="text-[10px] font-bold mt-2 uppercase tracking-[0.2em]"
+                  className="text-[9px] font-bold mt-2 uppercase tracking-[0.2em]"
                   style={{ color: "var(--text-muted)" }}
                 >
                   Requirements will appear dynamically
@@ -410,7 +410,7 @@ const CreateDonor = () => {
                               className="text-[11px] font-black uppercase tracking-[0.2em] leading-none"
                               style={{ color: "var(--text-primary)" }}
                             >
-                              Mandatory Documentation
+                              Required Documents
                             </h3>
                             <p
                               className={`text-[9px] font-bold mt-1.5 uppercase tracking-widest opacity-80 transition-colors duration-500 ${
@@ -420,8 +420,8 @@ const CreateDonor = () => {
                               }`}
                             >
                               {allMandatoryFilled
-                                ? "All required documents uploaded"
-                                : "Compulsory for Account Verification"}
+                                ? "All documents uploaded"
+                                : "Must upload to verify account"}
                             </p>
                           </div>
                         </div>
@@ -495,13 +495,13 @@ const CreateDonor = () => {
                           className="text-[11px] font-black uppercase tracking-[0.2em] leading-none"
                           style={{ color: "var(--text-primary)" }}
                         >
-                          Additional Verification
+                          Extra Documents
                         </h3>
                         <p
                           className="text-[9px] font-bold mt-1.5 uppercase tracking-widest"
                           style={{ color: "var(--text-muted)" }}
                         >
-                          Optional / Supporting Proofs
+                          Optional supporting files
                         </p>
                       </div>
                     </div>
@@ -544,34 +544,34 @@ const CreateDonor = () => {
 
         {/* Action Bar (Fixed) */}
         <div
-          className="fixed bottom-0 left-0 right-0 backdrop-blur-xl border-t p-6 z-[200] shadow-[0_-15px_50px_rgba(0,0,0,0.05)]"
+          className="fixed bottom-0 left-0 right-0 backdrop-blur-xl border-t p-4 md:p-6 z-[200] shadow-[0_-15px_50px_rgba(0,0,0,0.05)]"
           style={{
             borderColor: "var(--border-color)",
             backgroundColor: "var(--bg-primary)",
-            opacity: 0.95,
+            opacity: 0.98,
           }}
         >
-          <div className="max-w-5xl mx-auto flex items-center justify-end">
-            <div className="flex items-center gap-8">
-              <ResuableButton
-                variant="ghost"
-                onClick={() => navigate("/admin/users/donors")}
-                className="font-black text-[11px] uppercase tracking-[0.2em] hover:text-red-500 transition-colors"
-                style={{ color: "var(--text-muted)" }}
-              >
-                Discard Entry
-              </ResuableButton>
-              <ResuableButton
-                type="submit"
-                variant="dark"
-                className="min-w-[260px] h-[58px] !bg-[#22c55e] hover:!bg-[#1ea34a] !rounded-xl shadow-xl shadow-[#22c55e]/20 transition-all active:scale-[0.98] border border-[#22c55e]/20"
-                startContent={<CheckCircle size={22} />}
-              >
-                <span className="text-[12px] font-black uppercase tracking-[0.2em]">
-                  Finalize & Register
-                </span>
-              </ResuableButton>
-            </div>
+          <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-end gap-4 md:gap-8">
+            <ResuableButton
+              variant="ghost"
+              onClick={() => navigate("/admin/users/donors")}
+              className="font-black text-[10px] md:text-[11px] uppercase tracking-[0.2em] hover:text-red-500 transition-colors order-2 sm:order-1"
+              style={{ color: "var(--text-muted)" }}
+            >
+              Cancel
+            </ResuableButton>
+            <ResuableButton
+              type="submit"
+              variant="dark"
+              className="w-full sm:min-w-[260px] h-[52px] md:h-[58px] !bg-[#22c55e] hover:!bg-[#1ea34a] !rounded-xl shadow-xl shadow-[#22c55e]/20 transition-all active:scale-[0.98] border border-[#22c55e]/20 order-1 sm:order-2"
+              startContent={
+                <CheckCircle size={20} className="md:w-[22px] md:h-[22px]" />
+              }
+            >
+              <span className="text-[11px] md:text-[12px] font-black uppercase tracking-[0.2em]">
+                Create Donor
+              </span>
+            </ResuableButton>
           </div>
         </div>
       </form>

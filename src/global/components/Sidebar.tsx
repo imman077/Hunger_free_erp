@@ -1,7 +1,14 @@
 import React, { useState } from "react";
+import ThemeToggle from "./ThemeToggle";
 import { Icon } from "./resuable-components/Icon";
 import { useSidebar } from "../contexts/SidebarContext";
 import { Link, useLocation } from "react-router-dom";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerBody,
+  useDisclosure,
+} from "@heroui/react";
 
 type SubItem = {
   label: string;
@@ -15,6 +22,7 @@ type SidebarItemProps = {
   to?: string;
   expanded: boolean;
   subItems?: SubItem[];
+  onNavigate?: () => void;
 };
 
 const SidebarItem: React.FC<SidebarItemProps> = ({
@@ -23,6 +31,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   to,
   expanded,
   subItems,
+  onNavigate,
 }) => {
   const { setExpanded } = useSidebar();
   const [isOpen, setIsOpen] = useState(false);
@@ -55,11 +64,11 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         ${
           isActive || isSubItemActive
             ? expanded
-              ? "w-full p-2.5 bg-[#22c55e]/10 text-emerald-600 font-semibold border-l-4 border-[#22c55e] shadow-sm rounded-xl"
-              : "w-11 h-11 bg-[#22c55e]/10 text-emerald-600 font-semibold shadow-sm rounded-xl justify-center"
+              ? "w-full p-2.5 bg-emerald-50 text-emerald-600 font-semibold border-l-4 border-[#22c55e] rounded-xl"
+              : "w-11 h-11 bg-emerald-50 text-emerald-600 font-semibold rounded-xl justify-center"
             : expanded
-              ? "w-full p-2.5 text-slate-400 hover:bg-slate-500/10 hover:text-emerald-500 rounded-xl"
-              : "w-11 h-11 text-slate-400 hover:bg-slate-500/10 hover:text-emerald-500 rounded-xl justify-center"
+              ? "w-full p-2.5 text-slate-400 hover:bg-slate-100 hover:text-emerald-500 rounded-xl"
+              : "w-11 h-11 text-slate-400 hover:bg-slate-100 hover:text-emerald-500 rounded-xl justify-center"
         }
       `}
       onClick={handleClick}
@@ -100,7 +109,13 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
 
   return (
     <div className="w-full">
-      {to && !subItems ? <Link to={to}>{content}</Link> : content}
+      {to && !subItems ? (
+        <Link to={to} onClick={onNavigate}>
+          {content}
+        </Link>
+      ) : (
+        content
+      )}
 
       {subItems && expanded && (
         <div
@@ -118,6 +133,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
                 <Link
                   key={item.to}
                   to={item.to}
+                  onClick={onNavigate}
                   className={`w-full flex items-center justify-between px-3 py-1.5 text-sm rounded-lg transition-all duration-200 ${
                     isSubActive
                       ? "text-emerald-600 font-semibold bg-emerald-500/10"
@@ -139,7 +155,8 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
 };
 
 const SidebarIcons: React.FC = () => {
-  const { expanded, setExpanded } = useSidebar();
+  const { expanded, setExpanded, mobileOpen, setMobileOpen } = useSidebar();
+  const { onOpenChange } = useDisclosure();
 
   // Submenu configurations
   const usersSubItems: SubItem[] = [
@@ -174,12 +191,12 @@ const SidebarIcons: React.FC = () => {
     {
       label: "Live Tracking",
       to: "/admin/donations/tracking",
-      icon: <Icon name="warehouse" className="h-4 w-4" />,
+      icon: <Icon name="donations" className="h-4 w-4" />,
     },
     {
       label: "Pending",
       to: "/admin/donations/pending",
-      icon: <Icon name="bell" className="h-4 w-4" />,
+      icon: <Icon name="donations" className="h-4 w-4" />,
     },
   ];
 
@@ -192,7 +209,7 @@ const SidebarIcons: React.FC = () => {
     {
       label: "Reports",
       to: "/admin/analytics/reports",
-      icon: <Icon name="stack" className="h-4 w-4" />,
+      icon: <Icon name="analytics" className="h-4 w-4" />,
     },
   ];
 
@@ -200,22 +217,22 @@ const SidebarIcons: React.FC = () => {
     {
       label: "Points & Tiers",
       to: "/admin/rewards/points",
-      icon: <Icon name="gem" className="h-4 w-4" />,
+      icon: <Icon name="rewards" className="h-4 w-4" />,
     },
     {
       label: "Redemptions",
       to: "/admin/rewards/redemptions",
-      icon: <Icon name="wallet" className="h-4 w-4" />,
+      icon: <Icon name="rewards" className="h-4 w-4" />,
     },
     {
       label: "Reward Catalog",
       to: "/admin/rewards/catalog",
-      icon: <Icon name="stack" className="h-4 w-4" />,
+      icon: <Icon name="rewards" className="h-4 w-4" />,
     },
     {
       label: "Impact Milestones",
       to: "/admin/rewards/milestones",
-      icon: <Icon name="verified" className="h-4 w-4" />,
+      icon: <Icon name="rewards" className="h-4 w-4" />,
     },
   ];
 
@@ -244,11 +261,6 @@ const SidebarIcons: React.FC = () => {
       icon: <Icon name="rewards" className="h-4 w-4" />,
     },
     {
-      label: "Payment Methods",
-      to: "/donor/profile/payments",
-      icon: <Icon name="wallet" className="h-4 w-4" />,
-    },
-    {
       label: "Profile",
       to: "/donor/profile",
       icon: <Icon name="users" className="h-4 w-4" />,
@@ -262,29 +274,19 @@ const SidebarIcons: React.FC = () => {
       icon: <Icon name="dashboard" className="h-4 w-4" />,
     },
     {
-      label: "Requests",
+      label: "Donation Requests",
       to: "/ngo/requests",
-      icon: <Icon name="bell" className="h-4 w-4" />,
+      icon: <Icon name="donations" className="h-4 w-4" />,
     },
     {
       label: "Inventory",
       to: "/ngo/inventory",
-      icon: <Icon name="warehouse" className="h-4 w-4" />,
-    },
-    {
-      label: "Rewards",
-      to: "/ngo/rewards",
-      icon: <Icon name="rewards" className="h-4 w-4" />,
-    },
-    {
-      label: "Payment Methods",
-      to: "/ngo/profile/payments",
-      icon: <Icon name="wallet" className="h-4 w-4" />,
+      icon: <Icon name="office" className="h-4 w-4" />,
     },
     {
       label: "Profile",
       to: "/ngo/profile",
-      icon: <Icon name="office" className="h-4 w-4" />,
+      icon: <Icon name="users" className="h-4 w-4" />,
     },
   ];
 
@@ -297,17 +299,7 @@ const SidebarIcons: React.FC = () => {
     {
       label: "Tasks",
       to: "/volunteer/tasks",
-      icon: <Icon name="stack" className="h-4 w-4" />,
-    },
-    {
-      label: "Rewards",
-      to: "/volunteer/rewards",
-      icon: <Icon name="rewards" className="h-4 w-4" />,
-    },
-    {
-      label: "Payment Methods",
-      to: "/volunteer/payments",
-      icon: <Icon name="wallet" className="h-4 w-4" />,
+      icon: <Icon name="users" className="h-4 w-4" />,
     },
     {
       label: "Profile",
@@ -316,172 +308,172 @@ const SidebarIcons: React.FC = () => {
     },
   ];
 
-  return (
-    <aside
-      className={`
-        fixed top-0 left-0 h-screen
-        transition-[width] duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)]
-        flex flex-col z-[50]
-        ${expanded ? "md:w-[260px]" : "md:w-[70px]"}
-        hidden md:flex shadow-[2px_0_12px_rgba(0,0,0,0.02)]
-      `}
-      style={{
-        backgroundColor: "var(--bg-primary)",
-        borderRight: "1px solid var(--border-color)",
-      }}
-    >
-      {/* Sidebar Header */}
-      <div className="h-20 flex items-center flex-shrink-0 w-full overflow-hidden mb-4">
-        <div className="w-full flex items-center justify-center">
-          {expanded ? (
+  // Shared nav content used in both desktop aside and mobile drawer
+  const NavContent = ({
+    inDrawer = false,
+    onNavigate,
+  }: {
+    inDrawer?: boolean;
+    onNavigate?: () => void;
+  }) => (
+    <div className="flex-1 flex flex-col overflow-hidden h-full">
+      <nav
+        className={`flex-1 overflow-y-auto no-scrollbar space-y-1 ${
+          inDrawer ? "px-4" : expanded ? "px-4" : "px-2"
+        }`}
+      >
+        <div className="space-y-1">
+          <SidebarItem
+            icon={<Icon name="dashboard" />}
+            label="Dashboard"
+            to="/admin/dashboard"
+            expanded={inDrawer ? true : expanded}
+            onNavigate={onNavigate}
+          />
+
+          <SidebarItem
+            icon={<Icon name="users" />}
+            label="Users"
+            expanded={inDrawer ? true : expanded}
+            subItems={usersSubItems}
+            onNavigate={onNavigate}
+          />
+
+          <SidebarItem
+            icon={<Icon name="donations" />}
+            label="Donations"
+            expanded={inDrawer ? true : expanded}
+            subItems={donationsSubItems}
+            onNavigate={onNavigate}
+          />
+
+          <SidebarItem
+            icon={<Icon name="analytics" />}
+            label="Analytics"
+            expanded={inDrawer ? true : expanded}
+            subItems={analyticsSubItems}
+            onNavigate={onNavigate}
+          />
+
+          <SidebarItem
+            icon={<Icon name="rewards" />}
+            label="Rewards"
+            expanded={inDrawer ? true : expanded}
+            subItems={rewardsSubItems}
+            onNavigate={onNavigate}
+          />
+
+          <SidebarItem
+            icon={<Icon name="settings" />}
+            label="Settings"
+            expanded={inDrawer ? true : expanded}
+            subItems={settingsSubItems}
+            onNavigate={onNavigate}
+          />
+
+          <SidebarItem
+            icon={<Icon name="bell" />}
+            label="Enquiries"
+            to="/admin/enquiries"
+            expanded={inDrawer ? true : expanded}
+            onNavigate={onNavigate}
+            subItems={[
+              {
+                label: "Donor Enquiries",
+                to: "/admin/enquiries/donors",
+                icon: <Icon name="users" className="h-4 w-4" />,
+              },
+              {
+                label: "NGO Enquiries",
+                to: "/admin/enquiries/ngos",
+                icon: <Icon name="office" className="h-4 w-4" />,
+              },
+              {
+                label: "Volunteer Enquiries",
+                to: "/admin/enquiries/volunteers",
+                icon: <Icon name="users" className="h-4 w-4" />,
+              },
+            ]}
+          />
+
+          <div className="px-4 py-3 mt-2">
             <div
-              className="w-full cursor-pointer hover:opacity-80 transition-opacity"
-              onClick={() => setExpanded(!expanded)}
-            >
-              <img
-                src="/HungerFree.svg"
-                className="h-15 w-auto object-contain mx-auto"
-                alt="HungerFree Logo"
-              />
-            </div>
-          ) : (
-            <button
-              onClick={() => setExpanded(!expanded)}
-              className="w-11 h-11 rounded-xl flex items-center justify-center border transition-all shadow-sm active:scale-95"
-              style={{
-                borderColor: "var(--border-color)",
-                backgroundColor: "var(--bg-secondary)",
-              }}
-            >
-              <Icon name="menu" className="w-5 h-5 text-emerald-500" />
-            </button>
-          )}
-        </div>
-      </div>
-
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Nav Section */}
-        <nav
-          className={`flex-1 overflow-y-auto no-scrollbar space-y-1 ${
-            expanded ? "px-4" : "px-2"
-          }`}
-        >
-          <div className="space-y-1">
-            <SidebarItem
-              icon={<Icon name="dashboard" />}
-              label="Dashboard"
-              to="/admin/dashboard"
-              expanded={expanded}
-            />
-
-            <SidebarItem
-              icon={<Icon name="users" />}
-              label="Users"
-              expanded={expanded}
-              subItems={usersSubItems}
-            />
-
-            <SidebarItem
-              icon={<Icon name="donations" />}
-              label="Donations"
-              expanded={expanded}
-              subItems={donationsSubItems}
-            />
-
-            <SidebarItem
-              icon={<Icon name="analytics" />}
-              label="Analytics"
-              expanded={expanded}
-              subItems={analyticsSubItems}
-            />
-
-            <SidebarItem
-              icon={<Icon name="rewards" />}
-              label="Rewards"
-              expanded={expanded}
-              subItems={rewardsSubItems}
-            />
-
-            <SidebarItem
-              icon={<Icon name="settings" />}
-              label="Settings"
-              expanded={expanded}
-              subItems={settingsSubItems}
-            />
-
-            <div className="px-4 py-3 mt-2">
-              <div
-                className="h-px w-full"
-                style={{ backgroundColor: "var(--border-color)" }}
-              />
-            </div>
-
-            <SidebarItem
-              icon={<Icon name="users" />}
-              label="Donor"
-              expanded={expanded}
-              subItems={donorSubItems}
-            />
-
-            <SidebarItem
-              icon={<Icon name="office" />}
-              label="NGO"
-              expanded={expanded}
-              subItems={ngoSubItems}
-            />
-
-            <SidebarItem
-              icon={<Icon name="users" />}
-              label="Volunteer"
-              expanded={expanded}
-              subItems={volunteerSubItems}
+              className="h-px w-full"
+              style={{ backgroundColor: "var(--border-color)" }}
             />
           </div>
-        </nav>
 
-        <div
-          className="p-4 bg-slate-50/20 flex flex-col items-center gap-3 transition-all duration-500"
-          style={{ borderTop: "1px solid var(--border-color)" }}
-        >
-          {expanded && (
-            <div
-              className="w-full p-2.5 rounded-2xl border transition-all duration-500 group/profile cursor-pointer"
-              style={{
-                backgroundColor: "var(--bg-primary)",
-                borderColor: "var(--border-color)",
-              }}
-            >
-              <div className="flex items-center gap-3">
-                <div className="relative shrink-0">
-                  <img
-                    src="https://mui.com/static/images/avatar/1.jpg"
-                    className="w-10 h-10 rounded-xl border object-cover"
-                    style={{ borderColor: "var(--border-color)" }}
-                    alt="Admin"
-                  />
-                  <div
-                    className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-[#22c55e] border-2 border-white rounded-full shadow-sm"
-                    style={{ backgroundColor: "#22c55e" }}
-                  />
-                </div>
-                <div className="flex flex-col min-w-0">
-                  <span
-                    className="text-sm font-bold leading-tight truncate"
-                    style={{ color: "var(--text-primary)" }}
-                  >
-                    Admin Hub
-                  </span>
-                  <span
-                    className="text-[9px] font-black tracking-widest uppercase mt-0.5"
-                    style={{ color: "#22c55e" }}
-                  >
-                    Operational
-                  </span>
-                </div>
+          <SidebarItem
+            icon={<Icon name="users" />}
+            label="Donor"
+            expanded={inDrawer ? true : expanded}
+            subItems={donorSubItems}
+            onNavigate={onNavigate}
+          />
+
+          <SidebarItem
+            icon={<Icon name="office" />}
+            label="NGO"
+            expanded={inDrawer ? true : expanded}
+            subItems={ngoSubItems}
+            onNavigate={onNavigate}
+          />
+
+          <SidebarItem
+            icon={<Icon name="users" />}
+            label="Volunteer"
+            expanded={inDrawer ? true : expanded}
+            subItems={volunteerSubItems}
+            onNavigate={onNavigate}
+          />
+        </div>
+      </nav>
+
+      {/* Profile Footer */}
+      <div
+        className="p-4 bg-slate-50/20 flex flex-col items-center gap-3 transition-all duration-500"
+        style={{ borderTop: "1px solid var(--border-color)" }}
+      >
+        {(inDrawer || expanded) && (
+          <div
+            className="w-full p-2.5 rounded-2xl border transition-all duration-500"
+            style={{
+              backgroundColor: "var(--bg-primary)",
+              borderColor: "var(--border-color)",
+            }}
+          >
+            <div className="flex items-center gap-3">
+              <div className="relative shrink-0">
+                <img
+                  src="https://mui.com/static/images/avatar/1.jpg"
+                  className="w-10 h-10 rounded-xl border object-cover"
+                  style={{ borderColor: "var(--border-color)" }}
+                  alt="Admin"
+                />
+                <div
+                  className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-[#22c55e] border-2 border-white rounded-full shadow-sm"
+                  style={{ backgroundColor: "#22c55e" }}
+                />
+              </div>
+              <div className="flex flex-col min-w-0">
+                <span
+                  className="text-sm font-bold leading-tight truncate"
+                  style={{ color: "var(--text-primary)" }}
+                >
+                  Admin Hub
+                </span>
+                <span
+                  className="text-[9px] font-black tracking-widest uppercase mt-0.5"
+                  style={{ color: "#22c55e" }}
+                >
+                  Operational
+                </span>
               </div>
             </div>
-          )}
+          </div>
+        )}
 
+        {!inDrawer && (
           <div className="flex items-center justify-center gap-3 px-2">
             <button
               onClick={() => setExpanded(!expanded)}
@@ -496,9 +488,121 @@ const SidebarIcons: React.FC = () => {
               />
             </button>
           </div>
-        </div>
+        )}
       </div>
-    </aside>
+    </div>
+  );
+
+  return (
+    <>
+      {/* ── DESKTOP: persistent fixed aside (md+) ── */}
+      <aside
+        className={`
+          hidden md:flex fixed top-0 left-0 h-screen
+          transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)]
+          flex-col z-[50]
+          ${expanded ? "w-[260px]" : "w-[70px]"}
+        `}
+        style={{
+          backgroundColor: "var(--bg-primary)",
+          borderRight: "1px solid var(--border-color)",
+        }}
+      >
+        {/* Desktop Sidebar Header */}
+        <div className="h-20 flex items-center flex-shrink-0 w-full overflow-hidden mb-4">
+          <div className="w-full flex items-center justify-center">
+            {expanded ? (
+              <div
+                className="w-full cursor-pointer hover:opacity-80 transition-opacity"
+                onClick={() => setExpanded(!expanded)}
+              >
+                <img
+                  src="/HungerFree.svg"
+                  className="h-14 w-auto object-contain mx-auto"
+                  alt="HungerFree Logo"
+                />
+              </div>
+            ) : (
+              <button
+                onClick={() => setExpanded(!expanded)}
+                className="w-11 h-11 rounded-xl flex items-center justify-center border transition-all shadow-sm active:scale-95"
+                style={{
+                  borderColor: "var(--border-color)",
+                  backgroundColor: "var(--bg-secondary)",
+                }}
+              >
+                <Icon name="menu" className="w-5 h-5 text-emerald-500" />
+              </button>
+            )}
+          </div>
+        </div>
+        <NavContent />
+      </aside>
+
+      {/* ── MOBILE: HeroUI dismissable Drawer (< md) ── */}
+
+      {/* Custom backdrop — closes drawer on tap outside */}
+      {mobileOpen && (
+        <div
+          className="md:hidden fixed inset-0 z-[9998] bg-black/40 backdrop-blur-sm"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+
+      <Drawer
+        isOpen={mobileOpen}
+        onOpenChange={(open) => {
+          setMobileOpen(open);
+          onOpenChange();
+        }}
+        shouldCloseOnInteractOutside={() => false}
+        placement="left"
+        size="xs"
+        hideCloseButton
+        backdrop="transparent"
+        classNames={{
+          base: "max-w-[280px] p-0 rounded-none",
+          wrapper: "z-[9999]",
+          header: "hidden",
+          body: "p-0 flex flex-col overflow-hidden",
+          footer: "hidden",
+        }}
+      >
+        <DrawerContent
+          style={{
+            backgroundColor: "var(--bg-primary)",
+            borderRight: "1px solid var(--border-color)",
+          }}
+        >
+          {() => (
+            <DrawerBody
+              className="p-0 m-0 flex flex-col overflow-hidden h-full"
+              style={{ padding: 0, margin: 0 }}
+            >
+              {/* Drawer Header — matches desktop sidebar header exactly */}
+              <div
+                className="h-16 flex items-center justify-between px-4 flex-shrink-0 w-full overflow-hidden border-b"
+                style={{ borderColor: "var(--border-color)" }}
+              >
+                <div className="flex-1 flex justify-center">
+                  <img
+                    src="/HungerFree.svg"
+                    className="h-10 w-auto object-contain"
+                    alt="HungerFree Logo"
+                  />
+                </div>
+                <div className="shrink-0">
+                  <ThemeToggle />
+                </div>
+              </div>
+              <div className="flex-1 overflow-hidden flex flex-col min-h-0">
+                <NavContent inDrawer onNavigate={() => setMobileOpen(false)} />
+              </div>
+            </DrawerBody>
+          )}
+        </DrawerContent>
+      </Drawer>
+    </>
   );
 };
 
