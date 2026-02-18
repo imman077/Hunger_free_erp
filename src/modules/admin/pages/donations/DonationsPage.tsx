@@ -622,79 +622,84 @@ const DonationOverview = () => {
         isOpen={isOpen}
         onClose={onClose}
         placement="center"
-        size="md"
+        size="sm"
         classNames={{
           backdrop: "bg-[#0b1120]/80 backdrop-blur-sm",
-          base: "border border-[var(--border-color)] bg-[var(--bg-primary)] rounded-sm",
-          header: "border-b border-[var(--border-color)] p-4",
-          footer: "border-t border-[var(--border-color)] p-4",
+          base: "border border-[var(--border-color)] bg-[var(--bg-primary)] rounded-sm overflow-hidden mx-4 max-h-[85vh]",
+          header: "border-b border-[var(--border-color)] p-4 relative",
+          body: "p-3 sm:p-4 overflow-y-auto custom-scrollbar",
+          footer:
+            "border-t border-[var(--border-color)] p-4 bg-[var(--bg-secondary)]/30",
+          closeButton:
+            "hover:bg-[var(--bg-secondary)] absolute right-4 top-4 rounded-sm transition-all text-[var(--text-muted)]",
         }}
       >
         <ModalContent>
-          <ModalHeader className="flex flex-col gap-1 items-center text-center py-6">
+          <ModalHeader className="flex flex-col gap-0.5 items-center text-center">
             <h3
-              className="text-sm font-black uppercase tracking-widest"
+              className="text-sm sm:text-base font-black uppercase tracking-[0.1em]"
               style={{ color: "var(--text-primary)" }}
             >
               Assign Volunteer
             </h3>
             <p
-              className="text-[10px] font-medium uppercase tracking-tight"
+              className="text-[9px] sm:text-[10px] font-medium uppercase tracking-tight"
               style={{ color: "var(--text-muted)" }}
             >
-              Select a nearby volunteer for donation #{selectedDonation?.id}
+              Select a responder for donation #{selectedDonation?.id}
             </p>
           </ModalHeader>
-          <ModalBody className="py-6">
+          <ModalBody>
             <div className="space-y-4">
-              <div className="flex flex-col items-center gap-1 mb-2">
-                <span className="text-[10px] font-black text-hf-green uppercase tracking-[0.2em]">
+              <div className="flex flex-col items-center gap-1">
+                <span className="text-[8px] sm:text-[9px] font-black text-hf-green uppercase tracking-[0.3em]">
                   Recommended Force
                 </span>
-                <div className="h-0.5 w-6 bg-hf-green/20 rounded-full" />
+                <div className="h-0.5 w-6 bg-hf-green rounded-full opacity-50" />
               </div>
               <div className="grid gap-2">
                 {availableVolunteers.map((vol) => (
                   <div
                     key={vol.id}
-                    className="flex items-center justify-between p-3 rounded-sm border transition-all group"
+                    className="flex items-center justify-between p-2.5 sm:p-4 rounded-sm border transition-all hover:border-hf-green/30 hover:bg-[var(--bg-primary)] group gap-3"
                     style={{
                       backgroundColor: "var(--bg-secondary)",
                       borderColor: "var(--border-color)",
                     }}
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-[10px] font-black text-white shadow-sm">
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                      <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-sm bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center text-[9px] sm:text-[11px] font-black text-white shadow-lg shrink-0">
                         {vol.name
                           .split(" ")
                           .map((n) => n[0])
                           .join("")}
                       </div>
-                      <div className="flex flex-col">
+                      <div className="flex flex-col min-w-0">
                         <span
-                          className="text-xs font-black"
+                          className="text-[11px] sm:text-sm font-black tracking-tight underline-offset-2 decoration-hf-green/30 truncate"
                           style={{ color: "var(--text-primary)" }}
                         >
                           {vol.name}
                         </span>
-                        <div className="flex items-center gap-2 mt-0.5">
-                          <span className="text-[9px] font-bold text-hf-green flex items-center gap-0.5">
-                            ★ {vol.rating}
-                          </span>
+                        <div className="flex items-center gap-2 mt-0.5 sm:mt-1">
+                          <div className="flex items-center gap-0.5 sm:gap-1">
+                            <span className="text-hf-green text-[9px] font-black">
+                              ★
+                            </span>
+                            <span
+                              className="text-[10px] font-black"
+                              style={{ color: "var(--text-primary)" }}
+                            >
+                              {vol.rating}
+                            </span>
+                          </div>
                           <span
-                            className="text-[9px] font-medium"
-                            style={{ color: "var(--text-muted)" }}
+                            className="text-[9px] font-bold opacity-40 truncate max-w-[60px] sm:max-w-none"
+                            style={{ color: "var(--text-secondary)" }}
                           >
-                            • {vol.vehicle}
+                            • {vol.vehicle.split(" ")[0]}
                           </span>
-                          <span
-                            className="text-[9px] font-black px-1 rounded-full border"
-                            style={{
-                              backgroundColor: "rgba(217, 119, 6, 0.1)",
-                              color: "#d97706",
-                              borderColor: "rgba(217, 119, 6, 0.2)",
-                            }}
-                          >
+                          <span className="text-[8px] font-black px-1.5 py-0.5 rounded-full border bg-amber-500/5 border-amber-500/10 text-amber-600/80 uppercase tracking-tighter">
                             {vol.distance}
                           </span>
                         </div>
@@ -702,7 +707,7 @@ const DonationOverview = () => {
                     </div>
                     <Button
                       size="sm"
-                      className="bg-hf-green text-white font-black text-[9px] uppercase tracking-wider h-7 px-3 rounded-sm opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="bg-transparent text-hf-green border border-hf-green/20 font-black text-[9px] uppercase tracking-wider h-7 px-3 rounded-sm transition-all hover:bg-hf-green hover:text-white active:scale-95 shadow-none shrink-0"
                       onClick={() => handleAssignVolunteer(vol)}
                     >
                       Assign
@@ -710,11 +715,11 @@ const DonationOverview = () => {
                   </div>
                 ))}
                 {availableVolunteers.length === 0 && (
-                  <div className="flex flex-col items-center justify-center py-8 text-center bg-var(--bg-tertiary) rounded-sm border border-dashed border-[var(--border-color)]">
-                    <div className="w-10 h-10 rounded-full bg-[var(--bg-secondary)] flex items-center justify-center mb-2">
-                      <Plus className="w-5 h-5 text-[var(--text-muted)] rotate-45" />
+                  <div className="flex flex-col items-center justify-center py-6 sm:py-8 text-center bg-[var(--bg-tertiary)] rounded-sm border border-dashed border-[var(--border-color)]">
+                    <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-[var(--bg-secondary)] flex items-center justify-center mb-2 sm:mb-3">
+                      <X className="w-4 h-4 sm:w-5 h-5 text-[var(--text-muted)] rotate-45" />
                     </div>
-                    <p className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">
+                    <p className="text-[9px] sm:text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-[0.1em] sm:tracking-[0.15em]">
                       All local responders are currently busy
                     </p>
                   </div>
@@ -722,17 +727,10 @@ const DonationOverview = () => {
               </div>
             </div>
           </ModalBody>
-          <ModalFooter
-            className="flex justify-center border-t p-4"
-            style={{ borderColor: "var(--border-color)" }}
-          >
+          <ModalFooter className="flex justify-center">
             <Button
               variant="flat"
-              className="font-black text-[10px] uppercase tracking-wider h-9 px-8 rounded-sm transition-all"
-              style={{
-                backgroundColor: "var(--bg-tertiary)",
-                color: "var(--text-secondary)",
-              }}
+              className="w-full font-black text-[9px] uppercase tracking-[0.2em] h-8 px-6 rounded-sm transition-all border border-[var(--border-color)] bg-[var(--bg-primary)] hover:bg-[var(--bg-hover)] text-[var(--text-secondary)]"
               onClick={onClose}
             >
               Cancel

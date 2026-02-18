@@ -147,17 +147,11 @@ const Header = () => {
               <line x1="3" y1="18" x2="21" y2="18" />
             </svg>
           </button>
-
-          <div className="md:hidden">
-            <ThemeToggle />
-          </div>
         </div>
 
         {/* Right section - Notifications and avatar */}
         <div className="flex flex-row gap-2 md:gap-3 items-center">
-          <div className="hidden md:block">
-            <ThemeToggle />
-          </div>
+          <ThemeToggle />
           {/* Bell Notification */}
           <IconButton
             onClick={handleNotificationClick}

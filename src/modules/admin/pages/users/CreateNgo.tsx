@@ -298,725 +298,681 @@ const CreateNgo = () => {
 
   return (
     <div
-      className="p-8 md:p-10 w-full mx-auto min-h-screen"
+      className="w-full mx-auto min-h-screen flex flex-col"
       style={{ backgroundColor: "var(--bg-secondary)" }}
     >
-      {/* Header Bar */}
-      <div className="max-w-5xl mx-auto mb-10">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-8">
-            <button
-              onClick={() => navigate("/admin/users/ngos")}
-              className="w-10 h-10 rounded-full flex items-center justify-center border transition-all group shadow-sm"
+      {/* Sticky Header Bar */}
+      <div
+        className="sticky top-0 z-30 w-full border-b transition-all backdrop-blur-md"
+        style={{
+          backgroundColor:
+            "color-mix(in srgb, var(--bg-secondary), transparent 15%)",
+          borderColor: "var(--border-color)",
+        }}
+      >
+        <div className="max-w-5xl mx-auto px-4 md:px-10 py-4 md:py-6">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-4 md:gap-6">
+              <button
+                onClick={() => navigate("/admin/users/ngos")}
+                className="w-9 h-9 md:w-10 md:h-10 shrink-0 rounded-full flex items-center justify-center border transition-all group shadow-sm hover:scale-105 active:scale-95"
+                style={{
+                  backgroundColor: "var(--bg-primary)",
+                  borderColor: "var(--border-color)",
+                  color: "var(--text-muted)",
+                }}
+              >
+                <ArrowLeft
+                  size={16}
+                  className="md:w-[18px] md:h-[18px] group-hover:-translate-x-1 transition-transform"
+                />
+              </button>
+              <div
+                className="h-8 md:h-10 w-px opacity-50 md:opacity-100"
+                style={{ backgroundColor: "var(--border-color)" }}
+              />
+              <div className="min-w-0">
+                <h1
+                  className="text-xl md:text-3xl font-black tracking-tighter leading-none italic truncate"
+                  style={{ color: "var(--text-primary)" }}
+                >
+                  Register NGO
+                </h1>
+                <p
+                  className="text-[8px] md:text-[9px] font-bold mt-1.5 md:mt-2 uppercase tracking-[0.2em] md:tracking-[0.3em]"
+                  style={{ color: "var(--text-muted)" }}
+                >
+                  Administrator Console • NGO Onboarding
+                </p>
+              </div>
+            </div>
+
+            <div
+              className="hidden lg:flex border px-4 py-2 rounded-full items-center gap-3 shadow-sm"
               style={{
                 backgroundColor: "var(--bg-primary)",
                 borderColor: "var(--border-color)",
-                color: "var(--text-muted)",
               }}
             >
-              <ArrowLeft
-                size={18}
-                className="group-hover:-translate-x-1 transition-transform"
-              />
-            </button>
-            <div
-              className="h-10 w-px hidden sm:block"
-              style={{ backgroundColor: "var(--border-color)" }}
-            />
-            <div>
-              <h1
-                className="text-3xl md:text-5xl font-black tracking-tighter leading-none italic"
-                style={{ color: "var(--text-primary)" }}
+              <div className="w-1.5 h-1.5 rounded-full bg-[#22c55e] animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
+              <span
+                className="text-[9px] font-black uppercase tracking-widest pt-0.5"
+                style={{ color: "var(--text-secondary)" }}
               >
-                Register NGO
-              </h1>
-              <p
-                className="text-[10px] font-bold mt-2 uppercase tracking-[0.3em]"
-                style={{ color: "var(--text-muted)" }}
-              >
-                Administrator Console • NGO Onboarding
-              </p>
+                Secure Registration
+              </span>
             </div>
-          </div>
-          <div
-            className="border px-5 py-2.5 rounded-full flex items-center gap-3 shadow-sm"
-            style={{
-              backgroundColor: "var(--bg-primary)",
-              borderColor: "var(--border-color)",
-            }}
-          >
-            <div className="w-2 h-2 rounded-full bg-[#22c55e] animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
-            <span
-              className="text-[10px] font-black uppercase tracking-widest pt-0.5"
-              style={{ color: "var(--text-secondary)" }}
-            >
-              Secure Registration
-            </span>
           </div>
         </div>
       </div>
 
-      <form
-        onSubmit={handleSubmit}
-        className="max-w-4xl mx-auto space-y-6 pb-24"
-      >
-        {/* Card 01: NGO Details */}
-        <div
-          className="border rounded-xl shadow-sm transition-all hover:shadow-md"
-          style={{
-            borderColor: "var(--border-color)",
-            backgroundColor: "var(--bg-primary)",
-          }}
+      <div className="p-4 md:p-10 w-full flex-1">
+        <form
+          onSubmit={handleSubmit}
+          className="max-w-4xl mx-auto space-y-6 pb-24"
         >
+          {/* Card 01: NGO Details */}
           <div
-            className="border-b p-8 flex items-center gap-5"
+            className="border rounded-xl shadow-sm transition-all hover:shadow-md"
             style={{
               borderColor: "var(--border-color)",
-              backgroundColor: "var(--bg-tertiary)",
+              backgroundColor: "var(--bg-primary)",
             }}
           >
             <div
-              className="w-14 h-14 border rounded-xl flex items-center justify-center text-[#22c55e] shadow-sm"
+              className="border-b p-6 md:p-8 flex items-center gap-4 md:gap-5"
               style={{
-                backgroundColor: "var(--bg-primary)",
                 borderColor: "var(--border-color)",
+                backgroundColor: "var(--bg-tertiary)",
               }}
             >
-              <Building2 size={28} />
-            </div>
-            <div>
-              <h2
-                className="text-base font-black uppercase tracking-tighter leading-none"
-                style={{ color: "var(--text-primary)" }}
+              <div
+                className="w-12 h-12 md:w-14 md:h-14 border rounded-xl flex items-center justify-center text-[#22c55e] shadow-sm shrink-0"
+                style={{
+                  backgroundColor: "var(--bg-primary)",
+                  borderColor: "var(--border-color)",
+                }}
               >
-                01. NGO Identity
-              </h2>
-              <p
-                className="text-[10px] font-bold uppercase tracking-[0.2em] mt-2"
-                style={{ color: "var(--text-muted)" }}
-              >
-                Official Entity Details & High-Level Info
-              </p>
-            </div>
-          </div>
-
-          <div className="p-10 space-y-10">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-              <ResuableInput
-                label="NGO / Organization Name"
-                value={formData.ngoName}
-                onChange={(val) => handleValueChange("ngoName", val)}
-                required
-                placeholder="e.g. Hope Foundation"
-                align="left"
-              />
-
-              <ResuableDropdown
-                label="Organization Type"
-                value={formData.orgType}
-                onChange={(val) => handleValueChange("orgType", val)}
-                options={[
-                  { value: "Trust", label: "Trust" },
-                  { value: "Society", label: "Society" },
-                  { value: "Section 8", label: "Section 8 Company" },
-                ]}
-                placeholder="Select Type"
-                required
-                align="left"
-              />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-              <ResuableInput
-                label="Registration Number"
-                value={formData.registrationNo}
-                onChange={(val) => handleValueChange("registrationNo", val)}
-                required
-                placeholder="REG-XXXX-XXXX"
-                align="left"
-              />
-
-              <ResuableInput
-                label="Full Address (Area, City, State, Pincode)"
-                value={formData.address}
-                onChange={(val) => handleValueChange("address", val)}
-                required
-                placeholder="e.g. 1st Floor, Charity Plaza, Mumbai, 400001"
-                align="left"
-              />
-            </div>
-
-            {/* Optional NGO Details */}
-            <div
-              className="space-y-6 pt-6 border-t"
-              style={{ borderColor: "var(--border-color)" }}
-            >
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Email Toggle */}
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span
-                      className="text-[10px] font-black uppercase tracking-widest"
-                      style={{ color: "var(--text-muted)" }}
-                    >
-                      Email ID
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => toggleSection("showEmail")}
-                      className={`text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border transition-all ${
-                        toggles.showEmail
-                          ? "bg-red-500/10 text-red-500 border-red-500/20"
-                          : "bg-[#22c55e]/10 text-[#22c55e] border-[#22c55e]/20"
-                      }`}
-                    >
-                      {toggles.showEmail ? "Remove" : "+ Add"}
-                    </button>
-                  </div>
-                  {toggles.showEmail && (
-                    <ResuableInput
-                      label=""
-                      value={formData.email}
-                      onChange={(val) => handleValueChange("email", val)}
-                      placeholder="info@ngo.org"
-                      align="left"
-                      type="email"
-                    />
-                  )}
-                </div>
-
-                {/* Website Toggle */}
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span
-                      className="text-[10px] font-black uppercase tracking-widest"
-                      style={{ color: "var(--text-muted)" }}
-                    >
-                      Website / Social
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => toggleSection("showWebsite")}
-                      className={`text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border transition-all ${
-                        toggles.showWebsite
-                          ? "bg-red-500/10 text-red-500 border-red-500/20"
-                          : "bg-[#22c55e]/10 text-[#22c55e] border-[#22c55e]/20"
-                      }`}
-                    >
-                      {toggles.showWebsite ? "Remove" : "+ Add"}
-                    </button>
-                  </div>
-                  {toggles.showWebsite && (
-                    <ResuableInput
-                      label=""
-                      value={formData.website}
-                      onChange={(val) => handleValueChange("website", val)}
-                      placeholder="https://ngo.org"
-                      align="left"
-                    />
-                  )}
-                </div>
-
-                {/* About Toggle */}
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span
-                      className="text-[10px] font-black uppercase tracking-widest"
-                      style={{ color: "var(--text-muted)" }}
-                    >
-                      Description
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => toggleSection("showAbout")}
-                      className={`text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border transition-all ${
-                        toggles.showAbout
-                          ? "bg-red-500/10 text-red-500 border-red-500/20"
-                          : "bg-[#22c55e]/10 text-[#22c55e] border-[#22c55e]/20"
-                      }`}
-                    >
-                      {toggles.showAbout ? "Remove" : "+ Add"}
-                    </button>
-                  </div>
-                  {toggles.showAbout && (
-                    <ResuableInput
-                      label=""
-                      value={formData.about}
-                      onChange={(val) => handleValueChange("about", val)}
-                      placeholder="Short bio..."
-                      align="left"
-                    />
-                  )}
-                </div>
+                <Building2 size={24} className="md:w-7 md:h-7" />
               </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Card 02: Representative Details */}
-        <div
-          className="border rounded-xl shadow-sm transition-all hover:shadow-md"
-          style={{
-            borderColor: "var(--border-color)",
-            backgroundColor: "var(--bg-primary)",
-          }}
-        >
-          <div
-            className="border-b p-8 flex items-center gap-5"
-            style={{
-              borderColor: "var(--border-color)",
-              backgroundColor: "var(--bg-tertiary)",
-            }}
-          >
-            <div
-              className="w-14 h-14 border rounded-xl flex items-center justify-center text-[#22c55e] shadow-sm"
-              style={{
-                backgroundColor: "var(--bg-primary)",
-                borderColor: "var(--border-color)",
-              }}
-            >
-              <Users size={28} />
-            </div>
-            <div>
-              <h2
-                className="text-base font-black uppercase tracking-tighter leading-none"
-                style={{ color: "var(--text-primary)" }}
-              >
-                02. Authorized Representative
-              </h2>
-              <p
-                className="text-[10px] font-bold uppercase tracking-[0.2em] mt-2"
-                style={{ color: "var(--text-muted)" }}
-              >
-                Primary Contact Person & Accountability
-              </p>
-            </div>
-          </div>
-
-          <div className="p-10 space-y-10">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-              <ResuableInput
-                label="Authorized Representative Name"
-                value={formData.representativeName}
-                onChange={(val) => handleValueChange("representativeName", val)}
-                required
-                placeholder="e.g. Dr. Samuel Smith"
-                align="left"
-              />
-
-              <ResuableInput
-                label="Mobile Number"
-                value={formData.mobile}
-                onChange={(val) => handleValueChange("mobile", val)}
-                required
-                placeholder="+91 XXXXX XXXXX"
-                align="left"
-                type="tel"
-              />
-            </div>
-
-            {/* Optional Rep Details */}
-            <div
-              className="space-y-6 pt-6 border-t"
-              style={{ borderColor: "var(--border-color)" }}
-            >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Alt Mobile Toggle */}
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span
-                      className="text-[10px] font-black uppercase tracking-widest"
-                      style={{ color: "var(--text-muted)" }}
-                    >
-                      Alt Mobile
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => toggleSection("showAltMobile")}
-                      className={`text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border transition-all ${
-                        toggles.showAltMobile
-                          ? "bg-red-500/10 text-red-500 border-red-500/20"
-                          : "bg-[#22c55e]/10 text-[#22c55e] border-[#22c55e]/20"
-                      }`}
-                    >
-                      {toggles.showAltMobile ? "Remove" : "+ Add"}
-                    </button>
-                  </div>
-                  {toggles.showAltMobile && (
-                    <ResuableInput
-                      label=""
-                      value={formData.altMobile}
-                      onChange={(val) => handleValueChange("altMobile", val)}
-                      placeholder="Alternate number"
-                      align="left"
-                      type="tel"
-                    />
-                  )}
-                </div>
-
-                {/* Designation Toggle */}
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span
-                      className="text-[10px] font-black uppercase tracking-widest"
-                      style={{ color: "var(--text-muted)" }}
-                    >
-                      Designation
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => toggleSection("showDesignation")}
-                      className={`text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border transition-all ${
-                        toggles.showDesignation
-                          ? "bg-red-500/10 text-red-500 border-red-500/20"
-                          : "bg-[#22c55e]/10 text-[#22c55e] border-[#22c55e]/20"
-                      }`}
-                    >
-                      {toggles.showDesignation ? "Remove" : "+ Add"}
-                    </button>
-                  </div>
-                  {toggles.showDesignation && (
-                    <ResuableInput
-                      label=""
-                      value={formData.designation}
-                      onChange={(val) => handleValueChange("designation", val)}
-                      placeholder="e.g. Director"
-                      align="left"
-                    />
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Card 03: Proof Documents */}
-        <div
-          className="border rounded-xl shadow-sm transition-all hover:shadow-md"
-          style={{
-            borderColor: "var(--border-color)",
-            backgroundColor: "var(--bg-primary)",
-          }}
-        >
-          <div
-            className="border-b p-8 flex items-center gap-5"
-            style={{
-              borderColor: "var(--border-color)",
-              backgroundColor: "var(--bg-tertiary)",
-            }}
-          >
-            <div
-              className="w-14 h-14 border rounded-xl flex items-center justify-center text-blue-500 shadow-sm"
-              style={{
-                backgroundColor: "var(--bg-primary)",
-                borderColor: "var(--border-color)",
-              }}
-            >
-              <ShieldCheck size={28} />
-            </div>
-            <div>
-              <h2
-                className="text-base font-black uppercase tracking-tighter leading-none"
-                style={{ color: "var(--text-primary)" }}
-              >
-                03. Proof Documents
-              </h2>
-              <p
-                className="text-[10px] font-bold uppercase tracking-[0.2em] mt-2"
-                style={{ color: "var(--text-muted)" }}
-              >
-                Global Compliance & Validity Documents
-              </p>
-            </div>
-          </div>
-
-          <div className="p-10 space-y-12">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <FileUploadSlot
-                label="NGO Registration Certificate"
-                value={
-                  (attachments["NGO Registration Certificate"] as File) || null
-                }
-                onChange={(file) =>
-                  handleAttachmentChange("NGO Registration Certificate", file)
-                }
-                mandatory
-              />
-              <FileUploadSlot
-                label="Authorized Representative ID Proof"
-                value={
-                  (attachments["Authorized Representative ID Proof"] as File) ||
-                  null
-                }
-                onChange={(file) =>
-                  handleAttachmentChange(
-                    "Authorized Representative ID Proof",
-                    file,
-                  )
-                }
-                mandatory
-              />
-            </div>
-
-            {/* Optional Global Proofs */}
-            <div
-              className="space-y-6 pt-6 border-t"
-              style={{ borderColor: "var(--border-color)" }}
-            >
-              <div className="flex items-center justify-between">
-                <h3
-                  className="text-[11px] font-black uppercase tracking-[0.2em]"
+              <div>
+                <h2
+                  className="text-sm md:text-base font-black uppercase tracking-tighter leading-none"
+                  style={{ color: "var(--text-primary)" }}
+                >
+                  01. NGO Identity
+                </h2>
+                <p
+                  className="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em] mt-2"
                   style={{ color: "var(--text-muted)" }}
                 >
-                  Optional Proofs
-                </h3>
-                <button
-                  type="button"
-                  onClick={() => toggleSection("showProofOptional")}
-                  className={`text-[9px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full border transition-all ${
-                    toggles.showProofOptional
-                      ? "bg-red-500/10 text-red-500 border-red-500/20"
-                      : "bg-[#22c55e]/10 text-[#22c55e] border-[#22c55e]/20"
-                  }`}
-                >
-                  {toggles.showProofOptional
-                    ? "Hide Optional"
-                    : "Show Optional"}
-                </button>
-              </div>
-
-              {toggles.showProofOptional && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-in fade-in zoom-in-95 duration-300">
-                  <FileUploadSlot
-                    label="Government Affiliation / Support Letter"
-                    value={
-                      (attachments[
-                        "Government Affiliation / Support Letter"
-                      ] as File) || null
-                    }
-                    onChange={(file) =>
-                      handleAttachmentChange(
-                        "Government Affiliation / Support Letter",
-                        file,
-                      )
-                    }
-                  />
-                  {/* Array Photos for Facility */}
-                  <div className="space-y-4">
-                    <FileUploadSlot
-                      label="NGO Activity / Facility Photos"
-                      value={null}
-                      onChange={(file) => {
-                        if (file) {
-                          const current =
-                            (attachments[
-                              "NGO Activity / Facility Photos"
-                            ] as File[]) || [];
-                          handleAttachmentChange(
-                            "NGO Activity / Facility Photos",
-                            [...current, file],
-                          );
-                        }
-                      }}
-                      subtitle="Upload Multiple"
-                    />
-                    {(attachments["NGO Activity / Facility Photos"] as File[])
-                      ?.length > 0 && (
-                      <div className="flex flex-wrap gap-2">
-                        {(
-                          attachments[
-                            "NGO Activity / Facility Photos"
-                          ] as File[]
-                        ).map((f, i) => (
-                          <div
-                            key={i}
-                            className="flex items-center gap-2 px-3 py-1.5 rounded-full border group/photo"
-                            style={{
-                              backgroundColor: "var(--bg-tertiary)",
-                              borderColor: "var(--border-color)",
-                            }}
-                          >
-                            <span
-                              className="text-[9px] font-bold truncate max-w-[80px]"
-                              style={{ color: "var(--text-secondary)" }}
-                            >
-                              {f.name}
-                            </span>
-                            <div className="flex items-center gap-1 opacity-0 group-hover/photo:opacity-100 transition-opacity">
-                              <button
-                                type="button"
-                                onClick={() => handlePreview(f, f.name)}
-                                className="hover:text-[#22c55e] transition-colors"
-                                style={{ color: "var(--text-muted)" }}
-                                title="View Photo"
-                              >
-                                <Eye size={10} />
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => handleDownloadFile(f)}
-                                className="hover:text-blue-500 transition-colors"
-                                style={{ color: "var(--text-muted)" }}
-                                title="Download Photo"
-                              >
-                                <Download size={10} />
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  const next = (
-                                    attachments[
-                                      "NGO Activity / Facility Photos"
-                                    ] as File[]
-                                  ).filter((_, idx) => idx !== i);
-                                  handleAttachmentChange(
-                                    "NGO Activity / Facility Photos",
-                                    next,
-                                  );
-                                }}
-                                className="hover:text-red-500 transition-colors"
-                                style={{ color: "var(--text-muted)" }}
-                                title="Remove Photo"
-                              >
-                                <X size={10} />
-                              </button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Card 04: Beneficiary Category Details */}
-        <div
-          className="border rounded-xl shadow-sm transition-all hover:shadow-md"
-          style={{
-            borderColor: "var(--border-color)",
-            backgroundColor: "var(--bg-primary)",
-          }}
-        >
-          <div
-            className="border-b p-8 flex items-center gap-5"
-            style={{
-              borderColor: "var(--border-color)",
-              backgroundColor: "var(--bg-tertiary)",
-            }}
-          >
-            <div
-              className="w-14 h-14 border rounded-xl flex items-center justify-center text-[#22c55e] shadow-sm"
-              style={{
-                backgroundColor: "var(--bg-primary)",
-                borderColor: "var(--border-color)",
-              }}
-            >
-              <MapPin size={28} />
-            </div>
-            <div>
-              <h2
-                className="text-base font-black uppercase tracking-tighter leading-none"
-                style={{ color: "var(--text-primary)" }}
-              >
-                04. Beneficiary Focus
-              </h2>
-              <p
-                className="text-[10px] font-bold uppercase tracking-[0.2em] mt-2"
-                style={{ color: "var(--text-muted)" }}
-              >
-                Specific details based on target group
-              </p>
-            </div>
-          </div>
-
-          <div className="p-10 space-y-10">
-            <ResuableDropdown
-              label="Select Beneficiary Category"
-              value={formData.beneficiaries}
-              onChange={(val) => handleValueChange("beneficiaries", val)}
-              options={beneficiaryTypes}
-              placeholder="Select Category"
-              required
-              align="left"
-            />
-
-            {!formData.beneficiaries ? (
-              <div className="py-20 border-2 border-dashed border-slate-50 rounded-xl bg-slate-50/30 flex flex-col items-center justify-center text-center">
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-300">
-                  Choose a category to provide specific details
+                  Official Entity Details & High-Level Info
                 </p>
               </div>
-            ) : (
-              <div className="space-y-12 animate-in fade-in slide-in-from-top-4 duration-500">
-                {/* Category Details */}
-                <div className="space-y-8">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                    {NGO_CONFIG[formData.beneficiaries].details.mandatory.map(
-                      (field) =>
-                        field.type === "dropdown" ? (
-                          <ResuableDropdown
-                            key={field.label}
-                            label={field.label}
-                            value={formData[field.label] || ""}
-                            onChange={(val) =>
-                              handleValueChange(field.label, val)
-                            }
-                            options={field.options || []}
-                            placeholder={
-                              field.placeholder || `Select ${field.label}`
-                            }
-                            required
-                            align="left"
-                          />
-                        ) : (
-                          <ResuableInput
-                            key={field.label}
-                            label={field.label}
-                            value={formData[field.label] || ""}
-                            onChange={(val) =>
-                              handleValueChange(field.label, val)
-                            }
-                            placeholder={
-                              field.placeholder || `Enter ${field.label}`
-                            }
-                            required
-                            align="left"
-                          />
-                        ),
-                    )}
-                  </div>
+            </div>
 
-                  <div
-                    className="space-y-6 pt-6 border-t"
-                    style={{ borderColor: "var(--border-color)" }}
-                  >
+            <div className="p-6 md:p-10 space-y-8 md:space-y-10">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
+                <ResuableInput
+                  label="NGO / Organization Name"
+                  value={formData.ngoName}
+                  onChange={(val) => handleValueChange("ngoName", val)}
+                  required
+                  placeholder="e.g. Hope Foundation"
+                  align="left"
+                />
+
+                <ResuableDropdown
+                  label="Organization Type"
+                  value={formData.orgType}
+                  onChange={(val) => handleValueChange("orgType", val)}
+                  options={[
+                    { value: "Trust", label: "Trust" },
+                    { value: "Society", label: "Society" },
+                    { value: "Section 8", label: "Section 8 Company" },
+                  ]}
+                  placeholder="Select Type"
+                  required
+                  align="left"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
+                <ResuableInput
+                  label="Registration Number"
+                  value={formData.registrationNo}
+                  onChange={(val) => handleValueChange("registrationNo", val)}
+                  required
+                  placeholder="REG-XXXX-XXXX"
+                  align="left"
+                />
+
+                <ResuableInput
+                  label="Full Address (Area, City, State, Pincode)"
+                  value={formData.address}
+                  onChange={(val) => handleValueChange("address", val)}
+                  required
+                  placeholder="e.g. 1st Floor, Charity Plaza, Mumbai, 400001"
+                  align="left"
+                />
+              </div>
+
+              {/* Optional NGO Details */}
+              <div
+                className="space-y-6 pt-6 border-t"
+                style={{ borderColor: "var(--border-color)" }}
+              >
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {/* Email Toggle */}
+                  <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <span
                         className="text-[10px] font-black uppercase tracking-widest"
                         style={{ color: "var(--text-muted)" }}
                       >
-                        Non-Mandatory Details
+                        Email ID
                       </span>
                       <button
                         type="button"
-                        onClick={() => toggleSection("showCategoryOptional")}
+                        onClick={() => toggleSection("showEmail")}
                         className={`text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border transition-all ${
-                          toggles.showCategoryOptional
+                          toggles.showEmail
                             ? "bg-red-500/10 text-red-500 border-red-500/20"
                             : "bg-[#22c55e]/10 text-[#22c55e] border-[#22c55e]/20"
                         }`}
                       >
-                        {toggles.showCategoryOptional ? "Remove" : "+ Add"}
+                        {toggles.showEmail ? "Remove" : "+ Add"}
                       </button>
                     </div>
-                    {toggles.showCategoryOptional && (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 animate-in fade-in slide-in-from-top-2">
-                        {NGO_CONFIG[
-                          formData.beneficiaries
-                        ].details.optional.map((field) =>
+                    {toggles.showEmail && (
+                      <ResuableInput
+                        label=""
+                        value={formData.email}
+                        onChange={(val) => handleValueChange("email", val)}
+                        placeholder="info@ngo.org"
+                        align="left"
+                        type="email"
+                      />
+                    )}
+                  </div>
+
+                  {/* Website Toggle */}
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span
+                        className="text-[10px] font-black uppercase tracking-widest"
+                        style={{ color: "var(--text-muted)" }}
+                      >
+                        Website / Social
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => toggleSection("showWebsite")}
+                        className={`text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border transition-all ${
+                          toggles.showWebsite
+                            ? "bg-red-500/10 text-red-500 border-red-500/20"
+                            : "bg-[#22c55e]/10 text-[#22c55e] border-[#22c55e]/20"
+                        }`}
+                      >
+                        {toggles.showWebsite ? "Remove" : "+ Add"}
+                      </button>
+                    </div>
+                    {toggles.showWebsite && (
+                      <ResuableInput
+                        label=""
+                        value={formData.website}
+                        onChange={(val) => handleValueChange("website", val)}
+                        placeholder="https://ngo.org"
+                        align="left"
+                      />
+                    )}
+                  </div>
+
+                  {/* About Toggle */}
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span
+                        className="text-[10px] font-black uppercase tracking-widest"
+                        style={{ color: "var(--text-muted)" }}
+                      >
+                        Description
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => toggleSection("showAbout")}
+                        className={`text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border transition-all ${
+                          toggles.showAbout
+                            ? "bg-red-500/10 text-red-500 border-red-500/20"
+                            : "bg-[#22c55e]/10 text-[#22c55e] border-[#22c55e]/20"
+                        }`}
+                      >
+                        {toggles.showAbout ? "Remove" : "+ Add"}
+                      </button>
+                    </div>
+                    {toggles.showAbout && (
+                      <ResuableInput
+                        label=""
+                        value={formData.about}
+                        onChange={(val) => handleValueChange("about", val)}
+                        placeholder="Short bio..."
+                        align="left"
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Card 02: Representative Details */}
+          <div
+            className="border rounded-xl shadow-sm transition-all hover:shadow-md"
+            style={{
+              borderColor: "var(--border-color)",
+              backgroundColor: "var(--bg-primary)",
+            }}
+          >
+            <div
+              className="border-b p-6 md:p-8 flex items-center gap-4 md:gap-5"
+              style={{
+                borderColor: "var(--border-color)",
+                backgroundColor: "var(--bg-tertiary)",
+              }}
+            >
+              <div
+                className="w-12 h-12 md:w-14 md:h-14 border rounded-xl flex items-center justify-center text-[#22c55e] shadow-sm shrink-0"
+                style={{
+                  backgroundColor: "var(--bg-primary)",
+                  borderColor: "var(--border-color)",
+                }}
+              >
+                <Users size={24} className="md:w-7 md:h-7" />
+              </div>
+              <div>
+                <h2
+                  className="text-sm md:text-base font-black uppercase tracking-tighter leading-none"
+                  style={{ color: "var(--text-primary)" }}
+                >
+                  02. Authorized Representative
+                </h2>
+                <p
+                  className="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em] mt-2"
+                  style={{ color: "var(--text-muted)" }}
+                >
+                  Primary Contact Person & Accountability
+                </p>
+              </div>
+            </div>
+
+            <div className="p-6 md:p-10 space-y-8 md:space-y-10">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
+                <ResuableInput
+                  label="Authorized Representative Name"
+                  value={formData.representativeName}
+                  onChange={(val) =>
+                    handleValueChange("representativeName", val)
+                  }
+                  required
+                  placeholder="e.g. Dr. Samuel Smith"
+                  align="left"
+                />
+
+                <ResuableInput
+                  label="Mobile Number"
+                  value={formData.mobile}
+                  onChange={(val) => handleValueChange("mobile", val)}
+                  required
+                  placeholder="+91 XXXXX XXXXX"
+                  align="left"
+                  type="tel"
+                />
+              </div>
+
+              {/* Optional Rep Details */}
+              <div
+                className="space-y-6 pt-6 border-t"
+                style={{ borderColor: "var(--border-color)" }}
+              >
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Alt Mobile Toggle */}
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span
+                        className="text-[10px] font-black uppercase tracking-widest"
+                        style={{ color: "var(--text-muted)" }}
+                      >
+                        Alt Mobile
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => toggleSection("showAltMobile")}
+                        className={`text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border transition-all ${
+                          toggles.showAltMobile
+                            ? "bg-red-500/10 text-red-500 border-red-500/20"
+                            : "bg-[#22c55e]/10 text-[#22c55e] border-[#22c55e]/20"
+                        }`}
+                      >
+                        {toggles.showAltMobile ? "Remove" : "+ Add"}
+                      </button>
+                    </div>
+                    {toggles.showAltMobile && (
+                      <ResuableInput
+                        label=""
+                        value={formData.altMobile}
+                        onChange={(val) => handleValueChange("altMobile", val)}
+                        placeholder="Alternate number"
+                        align="left"
+                        type="tel"
+                      />
+                    )}
+                  </div>
+
+                  {/* Designation Toggle */}
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span
+                        className="text-[10px] font-black uppercase tracking-widest"
+                        style={{ color: "var(--text-muted)" }}
+                      >
+                        Designation
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => toggleSection("showDesignation")}
+                        className={`text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border transition-all ${
+                          toggles.showDesignation
+                            ? "bg-red-500/10 text-red-500 border-red-500/20"
+                            : "bg-[#22c55e]/10 text-[#22c55e] border-[#22c55e]/20"
+                        }`}
+                      >
+                        {toggles.showDesignation ? "Remove" : "+ Add"}
+                      </button>
+                    </div>
+                    {toggles.showDesignation && (
+                      <ResuableInput
+                        label=""
+                        value={formData.designation}
+                        onChange={(val) =>
+                          handleValueChange("designation", val)
+                        }
+                        placeholder="e.g. Director"
+                        align="left"
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Card 03: Proof Documents */}
+          <div
+            className="border rounded-xl shadow-sm transition-all hover:shadow-md"
+            style={{
+              borderColor: "var(--border-color)",
+              backgroundColor: "var(--bg-primary)",
+            }}
+          >
+            <div
+              className="border-b p-6 md:p-8 flex items-center gap-4 md:gap-5"
+              style={{
+                borderColor: "var(--border-color)",
+                backgroundColor: "var(--bg-tertiary)",
+              }}
+            >
+              <div
+                className="w-12 h-12 md:w-14 md:h-14 border rounded-xl flex items-center justify-center text-blue-500 shadow-sm shrink-0"
+                style={{
+                  backgroundColor: "var(--bg-primary)",
+                  borderColor: "var(--border-color)",
+                }}
+              >
+                <ShieldCheck size={24} className="md:w-7 md:h-7" />
+              </div>
+              <div>
+                <h2
+                  className="text-sm md:text-base font-black uppercase tracking-tighter leading-none"
+                  style={{ color: "var(--text-primary)" }}
+                >
+                  03. Proof Documents
+                </h2>
+                <p
+                  className="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em] mt-2"
+                  style={{ color: "var(--text-muted)" }}
+                >
+                  Global Compliance & Validity Documents
+                </p>
+              </div>
+            </div>
+
+            <div className="p-6 md:p-10 space-y-10 md:space-y-12">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <FileUploadSlot
+                  label="NGO Registration Certificate"
+                  value={
+                    (attachments["NGO Registration Certificate"] as File) ||
+                    null
+                  }
+                  onChange={(file) =>
+                    handleAttachmentChange("NGO Registration Certificate", file)
+                  }
+                  mandatory
+                />
+                <FileUploadSlot
+                  label="Authorized Representative ID Proof"
+                  value={
+                    (attachments[
+                      "Authorized Representative ID Proof"
+                    ] as File) || null
+                  }
+                  onChange={(file) =>
+                    handleAttachmentChange(
+                      "Authorized Representative ID Proof",
+                      file,
+                    )
+                  }
+                  mandatory
+                />
+              </div>
+
+              {/* Optional Global Proofs */}
+              <div
+                className="space-y-6 pt-6 border-t"
+                style={{ borderColor: "var(--border-color)" }}
+              >
+                <div className="flex items-center justify-between">
+                  <h3
+                    className="text-[11px] font-black uppercase tracking-[0.2em]"
+                    style={{ color: "var(--text-muted)" }}
+                  >
+                    Optional Proofs
+                  </h3>
+                  <button
+                    type="button"
+                    onClick={() => toggleSection("showProofOptional")}
+                    className={`text-[9px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full border transition-all ${
+                      toggles.showProofOptional
+                        ? "bg-red-500/10 text-red-500 border-red-500/20"
+                        : "bg-[#22c55e]/10 text-[#22c55e] border-[#22c55e]/20"
+                    }`}
+                  >
+                    {toggles.showProofOptional
+                      ? "Hide Optional"
+                      : "Show Optional"}
+                  </button>
+                </div>
+
+                {toggles.showProofOptional && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-in fade-in zoom-in-95 duration-300">
+                    <FileUploadSlot
+                      label="Government Affiliation / Support Letter"
+                      value={
+                        (attachments[
+                          "Government Affiliation / Support Letter"
+                        ] as File) || null
+                      }
+                      onChange={(file) =>
+                        handleAttachmentChange(
+                          "Government Affiliation / Support Letter",
+                          file,
+                        )
+                      }
+                    />
+                    {/* Array Photos for Facility */}
+                    <div className="space-y-4">
+                      <FileUploadSlot
+                        label="NGO Activity / Facility Photos"
+                        value={null}
+                        onChange={(file) => {
+                          if (file) {
+                            const current =
+                              (attachments[
+                                "NGO Activity / Facility Photos"
+                              ] as File[]) || [];
+                            handleAttachmentChange(
+                              "NGO Activity / Facility Photos",
+                              [...current, file],
+                            );
+                          }
+                        }}
+                        subtitle="Upload Multiple"
+                      />
+                      {(attachments["NGO Activity / Facility Photos"] as File[])
+                        ?.length > 0 && (
+                        <div className="flex flex-wrap gap-2">
+                          {(
+                            attachments[
+                              "NGO Activity / Facility Photos"
+                            ] as File[]
+                          ).map((f, i) => (
+                            <div
+                              key={i}
+                              className="flex items-center gap-2 px-3 py-1.5 rounded-full border group/photo"
+                              style={{
+                                backgroundColor: "var(--bg-tertiary)",
+                                borderColor: "var(--border-color)",
+                              }}
+                            >
+                              <span
+                                className="text-[9px] font-bold truncate max-w-[80px]"
+                                style={{ color: "var(--text-secondary)" }}
+                              >
+                                {f.name}
+                              </span>
+                              <div className="flex items-center gap-1 opacity-0 group-hover/photo:opacity-100 transition-opacity">
+                                <button
+                                  type="button"
+                                  onClick={() => handlePreview(f, f.name)}
+                                  className="hover:text-[#22c55e] transition-colors"
+                                  style={{ color: "var(--text-muted)" }}
+                                  title="View Photo"
+                                >
+                                  <Eye size={10} />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleDownloadFile(f)}
+                                  className="hover:text-blue-500 transition-colors"
+                                  style={{ color: "var(--text-muted)" }}
+                                  title="Download Photo"
+                                >
+                                  <Download size={10} />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const next = (
+                                      attachments[
+                                        "NGO Activity / Facility Photos"
+                                      ] as File[]
+                                    ).filter((_, idx) => idx !== i);
+                                    handleAttachmentChange(
+                                      "NGO Activity / Facility Photos",
+                                      next,
+                                    );
+                                  }}
+                                  className="hover:text-red-500 transition-colors"
+                                  style={{ color: "var(--text-muted)" }}
+                                  title="Remove Photo"
+                                >
+                                  <X size={10} />
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Card 04: Beneficiary Category Details */}
+          <div
+            className="border rounded-xl shadow-sm transition-all hover:shadow-md"
+            style={{
+              borderColor: "var(--border-color)",
+              backgroundColor: "var(--bg-primary)",
+            }}
+          >
+            <div
+              className="border-b p-8 flex items-center gap-5"
+              style={{
+                borderColor: "var(--border-color)",
+                backgroundColor: "var(--bg-tertiary)",
+              }}
+            >
+              <div
+                className="w-14 h-14 border rounded-xl flex items-center justify-center text-[#22c55e] shadow-sm"
+                style={{
+                  backgroundColor: "var(--bg-primary)",
+                  borderColor: "var(--border-color)",
+                }}
+              >
+                <MapPin size={28} />
+              </div>
+              <div>
+                <h2
+                  className="text-base font-black uppercase tracking-tighter leading-none"
+                  style={{ color: "var(--text-primary)" }}
+                >
+                  04. Beneficiary Focus
+                </h2>
+                <p
+                  className="text-[10px] font-bold uppercase tracking-[0.2em] mt-2"
+                  style={{ color: "var(--text-muted)" }}
+                >
+                  Specific details based on target group
+                </p>
+              </div>
+            </div>
+
+            <div className="p-10 space-y-10">
+              <ResuableDropdown
+                label="Select Beneficiary Category"
+                value={formData.beneficiaries}
+                onChange={(val) => handleValueChange("beneficiaries", val)}
+                options={beneficiaryTypes}
+                placeholder="Select Category"
+                required
+                align="left"
+              />
+
+              {!formData.beneficiaries ? (
+                <div className="py-20 border-2 border-dashed border-slate-50 rounded-xl bg-slate-50/30 flex flex-col items-center justify-center text-center">
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-300">
+                    Choose a category to provide specific details
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-12 animate-in fade-in slide-in-from-top-4 duration-500">
+                  {/* Category Details */}
+                  <div className="space-y-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                      {NGO_CONFIG[formData.beneficiaries].details.mandatory.map(
+                        (field) =>
                           field.type === "dropdown" ? (
                             <ResuableDropdown
                               key={field.label}
@@ -1029,6 +985,7 @@ const CreateNgo = () => {
                               placeholder={
                                 field.placeholder || `Select ${field.label}`
                               }
+                              required
                               align="left"
                             />
                           ) : (
@@ -1042,74 +999,135 @@ const CreateNgo = () => {
                               placeholder={
                                 field.placeholder || `Enter ${field.label}`
                               }
+                              required
                               align="left"
                             />
                           ),
-                        )}
+                      )}
+                    </div>
+
+                    <div
+                      className="space-y-6 pt-6 border-t"
+                      style={{ borderColor: "var(--border-color)" }}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span
+                          className="text-[10px] font-black uppercase tracking-widest"
+                          style={{ color: "var(--text-muted)" }}
+                        >
+                          Non-Mandatory Details
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => toggleSection("showCategoryOptional")}
+                          className={`text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border transition-all ${
+                            toggles.showCategoryOptional
+                              ? "bg-red-500/10 text-red-500 border-red-500/20"
+                              : "bg-[#22c55e]/10 text-[#22c55e] border-[#22c55e]/20"
+                          }`}
+                        >
+                          {toggles.showCategoryOptional ? "Remove" : "+ Add"}
+                        </button>
                       </div>
-                    )}
+                      {toggles.showCategoryOptional && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 animate-in fade-in slide-in-from-top-2">
+                          {NGO_CONFIG[
+                            formData.beneficiaries
+                          ].details.optional.map((field) =>
+                            field.type === "dropdown" ? (
+                              <ResuableDropdown
+                                key={field.label}
+                                label={field.label}
+                                value={formData[field.label] || ""}
+                                onChange={(val) =>
+                                  handleValueChange(field.label, val)
+                                }
+                                options={field.options || []}
+                                placeholder={
+                                  field.placeholder || `Select ${field.label}`
+                                }
+                                align="left"
+                              />
+                            ) : (
+                              <ResuableInput
+                                key={field.label}
+                                label={field.label}
+                                value={formData[field.label] || ""}
+                                onChange={(val) =>
+                                  handleValueChange(field.label, val)
+                                }
+                                placeholder={
+                                  field.placeholder || `Enter ${field.label}`
+                                }
+                                align="left"
+                              />
+                            ),
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
 
-                {/* Category Proofs */}
-                <div
-                  className="space-y-8 pt-10 border-t-2 border-dashed"
-                  style={{ borderColor: "var(--border-color)" }}
-                >
-                  <h3
-                    className="text-[11px] font-black uppercase tracking-[0.2em] flex items-center gap-2"
-                    style={{ color: "var(--text-primary)" }}
-                  >
-                    <CheckCircle size={14} className="text-hf-green" />
-                    Category Specific Proofs
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {NGO_CONFIG[formData.beneficiaries].proofs.mandatory.map(
-                      (label) => (
-                        <FileUploadSlot
-                          key={label}
-                          label={label}
-                          value={(attachments[label] as File) || null}
-                          onChange={(file) =>
-                            handleAttachmentChange(label, file)
-                          }
-                          mandatory
-                        />
-                      ),
-                    )}
-                  </div>
-
+                  {/* Category Proofs */}
                   <div
-                    className="space-y-6 pt-6 border-t"
+                    className="space-y-8 pt-10 border-t-2 border-dashed"
                     style={{ borderColor: "var(--border-color)" }}
                   >
-                    <div className="flex items-center justify-between">
-                      <span
-                        className="text-[10px] font-black uppercase tracking-widest"
-                        style={{ color: "var(--text-muted)" }}
-                      >
-                        Optional Supporting Docs
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          toggleSection("showCategoryProofOptional")
-                        }
-                        className={`text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border transition-all ${
-                          toggles.showCategoryProofOptional
-                            ? "bg-red-500/10 text-red-500 border-red-500/20"
-                            : "bg-[#22c55e]/10 text-[#22c55e] border-[#22c55e]/20"
-                        }`}
-                      >
-                        {toggles.showCategoryProofOptional
-                          ? "Hide Optional"
-                          : "Show Optional"}
-                      </button>
+                    <h3
+                      className="text-[11px] font-black uppercase tracking-[0.2em] flex items-center gap-2"
+                      style={{ color: "var(--text-primary)" }}
+                    >
+                      <CheckCircle size={14} className="text-hf-green" />
+                      Category Specific Proofs
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      {NGO_CONFIG[formData.beneficiaries].proofs.mandatory.map(
+                        (label) => (
+                          <FileUploadSlot
+                            key={label}
+                            label={label}
+                            value={(attachments[label] as File) || null}
+                            onChange={(file) =>
+                              handleAttachmentChange(label, file)
+                            }
+                            mandatory
+                          />
+                        ),
+                      )}
                     </div>
-                    {toggles.showCategoryProofOptional && (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-in fade-in zoom-in-95">
-                        {NGO_CONFIG[formData.beneficiaries].proofs.optional.map(
-                          (label) => (
+
+                    <div
+                      className="space-y-6 pt-6 border-t"
+                      style={{ borderColor: "var(--border-color)" }}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span
+                          className="text-[10px] font-black uppercase tracking-widest"
+                          style={{ color: "var(--text-muted)" }}
+                        >
+                          Optional Supporting Docs
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            toggleSection("showCategoryProofOptional")
+                          }
+                          className={`text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border transition-all ${
+                            toggles.showCategoryProofOptional
+                              ? "bg-red-500/10 text-red-500 border-red-500/20"
+                              : "bg-[#22c55e]/10 text-[#22c55e] border-[#22c55e]/20"
+                          }`}
+                        >
+                          {toggles.showCategoryProofOptional
+                            ? "Hide Optional"
+                            : "Show Optional"}
+                        </button>
+                      </div>
+                      {toggles.showCategoryProofOptional && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-in fade-in zoom-in-95">
+                          {NGO_CONFIG[
+                            formData.beneficiaries
+                          ].proofs.optional.map((label) => (
                             <div key={label} className="space-y-4">
                               <FileUploadSlot
                                 label={label}
@@ -1218,56 +1236,56 @@ const CreateNgo = () => {
                                   </div>
                                 )}
                             </div>
-                          ),
-                        )}
-                      </div>
-                    )}
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Action Bar */}
-        <div
-          className="fixed bottom-0 left-0 right-0 backdrop-blur-xl border-t p-6 z-[200] shadow-[0_-15px_50px_rgba(0,0,0,0.05)]"
-          style={{
-            borderColor: "var(--border-color)",
-            backgroundColor: "var(--bg-primary)",
-            opacity: 0.95,
-          }}
-        >
-          <div className="max-w-5xl mx-auto flex items-center justify-end">
-            <div className="flex items-center gap-8">
-              <ResuableButton
-                variant="ghost"
-                onClick={() => navigate("/admin/users/ngos")}
-                className="font-black text-[11px] uppercase tracking-[0.2em] hover:text-red-500 transition-colors"
-                style={{ color: "var(--text-muted)" }}
-              >
-                Cancel Entry
-              </ResuableButton>
-              <ResuableButton
-                type="submit"
-                variant="dark"
-                className="min-w-[260px] h-[58px] !bg-[#22c55e] hover:!bg-[#1ea34a] !rounded-xl shadow-xl shadow-[#22c55e]/20 transition-all active:scale-[0.98] border border-[#22c55e]/20"
-                startContent={<CheckCircle size={22} />}
-              >
-                <span className="text-[12px] font-black uppercase tracking-[0.2em]">
-                  Register NGO
-                </span>
-              </ResuableButton>
+              )}
             </div>
           </div>
-        </div>
-      </form>
-      <FilePreviewModal
-        isOpen={isPreviewOpen}
-        onOpenChange={setIsPreviewOpen}
-        file={previewFile?.file || null}
-        fileName={previewFile?.name}
-      />
+
+          {/* Action Bar */}
+          <div
+            className="fixed bottom-0 left-0 right-0 backdrop-blur-xl border-t p-6 z-[200] shadow-[0_-15px_50px_rgba(0,0,0,0.05)]"
+            style={{
+              borderColor: "var(--border-color)",
+              backgroundColor: "var(--bg-primary)",
+              opacity: 0.95,
+            }}
+          >
+            <div className="max-w-5xl mx-auto flex items-center justify-end">
+              <div className="flex items-center gap-8">
+                <ResuableButton
+                  variant="ghost"
+                  onClick={() => navigate("/admin/users/ngos")}
+                  className="font-black text-[11px] uppercase tracking-[0.2em] hover:text-red-500 transition-colors"
+                  style={{ color: "var(--text-muted)" }}
+                >
+                  Cancel Entry
+                </ResuableButton>
+                <ResuableButton
+                  type="submit"
+                  variant="dark"
+                  className="min-w-[260px] h-[58px] !bg-[#22c55e] hover:!bg-[#1ea34a] !rounded-xl shadow-xl shadow-[#22c55e]/20 transition-all active:scale-[0.98] border border-[#22c55e]/20"
+                  startContent={<CheckCircle size={22} />}
+                >
+                  <span className="text-[12px] font-black uppercase tracking-[0.2em]">
+                    Register NGO
+                  </span>
+                </ResuableButton>
+              </div>
+            </div>
+          </div>
+        </form>
+        <FilePreviewModal
+          isOpen={isPreviewOpen}
+          onOpenChange={setIsPreviewOpen}
+          file={previewFile?.file || null}
+          fileName={previewFile?.name}
+        />
+      </div>
     </div>
   );
 };

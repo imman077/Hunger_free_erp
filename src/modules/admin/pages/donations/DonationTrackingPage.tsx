@@ -3,7 +3,16 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import { divIcon } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import ImpactCards from "../../../../global/components/resuable-components/ImpactCards";
-import { MapPin, TrendingUp, Users, Package, Crosshair } from "lucide-react";
+import {
+  MapPin,
+  TrendingUp,
+  Users,
+  Package,
+  Crosshair,
+  Maximize2,
+  Minimize2,
+  X,
+} from "lucide-react";
 
 interface DonationMarker {
   id: string;
@@ -16,17 +25,28 @@ interface DonationMarker {
 // Component to handle map centering
 const MapController = ({ center }: { center: [number, number] | null }) => {
   const map = useMap();
-  if (center) {
-    map.setView(center, 13);
-  }
+  React.useEffect(() => {
+    if (center) {
+      map.setView(center, 13);
+    }
+  }, [center, map]);
   return null;
 };
 
 const DonationTrackingPage: React.FC = () => {
   const [userLocation, setUserLocation] = useState<[number, number] | null>(
-    null
+    null,
   );
   const [isLocating, setIsLocating] = useState(false);
+  const [isFullScreen, setIsFullScreen] = useState(false);
+
+  const toggleFullScreen = () => {
+    setIsFullScreen(!isFullScreen);
+    // Leaflet needs to recalculate its size when the container changes
+    setTimeout(() => {
+      window.dispatchEvent(new Event("resize"));
+    }, 100);
+  };
 
   const handleLocateMe = () => {
     setIsLocating(true);
@@ -44,7 +64,7 @@ const DonationTrackingPage: React.FC = () => {
       () => {
         alert("Unable to retrieve your location");
         setIsLocating(false);
-      }
+      },
     );
   };
 
@@ -119,8 +139,8 @@ const DonationTrackingPage: React.FC = () => {
       status === "active"
         ? "#10b981"
         : status === "pending"
-        ? "#f59e0b"
-        : "#6b7280";
+          ? "#f59e0b"
+          : "#6b7280";
 
     return divIcon({
       className: "custom-marker",
@@ -189,7 +209,9 @@ const DonationTrackingPage: React.FC = () => {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div
+      className={`p-4 md:p-6 space-y-6 ${isFullScreen ? "overflow-hidden" : ""}`}
+    >
       <style>{`
         @keyframes ping {
           75%, 100% {
@@ -202,101 +224,148 @@ const DonationTrackingPage: React.FC = () => {
           70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
           100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
         }
-        .custom-marker, .user-marker {
+        .user-marker {
           background: transparent;
           border: none;
         }
+        .leaflet-container {
+          z-index: 1;
+        }
+        .full-screen-map {
+          position: fixed !important;
+          top: 0 !important;
+          left: 0 !important;
+          width: 100vw !important;
+          height: 100vh !important;
+          z-index: 9999 !important;
+          margin: 0 !important;
+          border-radius: 0 !important;
+          background: var(--bg-primary) !important;
+          padding: 0 !important;
+          border: none !important;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: var(--border-color);
+          border-radius: 10px;
+        }
       `}</style>
 
-      <div className="flex items-center justify-between">
-        <div>
-          <h1
-            className="text-xl font-bold tracking-tight"
-            style={{ color: "var(--text-primary)" }}
-          >
-            Live Tracking
-          </h1>
-          <p className="text-sm mt-1" style={{ color: "var(--text-muted)" }}>
-            Real-time donation tracking across all hubs
-          </p>
-        </div>
-        <div className="flex items-center gap-4">
-          <button
-            onClick={handleLocateMe}
-            disabled={isLocating}
-            className={`flex items-center gap-2 px-4 py-2 rounded-sm border text-xs font-bold transition-all active:scale-95`}
-            style={{
-              backgroundColor: "var(--bg-primary)",
-              borderColor: "var(--border-color)",
-              color: isLocating ? "var(--text-muted)" : "var(--text-primary)",
-            }}
-          >
-            <Crosshair
-              className={`w-4 h-4 ${isLocating ? "animate-spin" : ""}`}
-            />
-            {isLocating ? "Locating..." : "Locate Me"}
-          </button>
-          <div
-            className="flex items-center gap-2 px-4 py-2 rounded-sm border"
-            style={{
-              backgroundColor: "rgba(16, 185, 129, 0.1)",
-              borderColor: "rgba(16, 185, 129, 0.2)",
-            }}
-          >
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-xs font-bold text-emerald-600 uppercase tracking-wider">
-              Live
-            </span>
+      {!isFullScreen && (
+        <>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h1
+                className="text-xl md:text-2xl font-black capitalize tracking-tight"
+                style={{ color: "var(--text-primary)" }}
+              >
+                Live Tracking
+              </h1>
+              <p
+                className="text-xs md:text-sm mt-1"
+                style={{ color: "var(--text-muted)" }}
+              >
+                Real-time donation tracking across all hubs
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={handleLocateMe}
+                disabled={isLocating}
+                className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-sm border text-[10px] font-black uppercase tracking-wider transition-all active:scale-95 shadow-lg shadow-emerald-500/10`}
+                style={{
+                  backgroundColor: "#22c55e",
+                  borderColor: "var(--border-color)",
+                  color: "white",
+                }}
+              >
+                <Crosshair
+                  className={`w-3.5 h-3.5 ${isLocating ? "animate-spin" : ""}`}
+                />
+                {isLocating ? "Locating..." : "Locate Me"}
+              </button>
+            </div>
           </div>
-        </div>
-      </div>
 
-      {/* Statistics Cards */}
-      <ImpactCards data={stats} />
+          <ImpactCards data={stats} />
+        </>
+      )}
 
       {/* Map and Activity Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div
+        className={`grid grid-cols-1 lg:grid-cols-3 gap-6 ${isFullScreen ? "block" : ""}`}
+      >
         {/* Map */}
         <div
-          className="lg:col-span-2 rounded-sm border p-6"
+          className={`rounded-sm border transition-all duration-300 ${
+            isFullScreen ? "full-screen-map" : "lg:col-span-2 p-4 md:p-6"
+          }`}
           style={{
             backgroundColor: "var(--bg-primary)",
             borderColor: "var(--border-color)",
           }}
         >
-          <div className="flex items-center justify-between mb-4">
-            <h2
-              className="text-base font-bold"
-              style={{ color: "var(--text-primary)" }}
-            >
-              Donation Locations
-            </h2>
-            <div className="flex items-center gap-4 text-xs">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-blue-500" />
-                <span style={{ color: "var(--text-secondary)" }}>
-                  My Location
-                </span>
+          <div
+            className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 ${isFullScreen ? "absolute top-4 left-4 right-4 z-[10000] p-4 bg-[var(--bg-primary)]/90 backdrop-blur-md rounded-sm border border-[var(--border-color)] shadow-2xl" : ""}`}
+          >
+            <div className="flex items-center gap-3">
+              <h2
+                className="text-sm md:text-base font-black uppercase tracking-widest"
+                style={{ color: "var(--text-primary)" }}
+              >
+                Donation Locations
+              </h2>
+              <button
+                onClick={toggleFullScreen}
+                className="p-1.5 rounded-sm border hover:bg-[var(--bg-secondary)] transition-all bg-[var(--bg-primary)]"
+                style={{ borderColor: "var(--border-color)" }}
+                title={isFullScreen ? "Exit Full Screen" : "Enter Full Screen"}
+              >
+                {isFullScreen ? (
+                  <Minimize2 className="w-4 h-4 text-[var(--text-primary)]" />
+                ) : (
+                  <Maximize2 className="w-4 h-4 text-[var(--text-primary)]" />
+                )}
+              </button>
+            </div>
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-[9px] font-black uppercase tracking-wider">
+              <div className="flex items-center gap-1.5">
+                <div className="w-2.5 h-2.5 rounded-sm bg-blue-500" />
+                <span style={{ color: "var(--text-secondary)" }}>Me</span>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-emerald-500" />
+              <div className="flex items-center gap-1.5">
+                <div className="w-2.5 h-2.5 rounded-sm bg-emerald-500" />
                 <span style={{ color: "var(--text-secondary)" }}>Active</span>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-amber-500" />
+              <div className="flex items-center gap-1.5">
+                <div className="w-2.5 h-2.5 rounded-sm bg-amber-500" />
                 <span style={{ color: "var(--text-secondary)" }}>Pending</span>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-gray-400" />
-                <span style={{ color: "var(--text-secondary)" }}>
-                  Completed
-                </span>
+              <div className="flex items-center gap-1.5">
+                <div className="w-2.5 h-2.5 rounded-sm bg-gray-400" />
+                <span style={{ color: "var(--text-secondary)" }}>Done</span>
               </div>
+              {isFullScreen && (
+                <button
+                  onClick={toggleFullScreen}
+                  className="ml-auto sm:ml-4 flex items-center gap-1.5 px-3 py-1 bg-rose-500 text-white rounded-sm text-[10px] font-black uppercase tracking-widest active:scale-95"
+                >
+                  <X className="w-3 h-3" />
+                  Close Map
+                </button>
+              )}
             </div>
           </div>
 
           <div
-            className="relative rounded-sm border overflow-hidden h-[500px]"
+            className={`relative rounded-sm border overflow-hidden z-0 ${
+              isFullScreen ? "h-screen w-screen" : "h-[350px] md:h-[500px]"
+            }`}
             style={{
               backgroundColor: "var(--bg-secondary)",
               borderColor: "var(--border-color)",
@@ -351,8 +420,8 @@ const DonationTrackingPage: React.FC = () => {
                               donation.status === "active"
                                 ? "text-emerald-600"
                                 : donation.status === "pending"
-                                ? "text-amber-600"
-                                : "text-gray-600"
+                                  ? "text-amber-600"
+                                  : "text-gray-600"
                             }`}
                           >
                             {donation.status}
@@ -368,94 +437,99 @@ const DonationTrackingPage: React.FC = () => {
         </div>
 
         {/* Live Activity Feed */}
-        <div
-          className="rounded-sm border p-6"
-          style={{
-            backgroundColor: "var(--bg-primary)",
-            borderColor: "var(--border-color)",
-          }}
-        >
-          <h2
-            className="text-base font-bold mb-4"
-            style={{ color: "var(--text-primary)" }}
+        {!isFullScreen && (
+          <div
+            className="rounded-sm border p-4 md:p-6"
+            style={{
+              backgroundColor: "var(--bg-primary)",
+              borderColor: "var(--border-color)",
+            }}
           >
-            Live Activity
-          </h2>
-          <div className="space-y-4">
-            {[
-              {
-                time: "2 min ago",
-                action: "New donation received",
-                location: "Chennai Hub",
-                amount: "45 KG",
-                icon: Package,
-              },
-              {
-                time: "5 min ago",
-                action: "Distribution completed",
-                location: "Mumbai Center",
-                amount: "120 KG",
-                icon: TrendingUp,
-              },
-              {
-                time: "12 min ago",
-                action: "Volunteer assigned",
-                location: "Delhi Distribution",
-                amount: "3 volunteers",
-                icon: Users,
-              },
-              {
-                time: "18 min ago",
-                action: "Pickup scheduled",
-                location: "Bangalore Hub",
-                amount: "85 KG",
-                icon: MapPin,
-              },
-              {
-                time: "25 min ago",
-                action: "New donation received",
-                location: "Kolkata Center",
-                amount: "62 KG",
-                icon: Package,
-              },
-            ].map((activity, index) => (
-              <div
-                key={index}
-                className="flex items-start gap-3 pb-4 border-b last:border-0 last:pb-0"
-                style={{ borderBottomColor: "var(--border-color)" }}
-              >
+            <h2
+              className="text-sm md:text-base font-black uppercase tracking-widest mb-6"
+              style={{ color: "var(--text-primary)" }}
+            >
+              Live Activity
+            </h2>
+            <div className="space-y-6">
+              {[
+                {
+                  time: "2 min ago",
+                  action: "New donation received",
+                  location: "Chennai Hub",
+                  amount: "45 KG",
+                  icon: Package,
+                },
+                {
+                  time: "5 min ago",
+                  action: "Distribution completed",
+                  location: "Mumbai Center",
+                  amount: "120 KG",
+                  icon: TrendingUp,
+                },
+                {
+                  time: "12 min ago",
+                  action: "Volunteer assigned",
+                  location: "Delhi Distribution",
+                  amount: "3 volunteers",
+                  icon: Users,
+                },
+                {
+                  time: "18 min ago",
+                  action: "Pickup scheduled",
+                  location: "Bangalore Hub",
+                  amount: "85 KG",
+                  icon: MapPin,
+                },
+                {
+                  time: "25 min ago",
+                  action: "New donation received",
+                  location: "Kolkata Center",
+                  amount: "62 KG",
+                  icon: Package,
+                },
+              ].map((activity, index) => (
                 <div
-                  className="w-8 h-8 rounded-sm flex items-center justify-center flex-shrink-0"
-                  style={{ backgroundColor: "rgba(16, 185, 129, 0.1)" }}
+                  key={index}
+                  className="flex items-start gap-4 pb-4 border-b last:border-0 last:pb-0"
+                  style={{ borderBottomColor: "var(--border-color)" }}
                 >
-                  <activity.icon className="w-4 h-4 text-emerald-600" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p
-                    className="text-xs font-bold mb-1"
-                    style={{ color: "var(--text-primary)" }}
+                  <div
+                    className="w-9 h-9 rounded-sm flex items-center justify-center flex-shrink-0"
+                    style={{ backgroundColor: "rgba(16, 185, 129, 0.08)" }}
                   >
-                    {activity.action}
-                  </p>
-                  <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-                    {activity.location}
-                  </p>
-                  <div className="flex items-center justify-between mt-1">
-                    <span className="text-xs font-bold text-emerald-600">
-                      {activity.amount}
-                    </span>
-                    <span
-                      className="text-xs"
+                    <activity.icon className="w-4 h-4 text-emerald-600" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p
+                      className="text-[11px] font-black uppercase tracking-tight mb-1"
+                      style={{ color: "var(--text-primary)" }}
+                    >
+                      {activity.action}
+                    </p>
+                    <p
+                      className="text-[10px] font-bold"
                       style={{ color: "var(--text-muted)" }}
                     >
-                      {activity.time}
-                    </span>
+                      {activity.location}
+                    </p>
+                    <div className="flex items-center justify-between mt-2">
+                      <span className="text-[11px] font-black text-emerald-600">
+                        {activity.amount}
+                      </span>
+                      <span
+                        className="text-[9px] font-bold uppercase tracking-wider"
+                        style={{ color: "var(--text-muted)" }}
+                      >
+                        {activity.time}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

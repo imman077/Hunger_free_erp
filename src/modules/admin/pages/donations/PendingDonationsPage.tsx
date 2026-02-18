@@ -372,49 +372,49 @@ const PendingDonationsPage: React.FC = () => {
   };
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between w-full">
+    <div className="p-4 md:p-6 space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 w-full">
         <div>
           <h1
-            className="text-xl font-bold tracking-tight"
+            className="text-xl md:text-2xl font-black capitalize tracking-tight"
             style={{ color: "var(--text-primary)" }}
           >
             Pending Donations
           </h1>
-          <p className="text-sm mt-1" style={{ color: "var(--text-muted)" }}>
+          <p
+            className="text-xs md:text-sm mt-1 font-medium"
+            style={{ color: "var(--text-muted)" }}
+          >
             Review and approve incoming food donations for distribution
           </p>
         </div>
-        {/* <Button
-          color="primary"
-          className="bg-hf-green text-white rounded-sm h-10 px-6 font-bold hover:bg-emerald-600 transition-all active:scale-95"
-          style={{ backgroundColor: "#22c55e", color: "white" }}
-          endContent={<Plus size={18} />}
-          onPress={() => console.log("Add new donation")}
-        >
-          Add New Donation
-        </Button> */}
       </div>
 
       <ImpactCards data={stats} />
 
-      <ReusableTable
-        columns={columns}
-        data={donations}
-        renderCell={renderCell}
-        enablePagination={true}
-      />
+      <div className="overflow-x-auto">
+        <ReusableTable
+          columns={columns}
+          data={donations}
+          renderCell={renderCell}
+          enablePagination={true}
+        />
+      </div>
 
       <Modal
         isOpen={isOpen}
         onClose={onClose}
         placement="center"
-        size="md"
+        size="sm"
         classNames={{
           backdrop: "bg-[#0b1120]/80 backdrop-blur-sm",
-          base: "border border-[var(--border-color)] bg-[var(--bg-primary)] rounded-sm",
-          header: "border-b border-[var(--border-color)] p-4",
-          footer: "border-t border-[var(--border-color)] p-4",
+          base: "border border-[var(--border-color)] bg-[var(--bg-primary)] rounded-sm mx-4",
+          header: "border-b border-[var(--border-color)] p-4 relative",
+          body: "p-3 sm:p-5 overflow-y-auto custom-scrollbar max-h-[70vh]",
+          footer:
+            "border-t border-[var(--border-color)] p-4 bg-[var(--bg-secondary)]/30",
+          closeButton:
+            "hover:bg-[var(--bg-secondary)] absolute right-4 top-4 rounded-sm transition-all text-[var(--text-muted)]",
         }}
       >
         <ModalContent>
@@ -426,16 +426,16 @@ const PendingDonationsPage: React.FC = () => {
               Assign Volunteer
             </h3>
             <p
-              className="text-[10px] font-medium uppercase tracking-tight"
+              className="text-[9px] sm:text-[10px] font-black uppercase tracking-tight"
               style={{ color: "var(--text-muted)" }}
             >
-              Select a nearby volunteer for donation #{selectedDonation?.id}
+              Select nearby responder for #{selectedDonation?.id}
             </p>
           </ModalHeader>
-          <ModalBody className="py-6">
+          <ModalBody>
             <div className="space-y-6">
               <div
-                className="p-4 rounded-sm border shadow-inner"
+                className="p-3 sm:p-4 rounded-sm border shadow-inner"
                 style={{
                   backgroundColor: "var(--bg-tertiary)",
                   borderColor: "var(--border-color)",
@@ -463,61 +463,53 @@ const PendingDonationsPage: React.FC = () => {
                 />
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <div className="flex flex-col items-center gap-1 mb-2">
-                  <span className="text-[10px] font-black text-hf-green uppercase tracking-[0.2em]">
+                  <span className="text-[9px] font-black text-emerald-500 uppercase tracking-[0.25em]">
                     Available Responders ({availableVolunteers.length})
                   </span>
-                  <div className="h-0.5 w-6 bg-hf-green/20 rounded-full" />
+                  <div className="h-0.5 w-6 bg-emerald-500/20 rounded-full" />
                 </div>
-                <div className="grid gap-2 min-h-[100px]">
+                <div className="grid gap-2.5 min-h-[100px]">
                   <AnimatePresence mode="popLayout">
                     {availableVolunteers.map((vol) => (
                       <motion.div
                         key={vol.id}
                         layout
-                        initial={{ opacity: 0, scale: 0.95 }}
+                        initial={{ opacity: 0, scale: 0.98 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        transition={{ duration: 0.2 }}
-                        className="flex items-center justify-between p-3 rounded-sm border transition-all group"
+                        exit={{ opacity: 0, scale: 0.98 }}
+                        className="flex items-center justify-between p-2.5 sm:p-4 rounded-sm border transition-all hover:border-emerald-500/30 group gap-3"
                         style={{
                           backgroundColor: "var(--bg-secondary)",
                           borderColor: "var(--border-color)",
                         }}
                       >
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-[10px] font-black text-white shadow-sm">
+                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                          <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-sm bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center text-[9px] sm:text-[11px] font-black text-white shadow-lg shrink-0">
                             {vol.name
                               .split(" ")
                               .map((n) => n[0])
                               .join("")}
                           </div>
-                          <div className="flex flex-col">
+                          <div className="flex flex-col min-w-0">
                             <span
-                              className="text-xs font-black"
+                              className="text-[11px] sm:text-[13px] font-black truncate"
                               style={{ color: "var(--text-primary)" }}
                             >
                               {vol.name}
                             </span>
-                            <div className="flex items-center gap-2 mt-0.5">
-                              <span className="text-[9px] font-bold text-hf-green flex items-center gap-0.5">
+                            <div className="flex flex-wrap items-center gap-2 mt-0.5">
+                              <span className="text-[9px] font-bold text-emerald-500">
                                 ★ {vol.rating}
                               </span>
                               <span
-                                className="text-[9px] font-medium"
+                                className="text-[9px] font-medium opacity-60"
                                 style={{ color: "var(--text-muted)" }}
                               >
                                 • {vol.vehicle}
                               </span>
-                              <span
-                                className="text-[9px] font-black px-1 rounded-full border"
-                                style={{
-                                  backgroundColor: "rgba(217, 119, 6, 0.1)",
-                                  color: "#d97706",
-                                  borderColor: "rgba(217, 119, 6, 0.2)",
-                                }}
-                              >
+                              <span className="text-[8px] font-black px-1 py-0.5 rounded-full bg-amber-500/10 text-amber-600 border border-amber-500/20">
                                 {vol.distance}
                               </span>
                             </div>
@@ -525,7 +517,7 @@ const PendingDonationsPage: React.FC = () => {
                         </div>
                         <Button
                           size="sm"
-                          className="bg-hf-green text-white font-black text-[9px] uppercase tracking-wider h-7 px-3 rounded-sm opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 font-black text-[9px] uppercase tracking-wider h-7 px-3 rounded-sm transition-all hover:bg-emerald-500 hover:text-white active:scale-95 shadow-none shrink-0"
                           onClick={() => handleAssignVolunteer(vol)}
                         >
                           Assign
