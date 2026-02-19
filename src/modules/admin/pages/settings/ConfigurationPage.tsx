@@ -167,17 +167,17 @@ const ConfigurationPage: React.FC = () => {
   const colorOptions = ["emerald", "blue", "amber", "red", "slate", "purple"];
 
   return (
-    <div className="p-8 w-full mx-auto space-y-8 animate-in fade-in duration-700">
-      <header className="flex justify-between items-end">
+    <div className="p-4 sm:p-8 w-full mx-auto space-y-6 sm:space-y-8 animate-in fade-in duration-700">
+      <header className="flex flex-col sm:flex-row justify-between items-start sm:items-baseline gap-4">
         <div className="text-start">
           <h1
-            className="text-4xl font-black tracking-tight"
+            className="text-3xl sm:text-4xl font-black tracking-tight"
             style={{ color: "var(--text-primary)" }}
           >
             System Configuration
           </h1>
           <p
-            className="font-semibold mt-2"
+            className="font-semibold mt-2 text-sm sm:text-base"
             style={{ color: "var(--text-muted)" }}
           >
             Manage dropdown options and system settings in one place.
@@ -185,11 +185,11 @@ const ConfigurationPage: React.FC = () => {
         </div>
       </header>
 
-      <div className="grid grid-cols-12 gap-6">
+      <div className="flex flex-col lg:grid lg:grid-cols-12 gap-6">
         {/* Sidebar - Section Tabs */}
-        <div className="col-span-3">
+        <div className="lg:col-span-3">
           <div
-            className="border rounded-sm p-2 space-y-1"
+            className="border rounded-sm p-1 lg:p-2 flex lg:flex-col overflow-x-auto lg:overflow-x-visible no-scrollbar space-x-1 lg:space-x-0 lg:space-y-1"
             style={{
               backgroundColor: "var(--bg-secondary)",
               borderColor: "var(--border-color)",
@@ -199,9 +199,9 @@ const ConfigurationPage: React.FC = () => {
               <button
                 key={section.key}
                 onClick={() => setActiveSection(section.key)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-sm text-left transition-all ${
+                className={`whitespace-nowrap flex items-center gap-3 px-6 lg:px-4 py-3 rounded-sm text-left transition-all ${
                   activeSection === section.key
-                    ? "bg-[#22c55e]/10 text-[#22c55e] font-bold border-l-4 border-[#22c55e]"
+                    ? "bg-[#22c55e]/10 text-[#22c55e] font-bold border-b-2 lg:border-b-0 lg:border-l-4 border-[#22c55e]"
                     : "hover:bg-[var(--bg-primary)] font-medium"
                 }`}
                 style={{
@@ -218,7 +218,7 @@ const ConfigurationPage: React.FC = () => {
         </div>
 
         {/* Main Content */}
-        <div className="col-span-9">
+        <div className="lg:col-span-9">
           <div
             className="border rounded-sm overflow-hidden"
             style={{
@@ -228,18 +228,18 @@ const ConfigurationPage: React.FC = () => {
           >
             {/* Header */}
             <div
-              className="flex items-center justify-between p-4 border-b"
+              className="flex items-center justify-between p-3 sm:p-4 border-b"
               style={{ borderColor: "var(--border-color)" }}
             >
-              <div className="text-left">
+              <div className="text-left min-w-0">
                 <h2
-                  className="text-lg font-black"
+                  className="text-base sm:text-lg font-black truncate"
                   style={{ color: "var(--text-primary)" }}
                 >
                   {currentSection.title}
                 </h2>
                 <p
-                  className="text-xs font-medium mt-0.5"
+                  className="text-[10px] sm:text-xs font-medium mt-0.5 truncate"
                   style={{ color: "var(--text-muted)" }}
                 >
                   {currentItems.length} items configured
@@ -247,10 +247,10 @@ const ConfigurationPage: React.FC = () => {
               </div>
               <button
                 onClick={() => setIsAdding(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-[#22c55e] text-white rounded-sm font-bold text-xs uppercase tracking-wider hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-500/10"
+                className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 bg-[#22c55e] text-white rounded-sm font-bold text-[10px] sm:text-xs uppercase tracking-wider hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-500/10 shrink-0"
               >
-                <Plus size={14} />
-                Add New
+                <Plus size={14} className="sm:w-3.5 sm:h-3.5 w-3 h-3" />
+                <span>Add New</span>
               </button>
             </div>
 
@@ -263,7 +263,7 @@ const ConfigurationPage: React.FC = () => {
                   borderColor: "rgba(34, 197, 94, 0.2)",
                 }}
               >
-                <div className="flex items-center gap-3">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                   <input
                     type="text"
                     placeholder="Name"
@@ -271,7 +271,7 @@ const ConfigurationPage: React.FC = () => {
                     onChange={(e) =>
                       setNewItem({ ...newItem, name: e.target.value })
                     }
-                    className="flex-1 px-3 py-2 border rounded-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#22c55e]/20 focus:border-[#22c55e]"
+                    className="w-full sm:flex-1 px-3 py-2 border rounded-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#22c55e]/20 focus:border-[#22c55e]"
                     style={{
                       backgroundColor: "var(--bg-primary)",
                       borderColor: "var(--border-color)",
@@ -286,7 +286,7 @@ const ConfigurationPage: React.FC = () => {
                       onChange={(e) =>
                         setNewItem({ ...newItem, description: e.target.value })
                       }
-                      className="flex-1 px-3 py-2 border rounded-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#22c55e]/20 focus:border-[#22c55e]"
+                      className="w-full sm:flex-1 px-3 py-2 border rounded-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#22c55e]/20 focus:border-[#22c55e]"
                       style={{
                         backgroundColor: "var(--bg-primary)",
                         borderColor: "var(--border-color)",
@@ -300,7 +300,7 @@ const ConfigurationPage: React.FC = () => {
                       onChange={(e) =>
                         setNewItem({ ...newItem, color: e.target.value })
                       }
-                      className="px-3 py-2 border rounded-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#22c55e]/20 focus:border-[#22c55e]"
+                      className="w-full sm:w-auto px-3 py-2 border rounded-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#22c55e]/20 focus:border-[#22c55e]"
                       style={{
                         backgroundColor: "var(--bg-primary)",
                         borderColor: "var(--border-color)",
@@ -314,22 +314,24 @@ const ConfigurationPage: React.FC = () => {
                       ))}
                     </select>
                   )}
-                  <button
-                    onClick={handleAdd}
-                    className="p-2 bg-[#22c55e] text-white rounded-sm hover:bg-emerald-600 transition-colors"
-                  >
-                    <Check size={16} />
-                  </button>
-                  <button
-                    onClick={() => setIsAdding(false)}
-                    className="p-2 rounded-sm transition-colors"
-                    style={{
-                      backgroundColor: "var(--bg-primary)",
-                      color: "var(--text-muted)",
-                    }}
-                  >
-                    <X size={16} />
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={handleAdd}
+                      className="flex-1 sm:flex-none p-2 bg-[#22c55e] text-white rounded-sm hover:bg-emerald-600 transition-colors flex justify-center"
+                    >
+                      <Check size={16} />
+                    </button>
+                    <button
+                      onClick={() => setIsAdding(false)}
+                      className="flex-1 sm:flex-none p-2 rounded-sm transition-colors flex justify-center"
+                      style={{
+                        backgroundColor: "var(--bg-primary)",
+                        color: "var(--text-muted)",
+                      }}
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
@@ -345,14 +347,14 @@ const ConfigurationPage: React.FC = () => {
                   className="relative flex items-center justify-start p-4 hover:bg-[var(--bg-primary)]/50 transition-colors group"
                 >
                   {editingId === item.id ? (
-                    <div className="flex items-center gap-3 flex-1">
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-1">
                       <input
                         type="text"
                         value={editValue.name}
                         onChange={(e) =>
                           setEditValue({ ...editValue, name: e.target.value })
                         }
-                        className="flex-1 px-3 py-2 border rounded-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#22c55e]/20 focus:border-[#22c55e]"
+                        className="w-full sm:flex-1 px-3 py-2 border rounded-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#22c55e]/20 focus:border-[#22c55e]"
                         style={{
                           backgroundColor: "var(--bg-primary)",
                           borderColor: "var(--border-color)",
@@ -369,7 +371,7 @@ const ConfigurationPage: React.FC = () => {
                               description: e.target.value,
                             })
                           }
-                          className="flex-1 px-3 py-2 border rounded-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#22c55e]/20 focus:border-[#22c55e]"
+                          className="w-full sm:flex-1 px-3 py-2 border rounded-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#22c55e]/20 focus:border-[#22c55e]"
                           style={{
                             backgroundColor: "var(--bg-primary)",
                             borderColor: "var(--border-color)",
@@ -386,7 +388,7 @@ const ConfigurationPage: React.FC = () => {
                               color: e.target.value,
                             })
                           }
-                          className="px-3 py-2 border rounded-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#22c55e]/20 focus:border-[#22c55e]"
+                          className="w-full sm:w-auto px-3 py-2 border rounded-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#22c55e]/20 focus:border-[#22c55e]"
                           style={{
                             backgroundColor: "var(--bg-primary)",
                             borderColor: "var(--border-color)",
@@ -400,26 +402,28 @@ const ConfigurationPage: React.FC = () => {
                           ))}
                         </select>
                       )}
-                      <button
-                        onClick={() => handleSave(item.id)}
-                        className="p-2 bg-[#22c55e] text-white rounded-sm hover:bg-emerald-600 transition-colors"
-                      >
-                        <Check size={16} />
-                      </button>
-                      <button
-                        onClick={() => setEditingId(null)}
-                        className="p-2 rounded-sm transition-colors"
-                        style={{
-                          backgroundColor: "var(--bg-primary)",
-                          color: "var(--text-muted)",
-                        }}
-                      >
-                        <X size={16} />
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleSave(item.id)}
+                          className="flex-1 sm:flex-none p-2 bg-[#22c55e] text-white rounded-sm hover:bg-emerald-600 transition-colors flex justify-center"
+                        >
+                          <Check size={16} />
+                        </button>
+                        <button
+                          onClick={() => setEditingId(null)}
+                          className="flex-1 sm:flex-none p-2 rounded-sm transition-colors flex justify-center"
+                          style={{
+                            backgroundColor: "var(--bg-primary)",
+                            color: "var(--text-muted)",
+                          }}
+                        >
+                          <X size={16} />
+                        </button>
+                      </div>
                     </div>
                   ) : (
                     <>
-                      <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-4 flex-1 min-w-0 pr-16 lg:pr-0">
                         {currentSection.hasColor && item.color && (
                           <div
                             className={`w-3 h-3 rounded-full shrink-0`}
@@ -441,14 +445,14 @@ const ConfigurationPage: React.FC = () => {
                         )}
                         <div className="min-w-0 text-left">
                           <p
-                            className="font-bold text-sm leading-tight"
+                            className="font-bold text-sm leading-tight truncate"
                             style={{ color: "var(--text-primary)" }}
                           >
                             {item.name}
                           </p>
                           {currentSection.hasDescription && (
                             <p
-                              className="text-xs font-medium mt-0.5"
+                              className="text-xs font-medium mt-0.5 truncate"
                               style={{ color: "var(--text-muted)" }}
                             >
                               {item.description || "No description"}
@@ -456,7 +460,7 @@ const ConfigurationPage: React.FC = () => {
                           )}
                         </div>
                       </div>
-                      <div className="absolute right-4 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="absolute right-4 flex items-center gap-1 sm:gap-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
                         <button
                           onClick={() => handleEdit(item)}
                           className="p-2 rounded-sm transition-all"

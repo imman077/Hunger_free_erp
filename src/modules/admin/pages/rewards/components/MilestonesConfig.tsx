@@ -121,16 +121,16 @@ const MilestonesConfig: React.FC = () => {
 
   return (
     <div className="space-y-8 pb-6 text-start">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="flex flex-col gap-0.5">
           <h1
-            className="text-4xl font-black tracking-tight uppercase"
+            className="text-3xl md:text-4xl font-black tracking-tight uppercase leading-tight"
             style={{ color: "var(--text-primary)" }}
           >
             Impact Milestones
           </h1>
           <p
-            className="font-semibold mt-1"
+            className="font-semibold mt-1 text-sm md:text-base"
             style={{ color: "var(--text-muted)" }}
           >
             Define and manage badges rewarded for user achievements
@@ -138,10 +138,10 @@ const MilestonesConfig: React.FC = () => {
         </div>
         <ResuableButton
           variant="primary"
-          className="rounded-sm h-12 px-8 font-black uppercase tracking-widest text-xs transition-all active:scale-95 shadow-lg shadow-emerald-500/10 !bg-[#22c55e] text-white"
+          className="rounded-sm h-12 px-4 md:px-8 font-black uppercase tracking-widest text-[9px] md:text-xs transition-all active:scale-95 shadow-lg shadow-emerald-500/10 !bg-[#22c55e] text-white w-full md:w-auto flex items-center justify-center whitespace-nowrap"
           onClick={onAddOpen}
         >
-          <Plus size={16} className="mr-2" /> CREATE NEW MILESTONE
+          <Plus size={16} className="mr-2 shrink-0" /> CREATE NEW MILESTONE
         </ResuableButton>
       </div>
 
@@ -275,32 +275,32 @@ const MilestonesConfig: React.FC = () => {
               if (sectionMilestones.length === 0) return null;
 
               return (
-                <div key={section.type} className="space-y-8">
-                  <div className="relative pt-6">
+                <div key={section.type} className="space-y-6 md:space-y-8">
+                  <div className="relative pt-4 md:pt-6">
                     <div
-                      className="flex items-center justify-between p-4 rounded-sm border"
+                      className="flex items-center justify-between p-3 md:p-4 rounded-sm border"
                       style={{
                         backgroundColor: "var(--bg-secondary)",
                         borderColor: "var(--border-color)",
                       }}
                     >
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-sm bg-[#22c55e] flex items-center justify-center border border-emerald-500 shadow-md shadow-emerald-500/10 transition-all duration-300">
+                      <div className="flex items-center gap-3 md:gap-4 text-start">
+                        <div className="w-10 h-10 md:w-12 md:h-12 rounded-sm bg-[#22c55e] flex items-center justify-center border border-emerald-500 shadow-md shadow-emerald-500/10 transition-all duration-300">
                           <section.Icon
                             className="text-white"
-                            size={20}
+                            size={18}
                             strokeWidth={2.5}
                           />
                         </div>
-                        <div className="flex flex-col text-start">
+                        <div className="flex flex-col">
                           <h2
-                            className="text-sm font-black uppercase tracking-[0.3em] leading-none"
+                            className="text-xs md:text-sm font-black uppercase tracking-[0.2em] md:tracking-[0.3em] leading-none"
                             style={{ color: "var(--text-primary)" }}
                           >
                             {section.label}
                           </h2>
                           <p
-                            className="text-[10px] font-bold mt-2 uppercase tracking-widest"
+                            className="text-[9px] md:text-[10px] font-bold mt-1.5 md:mt-2 uppercase tracking-widest"
                             style={{ color: "var(--text-muted)" }}
                           >
                             {sectionMilestones.length} ACTIVE BADGES
@@ -602,9 +602,9 @@ const MilestoneCard = ({
 
         return (
           <>
-            {/* Action pill - absolute positioned for cleaner card layout */}
+            {/* Action pill - responsive visibility */}
             <div
-              className="absolute top-6 right-6 flex items-center gap-1 border rounded-full p-1 opacity-0 group-hover:opacity-100 z-10 transition-opacity"
+              className="absolute top-4 md:top-6 right-4 md:right-6 flex items-center gap-1 border rounded-full p-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 z-10 transition-opacity"
               style={{
                 backgroundColor: "var(--bg-primary)",
                 borderColor: "var(--border-color)",
@@ -647,30 +647,33 @@ const MilestoneCard = ({
 
             <div className="flex flex-col h-full">
               {/* Header Section */}
-              <div className="mb-6 flex flex-col gap-4">
+              <div className="mb-4 md:mb-6 flex flex-col gap-3 md:gap-4">
                 <div
-                  className={`w-12 h-12 rounded-xl flex items-center justify-center text-white ${
+                  className={`w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center text-white ${
                     milestone.active
                       ? "bg-gradient-to-br from-[#22c55e] to-[#16a34a] border border-emerald-400/20"
                       : "bg-[var(--bg-secondary)] border border-[var(--border-color)] text-[var(--text-muted)] opacity-50"
                   }`}
                 >
-                  <MilestoneIcon size={24} strokeWidth={2.5} />
+                  <MilestoneIcon
+                    className="w-5 h-5 md:w-6 md:h-6"
+                    strokeWidth={2.5}
+                  />
                 </div>
 
-                <div className="space-y-1.5">
+                <div className="space-y-1 md:space-y-1.5">
                   <h3
-                    className="text-xl font-black tracking-tight leading-none group-hover:text-emerald-600 transition-colors"
+                    className="text-lg md:text-xl font-black tracking-tight leading-tight group-hover:text-emerald-600 transition-colors"
                     style={{ color: "var(--text-primary)" }}
                   >
                     {milestone.name}
                   </h3>
-                  <div className="flex items-start gap-2 max-w-[90%]">
+                  <div className="flex items-start gap-2 max-w-[85%] md:max-w-[90%]">
                     <div
                       className={`mt-1 h-2.5 w-0.5 shrink-0 rounded-full ${milestone.active ? "bg-emerald-500" : "bg-[var(--border-color)]"}`}
                     />
                     <p
-                      className="text-[10px] font-bold uppercase tracking-[0.15em] leading-normal line-clamp-2"
+                      className="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.12em] md:tracking-[0.15em] leading-normal line-clamp-2"
                       style={{ color: "var(--text-muted)" }}
                     >
                       {milestone.desc}
@@ -681,27 +684,27 @@ const MilestoneCard = ({
 
               {/* Data Footer Section */}
               <div
-                className="mt-auto grid grid-cols-[1fr_1px_1fr] items-center pt-4 border-t -mx-6 -mb-6 rounded-b-sm"
+                className="mt-auto grid grid-cols-[1fr_1px_1fr] items-center pt-3 md:pt-4 border-t -mx-4 md:-mx-6 -mb-4 md:-mb-6 rounded-b-sm"
                 style={{
                   backgroundColor: "var(--bg-secondary)",
                   borderColor: "var(--border-color)",
                 }}
               >
-                <div className="flex flex-col items-center px-4 pb-4">
+                <div className="flex flex-col items-center px-2 md:px-4 pb-3 md:pb-4">
                   <span
-                    className="text-[8px] font-black uppercase tracking-widest mb-1.5 opacity-70"
+                    className="text-[7px] md:text-[8px] font-black uppercase tracking-widest mb-1 md:mb-1.5 opacity-70"
                     style={{ color: "var(--text-muted)" }}
                   >
                     Threshold
                   </span>
-                  <div className="flex items-center gap-1.5 min-h-[18px]">
-                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                  <div className="flex items-center gap-1 md:gap-1.5 min-h-[16px] md:min-h-[18px]">
+                    <div className="w-1 md:w-1.5 h-1 md:h-1.5 rounded-full bg-emerald-500" />
                     <span
-                      className="text-[11px] font-black tabular-nums tracking-tight"
+                      className="text-[10px] md:text-[11px] font-black tabular-nums tracking-tight"
                       style={{ color: "var(--text-primary)" }}
                     >
                       {milestone.threshold.toLocaleString()}
-                      <span className="ml-1 text-[9px] text-emerald-600 font-bold">
+                      <span className="ml-0.5 md:ml-1 text-[8px] md:text-[9px] text-emerald-600 font-bold">
                         {unit}
                       </span>
                     </span>
@@ -709,19 +712,19 @@ const MilestoneCard = ({
                 </div>
 
                 <div
-                  className="h-6 w-px mb-4"
+                  className="h-5 md:h-6 w-px mb-3 md:mb-4"
                   style={{ backgroundColor: "var(--border-color)" }}
                 />
 
-                <div className="flex flex-col items-center px-4 pb-4">
+                <div className="flex flex-col items-center px-2 md:px-4 pb-3 md:pb-4">
                   <span
-                    className="text-[8px] font-black uppercase tracking-widest mb-1.5 opacity-70"
+                    className="text-[7px] md:text-[8px] font-black uppercase tracking-widest mb-1 md:mb-1.5 opacity-70"
                     style={{ color: "var(--text-muted)" }}
                   >
                     System
                   </span>
                   <div
-                    className={`text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border min-h-[18px] flex items-center justify-center ${
+                    className={`text-[8px] md:text-[9px] font-black uppercase tracking-widest px-2 md:px-3 py-0.5 md:py-1 rounded-full border min-h-[16px] md:min-h-[18px] flex items-center justify-center ${
                       milestone.active
                         ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
                         : "opacity-50"

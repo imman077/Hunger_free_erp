@@ -112,9 +112,9 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
               ? "bg-black/80"
               : "bg-transparent"
         } ${classNames.backdrop || ""}`,
-        base: `!border-none !outline-none !ring-0 !ring-transparent shadow-2xl overflow-hidden ${
-          showTrendingLayout ? "max-w-[850px] !h-[680px]" : ""
-        } ${radius === "none" ? "rounded-none" : "rounded-[24px]"} ${classNames.base || ""}`,
+        base: `!my-4 !mx-4 !border-none !outline-none !ring-0 !ring-transparent shadow-2xl overflow-hidden ${
+          showTrendingLayout ? "max-w-[850px] lg:!h-[680px]" : ""
+        } ${radius === "none" ? "rounded-none" : "rounded-2xl sm:rounded-[24px]"} ${classNames.base || ""}`,
         body: `p-0 ${classNames.body || ""}`,
         wrapper: `!fixed !inset-0 z-[9999] flex items-center justify-center ${
           placement === "top" ? "!items-start" : ""
@@ -132,7 +132,7 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
           >
             {/* Header */}
             <div
-              className={`flex-shrink-0 px-6 py-5 flex items-center justify-between border-b z-20 ${
+              className={`flex-shrink-0 px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between border-b z-20 ${
                 classNames.header || ""
               }`}
               style={{
@@ -140,10 +140,10 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
                 borderBottomColor: "var(--border-color)",
               }}
             >
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
                 {icon && (
                   <div
-                    className="flex items-center justify-center w-10 h-10 rounded-sm border"
+                    className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-sm border shrink-0"
                     style={{
                       backgroundColor: "var(--bg-secondary)",
                       borderColor: "var(--border-color)",
@@ -153,34 +153,36 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
                     {icon}
                   </div>
                 )}
-                <div className="flex flex-col">
-                  <div className="flex items-center gap-3">
+                <div className="flex flex-col min-w-0 flex-1">
+                  <div className="flex items-center flex-wrap gap-2 sm:gap-3">
                     <h2
-                      className="text-xl font-bold tracking-tight truncate max-w-[400px]"
+                      className="text-lg sm:text-xl font-bold tracking-tight truncate max-w-full"
                       style={{ color: "var(--text-primary)" }}
                     >
                       {displayName}
                     </h2>
-                    {(badge || (showTrendingLayout && !badge)) && (
-                      <span className="px-2 py-0.5 bg-[#22c55e] text-white text-[9px] font-bold rounded-sm uppercase">
-                        {badge || "Partner"}
-                      </span>
-                    )}
-                    {(status || (showTrendingLayout && !status)) && (
-                      <div className="flex items-center gap-1.5 ml-1">
-                        <div className="w-2 h-2 bg-[#22c55e] rounded-sm" />
-                        <span
-                          className="text-[10px] font-bold uppercase tracking-widest"
-                          style={{ color: "var(--text-muted)" }}
-                        >
-                          {status || "Live"}
+                    <div className="flex items-center gap-2">
+                      {(badge || (showTrendingLayout && !badge)) && (
+                        <span className="px-2 py-0.5 bg-[#22c55e] text-white text-[9px] font-bold rounded-sm uppercase whitespace-nowrap">
+                          {badge || "Partner"}
                         </span>
-                      </div>
-                    )}
+                      )}
+                      {(status || (showTrendingLayout && !status)) && (
+                        <div className="flex items-center gap-1.5">
+                          <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-[#22c55e] rounded-sm" />
+                          <span
+                            className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest whitespace-nowrap"
+                            style={{ color: "var(--text-muted)" }}
+                          >
+                            {status || "Live"}
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                   {subtitle && (
                     <p
-                      className="text-xs font-normal mt-0.5"
+                      className="text-[10px] sm:text-xs font-normal mt-0.5 truncate"
                       style={{ color: "var(--text-muted)" }}
                     >
                       {subtitle}
@@ -195,7 +197,7 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
                     handleClose();
                     onCloseInternal();
                   }}
-                  className={`p-1.5 hover:opacity-70 rounded-sm transition-all ${
+                  className={`p-1.5 hover:bg-slate-100 dark:hover:bg-white/10 rounded-sm transition-all ml-2 shrink-0 ${
                     classNames.closeButton || ""
                   }`}
                   style={{ color: "var(--text-muted)" }}
@@ -207,7 +209,7 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
 
             {/* Body */}
             <div
-              className={`flex-1 overflow-y-auto p-6 no-scrollbar min-h-[150px] ${
+              className={`flex-1 overflow-y-auto p-4 sm:p-6 no-scrollbar min-h-[120px] sm:min-h-[150px] ${
                 classNames.body || ""
               }`}
               style={{ backgroundColor: "var(--bg-secondary)" }}
@@ -589,7 +591,7 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
             {/* Footer */}
             {(footer || footerLeft || showTrendingLayout) && (
               <div
-                className={`flex-shrink-0 px-6 py-4 border-t flex items-center justify-between z-20 ${
+                className={`flex-shrink-0 px-4 sm:px-6 py-3 sm:py-4 border-t flex flex-col sm:flex-row items-center justify-between gap-4 z-20 ${
                   classNames.footer || ""
                 }`}
                 style={{
@@ -597,11 +599,11 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
                   borderTopColor: "var(--border-color)",
                 }}
               >
-                <div className="flex-1">
+                <div className="w-full sm:flex-1">
                   {footerLeft ||
                     (showTrendingLayout && (
                       <button
-                        className="px-4 py-2 border rounded-sm text-[9px] font-bold uppercase tracking-widest hover:opacity-70 transition-all"
+                        className="w-full sm:w-auto px-4 py-2 border rounded-sm text-[9px] font-bold uppercase tracking-widest hover:opacity-70 transition-all"
                         style={{
                           backgroundColor: "var(--bg-secondary)",
                           borderColor: "var(--border-color)",
@@ -612,14 +614,14 @@ const ResuableModal: React.FC<ResuableModalProps> = ({
                       </button>
                     ))}
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="w-full sm:w-auto flex flex-col-reverse sm:flex-row items-center gap-2 sm:gap-3">
                   {footer || (
                     <button
                       onClick={() => {
                         handleClose();
                         onCloseInternal();
                       }}
-                      className="px-8 py-2 text-white rounded-sm text-[9px] font-bold uppercase tracking-widest hover:opacity-90 transition-all shadow-md active:scale-95"
+                      className="w-full sm:w-auto px-8 py-2 text-white rounded-sm text-[9px] font-bold uppercase tracking-widest hover:opacity-90 transition-all shadow-md active:scale-95"
                       style={{ backgroundColor: "#22c55e" }}
                     >
                       {showTrendingLayout ? "Close Portal" : "Close"}

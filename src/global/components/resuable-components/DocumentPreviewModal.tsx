@@ -105,91 +105,92 @@ startxref 535
     >
       {/* ── Header toolbar ── */}
       <div
-        className="flex items-center justify-between px-4 md:px-6 py-3 md:py-4 border-b shrink-0"
+        className="flex flex-col sm:flex-row sm:items-center justify-between px-4 md:px-6 py-3 md:py-4 border-b shrink-0 gap-4"
         style={{ borderColor: "var(--border-color)" }}
       >
-        {/* Doc info */}
-        <div className="flex items-center gap-2 md:gap-3 overflow-hidden">
-          <div className="w-8 h-8 md:w-9 md:h-9 rounded-xl bg-hf-green/10 border border-hf-green/20 flex items-center justify-center shrink-0">
-            <FileText size={14} className="text-hf-green md:w-4 md:h-4" />
-          </div>
-          <div className="min-w-0">
-            <p
-              className="text-xs md:text-sm font-black uppercase tracking-tight truncate"
-              style={{ color: "var(--text-primary)" }}
-            >
-              {documentName}
-            </p>
-            <p
-              className="text-[8px] md:text-[9px] font-black uppercase tracking-[0.15em] md:tracking-[0.2em] opacity-40 truncate"
-              style={{ color: "var(--text-secondary)" }}
-            >
-              {documentType} · {issuer}
-            </p>
-          </div>
-        </div>
-
-        {/* Controls */}
-        <div className="flex items-center gap-1.5 md:gap-2 shrink-0">
-          {/* Zoom Level / Controls - hidden on very small mobile */}
-          <div className="hidden sm:flex items-center gap-1.5 md:gap-2">
-            {/* Zoom Out */}
-            <button
-              onClick={() => setZoom((z) => Math.max(25, z - 25))}
-              className="w-7 h-7 md:w-8 md:h-8 rounded-lg border flex items-center justify-center hover:bg-slate-500/10 transition-colors cursor-pointer"
-              style={{ borderColor: "var(--border-color)" }}
-              title="Zoom Out"
-            >
-              <ZoomOut
-                size={12}
-                className="md:w-[14px] md:h-[14px]"
+        {/* Row 1: Icon, Info & Close (Close hidden on desktop here) */}
+        <div className="flex items-center justify-between w-full sm:w-auto gap-4 min-w-0">
+          <div className="flex items-center gap-3 min-w-0 flex-1">
+            <div className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-hf-green/10 border border-hf-green/20 flex items-center justify-center shrink-0">
+              <FileText size={18} className="text-hf-green" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p
+                className="text-sm md:text-base font-black uppercase tracking-tight truncate"
+                style={{ color: "var(--text-primary)" }}
+              >
+                {documentName}
+              </p>
+              <p
+                className="text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] opacity-40 truncate"
                 style={{ color: "var(--text-secondary)" }}
-              />
-            </button>
-
-            {/* Zoom level */}
-            <span
-              className="text-[9px] md:text-[10px] font-black w-10 md:w-12 text-center tabular-nums"
-              style={{ color: "var(--text-secondary)" }}
-            >
-              {zoom}%
-            </span>
-
-            {/* Zoom In */}
-            <button
-              onClick={() => setZoom((z) => Math.min(300, z + 25))}
-              className="w-7 h-7 md:w-8 md:h-8 rounded-lg border flex items-center justify-center hover:bg-slate-500/10 transition-colors cursor-pointer"
-              style={{ borderColor: "var(--border-color)" }}
-              title="Zoom In"
-            >
-              <ZoomIn
-                size={12}
-                className="md:w-[14px] md:h-[14px]"
-                style={{ color: "var(--text-secondary)" }}
-              />
-            </button>
+              >
+                {documentType} · {issuer}
+              </p>
+            </div>
           </div>
-
-          {/* Download */}
-          <button
-            onClick={handleDownload}
-            className="flex items-center justify-center w-8 h-8 md:w-auto md:h-auto md:gap-2 md:px-4 md:py-2 bg-hf-green text-white rounded-xl font-black uppercase tracking-[0.15em] text-[9px] hover:bg-emerald-600 transition-colors shadow-lg shadow-hf-green/20 cursor-pointer"
-          >
-            <Download size={13} />
-            <span className="hidden md:inline">Download</span>
-          </button>
-
-          {/* Close */}
+          
+          {/* Close Button - Mobile Only here */}
           <button
             onClick={onClose}
-            className="w-8 h-8 md:w-8 md:h-8 rounded-lg border flex items-center justify-center hover:bg-red-500/10 hover:border-red-500/20 hover:text-red-500 transition-colors cursor-pointer"
+            className="sm:hidden w-9 h-9 rounded-lg border flex items-center justify-center hover:bg-red-500/10 hover:border-red-500/20 hover:text-red-500 transition-colors cursor-pointer shrink-0"
             style={{
               borderColor: "var(--border-color)",
               color: "var(--text-secondary)",
             }}
           >
-            <X size={14} />
+            <X size={18} />
           </button>
+        </div>
+
+        {/* Row 2 (Mobile) / Controls Section (Desktop) */}
+        <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto">
+          {/* Zoom Section */}
+          <div className="flex items-center gap-2 p-1 bg-slate-500/5 rounded-xl border border-[var(--border-color)]">
+            <button
+              onClick={() => setZoom((z) => Math.max(25, z - 25))}
+              className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-white hover:shadow-sm transition-all cursor-pointer"
+              title="Zoom Out"
+            >
+              <ZoomOut size={14} style={{ color: "var(--text-secondary)" }} />
+            </button>
+            <span
+              className="text-[10px] font-black w-12 text-center tabular-nums"
+              style={{ color: "var(--text-secondary)" }}
+            >
+              {zoom}%
+            </span>
+            <button
+              onClick={() => setZoom((z) => Math.min(300, z + 25))}
+              className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-white hover:shadow-sm transition-all cursor-pointer"
+              title="Zoom In"
+            >
+              <ZoomIn size={14} style={{ color: "var(--text-secondary)" }} />
+            </button>
+          </div>
+
+          <div className="flex items-center gap-2 h-full">
+            {/* Download */}
+            <button
+              onClick={handleDownload}
+              className="flex items-center justify-center gap-2 px-4 py-2 bg-hf-green text-white rounded-xl font-black uppercase tracking-[0.2em] text-[10px] hover:bg-emerald-600 transition-all shadow-lg shadow-hf-green/20 cursor-pointer h-10"
+            >
+              <Download size={14} />
+              <span className="hidden xs:inline">Save PDF</span>
+            </button>
+
+            {/* Close Button - Desktop Only here */}
+            <button
+              onClick={onClose}
+              className="hidden sm:flex w-10 h-10 rounded-xl border items-center justify-center hover:bg-red-500/10 hover:border-red-500/20 hover:text-red-500 transition-colors cursor-pointer"
+              style={{
+                borderColor: "var(--border-color)",
+                color: "var(--text-secondary)",
+              }}
+            >
+              <X size={18} />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -314,25 +315,6 @@ startxref 535
             </div>
           </div>
         </div>
-      </div>
-
-      {/* ── Footer ── */}
-      <div
-        className="px-6 py-3 border-t flex items-center justify-between shrink-0"
-        style={{ borderColor: "var(--border-color)" }}
-      >
-        <p
-          className="text-[9px] font-black uppercase tracking-[0.2em] opacity-30"
-          style={{ color: "var(--text-secondary)" }}
-        >
-          Document is for verification purposes only · HungerFree ERP
-        </p>
-        <button
-          onClick={handleDownload}
-          className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-hf-green hover:underline underline-offset-4 cursor-pointer"
-        >
-          <Download size={11} /> Save as PDF
-        </button>
       </div>
     </div>,
     document.body,

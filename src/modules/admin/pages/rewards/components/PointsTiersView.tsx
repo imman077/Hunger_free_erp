@@ -288,16 +288,16 @@ const PointsTiersView: React.FC = () => {
   };
 
   return (
-    <div className="space-y-8 pb-6 text-start">
-      <div className="flex flex-col gap-0.5">
+    <div className="space-y-6 sm:space-y-8 pb-6 text-start">
+      <div className="flex flex-col gap-0.5 max-w-2xl">
         <h1
-          className="text-4xl font-black tracking-tight uppercase"
+          className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight uppercase"
           style={{ color: "var(--text-primary)" }}
         >
           Rewards Dashboard
         </h1>
         <p
-          className="font-semibold mt-1"
+          className="font-medium mt-1 text-sm sm:text-base leading-relaxed"
           style={{ color: "var(--text-muted)" }}
         >
           Configure point systems, tiers, and manage user redemptions
@@ -308,26 +308,30 @@ const PointsTiersView: React.FC = () => {
 
       {/* Reward Tiers Section */}
       <div className="space-y-6">
-        <div className="flex items-center justify-between w-full">
-          <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between w-full gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
             <div
-              className="p-3 rounded-sm border"
+              className="p-2.5 sm:p-3 rounded-sm border shrink-0"
               style={{
                 backgroundColor: "var(--bg-secondary)",
                 borderColor: "var(--border-color)",
               }}
             >
-              <Users style={{ color: "var(--text-muted)" }} size={20} />
+              <Users
+                style={{ color: "var(--text-muted)" }}
+                size={18}
+                className="sm:w-5 sm:h-5"
+              />
             </div>
             <div className="flex flex-col text-start">
               <h4
-                className="font-black text-xl tracking-tight uppercase leading-none"
+                className="font-black text-lg sm:text-xl tracking-tight uppercase leading-none"
                 style={{ color: "var(--text-primary)" }}
               >
                 Reward Tiers
               </h4>
               <p
-                className="text-[10px] font-black uppercase tracking-widest mt-1.5"
+                className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest mt-1.5"
                 style={{ color: "var(--text-muted)" }}
               >
                 Manage user thresholds and benefits
@@ -336,19 +340,23 @@ const PointsTiersView: React.FC = () => {
           </div>
           <ResuableButton
             variant="primary"
-            className="rounded-sm h-12 px-8 font-black uppercase tracking-widest text-xs transition-all active:scale-95 shadow-sm"
+            className="w-full sm:w-auto rounded-sm h-11 sm:h-12 px-6 sm:px-8 font-black uppercase tracking-widest text-[10px] sm:text-xs transition-all active:scale-95 shadow-sm"
             onClick={() => setIsModalOpen(true)}
             startContent={<Plus size={16} />}
           >
             Add New Tier
           </ResuableButton>
         </div>
-        <ReusableTable
-          data={sortedTiers}
-          columns={tierColumns}
-          renderCell={renderTierCell}
-          enableSorting={false}
-        />
+        <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0 scrollbar-hide">
+          <div className="min-w-[600px]">
+            <ReusableTable
+              data={sortedTiers}
+              columns={tierColumns}
+              renderCell={renderTierCell}
+              enableSorting={false}
+            />
+          </div>
+        </div>
       </div>
 
       <ResuableDrawer
@@ -359,7 +367,7 @@ const PointsTiersView: React.FC = () => {
         size="md"
       >
         {selectedTier && (
-          <div className="space-y-4 px-3 sm:px-6">
+          <div className="space-y-4 p-3 sm:p-4 lg:p-5">
             <>
               {/* Hero Section */}
               <div
@@ -616,29 +624,29 @@ const PointsTiersView: React.FC = () => {
 
       {/* Configuration Section */}
       <div
-        className="rounded-sm border p-6 shadow-sm"
+        className="rounded-sm border p-4 sm:p-6 shadow-sm overflow-hidden"
         style={{
           backgroundColor: "var(--bg-primary)",
           borderColor: "var(--border-color)",
         }}
       >
         <div
-          className="flex flex-col md:flex-row md:items-center justify-between mb-8 pb-4 border-b gap-4"
+          className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 sm:mb-8 pb-4 border-b gap-4"
           style={{ borderColor: "var(--border-color)" }}
         >
-          <div className="flex items-center gap-4">
-            <div className="p-2.5 bg-[#22c55e] rounded-sm shadow-sm">
-              <Settings className="text-white" size={20} />
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="p-2 sm:p-2.5 bg-[#22c55e] rounded-sm shadow-sm shrink-0">
+              <Settings className="text-white w-4 h-4 sm:w-5 sm:h-5" />
             </div>
             <div className="flex flex-col text-start">
               <h4
-                className="text-xl font-black tracking-tight uppercase leading-none"
+                className="text-lg sm:text-xl font-black tracking-tight uppercase leading-none"
                 style={{ color: "var(--text-primary)" }}
               >
                 Ultra Reward Base Rates
               </h4>
               <p
-                className="text-[10px] font-black uppercase tracking-widest mt-1.5"
+                className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest mt-1.5"
                 style={{ color: "var(--text-muted)" }}
               >
                 Configure ecosystem multipliers and rewards
@@ -646,9 +654,9 @@ const PointsTiersView: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 w-full sm:w-auto">
             <p
-              className="text-[10px] font-black uppercase tracking-widest whitespace-nowrap"
+              className="text-[10px] sm:text-[11px] font-black uppercase tracking-widest whitespace-nowrap"
               style={{ color: "var(--text-muted)" }}
             >
               Select Tier:
@@ -656,7 +664,7 @@ const PointsTiersView: React.FC = () => {
             <select
               value={previewTier}
               onChange={(e) => setPreviewTier(e.target.value)}
-              className="rounded-sm px-3 py-1.5 text-[11px] font-black uppercase focus:outline-none focus:ring-1 focus:ring-[#22c55e] cursor-pointer"
+              className="flex-1 sm:flex-none rounded-sm px-3 py-1.5 text-[10px] sm:text-[11px] font-black uppercase focus:outline-none focus:ring-1 focus:ring-[#22c55e] cursor-pointer"
               style={{
                 backgroundColor: "var(--bg-secondary)",
                 borderColor: "var(--border-color)",
@@ -675,7 +683,7 @@ const PointsTiersView: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Donor Points */}
           <div
-            className="p-6 border rounded-sm space-y-8"
+            className="p-4 sm:p-6 border rounded-sm space-y-6 sm:space-y-8"
             style={{
               backgroundColor: "rgba(59, 130, 246, 0.03)",
               borderColor: "var(--border-color)",
@@ -791,7 +799,7 @@ const PointsTiersView: React.FC = () => {
 
           {/* Volunteer Points */}
           <div
-            className="p-6 border rounded-sm space-y-8"
+            className="p-4 sm:p-6 border rounded-sm space-y-6 sm:space-y-8"
             style={{
               backgroundColor: "rgba(34, 197, 94, 0.03)",
               borderColor: "var(--border-color)",
@@ -910,7 +918,7 @@ const PointsTiersView: React.FC = () => {
 
           {/* NGO Points */}
           <div
-            className="p-6 border rounded-sm space-y-8"
+            className="p-4 sm:p-6 border rounded-sm space-y-6 sm:space-y-8"
             style={{
               backgroundColor: "rgba(245, 158, 11, 0.03)",
               borderColor: "var(--border-color)",
@@ -1054,11 +1062,11 @@ const PointsTiersView: React.FC = () => {
         subtitle="Permanent System Modification"
         size="sm"
         footer={
-          <>
+          <div className="flex flex-col sm:flex-row gap-2 w-full">
             <ResuableButton
               variant="ghost"
               onClick={() => setIsDeleteModalOpen(false)}
-              className="flex-1 font-black uppercase tracking-widest text-[10px] border whitespace-nowrap h-11"
+              className="w-full sm:flex-1 font-black uppercase tracking-widest text-[10px] border whitespace-nowrap h-11"
               style={{
                 borderColor: "var(--border-color)",
                 color: "var(--text-muted)",
@@ -1069,11 +1077,11 @@ const PointsTiersView: React.FC = () => {
             <ResuableButton
               variant="primary"
               onClick={handleDeleteTier}
-              className="flex-1 !bg-red-500 hover:!bg-red-600 font-black uppercase tracking-widest text-[10px] text-white shadow-lg shadow-red-500/20 whitespace-nowrap h-11"
+              className="w-full sm:flex-1 !bg-red-500 hover:!bg-red-600 font-black uppercase tracking-widest text-[10px] text-white shadow-lg shadow-red-500/20 whitespace-nowrap h-11"
             >
               Confirm Delete
             </ResuableButton>
-          </>
+          </div>
         }
       >
         <div className="flex flex-col items-center text-center gap-4 py-4">
@@ -1109,22 +1117,22 @@ const PointsTiersView: React.FC = () => {
         subtitle="Define thresholds and benefits"
         size="md"
         footer={
-          <>
+          <div className="flex flex-col sm:flex-row gap-2 w-full">
             <ResuableButton
               variant="ghost"
               onClick={() => setIsModalOpen(false)}
-              className="flex-1 font-black uppercase tracking-widest text-[10px]"
+              className="w-full sm:flex-1 font-black uppercase tracking-widest text-[10px] h-11"
             >
               Cancel
             </ResuableButton>
             <ResuableButton
               variant="primary"
               onClick={handleAddTier}
-              className="flex-1 !bg-[#22c55e] hover:!bg-emerald-600 font-black uppercase tracking-widest text-[10px] text-white"
+              className="w-full sm:flex-1 !bg-[#22c55e] hover:!bg-emerald-600 font-black uppercase tracking-widest text-[10px] text-white h-11"
             >
               Save Tier
             </ResuableButton>
-          </>
+          </div>
         }
       >
         <div className="space-y-6">
@@ -1134,7 +1142,7 @@ const PointsTiersView: React.FC = () => {
             value={newTier.name}
             onChange={(val) => setNewTier({ ...newTier, name: val })}
           />
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <ResuableInput
               label="Min Points"
               placeholder="0"

@@ -157,13 +157,13 @@ const NGOEnquiryPage = ({ hideHeader = false }: { hideHeader?: boolean }) => {
       {/* Header */}
       {!hideHeader && (
         <div className="flex flex-col gap-4">
-          <button
+          {/* <button
             onClick={() => navigate("/admin/dashboard")}
             className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] opacity-40 hover:opacity-100 transition-opacity"
             style={{ color: "var(--text-primary)" }}
           >
             <MoveLeft size={14} /> Back to Dashboard
-          </button>
+          </button> */}
 
           <div className="flex items-center justify-between">
             <div className="space-y-1">
@@ -192,9 +192,9 @@ const NGOEnquiryPage = ({ hideHeader = false }: { hideHeader?: boolean }) => {
           classNames={{
             base: "w-full",
             tabList:
-              "gap-8 w-full relative rounded-none p-0 border-b border-[var(--border-color)]",
-            cursor: "w-full bg-hf-green h-0.5",
-            tab: "max-w-fit px-0 h-12",
+              "gap-6 sm:gap-8 w-full relative rounded-none p-0 border-b border-[var(--border-color)] overflow-x-auto no-scrollbar",
+            cursor: "bg-hf-green h-0.5",
+            tab: "max-w-fit px-0 h-12 whitespace-nowrap",
             tabContent:
               "group-data-[selected=true]:text-hf-green font-black uppercase tracking-widest text-[10px]",
           }}
@@ -218,11 +218,13 @@ const NGOEnquiryPage = ({ hideHeader = false }: { hideHeader?: boolean }) => {
                 borderColor: "var(--border-color)",
               }}
             >
-              <ReusableTable
-                data={enquiries}
-                columns={columns}
-                renderCell={renderCell}
-              />
+              <div className="overflow-x-auto">
+                <ReusableTable
+                  data={enquiries}
+                  columns={columns}
+                  renderCell={renderCell}
+                />
+              </div>
             </div>
           </Tab>
 
@@ -237,7 +239,7 @@ const NGOEnquiryPage = ({ hideHeader = false }: { hideHeader?: boolean }) => {
           >
             <div className="mt-12 flex flex-col items-center justify-center p-20 opacity-30 border border-dashed rounded-3xl">
               <Gift size={48} className="mb-4" />
-              <p className="text-[10px] font-black uppercase tracking-[0.2em]">
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-center">
                 No NGO Reward Claims
               </p>
             </div>
@@ -254,7 +256,7 @@ const NGOEnquiryPage = ({ hideHeader = false }: { hideHeader?: boolean }) => {
           >
             <div className="mt-12 flex flex-col items-center justify-center p-20 opacity-30 border border-dashed rounded-3xl">
               <CreditCard size={48} className="mb-4" />
-              <p className="text-[10px] font-black uppercase tracking-[0.2em]">
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-center">
                 No NGO Payment Enquiries
               </p>
             </div>
@@ -271,7 +273,7 @@ const NGOEnquiryPage = ({ hideHeader = false }: { hideHeader?: boolean }) => {
           >
             <div className="mt-12 flex flex-col items-center justify-center p-20 opacity-30 border border-dashed rounded-3xl">
               <Settings2 size={48} className="mb-4" />
-              <p className="text-[10px] font-black uppercase tracking-[0.2em]">
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-center">
                 No Master Configuration Requests
               </p>
             </div>
@@ -288,7 +290,7 @@ const NGOEnquiryPage = ({ hideHeader = false }: { hideHeader?: boolean }) => {
           >
             <div className="mt-12 flex flex-col items-center justify-center p-20 opacity-30 border border-dashed rounded-3xl">
               <UserCog size={48} className="mb-4" />
-              <p className="text-[10px] font-black uppercase tracking-[0.2em]">
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-center">
                 No NGO Profile Update Requests
               </p>
             </div>
@@ -305,7 +307,7 @@ const NGOEnquiryPage = ({ hideHeader = false }: { hideHeader?: boolean }) => {
         size="md"
       >
         {selectedEnquiry && (
-          <div className="space-y-8 px-6 pb-20">
+          <div className="space-y-8 p-3 sm:p-4 lg:p-5">
             {/* NGO Brand Card */}
             <div
               className="p-6 rounded-2xl border bg-slate-500/5 text-center"
@@ -393,26 +395,35 @@ const NGOEnquiryPage = ({ hideHeader = false }: { hideHeader?: boolean }) => {
                 </h4>
                 <div className="space-y-3">
                   <div
-                    className="p-4 rounded-2xl border border-dashed flex items-center justify-between"
+                    className="p-4 rounded-2xl border border-dashed flex flex-col sm:flex-row sm:items-center justify-between gap-4"
                     style={{
                       borderColor: "var(--border-color)",
                       backgroundColor: "var(--bg-secondary)",
                     }}
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-slate-500/10 flex items-center justify-center">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-12 h-12 rounded-xl bg-slate-500/10 flex items-center justify-center shrink-0">
                         <ClipboardList size={20} className="text-slate-400" />
                       </div>
-                      <div>
-                        <p className="text-xs font-bold">
+                      <div className="min-w-0">
+                        <p
+                          className="text-sm font-bold truncate"
+                          style={{ color: "var(--text-primary)" }}
+                        >
                           Registration Certificate
                         </p>
-                        <p className="text-[9px] font-black uppercase tracking-widest opacity-40">
+                        <p
+                          className="text-[10px] font-black uppercase tracking-widest opacity-40"
+                          style={{ color: "var(--text-secondary)" }}
+                        >
                           Verified Govt. Document
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-1">
+                    <div
+                      className="flex items-center gap-2 sm:gap-1 justify-end border-t sm:border-t-0 pt-3 sm:pt-0 border-dashed"
+                      style={{ borderTopColor: "var(--border-color)" }}
+                    >
                       <button
                         onClick={() =>
                           setPreviewDoc({
@@ -425,7 +436,9 @@ const NGOEnquiryPage = ({ hideHeader = false }: { hideHeader?: boolean }) => {
                       >
                         View
                       </button>
-                      <span className="opacity-20 text-xs">|</span>
+                      <span className="opacity-20 text-xs hidden sm:inline">
+                        |
+                      </span>
                       <button
                         onClick={() =>
                           setPreviewDoc({
@@ -442,26 +455,35 @@ const NGOEnquiryPage = ({ hideHeader = false }: { hideHeader?: boolean }) => {
                   </div>
 
                   <div
-                    className="p-4 rounded-2xl border border-dashed flex items-center justify-between"
+                    className="p-4 rounded-2xl border border-dashed flex flex-col sm:flex-row sm:items-center justify-between gap-4"
                     style={{
                       borderColor: "var(--border-color)",
                       backgroundColor: "var(--bg-secondary)",
                     }}
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-slate-500/10 flex items-center justify-center">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-12 h-12 rounded-xl bg-slate-500/10 flex items-center justify-center shrink-0">
                         <ClipboardList size={20} className="text-slate-400" />
                       </div>
-                      <div>
-                        <p className="text-xs font-bold">
+                      <div className="min-w-0">
+                        <p
+                          className="text-sm font-bold truncate"
+                          style={{ color: "var(--text-primary)" }}
+                        >
                           80G / 12A Certificate
                         </p>
-                        <p className="text-[9px] font-black uppercase tracking-widest opacity-40">
+                        <p
+                          className="text-[10px] font-black uppercase tracking-widest opacity-40"
+                          style={{ color: "var(--text-secondary)" }}
+                        >
                           Tax Exempt Status
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-1">
+                    <div
+                      className="flex items-center gap-2 sm:gap-1 justify-end border-t sm:border-t-0 pt-3 sm:pt-0 border-dashed"
+                      style={{ borderTopColor: "var(--border-color)" }}
+                    >
                       <button
                         onClick={() =>
                           setPreviewDoc({
@@ -474,7 +496,9 @@ const NGOEnquiryPage = ({ hideHeader = false }: { hideHeader?: boolean }) => {
                       >
                         View
                       </button>
-                      <span className="opacity-20 text-xs">|</span>
+                      <span className="opacity-20 text-xs hidden sm:inline">
+                        |
+                      </span>
                       <button
                         onClick={() =>
                           setPreviewDoc({
@@ -495,7 +519,7 @@ const NGOEnquiryPage = ({ hideHeader = false }: { hideHeader?: boolean }) => {
 
             {/* Action Buttons */}
             <div
-              className="flex gap-3 pt-8 border-t border-dashed"
+              className="flex flex-col sm:flex-row gap-3 pt-8 border-t border-dashed"
               style={{ borderColor: "var(--border-color)" }}
             >
               <button
@@ -504,15 +528,17 @@ const NGOEnquiryPage = ({ hideHeader = false }: { hideHeader?: boolean }) => {
                 }
                 className="flex-1 py-4 bg-hf-green text-white rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] flex items-center justify-center gap-2 hover:bg-emerald-600 transition-colors shadow-lg shadow-hf-green/20"
               >
-                <CheckCircle2 size={16} /> Approve Registration
+                <CheckCircle2 size={16} className="shrink-0" />
+                <span className="truncate">Approve Registration</span>
               </button>
               <button
                 onClick={() =>
                   handleReject(selectedEnquiry.id, selectedEnquiry.name)
                 }
-                className="px-6 py-4 border-2 border-red-500/20 text-red-500 rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] flex items-center justify-center gap-2 hover:bg-red-500/5 transition-colors"
+                className="flex-1 py-4 border-2 border-red-500/20 text-red-500 rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] flex items-center justify-center gap-2 hover:bg-red-500/5 transition-colors"
               >
-                <XCircle size={16} /> Reject
+                <XCircle size={16} className="shrink-0" />
+                <span className="truncate">Reject</span>
               </button>
             </div>
           </div>

@@ -141,7 +141,7 @@ const MyDonations = () => {
 
   return (
     <div className="w-full space-y-8 p-4 md:p-6 lg:p-8">
-      <div className="flex flex-col md:flex-row justify-between items-center md:items-end gap-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div className="text-start space-y-2">
           <h1
             className="text-4xl md:text-5xl font-black tracking-tighter leading-none"
@@ -150,15 +150,15 @@ const MyDonations = () => {
             My Donations
           </h1>
           <p
-            className="text-[11px] font-black uppercase tracking-[0.3em]"
-            style={{ color: "var(--text-muted)" }}
+            className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] opacity-40"
+            style={{ color: "var(--text-secondary)" }}
           >
             Track and manage your community contributions
           </p>
         </div>
         <button
           onClick={() => navigate("/donor/donations/create")}
-          className="px-8 py-4 bg-[#22c55e] text-white rounded-md text-[11px] font-black uppercase tracking-widest hover:bg-[#16a34a] transition-all flex items-center gap-3 active:scale-95 shadow-lg shadow-green-500/20"
+          className="w-full sm:w-auto px-8 py-4 bg-[#22c55e] text-white rounded-md text-[11px] font-black uppercase tracking-widest hover:bg-[#16a34a] transition-all flex items-center justify-center gap-3 active:scale-95 shadow-lg shadow-green-500/20"
         >
           <Package size={18} />
           Create New Donation
@@ -168,16 +168,16 @@ const MyDonations = () => {
       {/* Donation History */}
       {donationHistory.length > 0 ? (
         <div className="space-y-6 w-full">
-          <div className="text-center relative">
+          <div className="text-left relative">
             <div
               className="absolute inset-0 flex items-center"
               aria-hidden="true"
             >
               <div className="w-full border-t border-slate-100/60"></div>
             </div>
-            <div className="relative flex justify-center">
+            <div className="relative flex justify-start">
               <span
-                className="px-6 text-[11px] font-black uppercase tracking-[0.5em] text-[#22c55e]"
+                className="pr-6 text-[10px] font-black uppercase tracking-[0.4em] text-[#22c55e]"
                 style={{ backgroundColor: "var(--bg-primary)" }}
               >
                 Recent Contributions
@@ -250,48 +250,42 @@ const MyDonations = () => {
         size="md"
       >
         {selectedDonation && (
-          <div className="space-y-6 px-5 md:px-7 pb-10">
+          <div className="space-y-8 p-4 sm:p-6 lg:p-8">
             {/* Hero Section */}
             <div
-              className="p-5 rounded-md border shadow-sm space-y-3"
+              className="p-6 rounded-2xl border shadow-sm space-y-4"
               style={{
                 backgroundColor: "var(--bg-primary)",
                 borderColor: "var(--border-color)",
               }}
             >
-              <div className="flex items-start justify-between">
-                <div className="space-y-1">
+              <div className="flex items-start justify-between gap-4">
+                <div className="space-y-2 flex-1">
                   <h3
-                    className="text-xl font-black tracking-tighter"
+                    className="text-2xl font-black tracking-tight leading-tight"
                     style={{ color: "var(--text-primary)" }}
                   >
                     {selectedDonation.foodType}
                   </h3>
-                  <div className="flex items-center gap-2">
-                    <span className="px-2 py-1 bg-[#22c55e]/10 text-[#22c55e] text-[9px] font-black uppercase tracking-widest rounded-sm border border-[#22c55e]/20">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="px-2.5 py-1 bg-[#22c55e]/10 text-[#22c55e] text-[9px] font-black uppercase tracking-widest rounded-lg border border-[#22c55e]/20">
                       {selectedDonation.status}
                     </span>
                     <span
-                      className="text-[10px] font-bold uppercase tracking-widest"
-                      style={{ color: "var(--text-muted)" }}
+                      className="text-[10px] font-bold uppercase tracking-widest opacity-40"
+                      style={{ color: "var(--text-secondary)" }}
                     >
                       • {selectedDonation.quantity}
                     </span>
                   </div>
                 </div>
-                <div
-                  className="w-12 h-12 rounded-md flex items-center justify-center border"
-                  style={{
-                    backgroundColor: "var(--bg-secondary)",
-                    borderColor: "var(--border-color)",
-                  }}
-                >
-                  <Package className="text-[#22c55e]" size={24} />
+                <div className="w-14 h-14 rounded-2xl flex items-center justify-center border shrink-0 bg-hf-green/10 border-hf-green/20">
+                  <Package className="text-hf-green" size={28} />
                 </div>
               </div>
 
               <p
-                className="text-[11px] font-medium leading-relaxed"
+                className="text-xs font-semibold leading-relaxed opacity-60"
                 style={{ color: "var(--text-secondary)" }}
               >
                 {selectedDonation.description}
@@ -355,43 +349,43 @@ const MyDonations = () => {
             {/* Pickup & Delivery */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div
-                className="p-5 rounded-md border space-y-3"
+                className="p-6 rounded-2xl border space-y-4"
                 style={{
                   backgroundColor: "var(--bg-primary)",
                   borderColor: "var(--border-color)",
                 }}
               >
-                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
-                  <MapPin size={14} className="text-[#22c55e]" />
+                <div className="flex items-center gap-2.5 text-[10px] font-black uppercase tracking-[0.2em] text-hf-green">
+                  <MapPin size={16} />
                   Pickup Point
                 </div>
                 <p
-                  className="text-[11px] font-bold leading-relaxed"
-                  style={{ color: "var(--text-secondary)" }}
+                  className="text-xs font-bold leading-relaxed"
+                  style={{ color: "var(--text-primary)" }}
                 >
                   {selectedDonation.pickupAddress}
                 </p>
               </div>
               <div
-                className="p-5 rounded-md border space-y-3"
+                className="p-6 rounded-2xl border space-y-4"
                 style={{
                   backgroundColor: "var(--bg-primary)",
                   borderColor: "var(--border-color)",
                 }}
               >
-                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
-                  <Building2 size={14} className="text-blue-500" />
+                <div className="flex items-center gap-2.5 text-[10px] font-black uppercase tracking-[0.2em] text-blue-500">
+                  <Building2 size={16} />
                   Delivery Point
                 </div>
-                <div className="space-y-1">
+                <div className="space-y-1.5">
                   <h5
-                    className="text-[11px] font-black uppercase tracking-tight"
+                    className="text-xs font-black uppercase tracking-tight"
                     style={{ color: "var(--text-primary)" }}
                   >
                     {selectedDonation.ngo}
                   </h5>
                   <p
-                    className="text-[11px] font-bold leading-relaxed"
+                    className="text-[11px] font-bold leading-relaxed opacity-60"
                     style={{ color: "var(--text-secondary)" }}
                   >
                     {selectedDonation.deliveryAddress}
@@ -403,56 +397,53 @@ const MyDonations = () => {
             {/* Volunteer Section */}
             {selectedDonation.volunteer && (
               <div
-                className="p-6 rounded-md border space-y-4"
+                className="p-6 rounded-2xl border space-y-6"
                 style={{
                   backgroundColor: "var(--bg-secondary)",
                   borderColor: "var(--border-color)",
                 }}
               >
-                <h4 className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">
+                <h4 className="text-[10px] font-black uppercase tracking-[0.3em] opacity-30">
                   Assigned Personnel
                 </h4>
-                <div className="flex flex-wrap items-center justify-between gap-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
                   <div className="flex items-center gap-4 min-w-0">
                     <div
-                      className="w-12 h-12 rounded-full border flex items-center justify-center text-[#22c55e] font-black text-xl shadow-sm shrink-0"
+                      className="w-14 h-14 rounded-2xl border flex items-center justify-center text-hf-green font-black text-2xl shadow-sm shrink-0 bg-[var(--bg-primary)]"
                       style={{
-                        backgroundColor: "var(--bg-primary)",
                         borderColor: "var(--border-color)",
                       }}
                     >
                       {selectedDonation.volunteer.name.charAt(0)}
                     </div>
-                    <div className="space-y-0.5 min-w-0">
+                    <div className="space-y-1 min-w-0">
                       <p
-                        className="text-[12px] font-black uppercase truncate"
+                        className="text-sm font-black uppercase tracking-tight truncate"
                         style={{ color: "var(--text-primary)" }}
                       >
                         {selectedDonation.volunteer.name}
                       </p>
-                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                        <span className="text-[10px] font-bold text-slate-400 flex items-center gap-1">
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
+                        <span className="text-[10px] font-bold text-hf-green flex items-center gap-1.5">
                           <Star
                             className="fill-yellow-400 text-yellow-400"
                             size={12}
                           />
                           {selectedDonation.volunteer.rating}
                         </span>
-                        <span className="text-[10px] font-bold text-slate-400 flex items-center gap-1">
+                        <span
+                          className="text-[10px] font-bold opacity-50 flex items-center gap-1.5"
+                          style={{ color: "var(--text-secondary)" }}
+                        >
                           <Phone size={12} />
                           {selectedDonation.volunteer.phone}
                         </span>
                       </div>
                     </div>
                   </div>
-                  <button
-                    className="p-2.5 rounded-full border text-[#22c55e] hover:bg-[#22c55e] hover:text-white transition-all shadow-sm active:scale-95"
-                    style={{
-                      backgroundColor: "var(--bg-primary)",
-                      borderColor: "var(--border-color)",
-                    }}
-                  >
+                  <button className="w-full sm:w-auto px-6 py-3 rounded-xl border border-hf-green text-hf-green font-black uppercase tracking-widest text-[10px] hover:bg-hf-green hover:text-white transition-all shadow-sm active:scale-95 flex items-center justify-center gap-3 bg-[var(--bg-primary)]">
                     <Phone size={16} />
+                    Call Volunteer
                   </button>
                 </div>
               </div>

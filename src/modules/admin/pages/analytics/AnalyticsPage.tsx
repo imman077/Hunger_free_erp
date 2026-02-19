@@ -64,27 +64,27 @@ const AnalyticsPage: React.FC = () => {
 
   return (
     <div
-      className="p-8 w-full mx-auto space-y-10 animate-in fade-in duration-700 text-start min-h-screen"
+      className="p-4 sm:p-6 lg:p-8 w-full mx-auto space-y-8 md:space-y-10 animate-in fade-in duration-700 text-start min-h-screen"
       style={{ backgroundColor: "var(--bg-primary)" }}
     >
-      <header className="flex justify-between items-end">
-        <div className="text-start">
+      <header className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 sm:gap-4">
+        <div className="text-start max-w-2xl">
           <h1
-            className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight break-words"
+            className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight"
             style={{ color: "var(--text-primary)" }}
           >
             Impact Analytics
           </h1>
           <p
-            className="font-semibold mt-2"
+            className="font-medium mt-2 text-sm sm:text-base leading-relaxed"
             style={{ color: "var(--text-muted)" }}
           >
             Track donations, distribution, and community impact metrics.
           </p>
         </div>
-        <div className="flex gap-4">
+        <div className="flex flex-wrap gap-3 w-full sm:w-auto">
           <div
-            className="flex items-center gap-2 px-4 py-2 rounded-sm border"
+            className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-sm border w-fit"
             style={{
               backgroundColor: "rgba(34, 197, 94, 0.05)",
               borderColor: "rgba(34, 197, 94, 0.1)",
@@ -106,7 +106,7 @@ const AnalyticsPage: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 text-start">
         {/* Main Graph - Donation Trends */}
         <div
-          className="lg:col-span-8 p-6 rounded-sm border shadow-sm"
+          className="lg:col-span-8 p-4 sm:p-6 rounded-sm border shadow-sm"
           style={{
             backgroundColor: "var(--bg-primary)",
             borderColor: "var(--border-color)",
@@ -131,7 +131,7 @@ const AnalyticsPage: React.FC = () => {
               </p>
             </div>
           </div>
-          <div className="h-[400px]">
+          <div className="h-[300px] sm:h-[350px] lg:h-[400px]">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={donationTrends}>
                 <defs>
@@ -226,7 +226,7 @@ const AnalyticsPage: React.FC = () => {
 
         {/* Categories Bar Chart */}
         <div
-          className="lg:col-span-4 p-6 rounded-sm border shadow-sm flex flex-col"
+          className="lg:col-span-4 p-4 sm:p-6 rounded-sm border shadow-sm flex flex-col"
           style={{
             backgroundColor: "var(--bg-primary)",
             borderColor: "var(--border-color)",
@@ -248,7 +248,7 @@ const AnalyticsPage: React.FC = () => {
             Distribution of donation types this month
           </p>
 
-          <div className="flex-grow flex items-end h-[300px]">
+          <div className="flex-grow flex items-end h-[250px] sm:h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={categoryData} layout="vertical">
                 <XAxis type="number" hide />
@@ -262,7 +262,7 @@ const AnalyticsPage: React.FC = () => {
                     fontWeight: 800,
                     fontSize: 11,
                   }}
-                  width={100}
+                  width={85}
                 />
                 <Tooltip
                   cursor={{ fill: "var(--bg-secondary)", opacity: 0.4 }}

@@ -59,29 +59,26 @@ const CreateDonation = () => {
       style={{ backgroundColor: "var(--bg-secondary)" }}
     >
       {/* Header Bar */}
-      <div className="max-w-5xl mx-auto mb-8">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-6">
+      <div className="max-w-5xl mx-auto mb-10">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+          <div className="flex items-center gap-4 sm:gap-6">
             <button
               onClick={() => navigate("/donor/donations")}
-              className="flex items-center gap-2 transition-colors group"
+              className="flex items-center gap-2 transition-colors group shrink-0"
               style={{ color: "var(--text-secondary)" }}
             >
               <ArrowLeft
                 size={18}
                 className="group-hover:-translate-x-1 transition-transform"
               />
-              <span className="text-[11px] font-black uppercase tracking-widest pt-0.5">
+              <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-widest pt-0.5">
                 Back
               </span>
             </button>
-            <div
-              className="h-8 w-px hidden sm:block"
-              style={{ backgroundColor: "var(--border-color)" }}
-            />
-            <div>
+            <div className="h-8 w-px bg-[var(--border-color)]" />
+            <div className="min-w-0">
               <h1
-                className="text-3xl md:text-4xl font-black tracking-tighter leading-none"
+                className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tighter leading-none truncate"
                 style={{ color: "var(--text-primary)" }}
               >
                 Create Donation
@@ -89,7 +86,7 @@ const CreateDonation = () => {
             </div>
           </div>
           <div
-            className="border px-4 py-1.5 rounded-md flex items-center gap-2.5 shadow-sm"
+            className="self-start sm:self-center border px-4 py-1.5 rounded-lg flex items-center gap-2.5 shadow-sm"
             style={{
               backgroundColor: "rgba(34, 197, 94, 0.08)",
               borderColor: "rgba(34, 197, 94, 0.2)",
@@ -116,11 +113,11 @@ const CreateDonation = () => {
           }}
         >
           <div
-            className="border-b p-7 flex items-center gap-4"
+            className="border-b p-5 sm:p-7 flex items-center gap-4"
             style={{ borderColor: "var(--border-color)" }}
           >
             <div
-              className="w-12 h-12 border rounded-md flex items-center justify-center shadow-sm"
+              className="w-12 h-12 border rounded-xl flex items-center justify-center shadow-sm shrink-0"
               style={{
                 backgroundColor: "rgba(34, 197, 94, 0.08)",
                 borderColor: "rgba(34, 197, 94, 0.15)",
@@ -131,21 +128,21 @@ const CreateDonation = () => {
             </div>
             <div>
               <h2
-                className="text-sm font-black uppercase tracking-tighter leading-none"
+                className="text-xs sm:text-sm font-black uppercase tracking-tight leading-none"
                 style={{ color: "var(--text-primary)" }}
               >
                 01. Food Specifications
               </h2>
               <p
-                className="text-[10px] font-bold uppercase tracking-widest mt-1.5"
-                style={{ color: "var(--text-muted)" }}
+                className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest mt-1.5 opacity-40"
+                style={{ color: "var(--text-secondary)" }}
               >
                 Technical details about your donation
               </p>
             </div>
           </div>
 
-          <div className="p-8 space-y-8">
+          <div className="p-5 sm:p-8 space-y-8">
             {/* Photo Upload Section */}
             <div
               className="pb-4 border-b"
@@ -228,11 +225,11 @@ const CreateDonation = () => {
           }}
         >
           <div
-            className="border-b p-7 flex items-center gap-4"
+            className="border-b p-5 sm:p-7 flex items-center gap-4"
             style={{ borderColor: "var(--border-color)" }}
           >
             <div
-              className="w-12 h-12 border rounded-md flex items-center justify-center shadow-sm"
+              className="w-12 h-12 border rounded-xl flex items-center justify-center shadow-sm shrink-0"
               style={{
                 backgroundColor: "rgba(34, 197, 94, 0.08)",
                 borderColor: "rgba(34, 197, 94, 0.15)",
@@ -243,21 +240,21 @@ const CreateDonation = () => {
             </div>
             <div>
               <h2
-                className="text-sm font-black uppercase tracking-tighter leading-none"
+                className="text-xs sm:text-sm font-black uppercase tracking-tight leading-none"
                 style={{ color: "var(--text-primary)" }}
               >
                 02. Pickup Logistics
               </h2>
               <p
-                className="text-[10px] font-bold uppercase tracking-widest mt-1.5"
-                style={{ color: "var(--text-muted)" }}
+                className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest mt-1.5 opacity-40"
+                style={{ color: "var(--text-secondary)" }}
               >
                 Coordination and collection data
               </p>
             </div>
           </div>
 
-          <div className="p-8 space-y-8">
+          <div className="p-5 sm:p-8 space-y-8">
             <ResuableInput
               label="Full Pickup Address"
               value={formData.pickupAddress}
@@ -305,11 +302,11 @@ const CreateDonation = () => {
             borderColor: "var(--border-color)",
           }}
         >
-          <div className="max-w-5xl mx-auto flex items-center justify-end gap-6">
+          <div className="max-w-5xl mx-auto flex flex-col-reverse sm:flex-row items-center justify-end gap-4 sm:gap-6">
             <ResuableButton
               variant="ghost"
               onClick={() => navigate("/donor/donations")}
-              className="font-black text-[11px] uppercase tracking-[0.2em] hover:text-red-500 transition-colors"
+              className="w-full sm:w-auto font-black text-[11px] uppercase tracking-[0.2em] hover:text-red-500 transition-colors"
               style={{ color: "var(--text-muted)" }}
             >
               Discard Entry
@@ -317,7 +314,7 @@ const CreateDonation = () => {
             <ResuableButton
               type="submit"
               variant="dark"
-              className="min-w-[240px] h-[52px] !bg-[#16a34a] hover:!bg-[#15803d] !rounded-md shadow-lg shadow-green-500/20 transition-all active:scale-95"
+              className="w-full sm:min-w-[240px] h-[52px] !bg-[#16a34a] hover:!bg-[#15803d] !rounded-md shadow-lg shadow-green-500/20 transition-all active:scale-95"
               startContent={<CheckCircle size={20} />}
             >
               <span className="text-[11px] font-black uppercase tracking-widest">

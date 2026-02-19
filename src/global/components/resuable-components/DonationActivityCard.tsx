@@ -26,11 +26,11 @@ const DonationActivityCard: React.FC<DonationActivityCardProps> = ({
   return (
     <div
       onClick={onActionClick}
-      className={`group/item relative flex flex-col items-center text-center transition-all duration-300 border font-sans rounded-md cursor-pointer
+      className={`group/item relative flex flex-col items-start text-left transition-all duration-300 border font-sans rounded-2xl cursor-pointer
         ${
           compact
-            ? "p-4 gap-3 justify-center hover:bg-[var(--bg-secondary)]"
-            : "p-6 gap-4 justify-center hover:border-[#22c55e]/40 hover:bg-[var(--bg-secondary)]"
+            ? "p-4 gap-3"
+            : "p-6 gap-5 hover:border-hf-green/40 hover:bg-slate-500/5 hover:shadow-xl hover:shadow-hf-green/5"
         }
       `}
       style={{
@@ -39,13 +39,13 @@ const DonationActivityCard: React.FC<DonationActivityCardProps> = ({
       }}
     >
       {/* Status Badge - Floating */}
-      <div className="absolute top-4 right-4">
+      <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
         <span
-          className={`font-black uppercase tracking-widest px-2 py-1 rounded-sm
-            ${compact ? "text-[6px]" : "text-[8px]"}
+          className={`font-black uppercase tracking-widest px-2.5 py-1 rounded-lg
+            ${compact ? "text-[7px]" : "text-[9px]"}
             ${
               isCollected
-                ? "text-[#22c55e] bg-emerald-500/10 border border-emerald-500/20"
+                ? "text-hf-green bg-hf-green/10 border border-hf-green/20"
                 : "text-blue-500 bg-blue-500/10 border border-blue-500/20"
             }
           `}
@@ -56,43 +56,43 @@ const DonationActivityCard: React.FC<DonationActivityCardProps> = ({
 
       {/* Refined Icon Container */}
       <div
-        className={`flex items-center justify-center transition-all duration-500 rounded-md shrink-0 group-hover/item:-translate-y-2
-          ${compact ? "w-12 h-12" : "w-16 h-16"}
+        className={`flex items-center justify-center transition-all duration-500 rounded-2xl shrink-0 group-hover/item:scale-110
+          ${compact ? "w-10 h-10" : "w-14 h-14"}
           ${
             isCollected
-              ? "bg-[#22c55e] text-white shadow-lg shadow-emerald-500/10"
+              ? "bg-hf-green text-white shadow-lg shadow-hf-green/20"
               : "bg-blue-500 text-white shadow-lg shadow-blue-500/10"
           }
         `}
       >
-        <div className={compact ? "scale-90" : "scale-110"}>{icon}</div>
+        <div className={compact ? "scale-75" : "scale-100"}>{icon}</div>
       </div>
 
       {/* Content Group */}
-      <div className="space-y-2 w-full px-2">
+      <div className="space-y-1.5 w-full pr-12">
         <h3
-          className={`font-black tracking-tighter truncate transition-colors duration-300 group-hover/item:text-[#22c55e]
-          ${compact ? "text-sm" : "text-base md:text-lg"}
+          className={`font-black uppercase tracking-tight truncate transition-colors duration-300 group-hover/item:text-hf-green
+          ${compact ? "text-xs" : "text-sm md:text-base"}
         `}
           style={{ color: "var(--text-primary)" }}
         >
           {title}
         </h3>
 
-        <div className="flex flex-col items-center gap-1.5">
+        <div className="flex flex-col items-start gap-1">
           <p
-            className={`font-bold uppercase tracking-widest
-            ${compact ? "text-[8px]" : "text-[10px]"}
+            className={`font-black uppercase tracking-[0.2em] opacity-40
+            ${compact ? "text-[7px]" : "text-[9px]"}
           `}
-            style={{ color: "var(--text-muted)" }}
+            style={{ color: "var(--text-secondary)" }}
           >
             {subtitle}
           </p>
           <p
-            className={`font-bold uppercase tracking-widest opacity-40
+            className={`font-bold opacity-30
             ${compact ? "text-[7px]" : "text-[9px]"}
           `}
-            style={{ color: "var(--text-muted)" }}
+            style={{ color: "var(--text-secondary)" }}
           >
             {date}
           </p>

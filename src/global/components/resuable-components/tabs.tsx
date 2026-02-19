@@ -77,8 +77,12 @@ const Tabs: React.FC<TabsProps> = ({
 
   return (
     <div
-      className={`flex gap-3 ${fullWidth ? "w-full" : ""} ${className}`}
+      className={`flex items-center gap-3 overflow-x-auto scrollbar-hide pb-2 md:pb-0 ${fullWidth ? "w-full" : ""} ${className}`}
       role="tablist"
+      style={{
+        msOverflowStyle: "none",
+        scrollbarWidth: "none",
+      }}
     >
       {tabs.map((tab) => {
         const isActive = activeTab === tab.value;
@@ -86,7 +90,7 @@ const Tabs: React.FC<TabsProps> = ({
           <button
             key={tab.value}
             onClick={() => onTabChange(tab.value)}
-            className={`${getTabClasses(isActive)} ${
+            className={`${getTabClasses(isActive)} whitespace-nowrap flex items-center justify-center shrink-0 ${
               fullWidth ? "flex-1" : ""
             }`}
             style={getActiveStyles(isActive)}

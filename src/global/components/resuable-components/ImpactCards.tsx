@@ -18,7 +18,7 @@ const ImpactCard: React.FC<
 > = ({ label, val, trend, color }) => {
   return (
     <div
-      className="group/impact p-4 md:p-6 rounded-xl border transition-all duration-500 flex flex-col items-center justify-center min-h-[130px] md:min-h-[150px] relative overflow-hidden"
+      className="group/impact p-3 sm:p-4 md:p-6 rounded-xl border transition-all duration-500 flex flex-col items-center justify-center min-h-[110px] sm:min-h-[130px] md:min-h-[150px] relative overflow-hidden"
       style={{
         backgroundColor: "var(--bg-primary)",
         borderColor: "var(--border-color)",
@@ -38,7 +38,7 @@ const ImpactCard: React.FC<
           {label}
         </p>
         <h4
-          className="text-2xl md:text-3xl lg:text-4xl font-black tracking-tight tabular-nums leading-none transition-colors duration-500 group-hover/impact:text-[#22c55e] break-words"
+          className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black tracking-tight tabular-nums leading-none transition-colors duration-500 group-hover/impact:text-[#22c55e] break-words"
           style={{ color: "var(--text-primary)" }}
         >
           {val}
@@ -74,7 +74,7 @@ export const ImpactCards: React.FC<ImpactCardsProps> = ({
     <div
       className={`${
         orientation === "horizontal"
-          ? "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6"
+          ? "grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-4 gap-3 md:gap-6"
           : "flex flex-col gap-4"
       } ${className}`}
     >

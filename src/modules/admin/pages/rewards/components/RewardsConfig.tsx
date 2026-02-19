@@ -390,17 +390,17 @@ const RewardsConfig: React.FC = () => {
   };
 
   return (
-    <div className="space-y-8 pb-6 text-start">
-      <div className="flex items-center justify-between">
-        <div className="flex flex-col gap-0.5">
+    <div className="space-y-6 sm:space-y-8 pb-6 text-start">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex flex-col gap-0.5 max-w-2xl">
           <h1
-            className="text-2xl font-black tracking-tight uppercase"
+            className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight uppercase"
             style={{ color: "var(--text-primary)" }}
           >
             Reward Catalog
           </h1>
           <p
-            className="text-[12px] font-semibold mt-0.5"
+            className="text-[12px] sm:text-[13px] font-medium mt-0.5 leading-relaxed"
             style={{ color: "var(--text-muted)" }}
           >
             Manage and define items available for point redemption
@@ -408,14 +408,14 @@ const RewardsConfig: React.FC = () => {
         </div>
         <ResuableButton
           variant="primary"
-          className="!bg-[#22c55e] hover:!bg-emerald-600 px-6 font-black uppercase tracking-widest text-[10px] text-white h-9"
+          className="w-full sm:w-auto !bg-[#22c55e] hover:!bg-emerald-600 px-6 sm:px-8 font-black uppercase tracking-widest text-[10px] text-white h-11 sm:h-9 shadow-sm"
           onClick={onAddOpen}
         >
           <Plus size={16} className="mr-2" /> Add New Reward
         </ResuableButton>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
         {[
           {
             id: "donor",
@@ -450,7 +450,7 @@ const RewardsConfig: React.FC = () => {
           return (
             <div
               key={stakeholder.id}
-              className="rounded-none border shadow-sm flex flex-col h-[750px]"
+              className="rounded-none border shadow-sm flex flex-col h-[600px] sm:h-[750px]"
               style={{
                 backgroundColor: "var(--bg-primary)",
                 borderColor: "var(--border-color)",
@@ -582,7 +582,7 @@ const RewardsConfig: React.FC = () => {
                       }))
                     }
                   />
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <ResuableInput
                       label="Value / Description"
                       placeholder="e.g. ₹5,000"
@@ -620,11 +620,11 @@ const RewardsConfig: React.FC = () => {
                   />
                 </div>
               </ModalBody>
-              <ModalFooter>
+              <ModalFooter className="flex-col sm:flex-row">
                 <ResuableButton
                   variant="ghost"
                   onClick={onClose}
-                  className="font-black uppercase tracking-[0.2em] text-[10px] px-8 h-9 border"
+                  className="w-full sm:w-auto font-black uppercase tracking-[0.2em] text-[10px] px-8 h-9 border order-2 sm:order-1"
                   style={{
                     borderColor: "var(--border-color)",
                     color: "var(--text-muted)",
@@ -635,7 +635,7 @@ const RewardsConfig: React.FC = () => {
                 <ResuableButton
                   variant="primary"
                   onClick={handleUpdateItem}
-                  className="font-black uppercase tracking-[0.2em] text-[10px] px-10 h-9 !bg-[#22c55e] text-white shadow-lg shadow-emerald-500/10 hover:!bg-emerald-600 active:scale-[0.98]"
+                  className="w-full sm:w-auto font-black uppercase tracking-[0.2em] text-[10px] px-10 h-9 !bg-[#22c55e] text-white shadow-lg shadow-emerald-500/10 hover:!bg-emerald-600 active:scale-[0.98] order-1 sm:order-2"
                 >
                   Save Changes
                 </ResuableButton>
@@ -756,7 +756,7 @@ const RewardsConfig: React.FC = () => {
                       value={newItem.name}
                       onChange={(val) => setNewItem({ ...newItem, name: val })}
                     />
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <ResuableInput
                         label="Value Detail"
                         placeholder="₹1,000 / 128GB"
@@ -784,11 +784,11 @@ const RewardsConfig: React.FC = () => {
                   </div>
                 </div>
               </ModalBody>
-              <ModalFooter>
+              <ModalFooter className="flex-col sm:flex-row">
                 <ResuableButton
                   variant="ghost"
                   onClick={onClose}
-                  className="font-black uppercase tracking-[0.2em] text-[10px] px-8 h-9 border"
+                  className="w-full sm:w-auto font-black uppercase tracking-[0.2em] text-[10px] px-8 h-9 border order-2 sm:order-1"
                   style={{
                     borderColor: "var(--border-color)",
                     color: "var(--text-muted)",
@@ -799,7 +799,7 @@ const RewardsConfig: React.FC = () => {
                 <ResuableButton
                   variant="primary"
                   onClick={handleAddReward}
-                  className="font-black uppercase tracking-[0.2em] text-[10px] px-10 h-9 !bg-[#22c55e] text-white shadow-lg shadow-emerald-500/10 hover:!bg-emerald-600 active:scale-[0.98]"
+                  className="w-full sm:w-auto font-black uppercase tracking-[0.2em] text-[10px] px-10 h-9 !bg-[#22c55e] text-white shadow-lg shadow-emerald-500/10 hover:!bg-emerald-600 active:scale-[0.98] order-1 sm:order-2"
                 >
                   Create Reward
                 </ResuableButton>
@@ -819,7 +819,7 @@ const RewardCard: React.FC<{
   onEdit: () => void;
 }> = ({ item, onToggle, onDelete, onEdit }) => (
   <div
-    className={`p-6 border transition-all duration-300 flex flex-col gap-5 relative min-h-[110px] rounded-none ${
+    className={`p-4 sm:p-6 border transition-all duration-300 flex flex-col gap-4 sm:gap-5 relative min-h-[100px] sm:min-h-[110px] rounded-none ${
       !item.active
         ? "border-dashed"
         : "shadow-[0_2px_18px_-4px_rgba(0,0,0,0.03)]"
@@ -830,11 +830,11 @@ const RewardCard: React.FC<{
     }}
   >
     {/* Header: Title, Tags & Icons */}
-    <div className="flex items-start justify-between gap-4">
-      <div className="flex flex-col gap-3 flex-1 text-start">
-        <div className="flex flex-wrap items-center gap-3">
+    <div className="flex items-start justify-between gap-3 sm:gap-4">
+      <div className="flex flex-col gap-2 sm:gap-3 flex-1 text-start min-w-0">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <h5
-            className={`font-black text-[17px] leading-[1.15] tracking-tight max-w-[200px]`}
+            className={`font-black text-[15px] sm:text-[17px] leading-[1.15] tracking-tight max-w-[200px] truncate sm:whitespace-normal`}
             style={{
               color: item.active ? "var(--text-primary)" : "var(--text-muted)",
             }}
@@ -843,7 +843,7 @@ const RewardCard: React.FC<{
           </h5>
           <div className="flex items-center gap-1.5 h-fit pt-0.5">
             <span
-              className="text-[8px] font-black border px-2 py-0.5 rounded-[1px] uppercase tracking-widest"
+              className="text-[8px] font-black border px-2 py-0.5 rounded-[1px] uppercase tracking-widest whitespace-nowrap"
               style={{
                 backgroundColor: "var(--bg-secondary)",
                 borderColor: "var(--border-color)",
@@ -853,7 +853,7 @@ const RewardCard: React.FC<{
               {item.tag || "REWARD"}
             </span>
             {!item.active && (
-              <span className="text-[8px] font-black text-red-400 bg-red-100/10 border border-red-500/20 px-2 py-0.5 rounded-[1px] uppercase tracking-widest">
+              <span className="text-[8px] font-black text-red-400 bg-red-100/10 border border-red-500/20 px-2 py-0.5 rounded-[1px] uppercase tracking-widest whitespace-nowrap">
                 HIDDEN
               </span>
             )}
@@ -861,52 +861,52 @@ const RewardCard: React.FC<{
         </div>
       </div>
 
-      <div className="flex items-center gap-0.5 shrink-0 -mt-1">
+      <div className="flex items-center gap-0 sm:gap-0.5 shrink-0 -mt-1">
         <button
           onClick={onEdit}
-          className="p-1.5 transition-colors"
+          className="p-1.5 sm:p-1.5 transition-colors"
           style={{ color: "var(--text-muted)" }}
         >
-          <Edit2 size={15} strokeWidth={1.5} />
+          <Edit2 size={14} strokeWidth={1.5} />
         </button>
         <button
           onClick={onToggle}
-          className={`p-1.5 transition-colors ${
+          className={`p-1.5 sm:p-1.5 transition-colors ${
             item.active ? "text-emerald-500" : ""
           }`}
           style={{ color: item.active ? undefined : "var(--text-muted)" }}
         >
           {item.active ? (
-            <Eye size={15} strokeWidth={1.5} />
+            <Eye size={14} strokeWidth={1.5} />
           ) : (
-            <EyeOff size={15} strokeWidth={1.5} />
+            <EyeOff size={14} strokeWidth={1.5} />
           )}
         </button>
         <button
           onClick={onDelete}
-          className="p-1.5 transition-colors"
+          className="p-1.5 sm:p-1.5 transition-colors"
           style={{ color: "var(--text-muted)" }}
         >
-          <Trash2 size={15} strokeWidth={1.5} className="hover:text-red-500" />
+          <Trash2 size={14} strokeWidth={1.5} className="hover:text-red-500" />
         </button>
       </div>
     </div>
 
     {/* Detail Info: Value | Points */}
     <div className="flex flex-col gap-3 pt-1 text-start">
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3 sm:gap-4 flex-wrap sm:flex-nowrap">
         <p
-          className="text-[11px] font-black uppercase tracking-[0.1em]"
+          className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.1em]"
           style={{ color: "var(--text-muted)" }}
         >
           {item.val}
         </p>
         <div
-          className="h-4 w-[2px]"
+          className="hidden sm:block h-4 w-[2px]"
           style={{ backgroundColor: "var(--border-color)" }}
         />
         <p
-          className="text-[11px] font-black uppercase tracking-[0.1em]"
+          className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.1em]"
           style={{ color: "var(--text-muted)" }}
         >
           {item.pts.toLocaleString()} PTS
@@ -950,7 +950,7 @@ const RewardCard: React.FC<{
             closeDelay={0}
           >
             <button
-              className="w-5 h-5 rounded-full border flex items-center justify-center hover:text-[#22c55e] hover:border-[#22c55e]/30 transition-all ml-auto"
+              className="w-5 h-5 rounded-full border flex items-center justify-center hover:text-[#22c55e] hover:border-[#22c55e]/30 transition-all ml-auto sm:ml-auto"
               style={{
                 backgroundColor: "var(--bg-secondary)",
                 borderColor: "var(--border-color)",

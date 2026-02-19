@@ -213,15 +213,15 @@ const RedemptionsView: React.FC = () => {
                 .map((n: string) => n[0])
                 .join("")}
             </div>
-            <div className="flex flex-col text-start pr-1 min-w-0">
+            <div className="flex flex-col text-start pr-1 min-w-0 flex-1">
               <span
-                className="font-bold text-xs whitespace-nowrap truncate max-w-[140px] group-hover:text-hf-green transition-colors leading-tight"
+                className="font-bold text-xs whitespace-nowrap truncate max-w-[100px] sm:max-w-[140px] group-hover:text-hf-green transition-colors leading-tight"
                 style={{ color: "var(--text-primary)" }}
               >
                 {req.user}
               </span>
               <span
-                className="text-[8px] font-black uppercase tracking-widest leading-none"
+                className="text-[8px] font-black uppercase tracking-widest leading-none mt-0.5"
                 style={{ color: "var(--text-muted)" }}
               >
                 {req.role}
@@ -493,17 +493,17 @@ const RedemptionsView: React.FC = () => {
   );
 
   return (
-    <div className="space-y-8 pb-8">
-      <div className="flex items-center justify-between">
-        <div className="flex flex-col gap-0.5">
+    <div className="space-y-6 sm:space-y-8 pb-8 text-start">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex flex-col gap-0.5 max-w-2xl">
           <h1
-            className="text-4xl font-black tracking-tight uppercase"
+            className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight uppercase"
             style={{ color: "var(--text-primary)" }}
           >
             Redemption Hub
           </h1>
           <p
-            className="font-semibold mt-1"
+            className="font-medium mt-1 text-sm sm:text-base leading-relaxed"
             style={{ color: "var(--text-muted)" }}
           >
             Authorize and track user reward payouts
@@ -511,7 +511,7 @@ const RedemptionsView: React.FC = () => {
         </div>
         <ResuableButton
           variant="primary"
-          className="rounded-sm h-12 px-8 font-black uppercase tracking-widest text-xs transition-all active:scale-95 shadow-sm"
+          className="w-full sm:w-auto rounded-sm h-11 sm:h-12 px-6 sm:px-8 font-black uppercase tracking-widest text-[10px] sm:text-xs transition-all active:scale-95 shadow-sm"
           onClick={onSummaryOpen}
           startContent={<BarChart3 size={16} />}
         >
@@ -519,13 +519,17 @@ const RedemptionsView: React.FC = () => {
         </ResuableButton>
       </div>
 
-      <ReusableTable
-        data={filteredData}
-        columns={redemptionColumns}
-        renderCell={renderRedemptionCell}
-        enableFilters={false}
-        additionalFilters={additionalFilters}
-      />
+      <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0 scrollbar-hide">
+        <div className="min-w-[700px]">
+          <ReusableTable
+            data={filteredData}
+            columns={redemptionColumns}
+            renderCell={renderRedemptionCell}
+            enableFilters={false}
+            additionalFilters={additionalFilters}
+          />
+        </div>
+      </div>
 
       <ResuableDrawer
         isOpen={isSummaryOpen}
@@ -534,7 +538,7 @@ const RedemptionsView: React.FC = () => {
         subtitle="Real-time reward metrics"
         size="md"
       >
-        <div className="space-y-5 px-3 sm:px-6 pb-8">
+        <div className="space-y-5 p-3 sm:p-4 lg:p-5">
           {/* Stats Grid */}
           <div className="grid grid-cols-1 gap-3">
             <div
@@ -741,7 +745,7 @@ const RedemptionsView: React.FC = () => {
         size="md"
       >
         {selectedRequest && (
-          <div className="space-y-5 px-3 sm:px-6 pb-8">
+          <div className="space-y-5 p-3 sm:p-4 lg:p-5">
             {/* User Info */}
             <div
               className="p-4 rounded-sm border shadow-sm"
@@ -861,7 +865,7 @@ const RedemptionsView: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <ResuableButton
                     variant="primary"
                     onClick={() => {
@@ -903,7 +907,7 @@ const RedemptionsView: React.FC = () => {
                         `Request ${selectedRequest.id} has been rejected.`,
                       );
                     }}
-                    className="w-full !h-11 font-black uppercase tracking-[0.15em] text-[10px] border-2 border-red-100 !text-red-600 hover:!bg-red-600 hover:!text-white transition-all shadow-sm"
+                    className="w-full !h-11 font-black uppercase tracking-[0.15em] text-[10px] border-2 border-red-500/10 !text-red-600 hover:!bg-red-600 hover:!text-white transition-all shadow-sm"
                     startContent={<X size={16} />}
                   >
                     Reject
