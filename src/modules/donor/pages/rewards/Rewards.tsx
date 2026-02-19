@@ -603,21 +603,20 @@ const DonorRewards = () => {
         }}
       />
 
-      {/* Page Heading & Right-side Cards */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div className="space-y-1.5 text-left">
           <h1
-            className="text-4xl md:text-6xl font-black tracking-tighter uppercase leading-none"
+            className="text-4xl md:text-5xl font-black tracking-tighter uppercase leading-none"
             style={{ color: "var(--text-primary)" }}
           >
             Donor Rewards
           </h1>
-          <p className="text-sm font-black uppercase tracking-[0.25em] text-green-500">
+          <p className="text-[10px] sm:text-sm font-black uppercase tracking-[0.2em] sm:tracking-[0.25em] text-green-500">
             Redeem points for exclusive benefits
           </p>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 self-start sm:self-auto">
           {/* Impact Points Card */}
           <div
             className="flex items-center gap-3.5 border p-4 rounded-sm text-left shadow-sm"
@@ -627,7 +626,7 @@ const DonorRewards = () => {
             }}
           >
             <div
-              className="w-11 h-11 border flex items-center justify-center rounded-sm"
+              className="w-11 h-11 border flex items-center justify-center rounded-sm shrink-0"
               style={{
                 backgroundColor: "rgba(34, 197, 94, 0.08)",
                 borderColor: "rgba(34, 197, 94, 0.2)",
@@ -746,15 +745,15 @@ const DonorRewards = () => {
           </div>
 
           <div
-            className="flex flex-col md:flex-row items-center justify-between p-6 rounded-sm border border-dashed mt-8"
+            className="flex flex-col sm:flex-row sm:items-center justify-between p-5 sm:p-6 rounded-sm border border-dashed mt-8 gap-4"
             style={{
               backgroundColor: "rgba(34, 197, 94, 0.03)",
               borderColor: "rgba(34, 197, 94, 0.3)",
             }}
           >
-            <div className="flex items-center gap-4 mb-4 md:mb-0">
+            <div className="flex items-center gap-4">
               <div
-                className="p-3 rounded-sm border"
+                className="p-3 rounded-sm border shrink-0"
                 style={{
                   backgroundColor: "var(--bg-primary)",
                   borderColor: "rgba(34, 197, 94, 0.2)",
@@ -780,7 +779,7 @@ const DonorRewards = () => {
             </div>
             <button
               onClick={() => navigate("benefits")}
-              className="px-8 py-3 bg-green-500 text-white text-[11px] font-black uppercase tracking-widest rounded-sm hover:bg-green-600 transition-all flex items-center gap-2.5 active:scale-95"
+              className="w-full sm:w-auto px-8 py-3 bg-green-500 text-white text-[11px] font-black uppercase tracking-widest rounded-sm hover:bg-green-600 transition-all flex items-center justify-center gap-2.5 active:scale-95"
             >
               View Benefits <ChevronRight size={16} />
             </button>
@@ -798,7 +797,7 @@ const DonorRewards = () => {
           <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/5 rounded-full blur-3xl -mr-16 -mt-16" />
 
           <div className="relative z-10 w-full space-y-1">
-            <p className="text-[10px] font-black uppercase tracking-widest text-green-500">
+            <p className="text-[8px] font-black uppercase tracking-widest text-green-500">
               Grand Draw
             </p>
             <h3
@@ -820,7 +819,7 @@ const DonorRewards = () => {
               12:15:30
             </p>
             <p
-              className="text-[10px] font-black uppercase mt-2 tracking-[0.3em]"
+              className="text-[8px] font-black uppercase mt-2 tracking-[0.4em]"
               style={{ color: "var(--text-muted)" }}
             >
               Time Remaining
@@ -861,11 +860,11 @@ const DonorRewards = () => {
                 Direct cash prizes for top contributors
               </p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {rewards.cash.map((c) => (
                 <div
                   key={c.id}
-                  className="border p-6 flex items-center justify-between group hover:border-green-500/30 transition-all rounded-sm shadow-sm"
+                  className="border p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 group hover:border-green-500/30 transition-all rounded-sm shadow-sm"
                   style={{
                     backgroundColor: "var(--bg-primary)",
                     borderColor: "var(--border-color)",
@@ -896,16 +895,16 @@ const DonorRewards = () => {
                       {c.name}
                     </p>
                   </div>
-                  <div className="flex flex-col items-center">
+                  <div className="flex sm:flex-col items-center sm:items-end gap-3 sm:gap-1">
                     <span
-                      className="text-[10px] font-black mb-1 uppercase"
+                      className="text-[10px] font-black uppercase"
                       style={{ color: "var(--text-primary)" }}
                     >
                       {c.points} PTS
                     </span>
                     {pendingClaims.includes(c.id) ? (
                       <div
-                        className="px-4 py-2 text-[8px] font-black uppercase tracking-wider rounded-sm border cursor-default flex items-center gap-1.5 translate-y-[-2px]"
+                        className="px-4 py-2 text-[8px] font-black uppercase tracking-wider rounded-sm border cursor-default flex items-center gap-1.5"
                         style={{
                           backgroundColor: "var(--bg-secondary)",
                           borderColor: "var(--border-color)",
@@ -942,11 +941,11 @@ const DonorRewards = () => {
                 International Expeditions & Retreats
               </p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {rewards.tours.map((t) => (
                 <div
                   key={t.id}
-                  className={`p-6 border rounded-sm flex items-center justify-between group hover:border-green-500/30 transition-all shadow-sm ${
+                  className={`p-5 sm:p-6 border rounded-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4 group hover:border-green-500/30 transition-all shadow-sm ${
                     !t.available ? "opacity-60 grayscale" : ""
                   }`}
                   style={{
@@ -956,17 +955,17 @@ const DonorRewards = () => {
                     borderColor: "var(--border-color)",
                   }}
                 >
-                  <div className="text-start">
-                    <div className="flex items-center gap-3 mb-1">
+                  <div className="text-start min-w-0">
+                    <div className="flex items-center gap-3 mb-1 flex-wrap">
                       <span
-                        className="text-xl font-black uppercase tracking-tight leading-none"
+                        className="text-base sm:text-xl font-black uppercase tracking-tight leading-none"
                         style={{ color: "var(--text-primary)" }}
                       >
                         {t.name}
                       </span>
                       {t.available && (
                         <span
-                          className="text-[8px] font-black text-green-600 uppercase px-2 py-0.5 rounded-sm border"
+                          className="text-[8px] font-black text-green-600 uppercase px-2 py-0.5 rounded-sm border shrink-0"
                           style={{
                             backgroundColor: "rgba(34, 197, 94, 0.08)",
                             borderColor: "rgba(34, 197, 94, 0.2)",
@@ -984,9 +983,9 @@ const DonorRewards = () => {
                     </p>
                   </div>
 
-                  <div className="flex flex-col items-center">
+                  <div className="flex sm:flex-col items-center sm:items-end gap-3 sm:gap-1 shrink-0">
                     <span
-                      className="text-[10px] font-black mb-1 uppercase tabular-nums"
+                      className="text-[10px] font-black uppercase tabular-nums"
                       style={{ color: "var(--text-primary)" }}
                     >
                       {t.points.toLocaleString()} PTS
@@ -994,7 +993,7 @@ const DonorRewards = () => {
                     {t.available ? (
                       pendingClaims.includes(t.id) ? (
                         <div
-                          className="px-4 py-2 text-[8px] font-black uppercase tracking-wider rounded-sm border cursor-default flex items-center gap-1.5 translate-y-[-2px]"
+                          className="px-4 py-2 text-[8px] font-black uppercase tracking-wider rounded-sm border cursor-default flex items-center gap-1.5"
                           style={{
                             backgroundColor: "var(--bg-secondary)",
                             borderColor: "var(--border-color)",
@@ -1043,11 +1042,11 @@ const DonorRewards = () => {
                 Premium Hardware & Smart Devices
               </p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {rewards.youth.map((y) => (
                 <div
                   key={y.id}
-                  className={`p-6 border rounded-sm flex items-center justify-between group hover:border-green-500/30 transition-all shadow-sm ${
+                  className={`p-5 sm:p-6 border rounded-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4 group hover:border-green-500/30 transition-all shadow-sm ${
                     !y.available ? "opacity-60 grayscale" : ""
                   }`}
                   style={{
@@ -1057,16 +1056,16 @@ const DonorRewards = () => {
                     borderColor: "var(--border-color)",
                   }}
                 >
-                  <div className="text-start">
-                    <div className="flex items-center gap-3 mb-1">
+                  <div className="text-start min-w-0">
+                    <div className="flex items-center gap-3 mb-1 flex-wrap">
                       <span
-                        className="text-xl font-black uppercase tracking-tight leading-none"
+                        className="text-base sm:text-xl font-black uppercase tracking-tight leading-none"
                         style={{ color: "var(--text-primary)" }}
                       >
                         {y.name}
                       </span>
                       {y.available && (
-                        <span className="text-[8px] font-black text-blue-600 uppercase bg-blue-50/10 px-2 py-0.5 rounded-sm border border-blue-500/20">
+                        <span className="text-[8px] font-black text-blue-600 uppercase bg-blue-50/10 px-2 py-0.5 rounded-sm border border-blue-500/20 shrink-0">
                           Premium
                         </span>
                       )}
@@ -1079,9 +1078,9 @@ const DonorRewards = () => {
                     </p>
                   </div>
 
-                  <div className="flex flex-col items-center">
+                  <div className="flex sm:flex-col items-center sm:items-end gap-3 sm:gap-1 shrink-0">
                     <span
-                      className="text-[10px] font-black mb-1 uppercase tabular-nums"
+                      className="text-[10px] font-black uppercase tabular-nums"
                       style={{ color: "var(--text-primary)" }}
                     >
                       {y.points.toLocaleString()} PTS
@@ -1089,7 +1088,7 @@ const DonorRewards = () => {
                     {y.available ? (
                       pendingClaims.includes(y.id) ? (
                         <div
-                          className="px-4 py-2 text-[8px] font-black uppercase tracking-wider rounded-sm border cursor-default flex items-center gap-1.5 translate-y-[-2px]"
+                          className="px-4 py-2 text-[8px] font-black uppercase tracking-wider rounded-sm border cursor-default flex items-center gap-1.5"
                           style={{
                             backgroundColor: "var(--bg-secondary)",
                             borderColor: "var(--border-color)",
@@ -1169,84 +1168,87 @@ const DonorRewards = () => {
               </div>
             </div>
           ) : (
-            <div className="flex-1 space-y-6 px-6 py-2">
+            <div className="flex-1 space-y-8 p-3 sm:p-4 lg:p-5">
               {/* Reward Summary Card */}
               <div
-                className="rounded-md p-6 border relative overflow-hidden shadow-sm"
+                className="rounded-sm border relative overflow-hidden shadow-xl"
                 style={{
-                  backgroundColor: "var(--bg-secondary)",
+                  backgroundColor: "var(--bg-primary)",
                   borderColor: "var(--border-color)",
                 }}
               >
-                {/* Subtle Decorative Accent */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/[0.03] rounded-full blur-3xl -mr-16 -mt-16" />
-
-                <div className="relative z-10">
-                  <div className="mb-6">
-                    <p
-                      className="text-[10px] font-black uppercase tracking-[0.3em]"
-                      style={{ color: "var(--text-muted)" }}
+                {/* Header Section */}
+                <div
+                  className="p-6 sm:p-8 border-b border-dashed"
+                  style={{
+                    backgroundColor: "var(--bg-secondary)",
+                    borderColor: "var(--border-color)",
+                  }}
+                >
+                  <p
+                    className="text-[8px] font-black uppercase tracking-[0.4em] mb-6 block"
+                    style={{ color: "var(--text-muted)" }}
+                  >
+                    Reward Intelligence
+                  </p>
+                  <div className="space-y-4 text-left">
+                    <h4
+                      className="text-4xl sm:text-5xl font-black tracking-tighter uppercase leading-none"
+                      style={{ color: "var(--text-primary)" }}
                     >
-                      Reward Intelligence
+                      {selectedReward?.amount ||
+                        selectedReward?.name ||
+                        "REWARD"}
+                    </h4>
+                    <p
+                      className="text-[11px] font-bold tracking-[0.1em] leading-relaxed max-w-[280px]"
+                      style={{ color: "var(--text-secondary)" }}
+                    >
+                      {selectedReward?.amount
+                        ? selectedReward?.name
+                        : selectedReward?.desc || "System Optimized Reward"}
                     </p>
                   </div>
+                </div>
 
-                  <div className="flex items-center justify-between gap-6">
-                    <div className="space-y-1.5">
-                      <h4
-                        className="text-3xl font-black tracking-tighter uppercase leading-none"
-                        style={{ color: "var(--text-primary)" }}
-                      >
-                        {selectedReward?.amount ||
-                          selectedReward?.name ||
-                          "REWARD"}
-                      </h4>
-                      <div className="space-y-3">
-                        <p
-                          className="text-[11px] font-bold tracking-widest leading-tight max-w-[280px]"
-                          style={{ color: "var(--text-secondary)" }}
-                        >
-                          {selectedReward?.amount
-                            ? selectedReward?.name
-                            : selectedReward?.desc || "System Optimized Reward"}
-                        </p>
-                        <div className="inline-flex items-center bg-[#22c55e] px-2 py-1 rounded-sm shadow-sm">
-                          <span className="text-[8px] font-black text-white uppercase tracking-[0.15em] leading-none">
-                            Verified Reward
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div
-                      className="shrink-0 border px-5 py-3 rounded-sm shadow-sm text-right min-w-[120px]"
-                      style={{
-                        backgroundColor: "var(--bg-primary)",
-                        borderColor: "var(--border-color)",
-                      }}
-                    >
+                {/* Status & Value Bar */}
+                <div className="px-6 sm:px-8 py-6 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+                  <div className="text-left">
+                    <div className="flex items-baseline gap-1.5 mb-1.5">
                       <span
-                        className="text-2xl font-black tabular-nums leading-none block"
+                        className="text-4xl font-black tabular-nums leading-none"
                         style={{ color: "var(--text-primary)" }}
                       >
                         {selectedReward?.points.toLocaleString()}
                       </span>
-                      <span
-                        className="text-[9px] font-black uppercase tracking-[0.2em] mt-1.5 block"
-                        style={{ color: "var(--text-muted)" }}
-                      >
-                        Pts Required
+                      <span className="text-[9px] font-black text-hf-green uppercase tracking-wider">
+                        PTS
                       </span>
                     </div>
+                    <span
+                      className="text-[8px] font-black uppercase tracking-[0.3em] block"
+                      style={{ color: "var(--text-muted)" }}
+                    >
+                      Redemption Requirement
+                    </span>
+                  </div>
+
+                  <div className="inline-flex items-center bg-hf-green/[0.04] border border-hf-green/10 px-4 py-2.5 rounded-sm shadow-sm self-start sm:self-center shrink-0">
+                    <span className="text-[8px] font-black text-hf-green uppercase tracking-[0.2em] leading-none whitespace-nowrap">
+                      Verified Reward
+                    </span>
                   </div>
                 </div>
+
+                {/* Decorative Pattern */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-hf-green/[0.02] rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none" />
               </div>
 
               {/* Destination/Schedule Selection */}
               {selectedReward?.amount ? (
                 <div className="space-y-3">
                   <p
-                    className="text-[10px] font-black uppercase tracking-widest px-1"
+                    className="text-[8px] font-black uppercase tracking-widest px-1"
                     style={{ color: "var(--text-muted)" }}
                   >
                     Payout Destinations
@@ -1402,7 +1404,7 @@ const DonorRewards = () => {
                 <div className="space-y-4">
                   {!rewards.youth.some((y) => y.id === selectedReward?.id) && (
                     <div className="space-y-3">
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">
+                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest px-1">
                         Scheduling & Availability
                       </p>
                       <div className="w-full">
@@ -1417,7 +1419,7 @@ const DonorRewards = () => {
                   )}
 
                   <div className="space-y-3">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">
+                    <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest px-1">
                       {rewards.tours.some((t) => t.id === selectedReward?.id)
                         ? "Contact Information"
                         : "Delivery Details"}
@@ -1432,7 +1434,7 @@ const DonorRewards = () => {
                         placeholder="Your Legal Name"
                         required
                       />
-                      <div className="grid grid-cols-2 gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <ResuableInput
                           label="Mobile Number"
                           value={deliveryInfo.mobile}
@@ -1587,7 +1589,7 @@ const DonorRewards = () => {
                   )}
                 </button>
                 <p
-                  className="text-[9px] text-center font-black uppercase tracking-widest mt-3"
+                  className="text-[8px] text-center font-black uppercase tracking-[0.2em] mt-4"
                   style={{ color: "var(--text-muted)" }}
                 >
                   By confirming, you agree to our reward terms.

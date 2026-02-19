@@ -32,8 +32,8 @@ const ResuableTimePicker: React.FC<ResuableTimePickerProps> = ({
     align === "left"
       ? "text-left"
       : align === "right"
-      ? "text-right"
-      : "text-center";
+        ? "text-right"
+        : "text-center";
 
   // Internal conversion from HH:mm to TimeValue
   const getTimeValue = (val: string): TimeValue => {
@@ -93,7 +93,7 @@ const ResuableTimePicker: React.FC<ResuableTimePickerProps> = ({
 
       const scrollToActive = (
         ref: React.RefObject<HTMLDivElement | null>,
-        val: number
+        val: number,
       ) => {
         const active = ref.current?.querySelector(`[data-value="${val}"]`);
         if (active && ref.current) {
@@ -135,7 +135,7 @@ const ResuableTimePicker: React.FC<ResuableTimePickerProps> = ({
     <div className={`w-full ${alignClass} ${className}`}>
       {label && (
         <label
-          className="text-[10px] font-bold uppercase tracking-widest block mb-1 px-1"
+          className="text-[8px] font-black uppercase tracking-widest block mb-1 px-1"
           style={{ color: "var(--text-muted)" }}
         >
           {label} {required && <span style={{ color: "#ef4444" }}>*</span>}
@@ -146,14 +146,14 @@ const ResuableTimePicker: React.FC<ResuableTimePickerProps> = ({
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className={`w-full flex items-center justify-between py-2.5 px-3 bg-white border rounded-none transition-all duration-300 ${alignClass}`}
+          className={`w-full flex items-center justify-between py-3 px-4 border rounded-sm transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-hf-green/5 ${alignClass}`}
           style={{
             borderColor: isOpen ? "#22c55e" : "var(--border-color)",
             backgroundColor: "var(--bg-secondary)",
           }}
         >
           <span
-            className={`flex-1 font-semibold text-xs tabular-nums ${alignClass}`}
+            className={`flex-1 font-semibold text-[13px] tabular-nums text-left`}
             style={{
               color: value ? "var(--text-primary)" : "var(--text-muted)",
             }}
@@ -161,8 +161,8 @@ const ResuableTimePicker: React.FC<ResuableTimePickerProps> = ({
             {value ? displayTime : "Select Time"}
           </span>
           <Clock
-            className={`w-3.5 h-3.5 flex-shrink-0 transition-colors ${
-              isOpen ? "text-[#22c55e]" : "text-slate-400"
+            className={`w-4 h-4 flex-shrink-0 transition-colors ${
+              isOpen ? "text-hf-green" : "text-slate-400"
             }`}
           />
         </button>
@@ -170,7 +170,7 @@ const ResuableTimePicker: React.FC<ResuableTimePickerProps> = ({
         {isOpen && (
           <div
             ref={dropdownRef}
-            className={`absolute left-1/2 -translate-x-1/2 z-[9999] w-64 bg-white rounded-sm overflow-hidden animate-in fade-in zoom-in-95 duration-200 border border-slate-100 ${
+            className={`absolute left-0 z-[9999] w-64 rounded-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 border shadow-xl ${
               placement === "top" ? "bottom-full mb-2" : "top-full mt-2"
             }`}
             style={{
@@ -259,7 +259,15 @@ const ResuableTimePicker: React.FC<ResuableTimePickerProps> = ({
                   <div className="h-10" />
                 </div>
 
-                <div className="h-full flex flex-col items-center justify-center gap-1">
+                <div
+                  className="h-full flex flex-col items-center justify-center gap-2 transition-transform duration-200"
+                  style={{
+                    transform:
+                      timeValue.period === "AM"
+                        ? "translateY(22px)"
+                        : "translateY(-22px)",
+                  }}
+                >
                   {["AM", "PM"].map((p) => (
                     <button
                       key={p}
@@ -270,10 +278,10 @@ const ResuableTimePicker: React.FC<ResuableTimePickerProps> = ({
                           period: p as "AM" | "PM",
                         })
                       }
-                      className={`w-14 h-9 rounded-sm flex items-center justify-center text-[10px] font-black transition-all duration-300 ${
+                      className={`w-14 h-9 rounded-xl flex items-center justify-center text-[10px] font-black tracking-widest transition-all duration-300 ${
                         timeValue.period === p
-                          ? "text-white z-10"
-                          : "text-slate-300 hover:text-slate-400"
+                          ? "text-white z-10 shadow-md"
+                          : "text-slate-300 hover:text-slate-500"
                       }`}
                       style={
                         timeValue.period === p
@@ -287,11 +295,11 @@ const ResuableTimePicker: React.FC<ResuableTimePickerProps> = ({
                 </div>
               </div>
 
-              <div className="mt-5 flex items-center justify-between px-1">
+              <div className="mt-4 flex items-center justify-between px-2">
                 <button
                   type="button"
                   onClick={handleNow}
-                  className="text-[10px] font-black uppercase tracking-widest transition-opacity px-2 py-1.5"
+                  className="text-[10px] font-black uppercase tracking-[0.2em] transition-opacity hover:opacity-70 px-2 py-1.5 rounded-xl"
                   style={{ color: PRIMARY_EMERALD }}
                 >
                   NOW
@@ -299,7 +307,7 @@ const ResuableTimePicker: React.FC<ResuableTimePickerProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsOpen(false)}
-                  className="bg-[#1e293b] text-white text-[10px] font-black uppercase tracking-widest px-5 py-2.5 rounded-sm hover:bg-black active:scale-95 transition-all"
+                  className="bg-[#1e293b] text-white text-[10px] font-black uppercase tracking-widest px-5 py-2.5 rounded-xl hover:bg-black active:scale-95 transition-all shadow-md"
                 >
                   SET
                 </button>

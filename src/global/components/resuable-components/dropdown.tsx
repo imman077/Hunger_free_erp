@@ -167,7 +167,7 @@ const ResuableDropdown: React.FC<ResuableDropdownProps> = ({
             color: "var(--text-primary)",
             borderColor: "var(--border-color)",
           }}
-          className={`w-full flex items-center justify-between border px-3 py-2.5 rounded-none text-xs font-semibold transition-all ${
+          className={`w-full flex items-center justify-between border px-3 py-3 rounded-sm text-[13px] font-semibold transition-all ${
             isOpen ? "ring-1 ring-[#22c55e]" : ""
           } ${
             disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
@@ -193,7 +193,7 @@ const ResuableDropdown: React.FC<ResuableDropdownProps> = ({
         {isOpen && (
           <div
             ref={menuRef}
-            className={`absolute left-0 right-0 border rounded-none z-[9999] max-h-60 overflow-y-auto no-scrollbar animate-in fade-in zoom-in-95 duration-200 ${
+            className={`absolute left-0 right-0 border rounded-sm z-[9999] max-h-60 overflow-y-auto no-scrollbar animate-in fade-in zoom-in-95 duration-200 ${
               openUpward ? "bottom-full mb-1" : "top-full mt-1"
             }`}
             style={{

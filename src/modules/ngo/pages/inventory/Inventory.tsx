@@ -8,6 +8,7 @@ import {
   Plus,
   Package,
   ClipboardList,
+  ArrowLeft,
 } from "lucide-react";
 import { Button } from "@heroui/react";
 import { toast } from "sonner";
@@ -147,8 +148,8 @@ const NGOInventory = () => {
     // Simulate API transmission
     setTimeout(() => {
       setIsUpdating(false);
-      toast.success("Inventory parameters synchronized", {
-        description: `Stock level for ${selectedRecord?.item} has been updated.`,
+      toast.success("Stock Updated", {
+        description: `${selectedRecord?.item} levels have been updated.`,
       });
       setIsDrawerOpen(false);
     }, 1500);
@@ -159,25 +160,25 @@ const NGOInventory = () => {
   return (
     <div className="w-full space-y-4 max-w-[1600px] mx-auto bg-transparent">
       {/* User Friendly Header */}
-      <div className="px-8">
+      <div className="p-3 sm:p-4 lg:p-5">
         <div className="relative">
-          <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-6 p-4">
+          <div className="relative flex flex-col md:flex-row md:items-end justify-between gap-6 p-4">
             <div className="text-start space-y-1">
-              <div className="flex items-center gap-3 mb-2">
-                <span className="bg-hf-green/20 text-hf-green text-[10px] font-black uppercase tracking-[0.2em] px-2.5 py-1 rounded-sm border border-hf-green/30">
-                  Current Stock
+              <div className="flex items-center gap-3 mb-1">
+                <span className="bg-hf-green/10 text-hf-green text-[10px] font-black uppercase tracking-[0.3em] px-2.5 py-1 rounded-sm border border-hf-green/20">
+                  Inventory Items
                 </span>
               </div>
               <h1
                 className="text-4xl md:text-5xl font-black tracking-tighter uppercase leading-none"
                 style={{ color: "var(--text-primary)" }}
               >
-                Inventory
+                Inventory <span className="text-hf-green">Hub</span>
               </h1>
             </div>
             <ResuableButton
               variant="primary"
-              className="flex items-center gap-2.5 px-6 py-3.5 bg-hf-green hover:bg-hf-green/90 text-white rounded-xl transition-all active:scale-95 shadow-lg shadow-hf-green/10"
+              className="flex items-center gap-2.5 px-6 py-3 bg-hf-green hover:bg-hf-green/90 text-white rounded-sm transition-all active:scale-95"
               onClick={() => navigate("/ngo/inventory/add")}
             >
               <Plus size={16} className="text-white" />
@@ -190,12 +191,12 @@ const NGOInventory = () => {
       </div>
 
       {/* Analytics Hub */}
-      <div className="px-8">
+      <div className="p-3 sm:p-4 lg:p-5">
         <ImpactCards data={inventoryStats} className="gap-3 md:gap-4" />
       </div>
 
       {/* Main Records (Standard Layout) */}
-      <div className="px-8 pb-10">
+      <div className="p-3 sm:p-4 lg:p-5">
         <ReusableTable
           data={filteredData}
           enableSearch={true}
@@ -259,10 +260,13 @@ const NGOInventory = () => {
                 );
               case "condition":
                 return (
-                  <div className="flex flex-col items-center justify-center">
+                  <div className="flex items-center gap-2 py-1">
+                    <div
+                      className={`w-1.5 h-1.5 rounded-full ${record.condition === "Excellent" ? "bg-emerald-500" : record.condition === "Good" ? "bg-blue-500" : "bg-red-500"}`}
+                    />
                     <span
-                      className="text-[9px] font-black uppercase tracking-tighter"
-                      style={{ color: "var(--text-secondary)" }}
+                      className="text-[11px] font-black uppercase tracking-tight"
+                      style={{ color: "var(--text-primary)" }}
                     >
                       {record.condition}
                     </span>
@@ -282,7 +286,7 @@ const NGOInventory = () => {
               case "status":
                 return (
                   <span
-                    className="text-[10px] font-black uppercase tracking-[0.15em] px-3 py-1 rounded-full border flex items-center gap-1.5 w-fit shadow-sm"
+                    className="text-[10px] font-black uppercase tracking-[0.15em] px-3 py-1 rounded-sm border flex items-center gap-1.5 w-fit"
                     style={{
                       backgroundColor:
                         record.status === "Delivered"
@@ -321,7 +325,7 @@ const NGOInventory = () => {
               case "urgency":
                 return (
                   <span
-                    className="text-[9px] font-black uppercase px-2.5 py-1 rounded-md border tracking-wider shadow-sm"
+                    className="text-[9px] font-black uppercase px-2.5 py-1 rounded-sm border tracking-wider"
                     style={{
                       backgroundColor:
                         record.urgency === "High"
@@ -380,50 +384,52 @@ const NGOInventory = () => {
         title="Item Details"
       >
         {selectedRecord && (
-          <div className="space-y-8 p-6">
+          <div className="space-y-8 p-3 sm:p-4 lg:p-5">
             {/* Branded Item Hero */}
             <div
-              className="p-6 rounded-3xl flex items-center gap-6 relative overflow-hidden border"
+              className="p-5 rounded-sm flex items-center gap-5 relative overflow-hidden border"
               style={{
                 backgroundColor: "var(--bg-secondary)",
                 borderColor: "var(--border-color)",
               }}
             >
-              <div className="absolute top-0 right-0 p-4 opacity-5">
-                <Package size={80} className="text-hf-green" />
+              <div className="absolute -top-6 -right-6 p-4 opacity-[0.03]">
+                <Package size={120} className="text-hf-green" />
               </div>
-              <div className="w-16 h-16 bg-hf-green rounded-2xl shadow-sm border border-hf-green/40 flex items-center justify-center text-3xl font-black text-white relative z-10 uppercase">
+              <div className="w-14 h-14 bg-hf-green rounded-sm border border-hf-green/40 flex items-center justify-center text-2xl font-black text-white relative z-10 uppercase shrink-0">
                 {selectedRecord.item.substring(0, 1)}
               </div>
-              <div className="space-y-1 relative z-10">
+              <div className="flex-1 min-w-0 space-y-2 relative z-10">
                 <h4
-                  className="text-xl font-black uppercase tracking-tight"
+                  className="text-[17px] font-black uppercase tracking-tight leading-none"
                   style={{ color: "var(--text-primary)" }}
                 >
                   {selectedRecord.item}
                 </h4>
-                <div className="flex flex-wrap items-center gap-3">
-                  <p
-                    className="text-[10px] font-bold flex items-center gap-1.5 uppercase tracking-widest px-2.5 py-1 rounded-md border"
+                <div className="flex flex-wrap items-center gap-2">
+                  <div
+                    className="flex items-center gap-1.5 px-2 py-1 rounded-sm border"
                     style={{
                       backgroundColor: "var(--bg-primary)",
                       borderColor: "var(--border-color)",
-                      color: "var(--text-secondary)",
                     }}
                   >
                     <MapPin size={10} className="text-hf-green" />
-                    {selectedRecord.location}
-                  </p>
-                  <span
-                    className="text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md border"
+                    <span className="text-[9px] font-black uppercase tracking-widest text-[var(--text-secondary)]">
+                      {selectedRecord.location}
+                    </span>
+                  </div>
+                  <div
+                    className="px-2 py-1 rounded-sm border"
                     style={{
                       backgroundColor: "var(--bg-primary)",
                       borderColor: "var(--border-color)",
-                      color: "var(--color-emerald)",
                     }}
                   >
-                    {selectedRecord.category}
-                  </span>
+                    <span className="text-[9px] font-black uppercase tracking-widest text-[#22c55e]">
+                      {selectedRecord.category}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -431,42 +437,39 @@ const NGOInventory = () => {
             {!isEditing ? (
               /* Detail View: Information Rich Summary */
               <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-3">
                   <div
-                    className="p-4 rounded-2xl space-y-1 border"
+                    className="p-4 rounded-sm space-y-1.5 border"
                     style={{
                       backgroundColor: "var(--bg-secondary)",
                       borderColor: "var(--border-color)",
                     }}
                   >
                     <span
-                      className="text-[9px] font-black uppercase tracking-widest"
+                      className="text-[8px] font-black uppercase tracking-[0.2em] block"
                       style={{ color: "var(--text-muted)" }}
                     >
                       Quantity
                     </span>
                     <p
-                      className="text-xl font-black"
+                      className="text-xl font-black tracking-tighter"
                       style={{ color: "var(--text-primary)" }}
                     >
                       {selectedRecord.quantity}{" "}
-                      <span
-                        className="text-xs font-bold uppercase"
-                        style={{ color: "var(--text-muted)" }}
-                      >
+                      <span className="text-[10px] font-black uppercase opacity-40 ml-1">
                         {selectedRecord.unit}
                       </span>
                     </p>
                   </div>
                   <div
-                    className="p-4 rounded-2xl space-y-1 border"
+                    className="p-4 rounded-sm space-y-1.5 border"
                     style={{
                       backgroundColor: "var(--bg-secondary)",
                       borderColor: "var(--border-color)",
                     }}
                   >
                     <span
-                      className="text-[9px] font-black uppercase tracking-widest"
+                      className="text-[8px] font-black uppercase tracking-[0.2em] block"
                       style={{ color: "var(--text-muted)" }}
                     >
                       Item Condition
@@ -482,7 +485,7 @@ const NGOInventory = () => {
                         }`}
                       />
                       <p
-                        className="text-[13px] font-black uppercase tracking-tight"
+                        className="text-[14px] font-black uppercase tracking-tight"
                         style={{ color: "var(--text-primary)" }}
                       >
                         {selectedRecord.condition}
@@ -500,68 +503,94 @@ const NGOInventory = () => {
                     More Information
                   </div>
                   <div
-                    className="border rounded-2xl divide-y overflow-hidden"
+                    className="border rounded-sm divide-y overflow-hidden"
                     style={{
                       backgroundColor: "var(--bg-primary)",
                       borderColor: "var(--border-color)",
                     }}
                   >
                     <div
-                      className="p-4 flex items-center justify-between border-b"
+                      className="p-4 flex items-center justify-between"
                       style={{ borderColor: "var(--border-color)" }}
                     >
                       <span
-                        className="text-[11px] font-bold uppercase tracking-wider"
+                        className="text-[10px] font-bold uppercase tracking-widest"
                         style={{ color: "var(--text-muted)" }}
                       >
                         Expiry Date
                       </span>
                       <span
-                        className="text-[11px] font-black flex items-center gap-2"
+                        className="text-[12px] font-black flex items-center gap-2 tabular-nums"
                         style={{ color: "var(--text-primary)" }}
                       >
-                        <Calendar size={12} className="text-[#22c55e]" />
+                        <Calendar size={14} className="text-[#22c55e]" />
                         {selectedRecord.expiryDate}
                       </span>
                     </div>
                     <div
-                      className="p-4 flex items-center justify-between border-b"
+                      className="p-4 flex items-center justify-between border-t"
                       style={{ borderColor: "var(--border-color)" }}
                     >
                       <span
-                        className="text-[11px] font-bold uppercase tracking-wider"
+                        className="text-[10px] font-bold uppercase tracking-widest"
                         style={{ color: "var(--text-muted)" }}
                       >
                         Current Status
                       </span>
-                      <TableChip
-                        text={selectedRecord.status}
-                        iconClassName={
-                          selectedRecord.status === "Delivered"
-                            ? "bg-emerald-500"
-                            : selectedRecord.status === "In Transit"
-                              ? "bg-blue-500"
-                              : "bg-slate-400"
-                        }
-                      />
+                      <div
+                        className="flex items-center gap-2 px-3 py-1.5 rounded-sm border"
+                        style={{
+                          backgroundColor: "var(--bg-secondary)",
+                          borderColor: "var(--border-color)",
+                        }}
+                      >
+                        <div
+                          className={`w-2 h-2 rounded-full ${
+                            selectedRecord.status === "Delivered"
+                              ? "bg-emerald-500"
+                              : selectedRecord.status === "In Transit"
+                                ? "bg-blue-500"
+                                : "bg-slate-400"
+                          }`}
+                        />
+                        <span
+                          className="text-[11px] font-black uppercase tracking-tight"
+                          style={{ color: "var(--text-primary)" }}
+                        >
+                          {selectedRecord.status}
+                        </span>
+                      </div>
                     </div>
-                    <div className="p-4 space-y-2">
+                    <div
+                      className="p-4 space-y-2 border-t"
+                      style={{ borderColor: "var(--border-color)" }}
+                    >
                       <span
-                        className="text-[11px] font-bold uppercase tracking-wider"
+                        className="text-[10px] font-bold uppercase tracking-widest"
                         style={{ color: "var(--text-muted)" }}
                       >
                         Notes
                       </span>
-                      <p
-                        className="text-[12px] font-medium italic leading-relaxed p-3 rounded-xl border border-dashed"
+                      <div
+                        className="p-3 rounded-sm border border-dashed min-h-[60px] flex items-center"
                         style={{
                           backgroundColor: "var(--bg-secondary)",
                           borderColor: "var(--border-color)",
-                          color: "var(--text-primary)",
                         }}
                       >
-                        "{selectedRecord.notes}"
-                      </p>
+                        <p
+                          className="text-[12px] font-medium italic leading-relaxed"
+                          style={{
+                            color: selectedRecord.notes
+                              ? "var(--text-primary)"
+                              : "var(--text-muted)",
+                          }}
+                        >
+                          {selectedRecord.notes
+                            ? `"${selectedRecord.notes}"`
+                            : "No extra parameters specified."}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -569,7 +598,7 @@ const NGOInventory = () => {
                 <div className="pt-4 space-y-3">
                   <ResuableButton
                     variant="primary"
-                    className="w-full py-4 rounded-2xl bg-hf-green hover:bg-hf-green/90 shadow-lg shadow-hf-green/10"
+                    className="w-full py-4 rounded-sm bg-hf-green hover:bg-hf-green/90"
                     onClick={() => setIsEditing(true)}
                   >
                     <span className="text-[11px] font-black uppercase tracking-widest">
@@ -593,19 +622,21 @@ const NGOInventory = () => {
                     className="text-[10px] font-black uppercase tracking-[0.3em]"
                     style={{ color: "var(--color-emerald)" }}
                   >
-                    Update Information
+                    Edit Details
                   </h5>
                   <button
                     onClick={() => setIsEditing(false)}
-                    className="text-[9px] font-black uppercase tracking-widest underline underline-offset-4 transition-colors"
-                    style={{ color: "var(--text-muted)" }}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm border bg-hf-green/5 border-hf-green/20 text-hf-green hover:bg-hf-green/10 transition-all active:scale-95 shrink-0"
                   >
-                    Back to Details
+                    <ArrowLeft size={10} strokeWidth={4} />
+                    <span className="text-[9px] font-black uppercase tracking-widest pt-0.5">
+                      Back
+                    </span>
                   </button>
                 </div>
 
                 <div
-                  className="grid grid-cols-1 gap-6 p-6 rounded-3xl border"
+                  className="grid grid-cols-1 gap-6 p-6 rounded-sm border"
                   style={{
                     backgroundColor: "var(--bg-secondary)",
                     borderColor: "var(--border-color)",
@@ -653,8 +684,8 @@ const NGOInventory = () => {
                       className="text-[11px] font-bold leading-relaxed"
                       style={{ color: "#60a5fa" }}
                     >
-                      Updating records will trigger a notification to the
-                      destination location and update the live distribution log.
+                      Saving these changes will update the inventory records and
+                      notify the distribution center.
                     </p>
                   </div>
                 </div>
@@ -662,7 +693,7 @@ const NGOInventory = () => {
                 <div className="pt-4 space-y-3">
                   <ResuableButton
                     variant="primary"
-                    className="w-full py-4 rounded-2xl bg-hf-green hover:bg-hf-green/90"
+                    className="w-full py-4 rounded-sm bg-hf-green hover:bg-hf-green/90"
                     disabled={isUpdating}
                     onClick={handleUpdateStock}
                   >
@@ -677,7 +708,7 @@ const NGOInventory = () => {
                   </ResuableButton>
                   <ResuableButton
                     variant="ghost"
-                    className="w-full py-4 rounded-2xl"
+                    className="w-full py-4 rounded-sm"
                     disabled={isUpdating}
                     onClick={() => setIsEditing(false)}
                   >

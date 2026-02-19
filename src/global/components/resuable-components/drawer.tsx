@@ -27,6 +27,7 @@ interface ResuableDrawerProps {
     | "5xl"
     | "full";
   headerExtra?: React.ReactNode;
+  hideHeaderBorder?: boolean;
 }
 
 const ResuableDrawer: React.FC<ResuableDrawerProps> = ({
@@ -38,6 +39,7 @@ const ResuableDrawer: React.FC<ResuableDrawerProps> = ({
   footer,
   size = "md",
   headerExtra,
+  hideHeaderBorder = true,
 }) => {
   const sizeClasses = {
     xs: "sm:max-w-xs",
@@ -63,9 +65,9 @@ const ResuableDrawer: React.FC<ResuableDrawerProps> = ({
       classNames={{
         base: `rounded-none w-full ${sizeClasses[size as keyof typeof sizeClasses] || "sm:max-w-md"} shadow-none thin-scrollbar`,
         backdrop: "bg-black/40 backdrop-blur-md",
-        header: "border-b p-0",
+        header: `${hideHeaderBorder ? "" : "border-b border-[var(--border-color)]"} p-0`,
         body: "p-0 overflow-hidden",
-        footer: "border-t p-5",
+        footer: "border-t border-[var(--border-color)] p-5",
       }}
       style={{
         backgroundColor: "var(--bg-primary)",
@@ -99,10 +101,13 @@ const ResuableDrawer: React.FC<ResuableDrawerProps> = ({
                 {headerExtra}
                 <button
                   onClick={onClose}
-                  className="p-1.5 hover:bg-slate-500/10 rounded-sm transition-colors"
+                  className="w-8 h-8 flex items-center justify-center rounded-sm border border-transparent hover:border-[var(--border-color)] hover:bg-[var(--bg-secondary)] transition-all duration-300 group"
                   style={{ color: "var(--text-muted)" }}
                 >
-                  <X size={18} />
+                  <X
+                    size={16}
+                    className="group-hover:rotate-90 transition-transform duration-300"
+                  />
                 </button>
               </div>
             </DrawerHeader>

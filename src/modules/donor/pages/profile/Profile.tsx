@@ -212,10 +212,10 @@ const DonorProfile = () => {
 
   return (
     <div
-      className="min-h-screen flex flex-col pb-20 font-sans"
+      className="min-h-screen flex flex-col font-sans"
       style={{ backgroundColor: "var(--bg-secondary)" }}
     >
-      {/* 1. CLEAN HEADER */}
+      {/* 1. CLEAN HEADER (TECHNICAL LUXURY) */}
       <header
         className="sticky top-0 z-50 border-b shadow-sm"
         style={{
@@ -223,52 +223,65 @@ const DonorProfile = () => {
           borderColor: "var(--border-color)",
         }}
       >
-        <div className="max-w-7xl mx-auto px-6 md:px-8 py-4 flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
+        <div className="max-w-7xl mx-auto p-6 sm:p-8 lg:px-5 py-6 md:py-8 flex flex-col md:flex-row items-center justify-between gap-10">
+          <div className="flex flex-col md:flex-row items-center gap-8 text-center md:text-left">
+            {/* Logo Container */}
             <div
-              className="w-20 h-20 rounded-lg border p-1 shadow-sm overflow-hidden flex items-center justify-center"
+              className="w-28 h-28 md:w-24 md:h-24 rounded-2xl border p-2 shadow-xl overflow-hidden flex items-center justify-center bg-white shrink-0 group hover:scale-[1.02] transition-transform duration-500"
               style={{
-                backgroundColor: "var(--bg-secondary)",
                 borderColor: "var(--border-color)",
               }}
             >
               <img
                 src="/hotel_logo1.jpg"
-                alt="Logo"
-                className="w-full h-full object-cover rounded-md"
+                alt="Business Logo"
+                className="w-full h-full object-contain rounded-xl"
               />
             </div>
 
-            <div className="space-y-2">
-              <div className="flex items-center justify-center md:justify-start gap-2">
-                <span
-                  className="px-2.5 py-1 text-green-600 text-[10px] font-black tracking-widest rounded-md border flex items-center gap-1.5"
+            <div className="space-y-4">
+              {/* Status & Identifiers */}
+              <div className="flex items-center justify-center md:justify-start gap-4 flex-wrap">
+                <div
+                  className="px-3 py-1.5 text-green-600 text-[9px] font-black tracking-widest rounded-sm border flex items-center gap-2 whitespace-nowrap shadow-sm"
                   style={{
                     backgroundColor: "rgba(34, 197, 94, 0.08)",
                     borderColor: "rgba(34, 197, 94, 0.2)",
                   }}
                 >
-                  <ShieldCheck size={12} /> {profile.verificationLevel}
-                </span>
-                <span
-                  className="text-[10px] font-bold tracking-widest"
+                  <ShieldCheck size={14} /> {profile.verificationLevel}
+                </div>
+                <div className="flex items-center gap-2">
+                  <span
+                    className="text-[9px] font-black uppercase tracking-widest"
+                    style={{ color: "var(--text-muted)" }}
+                  >
+                    Reg Id:
+                  </span>
+                  <span
+                    className="text-[9px] font-black uppercase tracking-widest"
+                    style={{ color: "var(--text-primary)" }}
+                  >
+                    {profile.registrationId}
+                  </span>
+                </div>
+              </div>
+
+              {/* Business Name & Type */}
+              <div className="space-y-1">
+                <h1
+                  className="text-3xl md:text-4xl font-black tracking-tighter uppercase leading-none"
+                  style={{ color: "var(--text-primary)" }}
+                >
+                  {profile.businessName}
+                </h1>
+                <p
+                  className="font-black text-[10px] uppercase tracking-[0.4em]"
                   style={{ color: "var(--text-muted)" }}
                 >
-                  Reg Id: {profile.registrationId}
-                </span>
+                  {profile.businessType}
+                </p>
               </div>
-              <h1
-                className="text-2xl md:text-3xl font-black tracking-tight uppercase leading-none"
-                style={{ color: "var(--text-primary)" }}
-              >
-                {profile.businessName}
-              </h1>
-              <p
-                className="font-bold text-xs tracking-widest"
-                style={{ color: "var(--text-muted)" }}
-              >
-                {profile.businessType}
-              </p>
             </div>
           </div>
 
@@ -279,16 +292,19 @@ const DonorProfile = () => {
                 resetSupportHub();
                 setIsRequestDrawerOpen(true);
               }}
-              className="w-full md:w-auto px-8 h-12 rounded-md shadow-sm text-white text-[10px] font-black tracking-widest flex items-center gap-2"
+              className="w-full md:w-auto px-8 py-4 md:py-7 rounded-2xl shadow-2xl shadow-hf-green/10 text-white text-[10px] md:text-[11px] font-black uppercase tracking-[0.15em] md:tracking-[0.2em] flex items-center justify-center gap-2.5 active:scale-95 transition-all hover:brightness-110"
             >
-              <ShieldCheck size={16} />
-              Request Information Update
+              <ShieldCheck size={18} className="shrink-0" />
+              <span className="lg:hidden">Update Info</span>
+              <span className="hidden lg:inline">
+                Request Information Update
+              </span>
             </ResuableButton>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto w-full px-6 md:px-8 mt-5 space-y-5">
+      <main className="max-w-7xl mx-auto w-full p-3 sm:p-4 lg:p-5 space-y-5">
         {/* 2. STATS GRID */}
         <section>
           <ImpactCards
@@ -830,7 +846,7 @@ const DonorProfile = () => {
         subtitle="Manage secure inquiries and information update requests"
         size="md"
       >
-        <div className="p-8 h-full flex flex-col">
+        <div className="p-3 sm:p-4 lg:p-5 h-full flex flex-col">
           {isSubmitted ? (
             /* SUCCESS FEEDBACK VIEW */
             <div className="flex-grow flex flex-col items-center justify-center space-y-6 animate-in zoom-in-95 fade-in duration-500">

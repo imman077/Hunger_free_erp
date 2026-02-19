@@ -159,7 +159,7 @@ export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
         key={d}
         type="button"
         onClick={() => handleSelectDay(d)}
-        className={`h-8 w-8 text-[11px] font-bold rounded-none flex items-center justify-center transition-all ${
+        className={`h-8 w-8 text-[11px] font-bold rounded-sm flex items-center justify-center transition-all ${
           isSelected(d)
             ? "text-white"
             : isToday(d)
@@ -201,7 +201,7 @@ export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
     >
       {label && (
         <label
-          className="text-[10px] font-bold uppercase tracking-widest block mb-1 px-1"
+          className="text-[8px] font-black uppercase tracking-widest block mb-1 px-1"
           style={{ color: "var(--text-muted)" }}
         >
           {label} {required && <span className="text-red-500">*</span>}
@@ -212,7 +212,7 @@ export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
           ref={buttonRef}
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="w-full flex items-center gap-3 border px-3 py-2.5 rounded-none text-xs font-semibold transition-all"
+          className="w-full flex items-center gap-3 border px-3 py-3 rounded-sm text-[13px] font-semibold transition-all"
           style={{
             backgroundColor: "var(--bg-secondary)",
             borderColor: "var(--border-color)",
@@ -232,7 +232,7 @@ export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
 
         {isOpen && (
           <div
-            className={`absolute left-1/2 -translate-x-1/2 border rounded-none z-[9999] p-4 w-64 animate-in fade-in zoom-in-95 duration-200 ${
+            className={`absolute left-1/2 -translate-x-1/2 border rounded-sm z-[9999] p-4 w-64 animate-in fade-in zoom-in-95 duration-200 ${
               openUpward ? "bottom-full mb-1" : "top-full mt-1"
             }`}
             style={{
@@ -251,7 +251,7 @@ export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
                 <button
                   onClick={handlePrevMonth}
                   type="button"
-                  className="p-1 rounded-none transition-colors"
+                  className="p-1 rounded-sm transition-colors"
                   style={{ color: "var(--text-muted)" }}
                 >
                   <Icon name="chevron-down" className="w-4 h-4 rotate-90" />

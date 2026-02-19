@@ -55,47 +55,41 @@ const CreateDonation = () => {
 
   return (
     <div
-      className="p-8 md:p-10 w-full mx-auto min-h-screen"
+      className="p-3 sm:p-4 lg:p-5 pb-10 w-full mx-auto min-h-screen"
       style={{ backgroundColor: "var(--bg-secondary)" }}
     >
       {/* Header Bar */}
-      <div className="max-w-5xl mx-auto mb-10">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-          <div className="flex items-center gap-4 sm:gap-6">
-            <button
-              onClick={() => navigate("/donor/donations")}
-              className="flex items-center gap-2 transition-colors group shrink-0"
-              style={{ color: "var(--text-secondary)" }}
-            >
-              <ArrowLeft
-                size={18}
-                className="group-hover:-translate-x-1 transition-transform"
-              />
-              <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-widest pt-0.5">
-                Back
-              </span>
-            </button>
-            <div className="h-8 w-px bg-[var(--border-color)]" />
-            <div className="min-w-0">
-              <h1
-                className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tighter leading-none truncate"
-                style={{ color: "var(--text-primary)" }}
-              >
-                Create Donation
-              </h1>
-            </div>
-          </div>
-          <div
-            className="self-start sm:self-center border px-4 py-1.5 rounded-lg flex items-center gap-2.5 shadow-sm"
-            style={{
-              backgroundColor: "rgba(34, 197, 94, 0.08)",
-              borderColor: "rgba(34, 197, 94, 0.2)",
-            }}
+      <div className="max-w-5xl mx-auto mb-8 sm:mb-12 px-1 sm:px-0">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-8">
+          {/* Back Button */}
+          <button
+            onClick={() => navigate("/donor/donations")}
+            className="flex items-center gap-2 transition-colors group w-fit"
+            style={{ color: "var(--text-secondary)" }}
           >
-            <div className="w-2 h-2 rounded-full bg-[#22c55e] animate-pulse" />
-            <span className="text-[10px] font-black text-[#22c55e] uppercase tracking-widest">
-              Live Entry
+            <ArrowLeft
+              size={16}
+              className="group-hover:-translate-x-1 transition-transform"
+            />
+            <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] pt-0.5">
+              Back
             </span>
+          </button>
+
+          {/* Desktop Divider */}
+          <div className="hidden sm:block h-10 w-px bg-[var(--border-color)] opacity-60" />
+
+          {/* Title Section */}
+          <div className="min-w-0">
+            <h1
+              className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter leading-none"
+              style={{ color: "var(--text-primary)" }}
+            >
+              Create Donation
+            </h1>
+            <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-30 mt-2 block sm:hidden">
+              Contribution Portal
+            </p>
           </div>
         </div>
       </div>

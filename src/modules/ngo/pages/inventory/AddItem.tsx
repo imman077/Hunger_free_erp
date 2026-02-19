@@ -37,20 +37,20 @@ const AddItem = () => {
   const [isSuccess, setIsSuccess] = useState(false);
 
   const categories = [
-    { value: "Perishable", label: "Fresh/Perishable" },
-    { value: "Grains", label: "Grains & Rice" },
-    { value: "Essentials", label: "Basic Essentials" },
-    { value: "Medical", label: "Medical Supplies" },
+    { value: "Perishable", label: "Fresh" },
+    { value: "Grains", label: "Grains" },
+    { value: "Essentials", label: "Essentials" },
+    { value: "Medical", label: "Medical" },
     { value: "Beverages", label: "Beverages" },
     { value: "other", label: "Other" },
   ];
 
   const units = [
-    { value: "kg", label: "Kilograms (kg)" },
-    { value: "units", label: "Individual Units" },
-    { value: "packs", label: "Pre-packed Packs" },
-    { value: "liters", label: "Liters (L)" },
-    { value: "boxes", label: "Bulk Boxes" },
+    { value: "kg", label: "kg" },
+    { value: "units", label: "Units" },
+    { value: "packs", label: "Packs" },
+    { value: "liters", label: "Liters" },
+    { value: "boxes", label: "Boxes" },
   ];
 
   useEffect(() => {
@@ -82,75 +82,47 @@ const AddItem = () => {
     // Simulate API call
     setTimeout(() => {
       setIsSubmitting(false);
-      toast.success("Item successfully synchronized with inventory", {
-        description: `${formData.name} has been added to the database.`,
+      toast.success("Item Added", {
+        description: `${formData.name} added to inventory.`,
       });
       navigate("/ngo/inventory");
     }, 1500);
   };
 
   return (
-    <div className="w-full space-y-8 max-w-[1000px] mx-auto p-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="w-full space-y-6 sm:space-y-8 max-w-[1000px] mx-auto p-4 sm:p-6 lg:p-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* Tactical Header */}
       <div
-        className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b pb-8"
+        className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b pb-6 sm:pb-8"
         style={{ borderColor: "var(--border-color)" }}
       >
         <div className="space-y-1">
           <button
             onClick={() => navigate("/ngo/inventory")}
-            className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] transition-colors mb-4"
-            style={{ color: "var(--text-muted)" }}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm border bg-hf-green/5 border-hf-green/20 text-hf-green hover:bg-hf-green/10 transition-all active:scale-95 mb-4 w-fit"
           >
-            <ChevronLeft size={14} className="text-hf-green" />
-            Back to Inventory
+            <ChevronLeft size={10} strokeWidth={4} />
+            <span className="text-[9px] font-black uppercase tracking-widest pt-0.5">
+              Inventory
+            </span>
           </button>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
             <div
-              className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg border"
+              className="w-10 h-10 sm:w-12 sm:h-12 rounded-sm flex items-center justify-center border shrink-0"
               style={{
                 backgroundColor: "var(--bg-secondary)",
                 borderColor: "var(--border-color)",
               }}
             >
-              <Package size={24} className="text-hf-green" />
+              <Package size={20} className="text-hf-green sm:hidden" />
+              <Package size={24} className="text-hf-green hidden sm:block" />
             </div>
             <h1
-              className="text-4xl font-black tracking-tighter uppercase leading-none"
+              className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tighter uppercase leading-none"
               style={{ color: "var(--text-primary)" }}
             >
               Add New <span className="text-hf-green">Item</span>
             </h1>
-          </div>
-        </div>
-
-        <div
-          className="flex items-center gap-4 px-4 py-2 rounded-2xl border shadow-sm self-start md:self-center"
-          style={{
-            backgroundColor: "var(--bg-primary)",
-            borderColor: "var(--border-color)",
-          }}
-        >
-          <div className="flex flex-col items-end">
-            <span
-              className="text-[9px] font-black uppercase tracking-widest leading-none mb-0.5"
-              style={{ color: "var(--text-muted)" }}
-            >
-              System Status
-            </span>
-            <span className="text-[11px] font-black text-hf-green uppercase tracking-wider">
-              Online
-            </span>
-          </div>
-          <div className="relative">
-            <div
-              className="w-2.5 h-2.5 rounded-full border-2 shadow-sm"
-              style={{
-                backgroundColor: "var(--color-emerald)",
-                borderColor: "var(--bg-primary)",
-              }}
-            />
-            <div className="absolute inset-0 w-2.5 h-2.5 rounded-full bg-hf-green animate-ping opacity-20" />
           </div>
         </div>
       </div>
@@ -161,32 +133,32 @@ const AddItem = () => {
         className="grid grid-cols-1 lg:grid-cols-12 gap-8"
       >
         {/* Left Column: Essential Data */}
-        <div className="lg:col-span-12 space-y-6">
+        <div className="lg:col-span-12 space-y-4 sm:space-y-6">
           <div
-            className="p-8 rounded-3xl border shadow-sm relative overflow-hidden group"
+            className="p-4 sm:p-6 md:p-8 rounded-sm border relative overflow-hidden group"
             style={{
               backgroundColor: "var(--bg-primary)",
               borderColor: "var(--border-color)",
             }}
           >
             {/* Background Decoration */}
-            <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-hf-green opacity-5 blur-3xl rounded-full group-hover:opacity-10 transition-opacity" />
+            <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-hf-green opacity-[0.02] blur-3xl rounded-full transition-opacity" />
 
-            <div className="relative space-y-8">
+            <div className="relative space-y-6 sm:space-y-8">
               <div
-                className="flex items-center gap-3 border-b pb-6"
+                className="flex items-center gap-3 border-b pb-4 sm:pb-6"
                 style={{ borderColor: "var(--border-color)" }}
               >
-                <ClipboardList size={20} className="text-hf-green" />
+                <ClipboardList size={18} className="text-hf-green" />
                 <h2
-                  className="text-sm font-black uppercase tracking-[0.2em]"
+                  className="text-[11px] font-black uppercase tracking-[0.2em]"
                   style={{ color: "var(--text-primary)" }}
                 >
                   Item Details
                 </h2>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-10">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 sm:gap-x-8 gap-y-8 sm:gap-y-10">
                 <ResuableInput
                   label="Item Name"
                   placeholder="e.g. Organic Brown Rice"
@@ -209,7 +181,7 @@ const AddItem = () => {
                     onClick={() => setIsSuggestModalOpen(true)}
                     className="flex items-center gap-1.5 text-[8px] font-black text-hf-green hover:underline underline-offset-4 decoration-2 uppercase tracking-[0.2em] px-1 mt-1.5 transition-colors"
                   >
-                    Request new category from admin
+                    Request new category
                   </button>
                 </div>
 
@@ -227,7 +199,7 @@ const AddItem = () => {
                   </div>
                 )}
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <ResuableInput
                     label="Quantity"
                     placeholder="0.00"
@@ -268,10 +240,10 @@ const AddItem = () => {
                     label="Item Condition"
                     value={
                       formData.condition === "Excellent"
-                        ? "Excellent Condition"
+                        ? "Excellent"
                         : formData.condition === "Good"
-                          ? "Good/Standard"
-                          : "Critical/Expires Soon"
+                          ? "Good"
+                          : "Critical"
                     }
                     onChange={() => {}}
                     disabled
@@ -308,30 +280,29 @@ const AddItem = () => {
                 />
               </div>
 
-              {/* Action Hub */}
-              <div className="flex items-center justify-end gap-4 pt-6">
+              <div className="flex flex-col sm:flex-row items-center justify-end gap-3 sm:gap-4 pt-6">
                 <button
                   type="button"
                   onClick={() => navigate("/ngo/inventory")}
-                  className="px-8 py-3.5 text-[11px] font-black uppercase tracking-widest transition-colors"
+                  className="w-full sm:w-auto px-8 py-3.5 text-[11px] font-black uppercase tracking-widest transition-colors hover:text-hf-green"
                   style={{ color: "var(--text-muted)" }}
                 >
-                  Cancel
+                  Discard
                 </button>
                 <ResuableButton
                   type="submit"
                   disabled={isSubmitting}
-                  className={`flex items-center gap-2.5 px-10 py-4 bg-hf-green text-white rounded-2xl shadow-xl shadow-hf-green/10 hover:bg-hf-green/90 transition-all active:scale-95 ${
+                  className={`w-full sm:w-auto flex items-center justify-center gap-2.5 px-10 py-4 bg-hf-green text-white rounded-sm hover:bg-hf-green/90 transition-all active:scale-95 ${
                     isSubmitting ? "opacity-70" : ""
                   }`}
                 >
                   {isSubmitting ? (
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-sm animate-spin" />
                   ) : (
                     <Check size={16} className="text-white" />
                   )}
                   <span className="text-[11px] font-black uppercase tracking-[0.15em] pt-0.5">
-                    {isSubmitting ? "Saving..." : "Save Item"}
+                    {isSubmitting ? "Saving..." : "Add Item"}
                   </span>
                 </ResuableButton>
               </div>

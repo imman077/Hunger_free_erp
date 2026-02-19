@@ -91,15 +91,15 @@ const ResuableInput: React.FC<ResuableInputProps> = ({
           onChange={(e) => onChange(e.target.value)}
           disabled={disabled}
           required={required}
-          className={`w-full border py-2.5 rounded-sm text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#22c55e]/10 focus:border-[#22c55e] transition-all disabled:opacity-50 disabled:cursor-not-allowed ${alignClass} ${inputClassName}`}
+          className={`w-full border py-3 rounded-sm text-[13px] font-semibold focus:outline-none focus:ring-4 focus:ring-hf-green/5 focus:border-hf-green transition-all disabled:opacity-50 disabled:cursor-not-allowed ${alignClass} ${inputClassName}`}
           style={{
             backgroundColor: inputClassName.includes("bg-")
               ? undefined
               : "var(--bg-secondary)",
             borderColor: "var(--border-color)",
             color: "var(--text-primary)",
-            paddingLeft: startContent ? "2rem" : "0.625rem",
-            paddingRight: endContent ? "2.5rem" : "0.625rem",
+            paddingLeft: startContent ? "2.75rem" : "1rem",
+            paddingRight: endContent ? "2.75rem" : "1rem",
             caretColor: "var(--color-emerald)",
           }}
         />

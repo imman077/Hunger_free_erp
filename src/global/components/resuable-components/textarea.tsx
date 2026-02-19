@@ -80,7 +80,7 @@ const ResuableTextarea: React.FC<ResuableTextareaProps> = ({
           onChange={(e) => onChange(e.target.value)}
           disabled={disabled}
           required={required}
-          className={`w-full border px-3 py-2.5 rounded-none text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#22c55e]/50 focus:border-[#22c55e] transition-all disabled:opacity-50 disabled:cursor-not-allowed resize-none ${alignClass}`}
+          className={`w-full border px-3 py-3 rounded-sm text-[13px] font-semibold focus:outline-none focus:ring-1 focus:ring-[#22c55e]/50 focus:border-[#22c55e] transition-all disabled:opacity-50 disabled:cursor-not-allowed resize-none ${alignClass}`}
           style={{
             backgroundColor: "var(--bg-secondary)",
             borderColor: "var(--border-color)",

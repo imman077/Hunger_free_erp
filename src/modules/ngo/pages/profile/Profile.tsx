@@ -210,12 +210,12 @@ const NGOProfile = () => {
 
   return (
     <div
-      className="min-h-screen flex flex-col pb-20 font-sans"
+      className="min-h-screen flex flex-col font-sans"
       style={{ backgroundColor: "var(--bg-secondary)" }}
     >
       {/* 1. CLEAN HEADER */}
       <header
-        className="sticky top-0 z-50 border-b shadow-sm"
+        className="sticky top-0 z-50 border-b"
         style={{
           backgroundColor: "var(--bg-primary)",
           borderColor: "var(--border-color)",
@@ -224,7 +224,7 @@ const NGOProfile = () => {
         <div className="max-w-7xl mx-auto px-6 md:px-8 py-4 flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
             <div
-              className="w-20 h-20 rounded-lg border p-1 shadow-sm overflow-hidden flex items-center justify-center"
+              className="w-20 h-20 rounded-sm border p-1 overflow-hidden flex items-center justify-center mx-auto md:mx-0"
               style={{
                 backgroundColor: "#22c55e",
                 borderColor: "var(--border-color)",
@@ -233,32 +233,33 @@ const NGOProfile = () => {
               <span className="text-3xl font-black text-white">GH</span>
             </div>
 
-            <div className="space-y-2">
-              <div className="flex items-center justify-center md:justify-start gap-2">
+            <div className="space-y-1.5 flex flex-col items-center md:items-start">
+              <div className="flex items-center justify-center md:justify-start gap-3">
                 <span
-                  className="px-2.5 py-1 text-green-600 text-[10px] font-black tracking-widest rounded-md border flex items-center gap-1.5"
+                  className="px-2.5 py-1 text-hf-green text-[9px] font-black tracking-widest rounded-sm border flex items-center gap-1.5"
                   style={{
-                    backgroundColor: "rgba(34, 197, 94, 0.08)",
-                    borderColor: "rgba(34, 197, 94, 0.2)",
+                    backgroundColor: "var(--bg-secondary)",
+                    borderColor: "var(--border-color)",
                   }}
                 >
-                  <ShieldCheck size={12} /> {profile.verificationLevel}
+                  <ShieldCheck size={11} className="text-hf-green" />{" "}
+                  {profile.verificationLevel}
                 </span>
                 <span
-                  className="text-[10px] font-bold tracking-widest"
+                  className="text-[9px] font-bold uppercase tracking-widest opacity-60"
                   style={{ color: "var(--text-muted)" }}
                 >
-                  Reg Id: {profile.registrationId}
+                  ID: {profile.registrationId}
                 </span>
               </div>
               <h1
-                className="text-2xl md:text-3xl font-black tracking-tight uppercase leading-none"
+                className="text-2xl md:text-3xl font-black tracking-tighter uppercase leading-none"
                 style={{ color: "var(--text-primary)" }}
               >
                 {profile.ngoName}
               </h1>
               <p
-                className="font-bold text-xs tracking-widest"
+                className="font-bold text-[10px] uppercase tracking-[0.2em]"
                 style={{ color: "var(--text-muted)" }}
               >
                 {profile.ngoType}
@@ -273,16 +274,16 @@ const NGOProfile = () => {
                 resetSupportHub();
                 setIsRequestDrawerOpen(true);
               }}
-              className="w-full md:w-auto px-8 h-12 rounded-md shadow-sm text-white text-[10px] font-black tracking-widest flex items-center gap-2"
+              className="w-full md:w-auto px-8 h-12 rounded-sm bg-hf-green hover:bg-hf-green/90 text-white text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2.5 transition-all active:scale-95"
             >
-              <ShieldCheck size={16} />
-              Request Information Update
+              <BadgeCheck size={16} />
+              Request Update
             </ResuableButton>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto w-full px-6 md:px-8 mt-5 space-y-5">
+      <main className="max-w-7xl mx-auto w-full p-3 sm:p-4 lg:p-5 space-y-5">
         {/* 2. STATS GRID */}
         <section>
           <ImpactCards

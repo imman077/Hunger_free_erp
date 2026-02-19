@@ -296,7 +296,7 @@ const DonationRequests = () => {
                 className="text-2xl md:text-3xl font-black tracking-tighter uppercase leading-none"
                 style={{ color: "var(--text-primary)" }}
               >
-                Donation <span className="text-[#22c55e]">Hub</span>
+                Donation <span className="text-hf-green">Hub</span>
               </h1>
             </div>
           </div>
@@ -307,7 +307,7 @@ const DonationRequests = () => {
           >
             <Plus size={16} className="font-black" />
             <span className="text-[10px] font-black uppercase tracking-widest pt-0.5">
-              Post New Need
+              Post Request
             </span>
           </button>
         </div>
@@ -329,7 +329,7 @@ const DonationRequests = () => {
             }}
           >
             {[
-              { id: "marketplace", label: "All Requests" },
+              { id: "marketplace", label: "All Needs" },
               { id: "my-requests", label: "My Requests" },
             ].map((tab) => (
               <button
@@ -366,9 +366,7 @@ const DonationRequests = () => {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder={`Search ${
-                    activeTab === "marketplace" ? "resources" : "your requests"
-                  }...`}
+                  placeholder="Search..."
                   className="w-full pl-11 pr-4 py-2.5 rounded-xl text-[11px] font-bold focus:outline-none focus:ring-2 focus:ring-[#22c55e]/20 transition-all shadow-sm border"
                   style={{
                     backgroundColor: "var(--bg-primary)",
@@ -479,9 +477,9 @@ const DonationRequests = () => {
                 }
               }}
               columns={[
-                { name: "Reference ID", uid: "id", sortable: true },
+                { name: "ID", uid: "id", sortable: true },
                 {
-                  name: "Resource",
+                  name: "Item",
                   uid: "title",
                   sortable: true,
                   align: "start",
@@ -828,55 +826,55 @@ const DonationRequests = () => {
         <ResuableDrawer
           isOpen={isDrawerOpen}
           onClose={closeDrawer}
-          title="Donation Intelligence"
-          subtitle={`Tracking ID: #HF-${selectedRequest?.id}2024`}
+          title="Donation Info"
+          subtitle={`ID: #HF-${selectedRequest?.id}2024`}
           size="md"
+          hideHeaderBorder={true}
         >
           {selectedRequest && (
-            <div className="space-y-6 px-5 md:px-7 pb-10">
+            <div className="space-y-6 p-3 sm:p-4 lg:p-5">
               {/* Hero Section */}
               <div
-                className="p-5 rounded-xl border shadow-sm space-y-3 relative overflow-hidden"
+                className="p-5 rounded-sm border space-y-3 relative overflow-hidden"
                 style={{
                   backgroundColor: "var(--bg-primary)",
                   borderColor: "var(--border-color)",
                 }}
               >
-                <div className="absolute top-3 right-3 flex gap-1 items-center">
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#22c55e] animate-pulse" />
-                  <span className="text-[8px] font-black text-[#22c55e] uppercase tracking-widest">
-                    LIVE SYSTEM
-                  </span>
-                </div>
-
-                <div className="flex items-start justify-between">
-                  <div className="space-y-1">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="space-y-2 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 rounded-full bg-hf-green animate-pulse" />
+                      <span className="text-[10px] font-black text-hf-green uppercase tracking-[0.2em]">
+                        LIVE
+                      </span>
+                    </div>
                     <h3
-                      className="text-xl font-black tracking-tighter uppercase"
+                      className="text-xl md:text-2xl font-black tracking-tighter uppercase leading-tight"
                       style={{ color: "var(--text-primary)" }}
                     >
                       {selectedRequest.title}
                     </h3>
-                    <div className="flex items-center gap-2">
-                      <span className="px-2 py-0.5 bg-[#22c55e]/10 text-[#22c55e] text-[9px] font-black uppercase tracking-widest rounded-full border border-[#22c55e]/20">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="px-2.5 py-1 bg-hf-green/10 text-hf-green text-[9px] font-black uppercase tracking-widest rounded-md border border-hf-green/20">
                         {selectedRequest.status}
                       </span>
                       <span
-                        className="text-[10px] font-bold uppercase tracking-widest"
-                        style={{ color: "var(--text-muted)" }}
+                        className="text-[10px] font-bold uppercase tracking-widest opacity-60"
+                        style={{ color: "var(--text-secondary)" }}
                       >
                         • {selectedRequest.urgency} Urgency
                       </span>
                     </div>
                   </div>
                   <div
-                    className="w-12 h-12 rounded-xl flex items-center justify-center border shrink-0"
+                    className="w-14 h-14 rounded-sm flex items-center justify-center border shrink-0"
                     style={{
                       backgroundColor: "var(--bg-secondary)",
                       borderColor: "var(--border-color)",
                     }}
                   >
-                    <span className="text-2xl">{selectedRequest.icon}</span>
+                    <span className="text-3xl">{selectedRequest.icon}</span>
                   </div>
                 </div>
 
@@ -891,7 +889,7 @@ const DonationRequests = () => {
 
               {/* Resource Intelligence Grid */}
               <div
-                className="rounded-xl p-4 border grid grid-cols-3 gap-2"
+                className="rounded-sm p-4 border grid grid-cols-3 gap-2"
                 style={{
                   backgroundColor: "var(--bg-secondary)",
                   borderColor: "var(--border-color)",
@@ -902,7 +900,7 @@ const DonationRequests = () => {
                     className="text-[7px] font-black uppercase tracking-widest block"
                     style={{ color: "var(--text-muted)" }}
                   >
-                    QUANTITY
+                    AMOUNT
                   </span>
                   <span
                     className="text-[10px] font-bold"
@@ -919,7 +917,7 @@ const DonationRequests = () => {
                     className="text-[7px] font-black uppercase tracking-widest block"
                     style={{ color: "var(--text-muted)" }}
                   >
-                    RESOURCE TYPE
+                    TYPE
                   </span>
                   <span
                     className="text-[10px] font-bold"
@@ -949,7 +947,7 @@ const DonationRequests = () => {
                     style={{ color: "var(--text-muted)" }}
                   >
                     <Clock size={14} className="text-[#22c55e]" />
-                    Live Tracking Activity
+                    Live Status
                   </h4>
                   <div className="relative space-y-4 before:absolute before:inset-0 before:ml-2.5 before:h-full before:w-0.5 before:bg-[var(--border-color)]">
                     {[
@@ -1005,7 +1003,7 @@ const DonationRequests = () => {
                           )}
                         </div>
                         <div
-                          className="flex flex-1 justify-between items-center gap-3 p-2.5 rounded-xl border shadow-sm transition-all min-w-0"
+                          className="flex flex-1 justify-between items-center gap-3 p-2.5 rounded-sm border transition-all min-w-0"
                           style={{
                             backgroundColor: "var(--bg-primary)",
                             borderColor: "var(--border-color)",
@@ -1047,7 +1045,7 @@ const DonationRequests = () => {
               {/* Points Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div
-                  className="p-6 rounded-2xl border space-y-4 hover:shadow-lg transition-all duration-500"
+                  className="p-6 rounded-sm border space-y-4 transition-all duration-500"
                   style={{
                     backgroundColor: "var(--bg-primary)",
                     borderColor: "var(--border-color)",
@@ -1087,7 +1085,7 @@ const DonationRequests = () => {
                 </div>
 
                 <div
-                  className="p-6 rounded-2xl border space-y-4 hover:shadow-lg transition-all duration-500"
+                  className="p-6 rounded-sm border space-y-4 transition-all duration-500"
                   style={{
                     backgroundColor: "var(--bg-primary)",
                     borderColor: "var(--border-color)",
@@ -1125,121 +1123,105 @@ const DonationRequests = () => {
                 </div>
               </div>
 
-              {/* Personnel Section */}
+              {/* Field Agent Identification Unit */}
               {selectedRequest.status !== "Available" && (
-                <div
-                  className="p-8 rounded-2xl border space-y-6 shadow-sm"
-                  style={{
-                    backgroundColor: "var(--bg-primary)",
-                    borderColor: "var(--border-color)",
-                  }}
-                >
+                <div className="space-y-3 pt-2">
                   <h4
-                    className="text-[10px] font-black uppercase tracking-[0.3em]"
+                    className="text-[11px] font-black uppercase tracking-[0.2em] flex items-center gap-2"
                     style={{ color: "var(--text-muted)" }}
                   >
-                    Assigned Personnel
+                    <User size={14} className="text-hf-green" />
+                    Field Agent
                   </h4>
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-4 min-w-0">
-                      <div
-                        className="w-14 h-14 rounded-full border-4 flex items-center justify-center text-[#22c55e] font-black text-xl shadow-sm shrink-0 uppercase"
-                        style={{
-                          backgroundColor: "var(--bg-secondary)",
-                          borderColor: "var(--bg-primary)",
-                        }}
-                      >
+                  <div
+                    className="p-3 rounded-sm border border-dashed flex items-center gap-4 transition-all duration-300 shadow-sm shadow-hf-green/5 overflow-hidden"
+                    style={{
+                      backgroundColor: "rgba(34, 197, 94, 0.03)",
+                      borderColor: "var(--border-color)",
+                    }}
+                  >
+                    {/* Agent Identity Profile */}
+                    <div
+                      className="w-11 h-11 rounded-sm border flex items-center justify-center shrink-0 relative"
+                      style={{
+                        backgroundColor: "var(--bg-primary)",
+                        borderColor: "rgba(34, 197, 128, 0.2)",
+                      }}
+                    >
+                      <span className="text-lg font-black text-hf-green uppercase">
                         {selectedRequest.volunteer?.name.charAt(0) || "V"}
+                      </span>
+                      {/* Operational Status Indicator */}
+                      <div className="absolute -top-1 -right-1 flex items-center justify-center">
+                        <div className="absolute w-3 h-3 rounded-full bg-hf-green/20 animate-ping" />
+                        <div className="w-2 h-2 rounded-full bg-hf-green border border-[var(--bg-primary)] shadow-sm" />
                       </div>
-                      <div className="space-y-1 min-w-0">
+                    </div>
+
+                    {/* Agent Identification Data */}
+                    <div className="flex-1 min-w-0 space-y-1.5">
+                      <div className="space-y-0.5">
                         <p
-                          className="text-[13px] font-black uppercase tracking-tight truncate"
+                          className="text-[13px] font-black uppercase tracking-tight leading-tight truncate"
                           style={{ color: "var(--text-primary)" }}
+                          title={selectedRequest.volunteer?.name}
                         >
                           {selectedRequest.volunteer?.name || "Field Agent"}
                         </p>
-                        <div className="flex items-center gap-3 whitespace-nowrap">
-                          <span
-                            className="text-[10px] font-bold flex items-center gap-1.5 px-2 py-0.5 rounded-md border"
+
+                        <div className="flex items-center gap-2">
+                          <div
+                            className="flex items-center gap-1 px-1 py-0.5 rounded-sm border shrink-0"
                             style={{
-                              backgroundColor: "var(--bg-secondary)",
-                              borderColor: "var(--border-color)",
-                              color: "var(--text-muted)",
+                              backgroundColor: "rgba(245, 158, 11, 0.05)",
+                              borderColor: "rgba(245, 158, 11, 0.2)",
                             }}
                           >
                             <Star
                               className="fill-yellow-400 text-yellow-400"
-                              size={10}
+                              size={8}
                             />
-                            {selectedRequest.volunteer?.rating || "4.8"}
+                            <span className="text-[9px] font-black text-yellow-600 tabular-nums">
+                              {selectedRequest.volunteer?.rating || "4.8"}
+                            </span>
+                          </div>
+                          <span className="text-[8px] font-black uppercase tracking-[0.1em] text-hf-green/60 px-2 border-l border-[var(--border-color)] truncate">
+                            Verified Expert
                           </span>
-                          {selectedRequest.volunteer?.phone && (
-                            <a
-                              href={`tel:${selectedRequest.volunteer.phone.replace(/\s+/g, "")}`}
-                              className="text-[10px] font-black flex items-center gap-1.5 py-0.5 tracking-tight group cursor-pointer transition-colors"
-                              style={{ color: "var(--text-muted)" }}
-                            >
-                              <Phone
-                                size={11}
-                                className="opacity-50 group-hover:text-[#22c55e] group-hover:opacity-100 transition-all"
-                              />
-                              {selectedRequest.volunteer.phone}
-                            </a>
-                          )}
                         </div>
                       </div>
+
+                      {selectedRequest.volunteer?.phone && (
+                        <div className="flex items-center gap-1.5 pt-1 border-t border-[var(--border-color)] border-dotted">
+                          <Phone
+                            size={9}
+                            className="text-hf-green opacity-60 shrink-0"
+                          />
+                          <p
+                            className="text-[10px] font-bold tracking-wider tabular-nums opacity-60 truncate"
+                            style={{ color: "var(--text-primary)" }}
+                          >
+                            {selectedRequest.volunteer.phone}
+                          </p>
+                        </div>
+                      )}
                     </div>
+
+                    {/* Primary Action Button */}
                     {selectedRequest.volunteer?.phone && (
                       <a
                         href={`tel:${selectedRequest.volunteer.phone.replace(/\s+/g, "")}`}
-                        className="w-11 h-11 rounded-full flex items-center justify-center shadow-lg shadow-[#22c55e]/5 hover:shadow-[#22c55e]/20 hover:scale-105 active:scale-95 transition-all outline-none ring-offset-2 ring-green-100 hover:ring-2 shrink-0 border"
-                        style={{
-                          backgroundColor: "var(--bg-primary)",
-                          borderColor: "var(--border-color)",
-                          color: "#22c55e",
-                        }}
+                        className="w-10 h-10 rounded-sm bg-hf-green flex items-center justify-center shadow-lg shadow-hf-green/10 hover:bg-emerald-600 transition-all duration-300 group shrink-0"
                       >
-                        <Phone size={18} />
+                        <Phone
+                          size={18}
+                          className="text-white group-hover:rotate-12 transition-transform"
+                        />
                       </a>
                     )}
                   </div>
                 </div>
               )}
-
-              {/* Info Note */}
-              <div
-                className="flex items-center gap-4 p-5 rounded-2xl group transition-colors duration-300 border"
-                style={{
-                  backgroundColor: "rgba(59, 130, 246, 0.05)",
-                  borderColor: "rgba(59, 130, 246, 0.2)",
-                }}
-              >
-                <div
-                  className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 shadow-sm border group-hover:scale-110 transition-transform"
-                  style={{
-                    backgroundColor: "var(--bg-primary)",
-                    borderColor: "rgba(59, 130, 246, 0.2)",
-                  }}
-                >
-                  <Info className="text-blue-500" size={18} />
-                </div>
-                <div className="space-y-1">
-                  <p
-                    className="text-[11px] font-bold leading-relaxed"
-                    style={{ color: "var(--color-blue)" }}
-                  >
-                    Intelligence Tracking Active
-                  </p>
-                  <p
-                    className="text-[10px] font-medium leading-relaxed opacity-80"
-                    style={{ color: "var(--color-blue)" }}
-                  >
-                    Your donation is currently being tracked by our Intelligence
-                    System. Live updates are provided by our field volunteers
-                    via mobile app.
-                  </p>
-                </div>
-              </div>
             </div>
           )}
         </ResuableDrawer>
@@ -1248,7 +1230,7 @@ const DonationRequests = () => {
         <ResuableModal
           isOpen={isAcceptModalOpen}
           onOpenChange={setIsAcceptModalOpen}
-          title="Accept Donation"
+          title="Confirm Acceptance"
           footer={
             !isAcceptSuccess && (
               <div className="flex items-center justify-end gap-3">
@@ -1275,7 +1257,7 @@ const DonationRequests = () => {
                   ) : (
                     <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-wider">
                       <Truck size={13} />
-                      <span>Accept & Assign Logistics</span>
+                      <span>Confirm & Assign</span>
                     </div>
                   )}
                 </ResuableButton>
@@ -1299,13 +1281,13 @@ const DonationRequests = () => {
 
                 <div className="text-center space-y-3 z-10">
                   <h3 className="text-[9px] font-black uppercase tracking-[0.4em] text-[#22c55e] leading-none mb-1">
-                    Synchronized
+                    Assigned
                   </h3>
                   <h2
                     className="text-xl font-black tracking-tight leading-none uppercase"
                     style={{ color: "var(--text-primary)" }}
                   >
-                    Logistics Synchronized!
+                    Mission Assigned!
                   </h2>
                   <p
                     className="text-[12px] font-bold max-w-[320px] leading-relaxed mx-auto"
