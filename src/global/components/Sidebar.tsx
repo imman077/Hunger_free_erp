@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import ThemeToggle from "./ThemeToggle";
+
 import { Icon } from "./resuable-components/Icon";
 import { useSidebar } from "../contexts/SidebarContext";
 import { Link, useLocation } from "react-router-dom";
@@ -428,68 +428,6 @@ const SidebarIcons: React.FC = () => {
           />
         </div>
       </nav>
-
-      {/* Profile Footer */}
-      <div
-        className="p-4 bg-slate-50/20 flex flex-col items-center gap-3 transition-all duration-500"
-        style={{ borderTop: "1px solid var(--border-color)" }}
-      >
-        {(inDrawer || expanded) && (
-          <div
-            className="w-full p-2.5 rounded-2xl border transition-all duration-500"
-            style={{
-              backgroundColor: "var(--bg-primary)",
-              borderColor: "var(--border-color)",
-            }}
-          >
-            <div className="flex items-center gap-3">
-              <div className="relative shrink-0">
-                <img
-                  src="https://mui.com/static/images/avatar/1.jpg"
-                  className="w-10 h-10 rounded-xl border object-cover"
-                  style={{ borderColor: "var(--border-color)" }}
-                  alt="Admin"
-                />
-                <div
-                  className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-[#22c55e] border-2 border-white rounded-full shadow-sm"
-                  style={{ backgroundColor: "#22c55e" }}
-                />
-              </div>
-              <div className="flex flex-col min-w-0">
-                <span
-                  className="text-sm font-bold leading-tight truncate"
-                  style={{ color: "var(--text-primary)" }}
-                >
-                  Admin Hub
-                </span>
-                <span
-                  className="text-[9px] font-black tracking-widest uppercase mt-0.5"
-                  style={{ color: "#22c55e" }}
-                >
-                  Operational
-                </span>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {!inDrawer && (
-          <div className="flex items-center justify-center gap-3 px-2">
-            <button
-              onClick={() => setExpanded(!expanded)}
-              className="w-10 h-1.5 rounded-full bg-slate-200/50 hover:bg-emerald-500/30 transition-all duration-300 group/toggle relative"
-              title={expanded ? "Collapse" : "Expand"}
-            >
-              <div
-                className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-1 bg-slate-300 rounded-full transition-all duration-500 group-hover/toggle:bg-emerald-500 ${
-                  !expanded && "rotate-90"
-                }`}
-                style={!expanded ? {} : { backgroundColor: "#22c55e" }}
-              />
-            </button>
-          </div>
-        )}
-      </div>
     </div>
   );
 
@@ -518,7 +456,7 @@ const SidebarIcons: React.FC = () => {
               >
                 <img
                   src="/HungerFree.svg"
-                  className="h-14 w-auto object-contain mx-auto"
+                  className="h-[72px] w-auto object-contain mx-auto"
                   alt="HungerFree Logo"
                 />
               </div>
@@ -581,18 +519,15 @@ const SidebarIcons: React.FC = () => {
             >
               {/* Drawer Header — matches desktop sidebar header exactly */}
               <div
-                className="h-16 flex items-center justify-between px-4 flex-shrink-0 w-full overflow-hidden border-b"
+                className="h-20 flex items-center justify-between px-4 flex-shrink-0 w-full overflow-hidden border-b"
                 style={{ borderColor: "var(--border-color)" }}
               >
                 <div className="flex-1 flex justify-center">
                   <img
                     src="/HungerFree.svg"
-                    className="h-10 w-auto object-contain"
+                    className="h-16 w-auto object-contain"
                     alt="HungerFree Logo"
                   />
-                </div>
-                <div className="shrink-0">
-                  <ThemeToggle />
                 </div>
               </div>
               <div className="flex-1 overflow-hidden flex flex-col min-h-0">

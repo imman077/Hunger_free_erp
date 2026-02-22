@@ -11,8 +11,8 @@ const ThemeToggle: React.FC = () => {
       onClick={toggleTheme}
       sx={{
         padding: "0",
-        width: { xs: "36px", md: "44px" },
-        height: { xs: "36px", md: "44px" },
+        width: { xs: "36px", md: "40px" },
+        height: { xs: "36px", md: "40px" },
         backgroundColor: "var(--bg-tertiary)",
         borderRadius: "12px",
         border: "1px solid var(--border-color)",

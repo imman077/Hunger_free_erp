@@ -441,21 +441,15 @@ const NGOProfile = () => {
                 borderColor: "var(--border-color)",
               }}
             >
-              {/* TABS HEADER */}
+              {/* TABS HEADER: REFINED FOR PERFECT ALIGNMENT */}
               <div
-                className="h-[52px] px-1 border-b flex items-center"
+                className="px-3 border-b flex items-center overflow-hidden"
                 style={{
                   backgroundColor: "var(--bg-secondary)",
                   borderColor: "var(--border-color)",
                 }}
               >
-                <div
-                  className="flex items-center gap-1 p-1 rounded-lg border"
-                  style={{
-                    backgroundColor: "var(--bg-primary)",
-                    borderColor: "var(--border-color)",
-                  }}
-                >
+                <div className="w-full flex items-center gap-1.5 p-1 rounded-xl">
                   {[
                     { id: "identity", label: "NGO Information" },
                     { id: "documents", label: "Credential Vault" },
@@ -463,15 +457,15 @@ const NGOProfile = () => {
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`px-4 py-1.5 rounded-md text-[9px] font-black uppercase tracking-widest transition-all ${
+                      className={`flex-1 w-0 py-2 px-1 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all duration-300 relative text-center leading-snug ${
                         activeTab === tab.id
-                          ? "shadow-sm border"
-                          : "hover:bg-slate-200/20"
+                          ? "shadow-sm border z-10"
+                          : "opacity-40 hover:opacity-100"
                       }`}
                       style={{
                         backgroundColor:
                           activeTab === tab.id
-                            ? "var(--bg-secondary)"
+                            ? "var(--bg-primary)"
                             : "transparent",
                         borderColor:
                           activeTab === tab.id
@@ -479,8 +473,8 @@ const NGOProfile = () => {
                             : "transparent",
                         color:
                           activeTab === tab.id
-                            ? "var(--text-primary)"
-                            : "var(--text-muted)",
+                            ? "#22c55e"
+                            : "var(--text-primary)",
                       }}
                     >
                       {tab.label}
@@ -571,39 +565,38 @@ const NGOProfile = () => {
                       className="pt-4 border-t space-y-4"
                       style={{ borderColor: "var(--border-color)" }}
                     >
-                      <div className="flex items-center gap-3">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                        <div className="flex items-center gap-4 flex-1 min-w-0">
+                          <div
+                            className="w-10 h-10 rounded-xl flex items-center justify-center text-[#22c55e] border shadow-sm shrink-0"
+                            style={{
+                              backgroundColor: "rgba(34, 197, 94, 0.08)",
+                              borderColor: "rgba(34, 197, 94, 0.2)",
+                            }}
+                          >
+                            <Wallet size={18} />
+                          </div>
+                          <div className="flex flex-col min-w-0">
+                            <h4
+                              className="text-[11px] font-bold uppercase tracking-[0.15em] leading-tight truncate px-0.5"
+                              style={{ color: "var(--text-primary)" }}
+                            >
+                              Verified Payout Methods
+                            </h4>
+                            <span className="text-[9px] font-bold uppercase tracking-widest text-[#94a3b8] mt-1 whitespace-nowrap overflow-hidden text-ellipsis">
+                              Primary settlement accounts
+                            </span>
+                          </div>
+                        </div>
                         <div
-                          className="w-8 h-8 rounded-lg flex items-center justify-center text-[#22c55e] border shadow-sm"
+                          className="w-fit sm:ml-auto px-3 py-1.5 rounded-lg border flex items-center gap-2 shadow-sm shrink-0"
                           style={{
-                            backgroundColor: "rgba(34, 197, 94, 0.08)",
-                            borderColor: "rgba(34, 197, 94, 0.2)",
+                            backgroundColor: "rgba(59, 130, 246, 0.05)",
+                            borderColor: "rgba(59, 130, 246, 0.15)",
                           }}
                         >
-                          <Wallet size={16} />
-                        </div>
-                        <div className="flex flex-col">
-                          <h4
-                            className="text-[10px] font-black uppercase tracking-[0.2em]"
-                            style={{ color: "var(--text-primary)" }}
-                          >
-                            Verified Payout Methods
-                          </h4>
-                          <span
-                            className="text-[8px] font-bold uppercase tracking-widest"
-                            style={{ color: "var(--text-muted)" }}
-                          >
-                            Primary accounts for grant settlements
-                          </span>
-                        </div>
-                        <div
-                          className="ml-auto flex items-center gap-1.5 px-2 py-1 rounded-md border"
-                          style={{
-                            backgroundColor: "rgba(59, 130, 246, 0.08)",
-                            borderColor: "rgba(59, 130, 246, 0.2)",
-                          }}
-                        >
-                          <ShieldCheck size={10} className="text-blue-500" />
-                          <span className="text-[8px] font-black text-blue-600 uppercase tracking-widest">
+                          <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+                          <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest">
                             Verified & Active
                           </span>
                         </div>
@@ -694,76 +687,60 @@ const NGOProfile = () => {
                       ].map((doc, i) => (
                         <div
                           key={i}
-                          className="group flex items-center justify-between p-3 rounded-md border transition-all duration-300"
+                          className="group p-4 px-5 rounded-[22px] border transition-all duration-300 hover:shadow-xl hover:scale-[1.01] flex flex-col gap-3"
                           style={{
                             backgroundColor: "var(--bg-secondary)",
                             borderColor: "var(--border-color)",
                           }}
                         >
-                          <div className="flex items-center gap-3">
+                          <div className="flex items-start gap-4">
                             <div
-                              className="w-8 h-8 rounded-md border flex items-center justify-center text-slate-400 group-hover:text-emerald-500 transition-colors"
+                              className="w-12 h-12 rounded-xl border flex items-center justify-center text-slate-400 group-hover:text-emerald-600 group-hover:border-emerald-500/30 transition-all shadow-sm shrink-0 bg-white"
                               style={{
-                                backgroundColor: "var(--bg-primary)",
                                 borderColor: "var(--border-color)",
                               }}
                             >
-                              <FileText size={14} />
+                              <FileText size={20} strokeWidth={2.5} />
                             </div>
-                            <div>
+                            <div className="flex flex-col gap-2 min-w-0 flex-1 pt-0.5">
                               <p
-                                className="text-xs font-bold uppercase tracking-tight"
+                                className="text-sm font-black uppercase tracking-tight leading-tight"
                                 style={{ color: "var(--text-primary)" }}
                               >
                                 {doc.name}
                               </p>
-                              <p
-                                className="text-[9px] font-bold uppercase"
-                                style={{ color: "var(--text-muted)" }}
-                              >
-                                Validated: {doc.date}
-                              </p>
+                              <div className="flex flex-col items-start gap-1.5">
+                                <span
+                                  className={`px-2.5 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-widest border transition-colors ${
+                                    doc.status === "Verified"
+                                      ? "text-emerald-600 bg-emerald-500/10 border-emerald-500/20"
+                                      : "text-amber-600 bg-amber-500/10 border-amber-500/20"
+                                  }`}
+                                >
+                                  {doc.status}
+                                </span>
+                                <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
+                                  ID: {doc.date}
+                                </p>
+                              </div>
                             </div>
                           </div>
 
-                          <div className="flex items-center gap-3">
-                            <span
-                              className={`px-2.5 py-0.5 rounded-md text-[8px] font-black uppercase tracking-widest border transition-colors ${
-                                doc.status === "Verified"
-                                  ? "text-green-600"
-                                  : "text-amber-600"
-                              }`}
-                              style={{
-                                backgroundColor:
-                                  doc.status === "Verified"
-                                    ? "rgba(34, 197, 94, 0.08)"
-                                    : "rgba(245, 158, 11, 0.08)",
-                                borderColor:
-                                  doc.status === "Verified"
-                                    ? "rgba(34, 197, 94, 0.2)"
-                                    : "rgba(245, 158, 11, 0.2)",
-                              }}
+                          <div className="flex items-center justify-end gap-2 mt-1">
+                            <button
+                              onClick={() => handleViewDocument(doc)}
+                              title="Quick View"
+                              className="w-9 h-9 flex items-center justify-center rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-emerald-500 hover:border-emerald-200 hover:shadow-sm transition-all active:scale-90"
                             >
-                              {doc.status}
-                            </span>
-
-                            <div
-                              className="flex items-center gap-0.5 pl-3 border-l"
-                              style={{ borderColor: "var(--border-color)" }}
+                              <Eye size={16} />
+                            </button>
+                            <button
+                              onClick={() => handleDownloadDocument(doc)}
+                              title="Download Document"
+                              className="w-9 h-9 flex items-center justify-center rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-emerald-500 hover:border-emerald-200 hover:shadow-sm transition-all active:scale-90"
                             >
-                              <button
-                                onClick={() => handleViewDocument(doc)}
-                                className="p-1.5 hover:bg-emerald-50/20 text-slate-400 hover:text-emerald-600 rounded-lg transition-all"
-                              >
-                                <Eye size={14} />
-                              </button>
-                              <button
-                                onClick={() => handleDownloadDocument(doc)}
-                                className="p-1.5 hover:bg-blue-50 text-slate-400 hover:text-blue-600 rounded-lg transition-all"
-                              >
-                                <Download size={14} />
-                              </button>
-                            </div>
+                              <Download size={16} />
+                            </button>
                           </div>
                         </div>
                       ))}

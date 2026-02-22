@@ -589,12 +589,12 @@ const VolunteerTasks = () => {
 
   return (
     <div
-      className="min-h-screen w-full max-w-full overflow-x-hidden flex flex-col"
+      className="w-full max-w-full flex flex-col"
       style={{ backgroundColor: "var(--bg-secondary)" }}
     >
       {/* Header Section */}
       <div
-        className="sticky top-0 z-20 shadow-sm/5 border-b"
+        className="sticky top-0 z-20 border-b shadow-sm"
         style={{
           backgroundColor: "var(--bg-primary)",
           borderColor: "var(--border-color)",
@@ -821,29 +821,29 @@ const VolunteerTasks = () => {
               >
                 {getCategoryIcon(selectedTask.type)}
               </div>
-              <div className="space-y-1">
-                <div className="space-y-0.5">
+              <div className="flex-1 min-w-0">
+                <div className="flex flex-col gap-1 mb-2">
                   <h3
-                    className="text-lg font-black leading-tight"
+                    className="text-lg font-black leading-tight truncate"
                     style={{ color: "var(--text-primary)" }}
                   >
                     {selectedTask.title}
                   </h3>
                   {selectedTask.partnerOrg && (
-                    <p className="text-[10px] font-black text-[#22c55e] uppercase tracking-widest">
+                    <p className="text-[10px] font-black text-[#22c55e] uppercase tracking-widest leading-none">
                       {selectedTask.partnerOrg}
                     </p>
                   )}
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
                   <span
                     className={`text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-sm border ${getStatusStyle(selectedTask.status)}`}
                   >
                     {selectedTask.status}
                   </span>
                   <span
-                    className="text-[10px] font-bold"
-                    style={{ color: "var(--text-muted)" }}
+                    className="text-[9px] font-black uppercase tracking-widest opacity-40"
+                    style={{ color: "var(--text-primary)" }}
                   >
                     ID: {selectedTask.id}
                   </span>
@@ -853,7 +853,7 @@ const VolunteerTasks = () => {
 
             <div className="grid grid-cols-2 gap-4">
               <div
-                className="border p-4 rounded-md space-y-1 shadow-sm"
+                className="border p-4 rounded-md flex flex-col items-center text-center space-y-1 shadow-sm"
                 style={{
                   backgroundColor: "var(--bg-primary)",
                   borderColor: "var(--border-color)",
@@ -873,7 +873,7 @@ const VolunteerTasks = () => {
                 </p>
               </div>
               <div
-                className="border p-4 rounded-md space-y-1 shadow-sm"
+                className="border p-4 rounded-md flex flex-col items-center text-center space-y-1 shadow-sm"
                 style={{
                   backgroundColor: "var(--bg-primary)",
                   borderColor: "var(--border-color)",
@@ -906,27 +906,27 @@ const VolunteerTasks = () => {
               </h4>
               <div className="space-y-6">
                 {/* Pickup / Starting Point */}
-                <div className="relative pl-8 pb-4">
+                <div className="relative pl-10 pb-4">
                   <div
-                    className="absolute left-0 top-0 bottom-0 w-0.5"
+                    className="absolute left-[11px] top-0 bottom-0 w-px"
                     style={{ backgroundColor: "var(--border-color)" }}
                   />
                   <div
-                    className={`absolute -left-[7px] top-0 w-3.5 h-3.5 rounded-full border-2 z-10 transition-all duration-500 ${selectedTask.isPickupReached ? "bg-green-500 border-green-200 ring-4" : "bg-white border-slate-300 ring-4"}`}
+                    className={`absolute left-[4px] top-0 w-3.5 h-3.5 rounded-full border-2 z-10 transition-all duration-500 ${selectedTask.isPickupReached ? "bg-green-500 border-green-200 ring-4" : "bg-white border-slate-300 ring-4"}`}
                     style={{ boxShadow: "0 0 0 4px var(--bg-secondary)" }}
                   />
 
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                       <div className="flex items-center gap-2">
                         <span
-                          className="p-1 rounded-sm border"
+                          className="w-7 h-7 shrink-0 rounded-sm border flex items-center justify-center"
                           style={{
                             backgroundColor: "rgba(34, 197, 94, 0.05)",
                             borderColor: "rgba(34, 197, 94, 0.1)",
                           }}
                         >
-                          <Truck size={12} className="text-[#22c55e]" />
+                          <Truck size={14} className="text-[#22c55e]" />
                         </span>
                         <p
                           className="text-[11px] font-black uppercase tracking-tight"
@@ -939,18 +939,18 @@ const VolunteerTasks = () => {
                         !selectedTask.isPickupReached && (
                           <button
                             onClick={() => handleReachClick(0, "pickup")}
-                            className="h-7 px-4 rounded-full text-[9px] font-black uppercase tracking-wider bg-green-500 hover:bg-green-600 text-white shadow-lg shadow-green-500/20 active:scale-95 transition-all"
+                            className="h-8 px-5 rounded-full text-[9px] font-black uppercase tracking-wider bg-green-500 hover:bg-green-600 text-white shadow-lg shadow-green-500/20 active:scale-95 transition-all whitespace-nowrap self-start sm:self-auto"
                           >
                             Verify Arrival
                           </button>
                         )}
                       {selectedTask.isPickupReached && (
-                        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-50 border border-green-100 dark:bg-green-500/10 dark:border-green-500/20">
+                        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-50 border border-green-100 dark:bg-green-500/10 dark:border-green-500/20 self-start sm:self-auto uppercase tracking-widest whitespace-nowrap">
                           <CheckCircle2
                             size={12}
                             className="text-green-600 dark:text-[#22c55e]"
                           />
-                          <span className="text-[9px] font-black text-green-600 dark:text-[#22c55e] uppercase">
+                          <span className="text-[9px] font-black text-green-600 dark:text-[#22c55e]">
                             Confirmed
                           </span>
                         </div>
@@ -982,13 +982,13 @@ const VolunteerTasks = () => {
                 </div>
 
                 {/* Destinations / Stops */}
-                <div className="relative pl-8">
+                <div className="relative pl-10">
                   <div
-                    className="absolute left-0 top-0 bottom-0 w-0.5"
+                    className="absolute left-[11px] top-0 bottom-0 w-px"
                     style={{ backgroundColor: "var(--border-color)" }}
                   />
                   <div
-                    className="absolute -left-[7px] top-0 w-3.5 h-3.5 rounded-full border-2 ring-4 z-10"
+                    className="absolute left-[4px] top-0 w-3.5 h-3.5 rounded-full border-2 ring-4 z-10"
                     style={{
                       backgroundColor: "var(--bg-secondary)",
                       borderColor: "var(--border-color)",

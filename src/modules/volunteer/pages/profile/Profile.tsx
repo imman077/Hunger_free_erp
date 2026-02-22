@@ -207,7 +207,7 @@ const VolunteerProfile = () => {
 
   return (
     <div
-      className="min-h-screen flex flex-col pb-20 font-sans"
+      className="min-h-screen flex flex-col font-sans"
       style={{ backgroundColor: "var(--bg-secondary)" }}
     >
       {/* 1. CLEAN HEADER */}
@@ -428,14 +428,15 @@ const VolunteerProfile = () => {
               }}
             >
               <div
-                className="h-[52px] px-1 border-b flex items-center"
+                className="px-3 border-b flex items-center overflow-hidden"
                 style={{
                   backgroundColor: "var(--bg-secondary)",
                   borderColor: "var(--border-color)",
+                  minHeight: "52px",
                 }}
               >
                 <div
-                  className="flex items-center gap-1 p-1 rounded-lg"
+                  className="flex items-center gap-1 p-1 rounded-xl w-full"
                   style={{ backgroundColor: "var(--bg-tertiary)" }}
                 >
                   {[
@@ -446,9 +447,9 @@ const VolunteerProfile = () => {
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`px-4 py-1.5 rounded-md text-[9px] font-black uppercase tracking-widest transition-all ${
+                      className={`flex-1 w-0 py-2 px-1 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all duration-300 relative text-center leading-snug ${
                         activeTab === tab.id
-                          ? "shadow-sm border"
+                          ? "shadow-sm border z-10"
                           : "opacity-40 hover:opacity-100"
                       }`}
                       style={{
@@ -555,73 +556,76 @@ const VolunteerProfile = () => {
                       className="pt-4 border-t space-y-4"
                       style={{ borderColor: "var(--border-color)" }}
                     >
-                      <div className="flex items-center gap-3">
-                        <div
-                          className="w-8 h-8 rounded-lg flex items-center justify-center text-[#22c55e] border shadow-sm"
-                          style={{
-                            backgroundColor: "rgba(34, 197, 94, 0.08)",
-                            borderColor: "rgba(34, 197, 94, 0.2)",
-                          }}
-                        >
-                          <Wallet size={16} />
-                        </div>
-                        <div className="flex flex-col">
-                          <h4
-                            className="text-[10px] font-black uppercase tracking-[0.2em]"
-                            style={{ color: "var(--text-primary)" }}
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                        <div className="flex items-center gap-4">
+                          <div
+                            className="w-10 h-10 rounded-lg flex items-center justify-center text-[#22c55e] border shadow-sm shrink-0"
+                            style={{
+                              backgroundColor: "rgba(34, 197, 94, 0.08)",
+                              borderColor: "rgba(34, 197, 94, 0.2)",
+                            }}
                           >
-                            Primary Payment Details
-                          </h4>
-                          <span
-                            className="text-[8px] font-bold uppercase tracking-widest"
-                            style={{ color: "var(--text-muted)" }}
-                          >
-                            Your verified payout accounts
-                          </span>
+                            <Wallet size={18} />
+                          </div>
+                          <div className="flex flex-col gap-0.5">
+                            <h4
+                              className="text-[10px] font-black uppercase tracking-[0.15em] leading-tight"
+                              style={{ color: "var(--text-primary)" }}
+                            >
+                              Primary Payment Details
+                            </h4>
+                            <span
+                              className="text-[8px] font-bold uppercase tracking-widest opacity-60"
+                              style={{ color: "var(--text-primary)" }}
+                            >
+                              Your verified payout accounts
+                            </span>
+                          </div>
                         </div>
+
                         <div
-                          className="ml-auto flex items-center gap-1.5 px-2 py-1 rounded-md border"
+                          className="sm:ml-auto flex items-center gap-1.5 px-2 py-1 rounded-md border shrink-0 self-start sm:self-auto"
                           style={{
                             backgroundColor: "rgba(59, 130, 246, 0.08)",
                             borderColor: "rgba(59, 130, 246, 0.2)",
                           }}
                         >
-                          <ShieldCheck size={10} className="text-blue-500" />
-                          <span className="text-[8px] font-black text-blue-600 uppercase tracking-widest">
+                          <ShieldCheck size={11} className="text-blue-500" />
+                          <span className="text-[8px] font-black text-blue-600 uppercase tracking-widest leading-none">
                             Verified & Active
                           </span>
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
                         {[
                           {
                             label: "Bank Account",
                             val: `${profile.bankName} (${profile.accountNumber})`,
-                            icon: <Building2 size={14} />,
+                            icon: <Building2 size={13} />,
                           },
                           {
                             label: "Primary UPI VPA",
                             val: profile.upiId,
-                            icon: <Wallet size={14} />,
+                            icon: <Wallet size={13} />,
                           },
                         ].map((field, i) => (
-                          <div key={i} className="space-y-2">
+                          <div key={i} className="space-y-2 text-start">
                             <p
-                              className="text-[10px] font-black uppercase tracking-[0.1em]"
+                              className="text-[9px] font-black uppercase tracking-widest"
                               style={{ color: "var(--text-muted)" }}
                             >
                               {field.label}
                             </p>
                             <div
-                              className="flex items-center gap-3 p-2.5 rounded-md border transition-colors"
+                              className="flex items-center gap-3 p-3 rounded-lg border transition-all duration-300 hover:shadow-sm"
                               style={{
                                 backgroundColor: "var(--bg-secondary)",
                                 borderColor: "var(--border-color)",
                               }}
                             >
                               <div
-                                className="flex items-center justify-center w-7 h-7 rounded-md border"
+                                className="flex items-center justify-center w-8 h-8 rounded-md border shrink-0"
                                 style={{
                                   backgroundColor: "var(--bg-primary)",
                                   borderColor: "var(--border-color)",
@@ -630,16 +634,18 @@ const VolunteerProfile = () => {
                               >
                                 {field.icon}
                               </div>
-                              <span
-                                className="text-sm font-bold tracking-tight text-[13px] flex items-center gap-2"
-                                style={{ color: "var(--text-primary)" }}
-                              >
-                                {field.val}
+                              <div className="flex items-center justify-between flex-1 min-w-0">
+                                <span
+                                  className="text-[13px] font-bold tracking-tight text-start truncate"
+                                  style={{ color: "var(--text-primary)" }}
+                                >
+                                  {field.val}
+                                </span>
                                 <ShieldCheck
-                                  size={14}
-                                  className="text-blue-500"
+                                  size={12}
+                                  className="text-blue-500 shrink-0 ml-2"
                                 />
-                              </span>
+                              </div>
                             </div>
                           </div>
                         ))}
@@ -679,77 +685,70 @@ const VolunteerProfile = () => {
                       ].map((doc, i) => (
                         <div
                           key={i}
-                          className="group flex items-center justify-between p-3 rounded-md border transition-all duration-300"
+                          className="group flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border transition-all duration-300 hover:shadow-md hover:border-emerald-500/20"
                           style={{
                             backgroundColor: "var(--bg-secondary)",
                             borderColor: "var(--border-color)",
                           }}
                         >
-                          <div className="flex items-center gap-3 text-start">
+                          {/* Left: Info & Status */}
+                          <div className="flex items-center gap-4 min-w-0 flex-1">
                             <div
-                              className="w-8 h-8 rounded-md border flex items-center justify-center group-hover:text-emerald-500 transition-colors text-start"
+                              className="w-10 h-10 rounded-lg border flex items-center justify-center shrink-0 transition-colors group-hover:bg-emerald-500/5"
                               style={{
                                 backgroundColor: "var(--bg-primary)",
                                 borderColor: "var(--border-color)",
                                 color: "var(--text-muted)",
                               }}
                             >
-                              <FileText size={14} />
+                              <FileText size={18} />
                             </div>
-                            <div className="text-start">
+                            <div className="min-w-0 flex-1">
+                              <div className="flex flex-col sm:flex-row sm:items-center gap-x-3 gap-y-1 mb-1">
+                                <p
+                                  className="text-[13px] font-black uppercase tracking-tight truncate"
+                                  style={{ color: "var(--text-primary)" }}
+                                >
+                                  {doc.name}
+                                </p>
+                                <span
+                                  className={`px-2 py-0.5 rounded-md text-[8px] font-black uppercase tracking-widest border shrink-0 w-fit ${
+                                    doc.status === "Verified"
+                                      ? "text-green-600 bg-green-500/10 border-green-500/20"
+                                      : "text-amber-600 bg-amber-500/10 border-amber-500/20"
+                                  }`}
+                                >
+                                  {doc.status}
+                                </span>
+                              </div>
                               <p
-                                className="text-xs font-bold uppercase tracking-tight text-start"
+                                className="text-[9px] font-bold uppercase tracking-widest opacity-60"
                                 style={{ color: "var(--text-primary)" }}
-                              >
-                                {doc.name}
-                              </p>
-                              <p
-                                className="text-[9px] font-bold uppercase text-start"
-                                style={{ color: "var(--text-muted)" }}
                               >
                                 Validated: {doc.date}
                               </p>
                             </div>
                           </div>
 
-                          <div className="flex items-center gap-3">
-                            <span
-                              className={`px-2.5 py-0.5 rounded-md text-[8px] font-black uppercase tracking-widest border transition-colors ${
-                                doc.status === "Verified"
-                                  ? "text-green-600"
-                                  : "text-amber-600"
-                              }`}
-                              style={{
-                                backgroundColor:
-                                  doc.status === "Verified"
-                                    ? "rgba(34, 197, 94, 0.08)"
-                                    : "rgba(245, 158, 11, 0.08)",
-                                borderColor:
-                                  doc.status === "Verified"
-                                    ? "rgba(34, 197, 94, 0.2)"
-                                    : "rgba(245, 158, 11, 0.2)",
-                              }}
+                          {/* Right: Actions */}
+                          <div
+                            className="flex items-center gap-2 mt-4 sm:mt-0 sm:pl-6 sm:ml-4 sm:border-l shrink-0 ml-auto sm:ml-4"
+                            style={{ borderColor: "var(--border-color)" }}
+                          >
+                            <button
+                              onClick={() => handleViewDocument(doc)}
+                              className="w-9 h-9 flex items-center justify-center hover:bg-emerald-500/10 text-slate-400 hover:text-emerald-500 rounded-lg transition-all"
+                              title="View Document"
                             >
-                              {doc.status}
-                            </span>
-
-                            <div
-                              className="flex items-center gap-0.5 pl-3 border-l"
-                              style={{ borderColor: "var(--border-color)" }}
+                              <Eye size={16} />
+                            </button>
+                            <button
+                              onClick={() => handleDownloadDocument(doc)}
+                              className="w-9 h-9 flex items-center justify-center hover:bg-blue-500/10 text-slate-400 hover:text-blue-500 rounded-lg transition-all"
+                              title="Download Document"
                             >
-                              <button
-                                onClick={() => handleViewDocument(doc)}
-                                className="p-1.5 hover:bg-emerald-50/20 text-slate-400 hover:text-emerald-600 rounded-lg transition-all"
-                              >
-                                <Eye size={14} />
-                              </button>
-                              <button
-                                onClick={() => handleDownloadDocument(doc)}
-                                className="p-1.5 hover:bg-blue-50/20 text-slate-400 hover:text-blue-600 rounded-lg transition-all"
-                              >
-                                <Download size={14} />
-                              </button>
-                            </div>
+                              <Download size={16} />
+                            </button>
                           </div>
                         </div>
                       ))}

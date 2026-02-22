@@ -157,8 +157,8 @@ const Header = () => {
             onClick={handleNotificationClick}
             sx={{
               padding: "0",
-              width: { xs: "36px", md: "44px" },
-              height: { xs: "36px", md: "44px" },
+              width: { xs: "36px", md: "40px" },
+              height: { xs: "36px", md: "40px" },
               backgroundColor: "var(--bg-tertiary)",
               borderRadius: "12px",
               border: "1px solid var(--border-color)",
@@ -192,29 +192,46 @@ const Header = () => {
           {/* Avatar Profile */}
           <Dropdown placement="bottom-end">
             <DropdownTrigger>
-              <div className="flex items-center gap-1.5 md:gap-2 cursor-pointer hover:opacity-80 transition-opacity">
-                <Avatar
-                  alt="User"
-                  src="https://mui.com/static/images/avatar/1.jpg"
-                  sx={{
-                    width: { xs: 32, md: 40 },
-                    height: { xs: 32, md: 40 },
-                    borderRadius: "full",
-                    border: "2px solid white",
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-                  }}
-                />
-                <Icon
-                  name="chevron-down"
-                  className="hidden sm:block w-3.5 h-3.5 text-slate-400"
-                />
+              <div className="flex items-center gap-2.5 cursor-pointer group outline-none">
+                <div className="relative">
+                  <Avatar
+                    alt="User"
+                    src="https://mui.com/static/images/avatar/1.jpg"
+                    sx={{
+                      width: { xs: 36, md: 40 },
+                      height: { xs: 36, md: 40 },
+                      borderRadius: "12px",
+                      border: "2px solid var(--border-color)",
+                      boxShadow: "0 4px 15px rgba(0,0,0,0.08)",
+                    }}
+                    className="transition-transform duration-300 group-hover:scale-[1.03]"
+                  />
+                  <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 border-[2px] border-[var(--bg-primary)] rounded-full shadow-sm z-10" />
+                </div>
+                <div className="hidden sm:flex flex-col items-start -space-y-0.5">
+                  <p className="text-[9px] font-black uppercase tracking-[0.2em] text-[#22c55e] leading-none mb-0.5">
+                    Online
+                  </p>
+                  <div className="flex items-center gap-1">
+                    <span
+                      className="text-xs font-black tracking-tight"
+                      style={{ color: "var(--text-primary)" }}
+                    >
+                      Admin Hub
+                    </span>
+                    <Icon
+                      name="chevron-down"
+                      className="w-3 h-3 text-slate-400 group-hover:text-emerald-500 transition-colors"
+                    />
+                  </div>
+                </div>
               </div>
             </DropdownTrigger>
             <DropdownMenu
               aria-label="Profile actions"
               variant="flat"
               classNames={{
-                base: "p-1 min-w-[200px] border rounded-xl shadow-2xl",
+                base: "p-2 min-w-[220px] border rounded-2xl shadow-[0_32px_80px_rgba(0,0,0,0.15)] animate-in fade-in zoom-in-95 duration-200",
               }}
               style={{
                 backgroundColor: "var(--bg-primary)",
@@ -222,51 +239,49 @@ const Header = () => {
               }}
               itemClasses={{
                 base: [
-                  "rounded-lg",
+                  "rounded-xl",
                   "text-slate-500",
                   "transition-all",
-                  "data-[hover=true]:bg-slate-100",
-                  "dark:data-[hover=true]:bg-slate-800",
-                  "data-[hover=true]:text-emerald-500",
+                  "duration-300",
                   "py-2.5",
-                  "px-3",
+                  "px-4",
+                  "gap-3",
                 ],
               }}
             >
               <DropdownItem
                 key="profile-header"
-                className="h-14 gap-2 opacity-100 pointer-events-none mb-1 border-b border-dashed border-slate-100 dark:border-slate-800 rounded-none pb-3"
+                className="h-auto opacity-100 pointer-events-none mb-1.5 border-b border-dashed border-slate-200/60 dark:border-slate-800/60 rounded-none pb-3.5"
               >
-                <div className="flex flex-col">
-                  <p className="text-xs font-black uppercase tracking-widest text-[#22c55e]">
-                    Logged in as
-                  </p>
-                  <p className="font-bold text-sm text-[var(--text-primary)]">
-                    Admin Hub
-                  </p>
+                <div className="flex items-center gap-3.5">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/10 flex items-center justify-center text-emerald-500 shrink-0 shadow-sm">
+                    <User size={20} />
+                  </div>
+                  <div className="flex flex-col">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 leading-none mb-1">
+                      Logged in as
+                    </p>
+                    <p className="font-bold text-sm text-[var(--text-primary)] leading-tight">
+                      Master Admin
+                    </p>
+                  </div>
                 </div>
               </DropdownItem>
+
               <DropdownItem
                 key="view-profile"
-                startContent={<User size={18} />}
-                className="font-semibold text-sm"
+                startContent={<User size={16} className="opacity-70" />}
+                className="text-xs font-semibold data-[hover=true]:bg-emerald-500/5 data-[hover=true]:text-emerald-500"
               >
                 View Profile
               </DropdownItem>
-              <DropdownItem
-                key="settings"
-                startContent={<Settings size={18} />}
-                className="font-semibold text-sm"
-              >
-                Account Settings
-              </DropdownItem>
+
               <DropdownItem
                 key="logout"
-                color="danger"
-                className="text-danger font-semibold text-sm mt-1 pt-3 border-t border-dashed border-slate-100 dark:border-slate-800 rounded-none"
-                startContent={<LogOut size={18} />}
+                className="mt-1.5 pt-3 border-t border-dashed border-slate-200/60 dark:border-slate-800/60 rounded-none data-[hover=true]:bg-rose-500/5 data-[hover=true]:text-rose-500"
+                startContent={<LogOut size={16} className="opacity-70" />}
               >
-                Sign Out
+                <span className="text-xs font-semibold">Sign Out</span>
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>
@@ -287,10 +302,10 @@ const Header = () => {
 
           {/* Notification Popover */}
           <div
-            className={`fixed z-[9999] mt-20 right-4 top-0 rounded-xl border shadow-[0_32px_120px_rgba(0,0,0,0.15)] flex flex-col overflow-hidden transition-all duration-300 ${
+            className={`fixed z-[9999] mt-20 right-4 top-0 rounded-2xl border shadow-[0_42px_130px_rgba(0,0,0,0.18)] flex flex-col overflow-hidden transition-all duration-400 ease-[cubic-bezier(0.2,0.8,0.2,1)] ${
               notificationExpanded
-                ? "w-[calc(100vw-32px)] md:w-[800px] h-[calc(100vh-120px)] md:right-8"
-                : "w-[calc(100vw-32px)] md:w-[420px] h-[620px] max-h-[85vh] md:right-12"
+                ? "w-[calc(100vw-32px)] md:w-[840px] h-[calc(100vh-140px)] md:right-8"
+                : "w-[calc(100vw-32px)] md:w-[440px] h-[640px] max-h-[85vh] md:right-12"
             }`}
             style={{
               backgroundColor: "var(--bg-primary)",
@@ -299,86 +314,81 @@ const Header = () => {
           >
             {/* Header */}
             <div
-              className="flex-shrink-0 px-6 py-5 flex items-center justify-between border-b"
+              className="flex-shrink-0 px-6 py-5 flex items-center justify-between border-b border-dashed"
               style={{
                 backgroundColor: "var(--bg-primary)",
                 borderColor: "var(--border-color)",
               }}
             >
-              <span
-                className="font-bold text-xl"
-                style={{ color: "var(--text-primary)" }}
-              >
-                Notifications
-              </span>
+              <div className="flex flex-col">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 leading-none mb-1">
+                  Alert Center
+                </span>
+                <span className="font-bold text-lg tracking-tight text-[var(--text-primary)]">
+                  Notifications
+                </span>
+              </div>
               <button
                 onClick={() => {
                   setNotificationDrawerOpen(false);
                   setNotificationExpanded(false);
                 }}
-                className="p-1.5 hover:opacity-70 rounded-sm transition-all"
-                style={{ color: "var(--text-muted)" }}
+                className="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-rose-500 hover:bg-rose-50 hover:border-rose-100 transition-all duration-300 active:scale-90 shadow-sm"
               >
                 <Icon name="close" className="w-5 h-5" />
               </button>
             </div>
 
-            {/* Tabs */}
+            {/* Tabs Container */}
             <div
-              className="flex-shrink-0 px-6 py-2"
+              className="flex-shrink-0 p-3"
               style={{ backgroundColor: "var(--bg-primary)" }}
             >
               <div
-                className="border p-1 rounded-lg"
+                className="flex items-center gap-1 p-1 rounded-xl border"
                 style={{
                   backgroundColor: "var(--bg-secondary)",
                   borderColor: "var(--border-color)",
                 }}
               >
-                <Tabs
-                  variant="light"
-                  size="sm"
-                  fullWidth
-                  selectedKey={selectedTab}
-                  onSelectionChange={setSelectedTab}
-                  classNames={{
-                    tabList:
-                      "gap-0 items-center h-9 p-0 shadow-none bg-transparent",
-                    cursor: "shadow-sm rounded-md border",
-                    tab: "h-full",
-                    tabContent:
-                      "group-data-[selected=true]:!text-[var(--text-primary)] !text-[var(--text-secondary)] font-bold text-[11px] uppercase tracking-widest",
-                  }}
-                >
-                  <Tab key="all" title="All" />
-                  <Tab
-                    key="unread"
-                    title={
-                      <div className="flex items-center gap-2">
-                        <span className="!text-inherit">Unread</span>
-                        <span
-                          className={`${getUnreadCount() > 0 ? "bg-[#3b82f6] text-white" : "bg-slate-200 text-slate-500"} text-[10px] px-2 py-0.5 rounded-full font-black min-w-[20px] text-center`}
-                        >
-                          {getUnreadCount() > 9 ? "9+" : getUnreadCount()}
-                        </span>
-                      </div>
-                    }
-                  />
-                </Tabs>
+                {["all", "unread"].map((tabKey) => (
+                  <button
+                    key={tabKey}
+                    onClick={() => setSelectedTab(tabKey)}
+                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all duration-300 relative ${
+                      selectedTab === tabKey
+                        ? "bg-white shadow-sm border text-emerald-600 z-10"
+                        : "text-slate-500 opacity-60 hover:opacity-100"
+                    }`}
+                    style={{
+                      borderColor:
+                        selectedTab === tabKey
+                          ? "var(--border-color)"
+                          : "transparent",
+                    }}
+                  >
+                    {tabKey}
+                    {tabKey === "unread" && getUnreadCount() > 0 && (
+                      <span className="flex h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]" />
+                    )}
+                  </button>
+                ))}
               </div>
             </div>
 
             {/* Notification List - Scrollable */}
             <div
-              className={`flex-1 overflow-y-auto thin-scrollbar px-2 py-4 ${notificationExpanded ? "grid grid-cols-1 md:grid-cols-2 gap-2" : "space-y-1.5"}`}
+              className={`flex-1 overflow-y-auto thin-scrollbar px-3 py-2 ${notificationExpanded ? "grid grid-cols-1 md:grid-cols-2 gap-3" : "space-y-2"}`}
             >
               {notifications.length === 0 ? (
                 <div
-                  className="flex flex-col items-center justify-center py-20 opacity-20"
+                  className="flex flex-col items-center justify-center py-24 opacity-20"
                   style={{ color: "var(--text-primary)" }}
                 >
-                  <BellIcon size={40} className="stroke-[1] mb-4" />
-                  <p className="text-sm font-bold">No notifications</p>
+                  <BellIcon size={48} className="stroke-[1] mb-5" />
+                  <p className="text-[11px] font-bold uppercase tracking-wider">
+                    Zero Alerts
+                  </p>
                 </div>
               ) : (
                 notifications
@@ -396,55 +406,44 @@ const Header = () => {
                           ),
                         );
                       }}
-                      className={`group relative mx-2 px-4 py-3 transition-all duration-200 cursor-pointer flex items-center gap-4 rounded-xl border
+                      className={`group relative px-4 py-4 transition-all duration-300 cursor-pointer flex items-center gap-4 rounded-2xl border
                         ${
                           !n.isRead
-                            ? "bg-emerald-500/5 border-emerald-500/10 shadow-[0_2px_12px_-3px_rgba(34,197,94,0.1)]"
-                            : "bg-transparent border-transparent hover:bg-slate-500/5 hover:border-slate-500/10"
+                            ? "bg-emerald-500/5 border-emerald-500/10 shadow-[0_4px_12px_-4px_rgba(34,197,94,0.1)]"
+                            : "bg-white border-slate-100 hover:bg-slate-50 hover:border-slate-200"
                         }`}
                     >
                       {/* Avatar */}
-                      <div className="shrink-0">
+                      <div className="shrink-0 relative">
                         <Avatar
                           src={n.avatar}
                           sx={{
-                            width: 44,
-                            height: 44,
-                            borderRadius: "14px",
+                            width: 48,
+                            height: 48,
+                            borderRadius: "12px",
                             border: "2px solid var(--bg-primary)",
-                            boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                            boxShadow: "0 2px 10px rgba(0,0,0,0.06)",
                           }}
                         />
+                        {!n.isRead && (
+                          <div className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full shadow-sm z-10" />
+                        )}
                       </div>
 
                       {/* Content Section */}
-                      <div className="flex-1 min-w-0 pr-6">
-                        <p className="text-[13px] leading-snug">
-                          <span
-                            className="font-bold"
-                            style={{ color: "var(--text-primary)" }}
-                          >
+                      <div className="flex-1 min-w-0 pr-2">
+                        <div className="flex items-start justify-between mb-0.5">
+                          <p className="font-bold text-sm text-[var(--text-primary)] truncate">
                             {n.user || "System"}
-                          </span>{" "}
-                          <span
-                            className="font-medium"
-                            style={{ color: "var(--text-secondary)" }}
-                          >
-                            {n.title}
-                          </span>
-                        </p>
-                        <p
-                          className="text-[10px] font-black uppercase tracking-widest mt-1 opacity-40"
-                          style={{ color: "var(--text-primary)" }}
-                        >
-                          {formatDistanceToNow(n.time, { addSuffix: true })}
+                          </p>
+                          <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 shrink-0 ml-2">
+                            {formatDistanceToNow(n.time, { addSuffix: false })}
+                          </p>
+                        </div>
+                        <p className="text-[13px] leading-snug font-medium text-[var(--text-secondary)] line-clamp-2">
+                          {n.title}
                         </p>
                       </div>
-
-                      {/* Unread Indicator Dot */}
-                      {!n.isRead && (
-                        <div className="w-1.5 h-6 rounded-full bg-emerald-500 shrink-0" />
-                      )}
                     </div>
                   ))
               )}
@@ -452,7 +451,7 @@ const Header = () => {
 
             {/* Footer - Fixed at Bottom */}
             <div
-              className="flex-shrink-0 p-4 border-t grid grid-cols-2 gap-3"
+              className="flex-shrink-0 p-4 border-t border-dashed grid grid-cols-2 gap-4"
               style={{
                 backgroundColor: "var(--bg-primary)",
                 borderColor: "var(--border-color)",
@@ -460,26 +459,20 @@ const Header = () => {
             >
               <button
                 onClick={markAllAsRead}
-                className="flex items-center justify-center gap-2 h-11 border rounded-xl text-[11px] font-black uppercase tracking-wider transition-all shadow-sm active:scale-95"
-                style={{
-                  backgroundColor: "var(--bg-secondary)",
-                  borderColor: "var(--border-color)",
-                  color: "var(--text-primary)",
-                }}
+                className="flex items-center justify-center gap-2 h-12 rounded-xl bg-white border border-slate-200 text-emerald-600 text-xs font-bold uppercase tracking-wider transition-all hover:bg-emerald-50 hover:border-emerald-100 active:scale-95 shadow-sm"
               >
-                <CheckCheck size={16} className="text-emerald-500" />
+                <CheckCheck size={16} strokeWidth={2} />
                 Mark Read
               </button>
               <button
                 onClick={() => setNotificationExpanded(!notificationExpanded)}
-                className="h-11 border rounded-xl text-[11px] font-black uppercase tracking-wider transition-all shadow-sm active:scale-95"
-                style={{
-                  backgroundColor: "var(--bg-secondary)",
-                  borderColor: "var(--border-color)",
-                  color: "var(--text-primary)",
-                }}
+                className="flex items-center justify-center gap-2 h-12 rounded-xl bg-white border border-slate-200 text-slate-600 text-xs font-bold uppercase tracking-wider transition-all hover:bg-slate-50 hover:border-slate-300 active:scale-95 shadow-sm"
               >
-                {notificationExpanded ? "Show Less" : "View All"}
+                <Icon
+                  name={notificationExpanded ? "chevron-up" : "chevron-down"}
+                  className="w-4 h-4 opacity-70"
+                />
+                {notificationExpanded ? "View All" : "View All"}
               </button>
             </div>
           </div>

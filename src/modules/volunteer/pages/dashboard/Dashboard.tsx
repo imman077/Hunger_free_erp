@@ -29,28 +29,28 @@ const VolunteerDashboard = () => {
 
   const stats = [
     {
-      title: "Deliveries Done",
+      title: "Deliveries",
       value: "842",
       change: "+24 this month",
       icon: <Package className="w-5 h-5" />,
       color: "#22c55e",
     },
     {
-      title: "Impact Points",
+      title: "My Points",
       value: currentPoints.toLocaleString(),
-      change: `${currentTier.name} Tier`,
+      change: `Current: ${currentTier.name}`,
       icon: <Star className="w-5 h-5" />,
       color: "#22c55e",
     },
     {
-      title: "Trees Planted",
+      title: "My Forest",
       value: "45",
-      change: "Your Forest",
+      change: "Trees Planted",
       icon: <Zap className="w-5 h-5" />,
       color: "#22c55e",
     },
     {
-      title: "Cash Earned",
+      title: "Wallet",
       value: "₹8,500",
       change: "Available: ₹2,500",
       icon: <ShieldCheck className="w-5 h-5" />,
@@ -60,43 +60,43 @@ const VolunteerDashboard = () => {
 
   const recentTasks = [
     {
-      title: "Multi-Stop Route - White Town",
-      location: "5 Pickups Pending",
-      time: "Hot Route",
-      status: "3X Multiplier",
+      title: "White Town Route",
+      location: "5 stops",
+      time: "Hot",
+      status: "3X Bonus",
       category: "Delivery",
     },
     {
-      title: "Express Delivery",
-      location: "Mission Street Hub",
-      time: "2 hours ago",
-      status: "Completed",
+      title: "Express Trip",
+      location: "Mission St",
+      time: "2h ago",
+      status: "Done",
       category: "Meals",
     },
   ];
 
   const activities = [
     {
-      title: "Delivery Completed",
-      time: "2 hours ago",
-      desc: "Successfully delivered 15kg food bundle to Sector 4 Community Center.",
+      title: "Meal Delivered",
+      time: "2h ago",
+      desc: "15kg food bundle dropped at Sector 4 Center.",
     },
     {
-      title: "Profile Verified",
+      title: "ID Verified",
       time: "Yesterday",
-      desc: "Vehicle insurance and registration documents verified by NGO.",
+      desc: "Your vehicle documents are now approved.",
     },
     {
-      title: "Badge Earned",
+      title: "New Badge",
       time: "3 days ago",
-      desc: "Awarded 'Master Courier' badge for 100+ successful deliveries.",
+      desc: "Earned 'Master Courier' for 100 successful trips.",
     },
   ];
 
   return (
-    <div className="w-full space-y-4 max-w-[1600px] mx-auto bg-transparent">
+    <div className="w-full space-y-4 max-w-[1600px] mx-auto bg-transparent px-4 md:px-6">
       <div
-        className="relative overflow-hidden rounded-md p-5 md:p-6 border"
+        className="relative overflow-hidden rounded-md p-4 md:p-6 border"
         style={{
           backgroundColor: "var(--bg-primary)",
           borderColor: "var(--border-color)",
@@ -105,7 +105,7 @@ const VolunteerDashboard = () => {
         <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[350px] h-[350px] bg-green-500 opacity-[0.05] blur-[110px] rounded-full" />
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="space-y-2">
+          <div className="space-y-2 text-center md:text-start">
             <h1
               className="text-2xl md:text-3xl font-black tracking-tighter"
               style={{ color: "var(--text-primary)" }}
@@ -113,23 +113,18 @@ const VolunteerDashboard = () => {
               Welcome back, <span className="text-green-500">Rahul!</span>
             </h1>
             <p
-              className="font-medium text-xs max-w-md text-start leading-tight"
+              className="font-medium text-xs max-w-md mx-auto md:mx-0 leading-tight"
               style={{ color: "var(--text-secondary)" }}
             >
-              You've delivered over{" "}
-              <span
-                className="font-black underline decoration-green-500 decoration-2 underline-offset-4"
-                style={{ color: "var(--text-primary)" }}
-              >
-                850 meals
-              </span>{" "}
-              this month. Heroes don't wear capes, they drive!
+              850 meals delivered this month.
+              <br />
+              You're making a real difference, keep it up!
             </p>
           </div>
 
           <div className="shrink-0 w-full md:w-auto">
             <div
-              className="group/hero-stat flex flex-col gap-3 p-4 rounded-md border min-w-[280px] shadow-inner transition-colors duration-300 hover:bg-green-500/5"
+              className="group/hero-stat flex flex-col gap-3 p-4 rounded-md border w-full md:min-w-[280px] shadow-inner transition-colors duration-300 hover:bg-green-500/5"
               style={{
                 backgroundColor: "var(--bg-secondary)",
                 borderColor: "var(--border-color)",
@@ -150,7 +145,7 @@ const VolunteerDashboard = () => {
                     className="text-[8px] font-black uppercase tracking-widest mb-0.5"
                     style={{ color: "var(--text-muted)" }}
                   >
-                    Current Volunteer Rank
+                    My Rank
                   </p>
                   <div className="flex items-center gap-2">
                     <h3
@@ -173,7 +168,7 @@ const VolunteerDashboard = () => {
                       className="text-[8px] font-black uppercase tracking-widest"
                       style={{ color: "var(--text-muted)" }}
                     >
-                      Progress to {nextTier.name}
+                      Next Rank: {nextTier.name}
                     </span>
                     <span
                       className="text-[8px] font-black uppercase tabular-nums"
@@ -199,7 +194,7 @@ const VolunteerDashboard = () => {
       </div>
 
       {/* Stats Grid */}
-      <div className="px-6">
+      <div className="">
         <ImpactCards
           className="gap-3 md:gap-4"
           data={stats.map((stat) => ({
@@ -211,11 +206,11 @@ const VolunteerDashboard = () => {
         />
       </div>
 
-      <div className="px-6 grid grid-cols-1 lg:grid-cols-12 gap-4 pt-0 items-stretch">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 pt-0 items-stretch">
         {/* Recent Tasks (8 cols) */}
         <div className="lg:col-span-12 flex flex-col h-full">
           <div
-            className="rounded-md p-5 md:p-6 space-y-6 flex flex-col h-full overflow-hidden shadow-sm border"
+            className="rounded-md p-4 md:p-6 space-y-6 flex flex-col h-full overflow-hidden shadow-sm border"
             style={{
               backgroundColor: "var(--bg-primary)",
               borderColor: "var(--border-color)",
@@ -226,13 +221,13 @@ const VolunteerDashboard = () => {
                 className="text-[11px] font-black uppercase tracking-widest"
                 style={{ color: "var(--text-primary)" }}
               >
-                Ongoing & Recent Tasks
+                Active Tasks
               </h2>
               <button
                 className="text-[8px] font-black uppercase tracking-widest transition-colors focus:outline-none hover:opacity-80"
                 style={{ color: "#22c55e" }}
               >
-                FIND NEW TASKS
+                Find Tasks
               </button>
             </div>
 
@@ -242,36 +237,40 @@ const VolunteerDashboard = () => {
                 return (
                   <div
                     key={idx}
-                    className="group flex items-center justify-between p-4 rounded-md transition-all duration-300 hover:bg-slate-500/5 cursor-pointer border hover:border-green-500/20 shadow-sm"
+                    className="group flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-md transition-all duration-300 hover:bg-slate-500/5 cursor-pointer border hover:border-green-500/20 shadow-sm gap-4"
                     style={{
                       backgroundColor: "var(--bg-primary)",
                       borderColor: "var(--border-color)",
                     }}
                   >
-                    <div className="flex items-center gap-5 min-w-0">
+                    <div className="flex items-center gap-4 md:gap-5 min-w-0">
                       <div
-                        className={`w-12 h-12 rounded-md shrink-0 flex items-center justify-center transition-all duration-300 group-hover:scale-105 border ${
+                        className={`w-10 h-10 md:w-12 md:h-12 rounded-md shrink-0 flex items-center justify-center transition-all duration-300 group-hover:scale-105 border ${
                           isCompleted
                             ? "bg-emerald-500/10 text-[#22c55e] border-emerald-500/10"
                             : "bg-orange-500/10 text-orange-500 border-orange-500/10"
                         }`}
                       >
                         <MapPin
+                          size={18}
+                          className="md:hidden transition-transform group-hover:-translate-y-0.5"
+                        />
+                        <MapPin
                           size={20}
-                          className="transition-transform group-hover:-translate-y-0.5"
+                          className="hidden md:block transition-transform group-hover:-translate-y-0.5"
                         />
                       </div>
 
                       <div className="min-w-0 text-start">
                         <h3
-                          className="text-sm font-black tracking-tight truncate transition-colors mb-1 leading-none group-hover:text-[#22c55e]"
+                          className="text-xs md:text-sm font-black tracking-tight truncate transition-colors mb-1 leading-none group-hover:text-[#22c55e]"
                           style={{ color: "var(--text-primary)" }}
                         >
                           {activity.title}
                         </h3>
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 md:gap-3">
                           <p
-                            className="text-[9px] font-black uppercase tracking-widest truncate leading-none"
+                            className="text-[8px] md:text-[9px] font-black uppercase tracking-widest truncate leading-none"
                             style={{ color: "var(--text-muted)" }}
                           >
                             {activity.location}
@@ -281,7 +280,7 @@ const VolunteerDashboard = () => {
                             style={{ backgroundColor: "var(--text-muted)" }}
                           />
                           <span
-                            className="text-[9px] font-black uppercase tracking-widest"
+                            className="text-[8px] md:text-[9px] font-black uppercase tracking-widest"
                             style={{ color: "var(--text-muted)" }}
                           >
                             {activity.category}
@@ -291,11 +290,11 @@ const VolunteerDashboard = () => {
                     </div>
 
                     <div
-                      className="flex flex-col items-end gap-2 shrink-0 ml-4 border-l pl-6"
+                      className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2 shrink-0 sm:ml-4 sm:border-l sm:pl-6 w-full sm:w-auto mt-2 sm:mt-0 pt-3 sm:pt-0 border-t sm:border-t-0"
                       style={{ borderColor: "var(--border-color)" }}
                     >
                       <span
-                        className="text-[9px] font-black uppercase tracking-[0.2em] tabular-nums font-sans"
+                        className="text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] tabular-nums font-sans"
                         style={{ color: "var(--text-muted)" }}
                       >
                         {activity.time}
@@ -318,11 +317,11 @@ const VolunteerDashboard = () => {
         </div>
       </div>
 
-      <div className="px-6 grid grid-cols-1 lg:grid-cols-12 gap-4 pb-10">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 pb-10">
         {/* Task Milestones (8 cols) */}
         <div className="lg:col-span-8 flex flex-col h-full">
           <div
-            className="rounded-md p-5 md:p-6 space-y-6 flex flex-col h-full overflow-hidden shadow-sm border"
+            className="rounded-md p-4 md:p-6 space-y-6 flex flex-col h-full overflow-hidden shadow-sm border"
             style={{
               backgroundColor: "var(--bg-primary)",
               borderColor: "var(--border-color)",
@@ -333,13 +332,13 @@ const VolunteerDashboard = () => {
                 className="text-[11px] font-black uppercase tracking-widest"
                 style={{ color: "var(--text-primary)" }}
               >
-                Leveling & Milestones
+                My Badges
               </h2>
               <button
                 className="text-[8px] font-black uppercase tracking-widest transition-colors focus:outline-none hover:opacity-80"
                 style={{ color: "#22c55e" }}
               >
-                ALL ACHIEVEMENTS
+                View All
               </button>
             </div>
 
@@ -357,7 +356,7 @@ const VolunteerDashboard = () => {
                   return (
                     <div
                       key={i}
-                      className={`group relative p-4 rounded-md border flex flex-col items-center text-center gap-3 transition-all duration-300 justify-center h-[140px] ${
+                      className={`group relative p-4 rounded-md border flex flex-col items-center text-center gap-3 transition-all duration-300 justify-center h-[130px] md:h-[140px] ${
                         isUnlocked
                           ? "shadow-sm hover:shadow-md"
                           : "opacity-40 grayscale"
@@ -372,17 +371,18 @@ const VolunteerDashboard = () => {
                       }}
                     >
                       <div
-                        className={`w-11 h-11 shrink-0 rounded-sm flex items-center justify-center transition-transform duration-500 group-hover:-translate-y-1.5 ${
+                        className={`w-10 h-10 md:w-11 md:h-11 shrink-0 rounded-sm flex items-center justify-center transition-transform duration-500 group-hover:-translate-y-1.5 ${
                           isUnlocked
                             ? "bg-green-500 text-white shadow-lg shadow-green-500/20"
                             : "bg-slate-500/10 text-slate-500"
                         }`}
                       >
-                        <BadgeIcon size={18} />
+                        <BadgeIcon size={16} className="md:hidden" />
+                        <BadgeIcon size={18} className="hidden md:block" />
                       </div>
                       <div className="space-y-0.5">
                         <h3
-                          className="text-[10px] font-black uppercase tracking-tight leading-tight"
+                          className="text-[9px] md:text-[10px] font-black uppercase tracking-tight leading-tight"
                           style={{ color: "var(--text-primary)" }}
                         >
                           {badge.name}
@@ -404,7 +404,7 @@ const VolunteerDashboard = () => {
         {/* Activity Details (4 cols) */}
         <div className="lg:col-span-4 flex flex-col h-full">
           <section
-            className="p-6 rounded-md shadow-sm h-full flex flex-col border"
+            className="p-5 md:p-6 rounded-md shadow-sm h-full flex flex-col border"
             style={{
               backgroundColor: "var(--bg-primary)",
               borderColor: "var(--border-color)",
@@ -414,7 +414,7 @@ const VolunteerDashboard = () => {
               className="text-[11px] font-black tracking-tight uppercase mb-6 flex items-center justify-between"
               style={{ color: "var(--text-primary)" }}
             >
-              Account History Log
+              Activity
               <Clock size={14} className="text-green-500" />
             </h3>
             <div className="relative space-y-6 flex-1">
