@@ -1,34 +1,11 @@
 import LineChart from "../../../../global/charts/LineChart";
 import BarChart from "../../../../global/charts/BarChart";
 import ImpactCards from "../../../../global/components/resuable-components/ImpactCards";
+import { useDashboardStore } from "../../store/dashboard-store";
 
 const AdminDashboard = () => {
-  const stats = [
-    {
-      title: "Total Donations",
-      value: "1.2K",
-      change: "+15% from last month",
-      changeColor: "text-green-600",
-    },
-    {
-      title: "Active Users",
-      value: "542",
-      change: "+8% from last week",
-      changeColor: "text-green-600",
-    },
-    {
-      title: "NGO Partners",
-      value: "68",
-      change: "+2 new this month",
-      changeColor: "text-green-600",
-    },
-    {
-      title: "Volunteers Onboarded",
-      value: "210",
-      change: "-3% from last month",
-      changeColor: "text-red-600",
-    },
-  ];
+  const { data, isLoading } = useDashboardStore();
+  const { stats } = data;
 
   return (
     <div className="w-full space-y-8 p-4 md:p-8">
