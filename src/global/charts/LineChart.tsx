@@ -10,6 +10,8 @@ import {
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
+import { useDashboardStore } from "../../modules/admin/dashboard/store/dashboard-store";
+import type { ChartDataset } from "../../modules/admin/dashboard/store/dashboard-schemas";
 
 ChartJS.register(
   CategoryScale,
@@ -21,26 +23,23 @@ ChartJS.register(
 );
 
 export default function LineChart() {
-  const labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"];
+  const { data } = useDashboardStore();
+  const { donationsChart } = data;
 
-  const data = {
-    labels,
-    datasets: [
-      {
-        label: "Donations",
-        data: [35, 35, 45, 55, 65, 75, 85],
-        backgroundColor: ["rgb(233, 119, 90)"],
-        borderColor: "rgb(233, 119, 90)",
-        tension: 0.1,
-      },
-      {
-        label: "Pickups",
-        data: [25, 20, 35, 40, 40, 55, 45],
-        backgroundColor: ["rgb(42, 157, 144)"],
-        borderColor: "rgb(42, 157, 144)",
-        tension: 0.1,
-      },
-    ],
+  if (!donationsChart) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        No data available
+      </div>
+    );
+  }
+
+  const chartData = {
+    labels: donationsChart.labels,
+    datasets: donationsChart.datasets.map((dataset: ChartDataset) => ({
+      ...dataset,
+      tension: 0.1,
+    })),
   };
 
   const options = {
@@ -81,5 +80,5 @@ export default function LineChart() {
     },
   };
 
-  return <Line data={data} options={options} />;
+  return <Line data={chartData} options={options} />;
 }

@@ -302,10 +302,10 @@ const Header = () => {
 
           {/* Notification Popover */}
           <div
-            className={`fixed z-[9999] mt-20 right-4 top-0 rounded-2xl border shadow-[0_42px_130px_rgba(0,0,0,0.18)] flex flex-col overflow-hidden transition-all duration-400 ease-[cubic-bezier(0.2,0.8,0.2,1)] ${
+            className={`fixed z-[9999] top-16 md:top-20 right-4 rounded-2xl border shadow-[0_42px_130px_rgba(0,0,0,0.18)] flex flex-col overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] ${
               notificationExpanded
-                ? "w-[calc(100vw-32px)] md:w-[840px] h-[calc(100vh-140px)] md:right-8"
-                : "w-[calc(100vw-32px)] md:w-[440px] h-[640px] max-h-[85vh] md:right-12"
+                ? "w-[calc(100vw-32px)] md:w-[1100px] h-[calc(100vh-100px)] md:h-[calc(100vh-140px)] md:right-8"
+                : "w-[calc(100vw-32px)] md:w-[360px] h-[520px] max-h-[80vh] md:right-8"
             }`}
             style={{
               backgroundColor: "var(--bg-primary)",
@@ -314,7 +314,7 @@ const Header = () => {
           >
             {/* Header */}
             <div
-              className="flex-shrink-0 px-6 py-5 flex items-center justify-between border-b border-dashed"
+              className="flex-shrink-0 px-4 md:px-6 py-4 md:py-5 flex items-center justify-between border-b border-dashed"
               style={{
                 backgroundColor: "var(--bg-primary)",
                 borderColor: "var(--border-color)",
@@ -378,7 +378,11 @@ const Header = () => {
 
             {/* Notification List - Scrollable */}
             <div
-              className={`flex-1 overflow-y-auto thin-scrollbar px-3 py-2 ${notificationExpanded ? "grid grid-cols-1 md:grid-cols-2 gap-3" : "space-y-2"}`}
+              className={`flex-1 overflow-y-auto thin-scrollbar px-3 py-2 ${
+                notificationExpanded
+                  ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 content-start"
+                  : "flex flex-col gap-3"
+              }`}
             >
               {notifications.length === 0 ? (
                 <div
@@ -406,11 +410,11 @@ const Header = () => {
                           ),
                         );
                       }}
-                      className={`group relative px-4 py-4 transition-all duration-300 cursor-pointer flex items-center gap-4 rounded-2xl border
+                      className={`group relative px-3.5 py-2.5 transition-all duration-300 cursor-pointer flex items-center gap-3 rounded-xl border self-start
                         ${
                           !n.isRead
                             ? "bg-emerald-500/5 border-emerald-500/10 shadow-[0_4px_12px_-4px_rgba(34,197,94,0.1)]"
-                            : "bg-white border-slate-100 hover:bg-slate-50 hover:border-slate-200"
+                            : "bg-white border-slate-200/60 hover:bg-slate-50 hover:border-slate-300"
                         }`}
                     >
                       {/* Avatar */}
@@ -418,29 +422,29 @@ const Header = () => {
                         <Avatar
                           src={n.avatar}
                           sx={{
-                            width: 48,
-                            height: 48,
-                            borderRadius: "12px",
-                            border: "2px solid var(--bg-primary)",
+                            width: 40,
+                            height: 40,
+                            borderRadius: "10px",
+                            border: "1.5px solid var(--bg-primary)",
                             boxShadow: "0 2px 10px rgba(0,0,0,0.06)",
                           }}
                         />
                         {!n.isRead && (
-                          <div className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full shadow-sm z-10" />
+                          <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full shadow-sm z-10" />
                         )}
                       </div>
 
                       {/* Content Section */}
-                      <div className="flex-1 min-w-0 pr-2">
+                      <div className="flex-1 min-w-0 pr-1 md:pr-1.5">
                         <div className="flex items-start justify-between mb-0.5">
-                          <p className="font-bold text-sm text-[var(--text-primary)] truncate">
+                          <p className="font-bold text-[13px] text-[var(--text-primary)] truncate">
                             {n.user || "System"}
                           </p>
-                          <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 shrink-0 ml-2">
+                          <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 shrink-0 ml-2">
                             {formatDistanceToNow(n.time, { addSuffix: false })}
                           </p>
                         </div>
-                        <p className="text-[13px] leading-snug font-medium text-[var(--text-secondary)] line-clamp-2">
+                        <p className="text-[12px] leading-snug font-medium text-[var(--text-secondary)] line-clamp-1">
                           {n.title}
                         </p>
                       </div>
@@ -451,7 +455,7 @@ const Header = () => {
 
             {/* Footer - Fixed at Bottom */}
             <div
-              className="flex-shrink-0 p-4 border-t border-dashed grid grid-cols-2 gap-4"
+              className="flex-shrink-0 p-3 md:p-4 border-t border-dashed grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4"
               style={{
                 backgroundColor: "var(--bg-primary)",
                 borderColor: "var(--border-color)",
@@ -472,7 +476,7 @@ const Header = () => {
                   name={notificationExpanded ? "chevron-up" : "chevron-down"}
                   className="w-4 h-4 opacity-70"
                 />
-                {notificationExpanded ? "View All" : "View All"}
+                {notificationExpanded ? "Minimize" : "View All"}
               </button>
             </div>
           </div>

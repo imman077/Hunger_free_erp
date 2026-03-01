@@ -9,23 +9,29 @@ import {
   Legend,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
+import { useDashboardStore } from "../../modules/admin/dashboard/store/dashboard-store";
+import type { ChartDataset } from "../../modules/admin/dashboard/store/dashboard-schemas";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
 export default function BarChart() {
-  const labels = ["Donor", "NGO", "Volunteers"];
+  const { data } = useDashboardStore();
+  const { userGrowthChart } = data;
 
-  const data = {
-    labels,
-    datasets: [
-      {
-        label: "Sign-ups",
-        data: [65, 59, 80, 81, 56, 55, 40],
-        backgroundColor: ["rgb(231, 85, 49)"],
-        borderColor: ["rgb(231, 85, 49)"],
-        borderWidth: 1,
-      },
-    ],
+  if (!userGrowthChart) {
+    return (
+      <div className="flex items-center justify-center h-full text-[10px] text-slate-400">
+        No data available
+      </div>
+    );
+  }
+
+  const chartData = {
+    labels: userGrowthChart.labels,
+    datasets: userGrowthChart.datasets.map((dataset: ChartDataset) => ({
+      ...dataset,
+      borderWidth: 1,
+    })),
   };
 
   const options = {
@@ -66,5 +72,5 @@ export default function BarChart() {
     },
   };
 
-  return <Bar data={data} options={options} />;
+  return <Bar data={chartData} options={options} />;
 }
