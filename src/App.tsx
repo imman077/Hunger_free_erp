@@ -12,7 +12,7 @@ import PendingDonationsPage from "./modules/admin/donations/components/PendingDo
 import AnalyticsPage from "./modules/admin/analytics/components/AnalyticsPage";
 import AnalyticsReportsPage from "./modules/admin/analytics/components/AnalyticsReportsPage";
 import UsersPage from "./modules/admin/users/components/UsersPage";
-import AdminDashboard from "./modules/admin/dashboard/DashboardPage";
+import AdminDashboard from "./modules/admin/dashboard/components/DashboardPage";
 import PointsTiersView from "./modules/admin/rewards/components/PointsTiersView";
 import RedemptionsView from "./modules/admin/rewards/components/RedemptionsView";
 import RewardsConfig from "./modules/admin/rewards/components/RewardsConfig";
@@ -29,32 +29,32 @@ import DonorEnquiryPage from "./modules/admin/enquiries/components/DonorEnquiryP
 import EnquiriesHub from "./modules/admin/enquiries/components/EnquiriesHub";
 
 // Donor Imports
-import DonorDashboard from "./modules/donor/pages/dashboard/Dashboard";
-import DonorMyDonations from "./modules/donor/pages/donations/MyDonations";
-import DonorCreateDonation from "./modules/donor/pages/donations/CreateDonation";
-import DonorProfile from "./modules/donor/pages/profile/Profile";
-import DonorPaymentMethods from "./modules/donor/pages/profile/PaymentMethods";
-import DonorRewards from "./modules/donor/pages/rewards/Rewards";
-import DonorBenefits from "./modules/donor/pages/rewards/Benefits";
+import DonorDashboard from "./modules/donor/dashboard/components/Dashboard";
+import DonorMyDonations from "./modules/donor/donations/components/MyDonations";
+import DonorCreateDonation from "./modules/donor/donations/components/CreateDonation";
+import DonorProfile from "./modules/donor/profile/components/Profile";
+import DonorPaymentMethods from "./modules/donor/profile/components/PaymentMethods";
+import DonorRewards from "./modules/donor/rewards/components/Rewards";
+import DonorBenefits from "./modules/donor/rewards/components/Benefits";
 
 // NGO Imports
-import NGODashboard from "./modules/ngo/pages/dashboard/Dashboard";
-import NGODonationRequests from "./modules/ngo/pages/donations/DonationRequests";
-import NGOInventory from "./modules/ngo/pages/inventory/Inventory";
-import NGOAddItem from "./modules/ngo/pages/inventory/AddItem";
-import NGOProfile from "./modules/ngo/pages/profile/Profile";
-import NGOPaymentMethods from "./modules/ngo/pages/profile/PaymentMethods";
-import PostNewNeed from "./modules/ngo/pages/needs/PostNewNeed";
-import NGORewards from "./modules/ngo/pages/rewards/Rewards";
-import NGOBenefits from "./modules/ngo/pages/rewards/Benefits";
+import NGODashboard from "./modules/ngo/dashboard/components/Dashboard";
+import NGODonationRequests from "./modules/ngo/donations/components/DonationRequests";
+import NGOInventory from "./modules/ngo/inventory/components/Inventory";
+import NGOAddItem from "./modules/ngo/inventory/components/AddItem";
+import NGOProfile from "./modules/ngo/profile/components/Profile";
+import NGOPaymentMethods from "./modules/ngo/profile/components/PaymentMethods";
+import PostNewNeed from "./modules/ngo/needs/components/PostNewNeed";
+import NGORewards from "./modules/ngo/rewards/components/Rewards";
+import NGOBenefits from "./modules/ngo/rewards/components/Benefits";
 
 // Volunteer Imports
-import VolunteerDashboard from "./modules/volunteer/pages/dashboard/Dashboard";
-import VolunteerTasks from "./modules/volunteer/pages/tasks/Tasks";
-import VolunteerProfile from "./modules/volunteer/pages/profile/Profile";
-import VolunteerPaymentMethods from "./modules/volunteer/pages/profile/PaymentMethods";
-import VolunteerRewards from "./modules/volunteer/pages/rewards/Rewards";
-import VolunteerBenefits from "./modules/volunteer/pages/rewards/Benefits";
+import VolunteerDashboard from "./modules/volunteer/dashboard/components/Dashboard";
+import VolunteerTasks from "./modules/volunteer/tasks/components/Tasks";
+import VolunteerProfile from "./modules/volunteer/profile/components/Profile";
+import VolunteerPaymentMethods from "./modules/volunteer/profile/components/PaymentMethods";
+import VolunteerRewards from "./modules/volunteer/rewards/components/Rewards";
+import VolunteerBenefits from "./modules/volunteer/rewards/components/Benefits";
 
 function App() {
   return (
