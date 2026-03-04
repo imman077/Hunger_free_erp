@@ -3,6 +3,9 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "./global/contexts/ThemeContext";
 import { Toaster } from "sonner";
 import AdminLayout from "./global/layouts/AdminLayout";
+import DonorLayout from "./global/layouts/DonorLayout";
+import NGOLayout from "./global/layouts/NGOLayout";
+import VolunteerLayout from "./global/layouts/VolunteerLayout";
 import DonorPage from "./modules/admin/users/donors/components/DonorsPage";
 import NGOsPage from "./modules/admin/users/ngos/components/NGOsPage";
 import VolunteersPage from "./modules/admin/users/volunteers/components/VolunteersPage";
@@ -56,6 +59,9 @@ import VolunteerPaymentMethods from "./modules/volunteer/profile/components/Paym
 import VolunteerRewards from "./modules/volunteer/rewards/components/Rewards";
 import VolunteerBenefits from "./modules/volunteer/rewards/components/Benefits";
 
+// Auth
+import AuthPage from "./modules/auth/components/AuthPage";
+
 function App() {
   return (
     <ThemeProvider>
@@ -79,8 +85,11 @@ function App() {
       />
       <div>
         <Routes>
-          {/* Redirect root to /admin */}
-          <Route path="/" element={<Navigate to="/admin" />} />
+          {/* Redirect root to /auth */}
+          <Route path="/" element={<Navigate to="/auth" />} />
+
+          {/* Auth */}
+          <Route path="/auth" element={<AuthPage />} />
 
           <Route path="/admin" element={<AdminLayout />}>
             {/* Dashboard */}
@@ -148,7 +157,7 @@ function App() {
           </Route>
 
           {/* Donor Section */}
-          <Route path="/donor" element={<AdminLayout />}>
+          <Route path="/donor" element={<DonorLayout />}>
             <Route index element={<Navigate to="dashboard" />} />
             <Route path="dashboard" element={<DonorDashboard />} />
             <Route path="donations" element={<DonorMyDonations />} />
@@ -160,7 +169,7 @@ function App() {
           </Route>
 
           {/* NGO Section */}
-          <Route path="/ngo" element={<AdminLayout />}>
+          <Route path="/ngo" element={<NGOLayout />}>
             <Route index element={<Navigate to="dashboard" />} />
             <Route path="dashboard" element={<NGODashboard />} />
             <Route path="requests" element={<NGODonationRequests />} />
@@ -174,7 +183,7 @@ function App() {
           </Route>
 
           {/* Volunteer Section */}
-          <Route path="/volunteer" element={<AdminLayout />}>
+          <Route path="/volunteer" element={<VolunteerLayout />}>
             <Route index element={<Navigate to="dashboard" />} />
             <Route path="dashboard" element={<VolunteerDashboard />} />
             <Route path="tasks" element={<VolunteerTasks />} />

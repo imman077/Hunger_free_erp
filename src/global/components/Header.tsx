@@ -2,18 +2,17 @@ import { useState } from "react";
 import Badge from "@mui/material/Badge";
 import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
-import { BellIcon, CheckCheck, User, LogOut, Settings } from "lucide-react";
+import { BellIcon, CheckCheck, User, LogOut } from "lucide-react";
 import { useSidebar } from "../contexts/SidebarContext";
 import { formatDistanceToNow } from "date-fns";
 import ThemeToggle from "./ThemeToggle";
 import {
-  Tabs,
-  Tab,
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
 } from "@heroui/react";
+import { useNavigate } from "react-router-dom";
 import { Icon } from "./resuable-components/Icon";
 
 /* ---------------- Interfaces ---------------- */
@@ -94,6 +93,7 @@ const Header = () => {
   const [notificationDrawerOpen, setNotificationDrawerOpen] = useState(false);
   const [notificationExpanded, setNotificationExpanded] = useState(false);
   const [notifications, setNotifications] = useState(notificationData);
+  const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState<any>("all");
 
   const handleNotificationClick = () => {
@@ -280,6 +280,7 @@ const Header = () => {
                 key="logout"
                 className="mt-1.5 pt-3 border-t border-dashed border-slate-200/60 dark:border-slate-800/60 rounded-none data-[hover=true]:bg-rose-500/5 data-[hover=true]:text-rose-500"
                 startContent={<LogOut size={16} className="opacity-70" />}
+                onPress={() => navigate("/auth")}
               >
                 <span className="text-xs font-semibold">Sign Out</span>
               </DropdownItem>
