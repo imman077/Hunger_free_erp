@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff, ArrowRight, Check, Building2 } from "lucide-react";
+import axios from "axios";
+import { useAuthStore } from "../../../global/contexts/auth-store";
+import { toast } from "sonner";
 
 // ─── Role Config ────────────────────────────────────────────────────────────
 type Role = "donor" | "ngo" | "volunteer" | "admin";
@@ -109,16 +112,50 @@ const AuthPage = () => {
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
 
-  const role = roleConfig[activeRole];
+  const auth = useAuthStore();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    // Simulate auth
-    setTimeout(() => {
+
+    try {
+      // 1. Get Access Tokens
+      const response = await axios.post("http://localhost:8000/api/token/", {
+        username: loginEmail, // Using email as username for this demo
+        password: loginPassword,
+        role: activeRole.toUpperCase(), // Send the selected role
+      });
+
+      const { access, refresh } = response.data;
+
+      // 2. Fetch User Profile
+      const userResponse = await axios.get("http://localhost:8000/api/me/", {
+        headers: { Authorization: `Bearer ${access}` },
+      });
+
+      const user = userResponse.data;
+
+      // 3. Login in store
+      auth.login(user, access, refresh);
+
+      toast.success(`Welcome back, ${user.first_name || user.username}!`);
+
+      // 4. Role-based redirect
+      const backendRoleToFrontendRoute: Record<string, string> = {
+        ADMIN: "/admin/dashboard",
+        DONOR: "/donor/dashboard",
+        NGO: "/ngo/dashboard",
+        VOLUNTEER: "/volunteer/dashboard",
+      };
+
+      navigate(backendRoleToFrontendRoute[user.profile.role] || "/auth");
+    } catch (error: any) {
+      console.error("Auth Error:", error);
+      const msg = error.response?.data?.detail || "Invalid credentials. Please try again.";
+      toast.error(msg);
+    } finally {
       setIsLoading(false);
-      navigate(role.redirectTo);
-    }, 1200);
+    }
   };
 
   return (
