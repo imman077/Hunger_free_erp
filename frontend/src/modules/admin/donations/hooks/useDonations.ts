@@ -3,7 +3,7 @@ import { useDonationStore } from "../store/donation-store";
 import type { Donation, Volunteer } from "../store/donation-schemas";
 
 export const useDonations = () => {
-  const { donations, volunteers, stats, updateDonation } = useDonationStore();
+  const { donations, volunteers, stats, updateDonation, fetchDonations, isLoading } = useDonationStore();
 
   // Filter States
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
@@ -72,6 +72,8 @@ export const useDonations = () => {
     filteredDonations,
     availableVolunteers,
     stats,
+    fetchDonations,
+    isLoading,
     filters: {
       activeFilters,
       statusFilter,

@@ -15,6 +15,8 @@ import ResuableDatePicker from "../../../../global/components/resuable-component
 import ResuableTextarea from "../../../../global/components/resuable-components/textarea";
 import ResuableModal from "../../../../global/components/resuable-components/modal";
 import FileUploadSlot from "../../../../global/components/resuable-components/FileUploadSlot";
+import { ngoNeedsService } from "../api/needs.api";
+import { toast } from "sonner";
 
 const PostNewNeed = () => {
   const navigate = useNavigate();
@@ -68,11 +70,31 @@ const PostNewNeed = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Need posted:", formData);
-    alert("Need posted successfully!");
-    navigate("/ngo/dashboard");
+    setIsSubmitting(true);
+    
+    try {
+      const submitData = {
+        title: formData.itemName,
+        category: formData.category === "other" ? formData.otherCategory : formData.category,
+        description: formData.description || `Needs for ${formData.beneficiaries} at ${formData.location}`,
+        quantity_required: `${formData.quantity} ${formData.unit}`,
+        urgency: formData.urgency.charAt(0).toUpperCase() + formData.urgency.slice(1), // low -> Low
+        status: "Open"
+      };
+
+      await ngoNeedsService.postNeed(submitData);
+      
+      toast.success("Need posted successfully!");
+      setIsSuccess(true);
+      setTimeout(() => navigate("/ngo/dashboard"), 2000);
+    } catch (error) {
+      console.error("Submission failed:", error);
+      toast.error("Failed to post need. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

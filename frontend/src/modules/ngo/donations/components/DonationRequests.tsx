@@ -1,5 +1,7 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { ngoDonationsService } from "../api/donations.api";
+import { toast } from "sonner";
 import {
   MapPin,
   Plus,
@@ -141,14 +143,23 @@ const DonationRequests = () => {
     }
   };
 
-  const handleConfirmAccept = () => {
+  const handleConfirmAccept = async () => {
+    if (!acceptingDonation) return;
+    
     setIsAccepting(true);
-    // Simulate system transmission
-    setTimeout(() => {
+    try {
+      await ngoDonationsService.acceptDonation(acceptingDonation.id);
       setIsAccepting(false);
       setIsAcceptSuccess(true);
       startCloseTimer(2500);
-    }, 1500);
+      
+      // Refresh data
+      fetchDonations();
+    } catch (error) {
+      setIsAccepting(false);
+      toast.error("Failed to accept donation. It might already be claimed.");
+      setIsAcceptModalOpen(false);
+    }
   };
 
   const handleMouseEnterSuccess = () => {
@@ -169,94 +180,48 @@ const DonationRequests = () => {
     // setTimeout(() => setSelectedRequest(null), 300);
   };
 
-  const donations: DonationRequest[] = [
-    {
-      id: 1,
-      title: "Excess Food from Corporate Event",
-      source: "Global Tech Inc.",
-      sourceType: "DONOR",
-      isOwn: false,
-      distance: "2km away",
-      icon: "🥗",
-      time: "10 mins ago",
-      urgency: "High",
-      status: "Available",
-      progress: 25,
-      description:
-        "Premium catering surplus from a corporate luncheon. Includes organic salads, appetizers, and grain bowls.",
-      quantity: "25-30 Kg",
-      resourceType: "Perishable",
-      quality: "High (Verified)",
-      pickupAddress: "White Town Tech Park, East Tower, Floor 12, Pondicherry",
-      deliveryAddress: "Auroville Community Kitchen, Heritage Town, Hub A",
-    },
-    {
-      id: 2,
-      title: "Fresh Bakery Items",
-      source: "Local Bakery",
-      sourceType: "DONOR",
-      isOwn: false,
-      distance: "5km away",
-      icon: "🥖",
-      time: "45 mins ago",
-      urgency: "Normal",
-      status: "Available",
-      progress: 25,
-      description:
-        "Freshly baked bread, rolls, and pastries from the morning batch. Nutritious and safely packed.",
-      quantity: "15 Kg",
-      resourceType: "Dry Bakery",
-      quality: "Freshly Prepared",
-      pickupAddress:
-        "Mission Street Bakery, Shop 42, Heritage Town, Puducherry",
-      deliveryAddress: "Puducherry Distribution Center, North Wing, Lawspet",
-    },
-    {
-      id: 3,
-      title: "Bulk Rice & Grains Needed",
-      source: "Global Help NGO",
-      sourceType: "NGO",
-      isOwn: true,
-      distance: "My Request",
-      icon: "🌾",
-      time: "1 hour ago",
-      urgency: "High",
-      status: "In Transit",
-      progress: 75,
-      description:
-        "High-density nutritional support for regional relief programs. Seeking premium grade grains for long-term storage.",
-      quantity: "150-200 Kg",
-      resourceType: "Dry Rations",
-      quality: "Grade A Export",
-      pickupAddress: "Lawspet Grain Reserve, Warehouse 7, Block D, Puducherry",
-      deliveryAddress: "Pondy Help NGO Main Storage, Ariankuppam, Sector 2",
-      volunteer: {
-        name: "Vikram Sethi",
-        phone: "+91 96543 21098",
-        rating: "4.9",
-      },
-    },
-    {
-      id: 4,
-      title: "Emergency Water Cans",
-      source: "Red Cross Local",
-      sourceType: "NGO",
-      isOwn: false,
-      distance: "12km away",
-      icon: "💧",
-      time: "2 hours ago",
-      urgency: "High",
-      status: "Available",
-      progress: 25,
-      description:
-        "Purified drinking water cans for emergency displacement camps. 20L pressurized containers.",
-      quantity: "50 Units",
-      resourceType: "Liquids",
-      quality: "ISI Certified",
-      pickupAddress: "Puducherry Municipal Water Works, West Gate, ECR Road",
-      deliveryAddress: "NGO Relief Site, Paradise Beach Zone 12",
-    },
-  ];
+  const [donations, setDonations] = useState<DonationRequest[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchDonations = useCallback(async () => {
+    try {
+      setLoading(true);
+      let rawData;
+      if (activeTab === "marketplace") {
+        rawData = await ngoDonationsService.getMarketplaceDonations();
+      } else {
+        rawData = await ngoDonationsService.getMyRequests();
+      }
+
+      // Map backend to UI format
+      const mappedData: DonationRequest[] = rawData.map((d: any) => ({
+        id: d.id,
+        title: d.title || d.food_category,
+        source: d.donor_name || "Private Donor",
+        sourceType: "DONOR",
+        isOwn: d.assigned_ngo_name !== null, // If assigned to someone, and it's us (backend filters my_requests)
+        distance: "Nearby",
+        icon: d.food_category === "Cooked Food" ? "🥗" : "🥖",
+        time: new Date(d.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        urgency: d.status === "PENDING" ? "High" : "Normal",
+        status: d.status === "PENDING" ? "Available" : d.status,
+        progress: d.status === "PENDING" ? 25 : (d.status === "ASSIGNED" ? 50 : 75),
+        description: d.description,
+        quantity: d.quantity,
+        pickupAddress: d.pickup_address,
+      }));
+
+      setDonations(mappedData);
+    } catch (error) {
+      toast.error("Failed to load donations");
+    } finally {
+      setLoading(false);
+    }
+  }, [activeTab]);
+
+  useEffect(() => {
+    fetchDonations();
+  }, [fetchDonations]);
 
   const finalFilteredDonations = donations
     .filter((d) => (activeTab === "marketplace" ? !d.isOwn : d.isOwn))

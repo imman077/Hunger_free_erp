@@ -1,6 +1,6 @@
 import { create } from "zustand";
-import { UserDataSchema } from "./user-schemas";
 import type { UserData, Donor, Ngo, Volunteer, UserItem } from "./user-schemas";
+import { adminService } from "../../api/admin-service";
 
 interface UserState {
   data: UserData;
@@ -11,6 +11,7 @@ interface UserState {
   setUserData: (data: Partial<UserData>) => void;
   setLoading: (isLoading: boolean) => void;
   setError: (error: string | null) => void;
+  fetchUsers: () => Promise<void>;
 
   // Specific Entity Actions
   updateDonor: (donor: Donor) => void;
@@ -19,149 +20,120 @@ interface UserState {
   updateUserItem: (user: UserItem) => void;
 }
 
-// Initial mock data harvested from the existing pages
-const initialData: UserData = {
-  donors: [
-    {
-      id: 1,
-      businessName: "Saravana Bhavan",
-      type: "Restaurant",
-      totalDonations: 8500,
-      points: 1700,
-      status: "Active",
-      contactPerson: "Sathish Kumar",
-      email: "contact@saravanabhavan.in",
-      address: "Mylapore, Chennai, Tamil Nadu, 600004",
-      donationHistory: [
-        { event: "Margazhi Food Drive", date: "2023-12-15", amount: 3000 },
-        { event: "Flood Relief Support", date: "2023-11-20", amount: 2500 },
-        {
-          event: "Temple Feast Contribution",
-          date: "2023-05-10",
-          amount: 3000,
-        },
-      ],
-      phone: "+91-44-2431-1515", // Placeholder
-    },
-    {
-      id: 2,
-      businessName: "ITC Grand Chola",
-      type: "Hotel",
-      totalDonations: 15000,
-      points: 3000,
-      status: "Active",
-      contactPerson: "Rema Devi",
-      email: "rema.d@itchotels.in",
-      address: "Guindy, Chennai, Tamil Nadu, 600032",
-      donationHistory: [
-        { event: "Heritage Charity Ball", date: "2023-10-15", amount: 6000 },
-        { event: "Education For All", date: "2023-07-20", amount: 5000 },
-        { event: "Youth Skill Program", date: "2022-11-05", amount: 4000 },
-      ],
-      phone: "+91-44-2220-0000", // Placeholder
-    },
-  ],
-  ngos: [
-    {
-      id: 1,
-      name: "Agaram Foundation",
-      registrationNo: "REG-TN-2006-112",
-      serviceAreas: ["Education", "Youth Development"],
-      beneficiaries: "Children & Youth",
-      status: "Active",
-      email: "info@agaram.foundation",
-      phone: "+91-44-2431-1515",
-      address: "T. Nagar, Chennai, Tamil Nadu",
-      volunteers: ["Suriya Sivakumar", "Jyothika"],
-    },
-    {
-      id: 2,
-      name: "Siruthuli",
-      registrationNo: "NGO-TN-2003-045",
-      serviceAreas: ["Water Conservation", "Afforestation"],
-      beneficiaries: "Local Communities",
-      status: "Pending",
-      email: "contact@siruthuli.com",
-      phone: "+91-422-230-1122",
-      address: "Ettimadai, Coimbatore, Tamil Nadu",
-      volunteers: ["Vanitha Mohan", "Ravi Sam"],
-    },
-  ],
-  volunteers: [
-    {
-      id: 0,
-      name: "Arun Vijay",
-      zone: "North",
-      volunteerAreas: ["Anna Nagar", "Ambattur"],
-      tasksCompleted: 45,
-      totalTasks: 50,
-      missedTasks: 2,
-      rating: "4.8",
-      status: "available",
-      onLeave: false,
-      email: "arun.v@example.in",
-      phone: "+91-98765-43210",
-      emergencyPhone: "+91-98765-43999",
-      address: "West Main Road, Anna Nagar, Chennai, TN, 600040",
-      vehicle: "Swift (Car)",
-      license: "TN 01 AB 1234",
-      createdDate: "2023-11-12",
-      verificationStatus: "Verified",
-      lastActive: "2024-01-19 14:30",
-      lastAssignment: "2024-01-18 10:00",
-      allowedTaskTypes: ["Food Delivery", "Bulk Pickup"],
-      fuelEligibility: true,
-      isSuspended: false,
-    },
-  ],
-  users: [
-    {
-      id: 1,
-      name: "ITC Grand Chola",
-      role: "Donor",
-      status: "Active",
-      date: "Dec 1, 2023",
-      userId: "USR-00789",
-      joinedDate: "3/15/2022",
-      lastLogin: "2024-07-28",
-      lastLoginTime: "10:30 AM",
-      totalPoints: 1250,
-      email: "grandchola@itc.in",
-      phone: "+91-44-2220-0000",
-      address: "63, Mount Road, Guindy, Chennai, Tamil Nadu 600032",
-      organization: "ITC Hotels",
-      location: "Tamil Nadu, India",
-      badges: ["Hotel", "Verified"],
-      donationsMade: 7,
-      itemsDonated: 25,
-      avgRating: 4.8,
-      recentActivity: [
-        {
-          action: "Donated 50 food items to local shelter.",
-          time: "2 hours ago",
-          icon: "donate",
-        },
-      ],
-      miniTimeline: [{ event: "Account created", date: "3/15/2022" }],
-    },
-  ],
+const emptyData: UserData = {
+  donors: [],
+  ngos: [],
+  volunteers: [],
+  users: [],
 };
 
 export const useUserStore = create<UserState>((set) => ({
-  data: initialData,
+  data: emptyData,
   isLoading: false,
   error: null,
 
   setUserData: (newData) => {
     set((state) => {
       const updatedData = { ...state.data, ...newData };
-      // Optional: Validation
       return { data: updatedData };
     });
   },
 
   setLoading: (isLoading) => set({ isLoading }),
   setError: (error) => set({ error }),
+
+  fetchUsers: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      const [usersRes, donorsRes, ngosRes, volunteersRes] = await Promise.all([
+        adminService.getUsers(),
+        adminService.getDonors(),
+        adminService.getNGOs(),
+        adminService.getVolunteers(),
+      ]);
+
+      set({
+        data: {
+          users: usersRes.data.map((u: any) => ({
+            id: u.id,
+            name: u.username,
+            role: u.profile?.role || "DONOR",
+            status: "Active", // Backend to provide status later
+            date: u.profile?.created_at || "",
+            userId: `USR-${u.id.toString().padStart(5, '0')}`,
+            joinedDate: u.profile?.created_at || "",
+            lastLogin: u.profile?.last_login_at || "",
+            lastLoginTime: "",
+            totalPoints: u.donor_profile?.points || 0,
+            email: u.email,
+            phone: u.profile?.phone || "",
+            address: u.profile?.address || "",
+            organization: u.donor_profile?.business_name || u.ngo_profile?.name || "",
+            location: u.profile?.address || "",
+            badges: [],
+            donationsMade: 0,
+            itemsDonated: 0,
+            avgRating: u.volunteer_profile?.rating || 0,
+            recentActivity: [],
+            miniTimeline: [],
+          })),
+          donors: donorsRes.data.map((d: any) => ({
+            id: d.id,
+            businessName: d.business_name,
+            type: d.business_type,
+            totalDonations: parseFloat(d.total_donations),
+            points: d.points,
+            status: d.status,
+            contactPerson: d.contact_person,
+            email: "", // User relation to be explored if needed
+            phone: "",
+            address: "",
+            donationHistory: [],
+          })),
+          ngos: ngosRes.data.map((n: any) => ({
+            id: n.id,
+            name: n.name,
+            registrationNo: n.registration_no,
+            serviceAreas: n.service_areas,
+            beneficiaries: n.beneficiaries,
+            status: n.status,
+            email: "",
+            phone: "",
+            address: "",
+            volunteers: [],
+          })),
+          volunteers: volunteersRes.data.map((v: any) => ({
+            id: v.id,
+            name: "", // Fetch from user profile
+            zone: v.zone,
+            volunteerAreas: v.volunteer_areas,
+            tasksCompleted: v.tasks_completed,
+            totalTasks: v.tasks_completed, // Placeholder
+            missedTasks: 0,
+            rating: v.rating.toString(),
+            status: v.status,
+            onLeave: v.status === "on-leave",
+            email: "",
+            phone: "",
+            emergencyPhone: "",
+            address: "",
+            vehicle: v.vehicle,
+            license: "",
+            createdDate: "",
+            verificationStatus: v.verification_status,
+            lastActive: "",
+            lastAssignment: "",
+            allowedTaskTypes: [],
+            fuelEligibility: true,
+            isSuspended: false,
+          })),
+        },
+        isLoading: false,
+      });
+    } catch (err: any) {
+      set({ error: err.message, isLoading: false });
+    }
+  },
 
   updateDonor: (updatedDonor) => {
     set((state) => ({

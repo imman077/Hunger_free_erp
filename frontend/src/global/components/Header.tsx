@@ -272,6 +272,7 @@ const Header = () => {
                 key="view-profile"
                 startContent={<User size={16} className="opacity-70" />}
                 className="text-xs font-semibold data-[hover=true]:bg-emerald-500/5 data-[hover=true]:text-emerald-500"
+                onPress={() => navigate("/admin/settings")}
               >
                 View Profile
               </DropdownItem>
@@ -411,7 +412,7 @@ const Header = () => {
                           ),
                         );
                       }}
-                      className={`group relative px-3.5 py-2.5 transition-all duration-300 cursor-pointer flex items-center gap-3 rounded-xl border self-start
+                      className={`group relative px-3.5 py-2.5 w-full transition-all duration-300 cursor-pointer flex items-center gap-3 rounded-xl border self-start
                         ${
                           !n.isRead
                             ? "bg-emerald-500/5 border-emerald-500/10 shadow-[0_4px_12px_-4px_rgba(34,197,94,0.1)]"

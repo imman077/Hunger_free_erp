@@ -30,6 +30,7 @@ import VolunteerEnquiryPage from "./modules/admin/enquiries/components/Volunteer
 import RewardEnquiryPage from "./modules/admin/enquiries/components/RewardEnquiryPage";
 import DonorEnquiryPage from "./modules/admin/enquiries/components/DonorEnquiryPage";
 import EnquiriesHub from "./modules/admin/enquiries/components/EnquiriesHub";
+import SettingsPage from "./modules/admin/settings/components/SettingsPage";
 
 // Donor Imports
 import DonorDashboard from "./modules/donor/dashboard/components/Dashboard";
@@ -140,6 +141,7 @@ function App() {
             </Route>
 
             {/* Settings Section */}
+            <Route path="settings" element={<SettingsPage />} />
             <Route
               path="settings/configuration"
               element={<ConfigurationPage />}

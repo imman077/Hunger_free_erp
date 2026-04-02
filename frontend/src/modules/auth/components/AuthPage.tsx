@@ -120,7 +120,7 @@ const AuthPage = () => {
 
     try {
       // 1. Get Access Tokens
-      const response = await axios.post("http://localhost:8000/api/token/", {
+      const response = await axios.post("http://localhost:8000/api/auth/login/", {
         username: loginEmail, // Using email as username for this demo
         password: loginPassword,
         role: activeRole.toUpperCase(), // Send the selected role
@@ -129,7 +129,7 @@ const AuthPage = () => {
       const { access, refresh } = response.data;
 
       // 2. Fetch User Profile
-      const userResponse = await axios.get("http://localhost:8000/api/me/", {
+      const userResponse = await axios.get("http://localhost:8000/api/auth/me/", {
         headers: { Authorization: `Bearer ${access}` },
       });
 

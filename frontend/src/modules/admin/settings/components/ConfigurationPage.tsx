@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Plus, Pencil, Trash2, Settings, Check, X } from "lucide-react";
-import { useConfig } from "../hooks/useConfig";
+import { useConfigStore } from "../store/config-store";
+import { Spinner } from "@heroui/react";
 import type { ConfigItem } from "../store/config-schemas";
 
 type ConfigSection = {
@@ -55,9 +56,14 @@ const configSections: ConfigSection[] = [
 ];
 
 const ConfigurationPage: React.FC = () => {
-  const { config, actions } = useConfig();
+  const { config, fetchConfig, isLoading, addItem, updateItem, deleteItem } =
+    useConfigStore();
   const [activeSection, setActiveSection] =
     useState<keyof typeof config>("foodCategories");
+
+  useEffect(() => {
+    fetchConfig();
+  }, [fetchConfig]);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editValue, setEditValue] = useState({
     name: "",
@@ -77,7 +83,7 @@ const ConfigurationPage: React.FC = () => {
   const handleAdd = () => {
     if (!newItem.name.trim()) return;
 
-    actions.addItem(activeSection, {
+    addItem(activeSection, {
       name: newItem.name,
       description: currentSection.hasDescription
         ? newItem.description
@@ -99,7 +105,7 @@ const ConfigurationPage: React.FC = () => {
   };
 
   const handleSave = (id: number) => {
-    actions.updateItem(activeSection, id, {
+    updateItem(activeSection, id, {
       name: editValue.name,
       description: editValue.description,
       color: editValue.color,
@@ -109,14 +115,19 @@ const ConfigurationPage: React.FC = () => {
 
   const handleDelete = (id: number) => {
     if (confirm("Are you sure you want to delete this item?")) {
-      actions.deleteItem(activeSection, id);
+      deleteItem(activeSection, id);
     }
   };
 
   const colorOptions = ["emerald", "blue", "amber", "red", "slate", "purple"];
 
   return (
-    <div className="p-4 sm:p-8 w-full mx-auto space-y-6 sm:space-y-8 animate-in fade-in duration-700 font-inter">
+    <div className="p-4 sm:p-8 w-full mx-auto space-y-6 sm:space-y-8 animate-in fade-in duration-700 font-inter relative">
+      {isLoading && (
+        <div className="absolute inset-0 bg-black/5 flex items-center justify-center z-50">
+          <Spinner color="success" size="lg" label="Syncing Config..." />
+        </div>
+      )}
       <header className="flex flex-col sm:flex-row justify-between items-start sm:items-baseline gap-4">
         <div className="text-start">
           <h1

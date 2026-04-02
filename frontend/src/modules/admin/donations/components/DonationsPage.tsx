@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Filter, X, ChevronDown, Plus, UserCheck } from "lucide-react";
 import {
   Dropdown,
@@ -13,6 +13,7 @@ import {
   ModalFooter,
   useDisclosure,
   Chip,
+  Spinner,
 } from "@heroui/react";
 import ReusableTable from "../../../../global/components/resuable-components/table";
 import ImpactCards from "../../../../global/components/resuable-components/ImpactCards";
@@ -38,7 +39,13 @@ const DonationOverview = () => {
       toggleFilter,
     },
     actions: { assignVolunteer, rejectAssignment },
+    fetchDonations,
+    isLoading,
   } = useDonations();
+
+  useEffect(() => {
+    fetchDonations();
+  }, [fetchDonations]);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedDonation, setSelectedDonation] = useState<any>(null);
@@ -377,9 +384,14 @@ const DonationOverview = () => {
 
   return (
     <div
-      className="p-6 space-y-6 min-h-screen"
+      className="p-6 space-y-6 min-h-screen relative"
       style={{ backgroundColor: "var(--bg-primary)" }}
     >
+      {isLoading && (
+        <div className="absolute inset-0 bg-black/5 flex items-center justify-center z-50">
+          <Spinner color="success" size="lg" label="Syncing with SQL..." />
+        </div>
+      )}
       {/* Elite Header */}
       <div className="flex items-center justify-between w-full">
         <div className="text-left">

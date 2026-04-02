@@ -45,18 +45,6 @@ const initialData: DonorData = {
       change: "Gold Tier",
       color: "#22c55e",
     },
-    {
-      title: "Trees Planted",
-      value: "45",
-      change: "Your Forest",
-      color: "#22c55e",
-    },
-    {
-      title: "Available Points",
-      value: "8,200",
-      change: "Redeem for Cash",
-      color: "#22c55e",
-    },
   ],
   recentActivities: [
     {

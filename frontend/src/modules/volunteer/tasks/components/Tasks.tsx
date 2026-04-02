@@ -1,5 +1,7 @@
-import { useState, useCallback } from "react";
+// Task module for volunteer operations
+import { useState, useCallback, useEffect } from "react";
 import { toast } from "sonner";
+import { volunteerTasksService } from "../api/tasks.api";
 import {
   Package,
   Truck,
@@ -21,6 +23,7 @@ import ReusableTable, {
 } from "../../../../global/components/resuable-components/table";
 import ResuableDrawer from "../../../../global/components/resuable-components/drawer";
 import ResuableModal from "../../../../global/components/resuable-components/modal";
+import React from "react";
 
 interface Task {
   id: string;
@@ -204,10 +207,8 @@ const TaskCard: React.FC<{
   );
 };
 
-import { useVolunteerTasks } from "../hooks/useVolunteerTasks";
 
 const VolunteerTasks = () => {
-  const { tasks: storeTasks, isLoading } = useVolunteerTasks();
   const [activeTab, setActiveTab] = useState<"active" | "opps" | "past">(
     "active",
   );
@@ -222,18 +223,61 @@ const VolunteerTasks = () => {
     index: number;
     type: "pickup" | "delivery";
   } | null>(null);
-
+  const [loading, setLoading] = useState(true);
   const [tasks, setTasks] = useState<{
     active: Task[];
     opps: Task[];
     past: Task[];
   }>({
-    active: (storeTasks as any[]).filter((t) => t.status === "IN PROGRESS"),
-    opps: (storeTasks as any[]).filter((t) => t.status === "AVAILABLE"),
-    past: (storeTasks as any[]).filter((t) => t.status === "COMPLETED"),
+    active: [],
+    opps: [],
+    past: [],
   });
 
-  if (isLoading) {
+  const fetchTasks = useCallback(async () => {
+    try {
+      setLoading(true);
+      const [oppsRaw, activeRaw] = await Promise.all([
+        volunteerTasksService.getNearbyPickups(),
+        volunteerTasksService.getMyTasks()
+      ]);
+
+      const mapTask = (d: any): Task => ({
+        id: d.id.toString(),
+        title: d.title || d.food_category,
+        routeNumber: `PK-${d.id}`,
+        stops: 1,
+        duration: "Quick",
+        load: d.quantity,
+        status: d.status === "ASSIGNED" ? "AVAILABLE" : (d.status === "IN_TRANSIT" ? "IN PROGRESS" : "COMPLETED"),
+        type: "delivery",
+        description: d.description,
+        location: d.pickup_address,
+        partnerOrg: d.donor_name,
+        contactPhone: d.contact_phone,
+        baseAddress: d.pickup_address,
+        destinations: [d.assigned_ngo_name || "Assigned NGO"],
+        isPickupReached: d.pickup_time !== null,
+        completedDestinations: d.status === "COMPLETED" ? [0] : [],
+      });
+
+      setTasks({
+        active: activeRaw.filter((d: any) => d.status === "IN_TRANSIT" || d.status === "ASSIGNED").map(mapTask),
+        opps: oppsRaw.map(mapTask),
+        past: activeRaw.filter((d: any) => d.status === "COMPLETED").map(mapTask),
+      });
+    } catch (error) {
+      toast.error("Failed to load tasks");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchTasks();
+  }, [fetchTasks]);
+
+  if (loading) {
     return (
       <div className="w-full flex items-center justify-center min-h-[400px]">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500" />
@@ -251,6 +295,17 @@ const VolunteerTasks = () => {
     setIsOtpModalOpen(true);
   };
 
+
+  const handlePickupComplete = async (donationId: string) => {
+    try {
+        await volunteerTasksService.markAsPickedUp(Number(donationId));
+        toast.success("Donation picked up! Drive safe.");
+        fetchTasks();
+    } catch (error) {
+        toast.error("Failed to update status.");
+    }
+  };
+
   const handleVerifyOtp = () => {
     if (!selectedTask || !verifyingPoint || otpValue !== "1234") {
       toast.error("Invalid security code. Please check with the coordinator.");
@@ -258,6 +313,10 @@ const VolunteerTasks = () => {
     }
 
     toast.success("Location verified successfully!");
+
+    if (verifyingPoint.type === "pickup") {
+        handlePickupComplete(selectedTask.id);
+    }
 
     const updatedActive = tasks.active.map((t) => {
       if (t.id === selectedTask.id) {
@@ -312,27 +371,21 @@ const VolunteerTasks = () => {
     setVerifyingPoint(null);
   };
 
-  const handleConfirmClaim = () => {
+  const handleConfirmClaim = async () => {
+    if (!selectedTask) return;
     setIsClaiming(true);
-    setTimeout(() => {
-      if (selectedTask) {
-        const claimedTask: Task = {
-          ...selectedTask,
-          status: "IN PROGRESS",
-          isPickupReached: false,
-          completedDestinations: [],
-        };
-        setTasks((prev) => ({
-          ...prev,
-          opps: prev.opps.filter((t) => t.id !== selectedTask.id),
-          active: [claimedTask, ...prev.active],
-        }));
-      }
+    try {
+      await volunteerTasksService.acceptPickup(Number(selectedTask.id));
       toast.success("Task claimed and added to your dispatch!");
-      setIsClaiming(false);
       setIsClaimModalOpen(false);
-    }, 1500);
+      fetchTasks(); // Refresh
+    } catch (error) {
+      toast.error("Failed to claim task. It might already be taken.");
+    } finally {
+      setIsClaiming(false);
+    }
   };
+
 
   const getCurrentTasks = () => {
     switch (activeTab) {

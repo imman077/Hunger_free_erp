@@ -1,98 +1,82 @@
 import { create } from "zustand";
 import type { Enquiry, RewardEnquiry } from "./enquiry-schemas";
+import { adminService } from "../../api/admin-service";
 
 interface EnquiryStore {
   registrations: Enquiry[];
-  claims: Enquiry[];
-  payments: Enquiry[];
-  updates: Enquiry[];
   rewards: RewardEnquiry[];
+  isLoading: boolean;
 
-  // Actions
-  setRegistrations: (data: Enquiry[]) => void;
-  setRewards: (data: RewardEnquiry[]) => void;
-  approve: (
-    type: "registrations" | "claims" | "payments" | "updates" | "rewards",
-    id: string,
-  ) => void;
-  reject: (
-    type: "registrations" | "claims" | "payments" | "updates" | "rewards",
-    id: string,
-  ) => void;
+  fetchEnquiries: () => Promise<void>;
+  approveRegistration: (id: string | number) => Promise<void>;
+  rejectRegistration: (id: string | number) => Promise<void>;
 }
 
-const mockRegistrations: Enquiry[] = [
-  {
-    id: "NGO-101",
-    name: "Green Harvest NGO",
-    type: "NGO Registration",
-    email: "contact@greenharvest.org",
-    phone: "+91 98765 43210",
-    city: "Coimbatore",
-    status: "Registration Pending",
-    time: "2 hours ago",
-    priority: "high",
-    appliedDate: "Feb 18, 2026",
-    regNo: "NGO/TN/2026/001",
-    link: "/admin/enquiries/ngos",
-  },
-  {
-    id: "KYC-902",
-    name: "Isaiah Rivera",
-    type: "Volunteer KYC",
-    status: "Verify details",
-    time: "5 hours ago",
-    priority: "medium",
-    link: "/admin/enquiries/volunteers",
-  },
-];
-
-const mockRewards: RewardEnquiry[] = [
-  {
-    id: "RWD-443",
-    name: "Elite Membership",
-    user: "Amit Sharma",
-    userType: "Volunteer",
-    points: "5,000",
-    status: "Approval Required",
-    time: "Yesterday",
-    priority: "low",
-    appliedDate: "Feb 17, 2026",
-    category: "Lifestyle",
-    userPointsBalance: "7,800",
-  },
-  {
-    id: "RWD-450",
-    name: "Jackpot Prize",
-    user: "Green Harvest NGO",
-    userType: "NGO",
-    points: "15,000",
-    status: "Awaiting Admin",
-    time: "4 hours ago",
-    priority: "high",
-    appliedDate: "Feb 18, 2026",
-    category: "Grant",
-    userPointsBalance: "16,200",
-  },
-];
-
 export const useEnquiryStore = create<EnquiryStore>((set) => ({
-  registrations: mockRegistrations,
-  claims: [],
-  payments: [],
-  updates: [],
-  rewards: mockRewards,
+  registrations: [],
+  rewards: [],
+  isLoading: false,
 
-  setRegistrations: (registrations) => set({ registrations }),
-  setRewards: (rewards) => set({ rewards }),
+  fetchEnquiries: async () => {
+    set({ isLoading: true });
+    try {
+      // For enquiries, we fetch pending NGOs as 'registrations'
+      const [ngosRes, claimsRes] = await Promise.all([
+        adminService.getNGOs(),
+        adminService.getRewardClaims(),
+      ]);
 
-  approve: (type, id) =>
-    set((state) => ({
-      [type]: state[type].filter((e: any) => e.id !== id),
-    })),
+      set({
+        registrations: ngosRes.data.filter((n: any) => n.status === 'Pending').map((n: any) => ({
+          id: n.id.toString(),
+          name: n.name,
+          type: "NGO Registration",
+          email: n.email || "N/A",
+          phone: n.phone || "N/A",
+          city: n.beneficiaries, // Using beneficiaries as a location placeholder if city is missing
+          status: "Registration Pending",
+          time: "Just now",
+          priority: "high",
+          appliedDate: "Pending",
+          regNo: n.registration_no,
+          link: "/admin/users",
+        })),
+        rewards: claimsRes.data.filter((c: any) => c.status === 'Approval Required').map((c: any) => ({
+          id: c.id.toString(),
+          name: c.reward_name,
+          user: c.user_name,
+          userType: "Partner",
+          points: c.points_at_claim.toString(),
+          status: c.status,
+          time: "Recently",
+          priority: "medium",
+          appliedDate: c.created_at.split('T')[0],
+          category: "Points",
+          userPointsBalance: "N/A",
+        })),
+        isLoading: false,
+      });
+    } catch (error) {
+      console.error("Failed to fetch enquiries", error);
+      set({ isLoading: false });
+    }
+  },
 
-  reject: (type, id) =>
-    set((state) => ({
-      [type]: state[type].filter((e: any) => e.id !== id),
-    })),
+  approveRegistration: async (id) => {
+    try {
+      await adminService.updateNGO(Number(id), { status: 'Active' });
+      set((state) => ({
+        registrations: state.registrations.filter((r) => r.id !== id.toString()),
+      }));
+    } catch (e) { console.error(e); }
+  },
+
+  rejectRegistration: async (id) => {
+    try {
+      await adminService.updateNGO(Number(id), { status: 'Rejected' });
+      set((state) => ({
+        registrations: state.registrations.filter((r) => r.id !== id.toString()),
+      }));
+    } catch (e) { console.error(e); }
+  },
 }));

@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { DashboardDataSchema } from "./dashboard-schemas";
 import type { DashboardData } from "./dashboard-schemas";
+import { adminService } from "../../api/admin-service";
 
 interface DashboardState {
   data: DashboardData;
@@ -11,66 +12,26 @@ interface DashboardState {
   setDashboardData: (data: DashboardData) => void;
   setLoading: (isLoading: boolean) => void;
   setError: (error: string | null) => void;
-
-  // Potential future action for fetching data
-  // fetchDashboardData: () => Promise<void>;
+  fetchDashboardData: () => Promise<void>;
 }
 
-// Initial mock data based on existing Dashboard.tsx
 const initialData: DashboardData = {
   stats: [
-    {
-      title: "Total Donations",
-      value: "1.2K",
-      change: "+15% from last month",
-      changeColor: "text-green-600",
-    },
-    {
-      title: "Active Users",
-      value: "542",
-      change: "+8% from last week",
-      changeColor: "text-green-600",
-    },
-    {
-      title: "NGO Partners",
-      value: "68",
-      change: "+2 new this month",
-      changeColor: "text-green-600",
-    },
-    {
-      title: "Volunteers Onboarded",
-      value: "210",
-      change: "-3% from last month",
-      changeColor: "text-red-600",
-    },
+    { title: "Total Donations", value: "0", change: "Syncing...", changeColor: "text-slate-400" },
+    { title: "Active Users", value: "0", change: "Syncing...", changeColor: "text-slate-400" },
+    { title: "NGO Partners", value: "0", change: "Syncing...", changeColor: "text-slate-400" },
+    { title: "Volunteers Onboarded", value: "0", change: "Syncing...", changeColor: "text-slate-400" },
   ],
   donationsChart: {
     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
     datasets: [
-      {
-        label: "Donations",
-        data: [35, 35, 45, 55, 65, 75, 85],
-        backgroundColor: "rgb(233, 119, 90)",
-        borderColor: "rgb(233, 119, 90)",
-      },
-      {
-        label: "Pickups",
-        data: [25, 20, 35, 40, 40, 55, 45],
-        backgroundColor: "rgb(42, 157, 144)",
-        borderColor: "rgb(42, 157, 144)",
-      },
+      { label: "Donations", data: [0, 0, 0, 0, 0, 0, 0], backgroundColor: "#e9775a", borderColor: "#e9775a" },
+      { label: "Pickups", data: [0, 0, 0, 0, 0, 0, 0], backgroundColor: "#2a9d90", borderColor: "#2a9d90" },
     ],
   },
   userGrowthChart: {
     labels: ["Donor", "NGO", "Volunteers"],
-    datasets: [
-      {
-        label: "Sign-ups",
-        data: [65, 59, 80],
-        backgroundColor: "rgb(231, 85, 49)",
-        borderColor: "rgb(231, 85, 49)",
-      },
-    ],
+    datasets: [{ label: "Sign-ups", data: [0, 0, 0], backgroundColor: "#e75531", borderColor: "#e75531" }],
   },
 };
 
@@ -80,16 +41,36 @@ export const useDashboardStore = create<DashboardState>((set) => ({
   error: null,
 
   setDashboardData: (newData) => {
-    // Validate with Zod before setting state
     const result = DashboardDataSchema.safeParse(newData);
     if (result.success) {
       set({ data: result.data });
     } else {
-      console.error("Dashboard store validation failed:", result.error);
       set({ error: "Invalid data format received" });
     }
   },
 
   setLoading: (isLoading) => set({ isLoading }),
   setError: (error) => set({ error }),
+
+  fetchDashboardData: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      const { data: stats } = await adminService.getDashboardStats();
+      
+      set((state) => ({
+        data: {
+          ...state.data,
+          stats: [
+            { title: "Total Donations", value: stats.total_donations.toString(), change: "Live from SQL", changeColor: "text-hf-green" },
+            { title: "Active Users", value: stats.total_users.toString(), change: "Total registered", changeColor: "text-hf-green" },
+            { title: "NGO Partners", value: stats.pending_ngos.toString(), change: "Pending approval", changeColor: "text-amber-500" },
+            { title: "Active Donors", value: stats.active_donors.toString(), change: "Active contributors", changeColor: "text-hf-green" },
+          ],
+        },
+        isLoading: false,
+      }));
+    } catch (err: any) {
+      set({ error: err.message, isLoading: false });
+    }
+  },
 }));

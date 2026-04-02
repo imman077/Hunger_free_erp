@@ -6,6 +6,7 @@ import {
   getIcon,
 } from "../../../../global/constants/milestone_config";
 import { useDonorDashboard } from "../hooks/useDonorDashboard";
+import NGONeedsFeed from "./NGONeedsFeed";
 
 const DonorDashboard = () => {
   const { currentPoints, stats, recentActivities } = useDonorDashboard();
@@ -136,9 +137,11 @@ const DonorDashboard = () => {
       </div>
 
       <div className="px-6 grid grid-cols-1 lg:grid-cols-12 gap-4 pt-0 items-stretch">
-        {/* Left Column: Milestones */}
-        <div className="lg:col-span-8 flex flex-col h-full">
-          <div
+        {/* Left Column: NGO Needs Feed */}
+        <div className="lg:col-span-8 flex flex-col h-full space-y-6">
+           <NGONeedsFeed />
+           
+           <div
             className="rounded-md p-5 md:p-6 space-y-6 flex flex-col h-full overflow-hidden border"
             style={{
               backgroundColor: "var(--bg-primary)",

@@ -1,85 +1,108 @@
 import { create } from "zustand";
 import type { SystemConfig, ConfigItem } from "./config-schemas";
+import { adminService } from "../../api/admin-service";
 
 interface ConfigStore {
   config: SystemConfig;
+  isLoading: boolean;
 
   // Actions
-  setConfig: (config: SystemConfig) => void;
-  addItem: (section: keyof SystemConfig, item: Omit<ConfigItem, "id">) => void;
+  fetchConfig: () => Promise<void>;
+  addItem: (
+    section: keyof SystemConfig,
+    item: Omit<ConfigItem, "id">,
+  ) => Promise<void>;
   updateItem: (
     section: keyof SystemConfig,
     id: number,
     updates: Partial<ConfigItem>,
-  ) => void;
-  deleteItem: (section: keyof SystemConfig, id: number) => void;
+  ) => Promise<void>;
+  deleteItem: (section: keyof SystemConfig, id: number) => Promise<void>;
 }
 
 const INITIAL_CONFIG: SystemConfig = {
-  foodCategories: [
-    { id: 1, name: "Cooked Food", description: "Ready-to-eat meals" },
-    { id: 2, name: "Fresh Produce", description: "Fruits and vegetables" },
-    { id: 3, name: "Packaged Items", description: "Sealed packaged goods" },
-    { id: 4, name: "Beverages", description: "Drinks and liquids" },
-  ],
-  donationStatuses: [
-    { id: 1, name: "Pending Pickup", color: "amber" },
-    { id: 2, name: "In Transit", color: "blue" },
-    { id: 3, name: "Delivered", color: "emerald" },
-    { id: 4, name: "Cancelled", color: "red" },
-  ],
-  userStatuses: [
-    { id: 1, name: "Active", color: "emerald" },
-    { id: 2, name: "Inactive", color: "slate" },
-    { id: 3, name: "Pending Approval", color: "amber" },
-    { id: 4, name: "Suspended", color: "red" },
-  ],
-  ngoTypes: [
-    { id: 1, name: "Food Bank", description: "Large-scale food distribution" },
-    { id: 2, name: "Shelter", description: "Housing with food services" },
-    { id: 3, name: "Community Kitchen", description: "Local meal preparation" },
-    { id: 4, name: "School Program", description: "Student meal programs" },
-  ],
-  volunteerSkills: [
-    { id: 1, name: "Driving", description: "Vehicle operation for delivery" },
-    { id: 2, name: "Cooking", description: "Food preparation skills" },
-    { id: 3, name: "Logistics", description: "Coordination and planning" },
-    { id: 4, name: "Packaging", description: "Food packing and sorting" },
-  ],
+  foodCategories: [],
+  donationStatuses: [],
+  userStatuses: [],
+  ngoTypes: [],
+  volunteerSkills: [],
 };
 
-export const useConfigStore = create<ConfigStore>((set) => ({
+export const useConfigStore = create<ConfigStore>((set, get) => ({
   config: INITIAL_CONFIG,
+  isLoading: false,
 
-  setConfig: (config) => set({ config }),
+  fetchConfig: async () => {
+    set({ isLoading: true });
+    try {
+      // Fetch each section from backend. If it doesn't exist, it will use defaults or empty
+      const sections: (keyof SystemConfig)[] = [
+        "foodCategories",
+        "donationStatuses",
+        "userStatuses",
+        "ngoTypes",
+        "volunteerSkills",
+      ];
+      const newConfig = { ...get().config };
 
-  addItem: (section, item) =>
-    set((state) => {
-      const currentItems = state.config[section];
-      const maxId = Math.max(...currentItems.map((i) => i.id), 0);
-      return {
-        config: {
-          ...state.config,
-          [section]: [...currentItems, { ...item, id: maxId + 1 }],
-        },
-      };
-    }),
+      await Promise.all(
+        sections.map(async (key) => {
+          try {
+            const res = await adminService.getConfig(key);
+            newConfig[key] = res.data.value;
+          } catch (e) {
+            // If not found, we could seed it later
+            console.warn(`Config ${key} not found on server.`);
+          }
+        }),
+      );
 
-  updateItem: (section, id, updates) =>
-    set((state) => ({
-      config: {
-        ...state.config,
-        [section]: state.config[section].map((item) =>
-          item.id === id ? { ...item, ...updates } : item,
-        ),
-      },
-    })),
+      set({ config: newConfig, isLoading: false });
+    } catch (e) {
+      set({ isLoading: false });
+    }
+  },
 
-  deleteItem: (section, id) =>
-    set((state) => ({
-      config: {
-        ...state.config,
-        [section]: state.config[section].filter((item) => item.id !== id),
-      },
-    })),
+  addItem: async (section, item) => {
+    const currentItems = get().config[section];
+    const maxId = Math.max(...currentItems.map((i) => i.id), 0);
+    const newItem = { ...item, id: maxId + 1 };
+    const updatedItems = [...currentItems, newItem];
+
+    try {
+      await adminService.updateConfig(section, {
+        key: section,
+        value: updatedItems,
+      });
+      set((state) => ({
+        config: { ...state.config, [section]: updatedItems },
+      }));
+    } catch (e) {
+      // If config doesn't exist, create it
+      await adminService.createConfig({ key: section, value: updatedItems });
+      set((state) => ({
+        config: { ...state.config, [section]: updatedItems },
+      }));
+    }
+  },
+
+  updateItem: async (section, id, updates) => {
+    const updatedItems = get().config[section].map((item) =>
+      item.id === id ? { ...item, ...updates } : item,
+    );
+    await adminService.updateConfig(section, {
+      key: section,
+      value: updatedItems,
+    });
+    set((state) => ({ config: { ...state.config, [section]: updatedItems } }));
+  },
+
+  deleteItem: async (section, id) => {
+    const updatedItems = get().config[section].filter((item) => item.id !== id);
+    await adminService.updateConfig(section, {
+      key: section,
+      value: updatedItems,
+    });
+    set((state) => ({ config: { ...state.config, [section]: updatedItems } }));
+  },
 }));

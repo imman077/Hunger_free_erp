@@ -244,67 +244,11 @@ const SidebarIcons: React.FC = () => {
     },
   ];
 
-  const donorSubItems: SubItem[] = [
+  const profileSubItems: SubItem[] = [
     {
-      label: "Dashboard",
-      to: "/donor/dashboard",
-      icon: <Icon name="dashboard" className="h-4 w-4" />,
-    },
-    {
-      label: "My Donations",
-      to: "/donor/donations",
-      icon: <Icon name="donations" className="h-4 w-4" />,
-    },
-    {
-      label: "Rewards",
-      to: "/donor/rewards",
-      icon: <Icon name="rewards" className="h-4 w-4" />,
-    },
-    {
-      label: "Profile",
-      to: "/donor/profile",
-      icon: <Icon name="users" className="h-4 w-4" />,
-    },
-  ];
-
-  const ngoSubItems: SubItem[] = [
-    {
-      label: "Dashboard",
-      to: "/ngo/dashboard",
-      icon: <Icon name="dashboard" className="h-4 w-4" />,
-    },
-    {
-      label: "Donation Requests",
-      to: "/ngo/requests",
-      icon: <Icon name="donations" className="h-4 w-4" />,
-    },
-    {
-      label: "Inventory",
-      to: "/ngo/inventory",
-      icon: <Icon name="office" className="h-4 w-4" />,
-    },
-    {
-      label: "Profile",
-      to: "/ngo/profile",
-      icon: <Icon name="users" className="h-4 w-4" />,
-    },
-  ];
-
-  const volunteerSubItems: SubItem[] = [
-    {
-      label: "Dashboard",
-      to: "/volunteer/dashboard",
-      icon: <Icon name="dashboard" className="h-4 w-4" />,
-    },
-    {
-      label: "Tasks",
-      to: "/volunteer/tasks",
-      icon: <Icon name="users" className="h-4 w-4" />,
-    },
-    {
-      label: "Profile",
-      to: "/volunteer/profile",
-      icon: <Icon name="users" className="h-4 w-4" />,
+      label: "Personal Settings",
+      to: "/admin/settings",
+      icon: <Icon name="settings" className="h-4 w-4" />,
     },
   ];
 
@@ -396,34 +340,11 @@ const SidebarIcons: React.FC = () => {
             ]}
           />
 
-          <div className="px-4 py-3 mt-2">
-            <div
-              className="h-px w-full"
-              style={{ backgroundColor: "var(--border-color)" }}
-            />
-          </div>
-
           <SidebarItem
             icon={<Icon name="users" />}
-            label="Donor"
+            label="Profile"
             expanded={inDrawer ? true : expanded}
-            subItems={donorSubItems}
-            onNavigate={onNavigate}
-          />
-
-          <SidebarItem
-            icon={<Icon name="office" />}
-            label="NGO"
-            expanded={inDrawer ? true : expanded}
-            subItems={ngoSubItems}
-            onNavigate={onNavigate}
-          />
-
-          <SidebarItem
-            icon={<Icon name="users" />}
-            label="Volunteer"
-            expanded={inDrawer ? true : expanded}
-            subItems={volunteerSubItems}
+            subItems={profileSubItems}
             onNavigate={onNavigate}
           />
         </div>

@@ -1,141 +1,100 @@
 import { create } from "zustand";
-import type {
-  RewardConfig,
-  Redemption,
-  RewardCatalog,
-} from "./rewards-schemas";
+import type { RewardConfig, Redemption, RewardCatalog } from "./rewards-schemas";
+import { adminService } from "../../api/admin-service";
 
 interface RewardsStore {
   catalog: RewardCatalog;
   redemptions: Redemption[];
+  isLoading: boolean;
 
   // Actions
-  setCatalog: (catalog: RewardCatalog) => void;
+  fetchRewards: () => Promise<void>;
   addReward: (category: keyof RewardCatalog, reward: RewardConfig) => void;
-  updateReward: (
-    category: keyof RewardCatalog,
-    id: string | number,
-    updates: Partial<RewardConfig>,
-  ) => void;
-  toggleRewardActive: (
-    category: keyof RewardCatalog,
-    id: string | number,
-  ) => void;
+  updateReward: (category: keyof RewardCatalog, id: string | number, updates: Partial<RewardConfig>) => void;
+  toggleRewardActive: (category: keyof RewardCatalog, id: string | number) => void;
   deleteReward: (category: keyof RewardCatalog, id: string | number) => void;
-  setRedemptions: (redemptions: Redemption[]) => void;
-  approveRedemption: (id: string) => void;
-  rejectRedemption: (id: string) => void;
+  approveRedemption: (id: string | number) => Promise<void>;
+  rejectRedemption: (id: string | number) => Promise<void>;
 }
 
-const INITIAL_CATALOG: RewardCatalog = {
-  donor: [
-    {
-      id: 1,
-      name: "Quick Cash",
-      val: "₹1,000",
-      pts: 600,
-      active: true,
-      tag: "Cash",
-    },
-    {
-      id: 2,
-      name: "Cash Bonus",
-      val: "₹2,500",
-      pts: 1200,
-      active: true,
-      tag: "Cash",
-    },
-  ],
-  ngo: [
-    {
-      id: 101,
-      name: "Operations Fund",
-      val: "₹5,000",
-      pts: 1000,
-      active: true,
-      tag: "Grant",
-      description: "Quick cash for electricity, water, and basic office bills.",
-    },
-  ],
-  volunteer: [
-    {
-      id: 201,
-      name: "Fuel Money",
-      val: "₹1,000",
-      pts: 500,
-      active: true,
-      tag: "Cash",
-    },
-  ],
-};
-
-const initialRedemptions: Redemption[] = [
-  {
-    id: "RD1",
-    userName: "Hotel Grand",
-    userType: "Donor",
-    rewardName: "Premium Partner Badge",
-    pointsDeducted: 2000,
-    status: "Pending",
-    date: "2026-02-25",
-  },
-];
-
 export const useRewardsStore = create<RewardsStore>((set) => ({
-  catalog: INITIAL_CATALOG,
-  redemptions: initialRedemptions,
+  catalog: { donor: [], ngo: [], volunteer: [] },
+  redemptions: [],
+  isLoading: false,
 
-  setCatalog: (catalog) => set({ catalog }),
+  fetchRewards: async () => {
+    set({ isLoading: true });
+    try {
+      const [rewardsRes, claimsRes] = await Promise.all([
+        adminService.getRewards(),
+        adminService.getRewardClaims(),
+      ]);
+
+      const rewards = rewardsRes.data;
+      const catalog: RewardCatalog = {
+        donor: rewards.filter((r: any) => r.category.toLowerCase() === 'donor').map((r: any) => ({
+          id: r.id, name: r.name, val: r.description, pts: r.points_required, active: r.status === 'Active', tag: r.category
+        })),
+        ngo: rewards.filter((r: any) => r.category.toLowerCase() === 'ngo').map((r: any) => ({
+          id: r.id, name: r.name, val: r.description, pts: r.points_required, active: r.status === 'Active', tag: r.category
+        })),
+        volunteer: rewards.filter((r: any) => r.category.toLowerCase() === 'volunteer').map((r: any) => ({
+          id: r.id, name: r.name, val: r.description, pts: r.points_required, active: r.status === 'Active', tag: r.category
+        })),
+      };
+
+      set({
+        catalog,
+        redemptions: claimsRes.data.map((c: any) => ({
+          id: c.id.toString(),
+          userName: c.user_name,
+          userType: "User", // Role info to be enhanced
+          rewardName: c.reward_name,
+          pointsDeducted: c.points_at_claim,
+          status: c.status,
+          date: c.created_at.split('T')[0],
+        })),
+        isLoading: false
+      });
+    } catch (error) {
+      console.error("Failed to fetch rewards", error);
+      set({ isLoading: false });
+    }
+  },
 
   addReward: (category, reward) =>
-    set((state) => ({
-      catalog: {
-        ...state.catalog,
-        [category]: [...state.catalog[category], reward],
-      },
-    })),
+    set((state) => ({ catalog: { ...state.catalog, [category]: [...state.catalog[category], reward] } })),
 
   updateReward: (category, id, updates) =>
     set((state) => ({
-      catalog: {
-        ...state.catalog,
-        [category]: state.catalog[category].map((r) =>
-          r.id === id ? { ...r, ...updates } : r,
-        ),
-      },
+      catalog: { ...state.catalog, [category]: state.catalog[category].map((r) => r.id === id ? { ...r, ...updates } : r) },
     })),
 
   toggleRewardActive: (category, id) =>
     set((state) => ({
-      catalog: {
-        ...state.catalog,
-        [category]: state.catalog[category].map((r) =>
-          r.id === id ? { ...r, active: !r.active } : r,
-        ),
-      },
+      catalog: { ...state.catalog, [category]: state.catalog[category].map((r) => r.id === id ? { ...r, active: !r.active } : r) },
     })),
 
   deleteReward: (category, id) =>
     set((state) => ({
-      catalog: {
-        ...state.catalog,
-        [category]: state.catalog[category].filter((r) => r.id !== id),
-      },
+      catalog: { ...state.catalog, [category]: state.catalog[category].filter((r) => r.id !== id) },
     })),
 
-  setRedemptions: (redemptions) => set({ redemptions }),
+  approveRedemption: async (id) => {
+    try {
+      await adminService.updateRewardClaim(Number(id), { status: 'Approved' });
+      set((state) => ({
+        redemptions: state.redemptions.map((r) => r.id === id.toString() ? { ...r, status: "Approved" } : r),
+      }));
+    } catch (e) { console.error(e); }
+  },
 
-  approveRedemption: (id) =>
-    set((state) => ({
-      redemptions: state.redemptions.map((r) =>
-        r.id === id ? { ...r, status: "Approved" } : r,
-      ),
-    })),
-
-  rejectRedemption: (id) =>
-    set((state) => ({
-      redemptions: state.redemptions.map((r) =>
-        r.id === id ? { ...r, status: "Rejected" } : r,
-      ),
-    })),
+  rejectRedemption: async (id) => {
+    try {
+      await adminService.updateRewardClaim(Number(id), { status: 'Rejected' });
+      set((state) => ({
+        redemptions: state.redemptions.map((r) => r.id === id.toString() ? { ...r, status: "Rejected" } : r),
+      }));
+    } catch (e) { console.error(e); }
+  },
 }));

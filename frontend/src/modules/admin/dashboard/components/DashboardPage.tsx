@@ -1,13 +1,24 @@
+import { useEffect } from "react";
 import LineChart from "../../../../global/charts/LineChart";
 import BarChart from "../../../../global/charts/BarChart";
+import { Spinner } from "@heroui/react";
 import ImpactCards from "../../../../global/components/resuable-components/ImpactCards";
 import { useDashboard } from "../hooks/useDashboard";
 
 const AdminDashboard = () => {
-  const { stats } = useDashboard();
+  const { stats, fetchDashboardData, isLoading } = useDashboard();
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, [fetchDashboardData]);
 
   return (
-    <div className="w-full space-y-8 p-4 md:p-8">
+    <div className="w-full space-y-8 p-4 md:p-8 relative">
+      {isLoading && (
+        <div className="absolute inset-0 bg-black/5 flex items-center justify-center z-50">
+          <Spinner color="success" size="lg" label="Syncing with SQL..." />
+        </div>
+      )}
       {/* Four Boxes */}
       <ImpactCards
         data={stats.map((item) => ({

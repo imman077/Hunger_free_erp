@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { ArrowLeft, CheckCircle, Package, MapPin } from "lucide-react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { ArrowLeft, CheckCircle, Package, MapPin, Heart } from "lucide-react";
 import ResuableInput from "../../../../global/components/resuable-components/input";
 import ResuableButton from "../../../../global/components/resuable-components/button";
 import ResuableDropdown from "../../../../global/components/resuable-components/dropdown";
@@ -8,27 +8,35 @@ import ResuableDatePicker from "../../../../global/components/resuable-component
 import ResuableTimePicker from "../../../../global/components/resuable-components/TimePicker";
 import FileUploadSlot from "../../../../global/components/resuable-components/FileUploadSlot";
 
+import { donationService } from "../api/donations.api";
+import { toast } from "sonner";
+
 const CreateDonation = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const needId = searchParams.get("need_id");
+  const ngoId = searchParams.get("ngo_id");
+  
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    foodType: "",
+    foodCategory: "",
     quantity: "",
     unit: "kg",
     description: "",
+    expiryDate: "",
+    expiryTime: "",
     pickupAddress: "",
-    pickupDate: "",
-    pickupTime: "",
     contactPhone: "",
     foodPhoto: null as File | null,
   });
 
   const foodCategories = [
-    { value: "fresh-produce", label: "Fresh Produce" },
-    { value: "cooked-meals", label: "Cooked Meals" },
-    { value: "packaged-food", label: "Packaged Food" },
-    { value: "bakery-items", label: "Bakery Items" },
-    { value: "dairy-products", label: "Dairy Products" },
-    { value: "other", label: "Other" },
+    { value: "Fresh Produce", label: "Fresh Produce" },
+    { value: "Cooked Meals", label: "Cooked Meals" },
+    { value: "Packaged Food", label: "Packaged Food" },
+    { value: "Bakery Items", label: "Bakery Items" },
+    { value: "Dairy Products", label: "Dairy Products" },
+    { value: "Other", label: "Other" },
   ];
 
   const unitOptions = [
@@ -45,12 +53,51 @@ const CreateDonation = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Donation submitted:", formData);
-    // Mocking success
-    alert("Donation submitted successfully!");
-    navigate("/donor/donations");
+    setLoading(true);
+
+    try {
+      // 1. Prepare FormData (required for file uploads)
+      const submitData = new FormData();
+
+      // 2. Map frontend state names to backend model naming conventions
+      submitData.append("food_category", formData.foodCategory);
+      submitData.append("food_items", formData.description);
+      submitData.append("quantity", formData.quantity);
+      submitData.append("unit", formData.unit);
+      submitData.append("pickup_address", formData.pickupAddress);
+      submitData.append("contact_phone", formData.contactPhone);
+
+      if (needId) {
+        submitData.append("related_need", needId);
+      }
+      if (ngoId) {
+          submitData.append("assigned_ngo", ngoId);
+      }
+
+      // 3. Construct the full expiry_time (ISO format: YYYY-MM-DDTHH:MM:SSZ)
+      if (formData.expiryDate && formData.expiryTime) {
+        const combinedDateTime = `${formData.expiryDate}T${formData.expiryTime}`;
+        submitData.append("expiry_time", combinedDateTime);
+      }
+
+      // 4. Append the image file if it exists
+      if (formData.foodPhoto) {
+        submitData.append("image", formData.foodPhoto);
+      }
+
+      // 5. Submit to server
+      await donationService.createDonation(submitData);
+
+      toast.success("Donation submitted successfully!");
+      navigate("/donor/donations");
+    } catch (error) {
+      console.error("Submission failed:", error);
+      toast.error("Failed to submit donation. Please check your data.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -93,6 +140,18 @@ const CreateDonation = () => {
           </div>
         </div>
       </div>
+
+      {needId && (
+          <div className="max-w-4xl mx-auto mb-6 p-4 rounded-md border border-green-500/20 bg-green-500/5 flex items-center gap-4">
+              <div className="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center text-white shrink-0">
+                  <Heart size={20} fill="currentColor" />
+              </div>
+              <div>
+                  <h3 className="text-xs font-black uppercase tracking-tight text-green-600">Responding to NGO Need</h3>
+                  <p className="text-[10px] font-medium text-green-700/80 uppercase tracking-widest mt-0.5">Your donation will be directly prioritized for this organization's request.</p>
+              </div>
+          </div>
+      )}
 
       <form
         onSubmit={handleSubmit}
@@ -157,8 +216,8 @@ const CreateDonation = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <ResuableDropdown
                 label="Food Category"
-                value={formData.foodType}
-                onChange={(val) => handleValueChange("foodType", val)}
+                value={formData.foodCategory}
+                onChange={(val) => handleValueChange("foodCategory", val)}
                 options={foodCategories}
                 placeholder="Select Type"
                 required
@@ -185,8 +244,29 @@ const CreateDonation = () => {
                 align="left"
               />
             </div>
+          </div>
 
-            <div className="space-y-2">
+          <div className="p-5 sm:p-8 space-y-8 bg-[var(--bg-secondary)]/30 border-t" style={{ borderColor: 'var(--border-color)' }}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <ResuableDatePicker
+                    label="Expiry Date"
+                    value={formData.expiryDate}
+                    required
+                    onChange={(val) => handleValueChange("expiryDate", val)}
+                    align="left"
+                  />
+
+                  <ResuableTimePicker
+                    label="Expiry Time"
+                    value={formData.expiryTime}
+                    onChange={(val) => handleValueChange("expiryTime", val)}
+                    required
+                    align="left"
+                  />
+              </div>
+          </div>
+
+          <div className="p-5 sm:p-8 space-y-8">
               <label
                 className="text-[10px] font-black uppercase tracking-[0.2em] block px-1"
                 style={{ color: "var(--text-muted)" }}
@@ -206,7 +286,6 @@ const CreateDonation = () => {
                   color: "var(--text-primary)",
                 }}
               />
-            </div>
           </div>
         </div>
 
@@ -258,23 +337,7 @@ const CreateDonation = () => {
               align="left"
             />
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <ResuableDatePicker
-                label="Pickup Date"
-                value={formData.pickupDate}
-                required
-                onChange={(val) => handleValueChange("pickupDate", val)}
-                align="left"
-              />
-
-              <ResuableTimePicker
-                label="Collection Time"
-                value={formData.pickupTime}
-                onChange={(val) => handleValueChange("pickupTime", val)}
-                required
-                align="left"
-              />
-
+            <div className="grid grid-cols-1 md:grid-cols-1 gap-8">
               <ResuableInput
                 label="Contact Phone"
                 type="tel"
@@ -308,11 +371,12 @@ const CreateDonation = () => {
             <ResuableButton
               type="submit"
               variant="dark"
-              className="w-full sm:min-w-[240px] h-[52px] !bg-[#16a34a] hover:!bg-[#15803d] !rounded-md shadow-lg shadow-green-500/20 transition-all active:scale-95"
-              startContent={<CheckCircle size={20} />}
+              disabled={loading}
+              className="w-full sm:min-w-[240px] h-[52px] !bg-[#16a34a] hover:!bg-[#15803d] !rounded-md shadow-lg shadow-green-500/20 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+              startContent={loading ? <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full" /> : <CheckCircle size={20} />}
             >
               <span className="text-[11px] font-black uppercase tracking-widest">
-                Confirm Donation
+                {loading ? "Submitting..." : "Confirm Donation"}
               </span>
             </ResuableButton>
           </div>

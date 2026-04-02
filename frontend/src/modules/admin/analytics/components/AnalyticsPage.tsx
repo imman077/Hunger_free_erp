@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   AreaChart,
   Area,
@@ -12,6 +12,7 @@ import {
   Cell,
 } from "recharts";
 import { Leaf, TrendingUp, Users, Building2, Heart } from "lucide-react";
+import { Spinner } from "@heroui/react";
 
 import { ImpactCards } from "../../../../global/components/resuable-components/ImpactCards";
 
@@ -22,15 +23,26 @@ const AnalyticsPage: React.FC = () => {
     impactMetrics,
     donationTrends,
     categoryData,
-    totalNGOs,
-    totalVolunteers,
+    totalNGOs = "0",
+    totalActiveUsers = "0",
+    fetchAnalytics,
+    isLoading,
   } = useAnalytics();
+
+  useEffect(() => {
+    fetchAnalytics();
+  }, [fetchAnalytics]);
 
   return (
     <div
-      className="p-4 sm:p-6 lg:p-8 w-full mx-auto space-y-8 md:space-y-10 animate-in fade-in duration-700 text-start min-h-screen"
+      className="p-4 sm:p-6 lg:p-8 w-full mx-auto space-y-8 md:space-y-10 animate-in fade-in duration-700 text-start min-h-screen relative"
       style={{ backgroundColor: "var(--bg-primary)" }}
     >
+      {isLoading && (
+        <div className="absolute inset-0 bg-black/5 flex items-center justify-center z-50">
+          <Spinner color="success" size="lg" label="Syncing with SQL..." />
+        </div>
+      )}
       <header className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 sm:gap-4">
         <div className="text-start max-w-2xl">
           <h1
@@ -261,14 +273,14 @@ const AnalyticsPage: React.FC = () => {
                   className="text-[9px] font-black uppercase tracking-widest"
                   style={{ color: "var(--text-muted)" }}
                 >
-                  Volunteers
+                  Active Users
                 </span>
               </div>
               <p
                 className="text-lg font-black"
                 style={{ color: "var(--text-primary)" }}
               >
-                {totalVolunteers}
+                {totalActiveUsers}
               </p>
             </div>
             <div

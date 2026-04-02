@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   Bell,
   Zap,
@@ -8,6 +9,7 @@ import {
   ClipboardCheck,
   Info,
 } from "lucide-react";
+import { Spinner } from "@heroui/react";
 import { useNavigate } from "react-router-dom";
 import { useEnquiries } from "../hooks/useEnquiries";
 
@@ -109,8 +111,19 @@ const ActionQueue = () => {
 };
 
 const EnquiriesHub = () => {
+  const { fetchEnquiries, isLoading } = useEnquiries();
+
+  useEffect(() => {
+    fetchEnquiries();
+  }, [fetchEnquiries]);
+
   return (
-    <div className="w-full space-y-8 p-4 md:p-8">
+    <div className="w-full space-y-8 p-4 md:p-8 relative">
+      {isLoading && (
+        <div className="absolute inset-0 bg-black/5 flex items-center justify-center z-50">
+          <Spinner color="success" size="lg" label="Syncing with SQL..." />
+        </div>
+      )}
       {/* Header Section */}
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-3">

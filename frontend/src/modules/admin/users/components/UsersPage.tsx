@@ -1,6 +1,6 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { Building, Filter, X, ChevronDown, Plus } from "lucide-react";
-import { Avatar } from "@heroui/react";
+import { Avatar, Spinner } from "@heroui/react";
 import {
   Dropdown,
   DropdownTrigger,
@@ -18,8 +18,12 @@ const ROLE_OPTIONS = ["Donor", "NGO", "Volunteer", "Admin"];
 const STATUS_OPTIONS = ["Active", "New", "Pending"];
 
 const UsersPage = () => {
-  const { users } = useUsers();
+  const { users, fetchUsers, isLoading } = useUsers();
   const USERS = users;
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
 
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const [roleFilter, setRoleFilter] = useState<string>("all");
@@ -425,9 +429,14 @@ const UsersPage = () => {
 
   return (
     <div
-      className="w-full space-y-6 p-4 md:p-6 min-h-screen"
+      className="w-full space-y-6 p-4 md:p-6 min-h-screen relative"
       style={{ backgroundColor: "var(--bg-primary)" }}
     >
+      {isLoading && (
+        <div className="absolute inset-0 bg-black/5 flex items-center justify-center z-50">
+          <Spinner color="success" size="lg" label="Updating from SQL..." />
+        </div>
+      )}
       <div className="w-full flex flex-col text-left">
         <h1
           className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight break-words"

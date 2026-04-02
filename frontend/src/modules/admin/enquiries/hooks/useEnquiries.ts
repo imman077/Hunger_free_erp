@@ -2,33 +2,36 @@ import { useEnquiryStore } from "../store/enquiry-store";
 import { toast } from "sonner";
 
 export const useEnquiries = () => {
-  const { registrations, claims, payments, updates, rewards, approve, reject } =
+  const { registrations, rewards, fetchEnquiries, isLoading, approveRegistration, rejectRegistration } =
     useEnquiryStore();
 
-  const handleApprove = (
+  const handleApprove = async (
     id: string,
     name: string,
     type: "registrations" | "claims" | "payments" | "updates" | "rewards",
   ) => {
-    approve(type, id);
+    if (type === "registrations") {
+      await approveRegistration(id);
+    }
     toast.success(`${name} has been approved!`);
   };
 
-  const handleReject = (
+  const handleReject = async (
     id: string,
     name: string,
     type: "registrations" | "claims" | "payments" | "updates" | "rewards",
   ) => {
-    reject(type, id);
+    if (type === "registrations") {
+      await rejectRegistration(id);
+    }
     toast.error(`${name} has been rejected.`);
   };
 
   return {
     registrations,
-    claims,
-    payments,
-    updates,
     rewards,
+    fetchEnquiries,
+    isLoading,
     actions: {
       approve: handleApprove,
       reject: handleReject,
