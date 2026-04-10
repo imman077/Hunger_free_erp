@@ -73,7 +73,7 @@ const CreateDonation = () => {
         submitData.append("related_need", needId);
       }
       if (ngoId) {
-          submitData.append("assigned_ngo", ngoId);
+          submitData.append("accepted_ngo", ngoId);
       }
 
       // 3. Construct the full expiry_time (ISO format: YYYY-MM-DDTHH:MM:SSZ)

@@ -174,25 +174,25 @@ const NGOProfile = () => {
     {
       label: "Total Donations",
       val: "850",
-      trend: "Received this year",
+      trend: "This Year",
       color: "bg-[#22c55e]",
     },
     {
       label: "Beneficiaries",
       val: "2.4K",
-      trend: "People helped",
+      trend: "People Served",
       color: "bg-[#22c55e]",
     },
     {
       label: "Verification",
       val: "Partner",
-      trend: "Fully Verified",
+      trend: "Verified",
       color: "bg-[#22c55e]",
     },
     {
       label: "Active Needs",
       val: "12",
-      trend: "In progress",
+      trend: "In Progress",
       color: "bg-blue-500",
     },
   ];
@@ -442,8 +442,8 @@ const NGOProfile = () => {
               >
                 <div className="w-full flex items-center gap-1.5 p-1 rounded-xl">
                   {[
-                    { id: "identity", label: "NGO Information" },
-                    { id: "documents", label: "Credential Vault" },
+                    { id: "identity", label: "Profile Info" },
+                    { id: "documents", label: "Documents" },
                   ].map((tab) => (
                     <button
                       key={tab.id}
@@ -481,29 +481,29 @@ const NGOProfile = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
                       {[
                         {
-                          label: "Formal Entity Name",
+                          label: "NGO Name",
                           val: profile.ngoName,
                           icon: <Building2 size={14} />,
                           span: true,
                           isVerified: true,
                         },
                         {
-                          label: "Official Website",
+                          label: "Website",
                           val: "www.greenharvest.org",
                           icon: <Globe size={14} />,
                         },
                         {
-                          label: "Registration ID",
+                          label: "Reg. ID",
                           val: profile.registrationId,
                           icon: <FileText size={14} />,
                         },
                         {
-                          label: "NGO Classification",
+                          label: "Category",
                           val: profile.ngoType,
                           icon: <Award size={14} />,
                         },
                         {
-                          label: "Tax Exemption ID",
+                          label: "Tax ID",
                           val: profile.taxId,
                           icon: <BadgeCheck size={14} />,
                         },
@@ -572,10 +572,10 @@ const NGOProfile = () => {
                               className="text-[11px] font-bold uppercase tracking-[0.15em] leading-tight truncate px-0.5"
                               style={{ color: "var(--text-primary)" }}
                             >
-                              Verified Payout Methods
+                              Payment Methods
                             </h4>
                             <span className="text-[9px] font-bold uppercase tracking-widest text-[#94a3b8] mt-1 whitespace-nowrap overflow-hidden text-ellipsis">
-                              Primary settlement accounts
+                              Verified Bank & UPI
                             </span>
                           </div>
                         </div>
@@ -653,7 +653,7 @@ const NGOProfile = () => {
                       className="text-[10px] font-black uppercase tracking-[0.1em]"
                       style={{ color: "var(--text-muted)" }}
                     >
-                      Organization Credentials
+                      Documents
                     </p>
                     <div className="grid grid-cols-1 gap-4">
                       {documents.map((doc, i) => (
@@ -754,9 +754,7 @@ const NGOProfile = () => {
                 className="text-[11px] font-bold leading-relaxed tracking-tight"
                 style={{ color: "var(--text-secondary)" }}
               >
-                We manually check all updates to keep your NGO profile safe and
-                verified for grants. Review usually completes within 24 hours to
-                ensure data integrity for global donors.
+                Security Check: All updates are manually verified within 24 hours to ensure 100% authenticity for global donors.
               </p>
             </div>
           </div>

@@ -14,6 +14,19 @@ interface User {
   first_name: string;
   last_name: string;
   profile: UserProfile;
+  donor_profile?: {
+    total_donations: number;
+    reliability_score: number;
+  };
+  ngo_profile?: {
+    name: string;
+    registration_id: string;
+    contact_number: string;
+  };
+  volunteer_profile?: {
+    availability_status: string;
+    total_deliveries: number;
+  };
 }
 
 interface AuthState {

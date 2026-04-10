@@ -151,6 +151,7 @@ const DonorSidebar: React.FC = () => {
   const donationsSubItems: SubItem[] = [
     { label: "My Donations", to: "/donor/donations" },
     { label: "Create Donation", to: "/donor/donations/create" },
+    { label: "NGO Posts", to: "/donor/donations/marketplace" },
   ];
 
   const rewardsSubItems: SubItem[] = [

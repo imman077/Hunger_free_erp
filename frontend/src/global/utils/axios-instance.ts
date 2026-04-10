@@ -2,7 +2,7 @@ import axios from "axios";
 import { useAuthStore } from "../contexts/auth-store";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:8000/api/", // Adjust based on your dev server
+  baseURL: import.meta.env.VITE_API_URL || "http://192.168.29.108:8000/api/", // Adjust based on your dev server
 });
 
 // Request interceptor to add the JWT token

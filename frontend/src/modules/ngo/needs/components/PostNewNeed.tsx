@@ -28,7 +28,6 @@ const PostNewNeed = () => {
     urgency: "medium",
     description: "",
     requiredBy: "",
-    beneficiaries: "",
     location: "",
     otherCategory: "",
     itemImage: null as File | null,
@@ -76,10 +75,12 @@ const PostNewNeed = () => {
     
     try {
       const submitData = {
-        title: formData.itemName,
+        item_name: formData.itemName,
         category: formData.category === "other" ? formData.otherCategory : formData.category,
-        description: formData.description || `Needs for ${formData.beneficiaries} at ${formData.location}`,
-        quantity_required: `${formData.quantity} ${formData.unit}`,
+        description: formData.description || `Delivery at ${formData.location}`,
+        quantity: parseFloat(formData.quantity),
+        unit: formData.unit,
+        distribution_address: formData.location,
         urgency: formData.urgency.charAt(0).toUpperCase() + formData.urgency.slice(1), // low -> Low
         status: "Open"
       };
@@ -268,7 +269,7 @@ const PostNewNeed = () => {
           </div>
         </div>
 
-        {/* Card 02: Beneficiary Info */}
+        {/* Card 02: Distribution Info */}
         <div
           className="border rounded-sm shadow-sm"
           style={{
@@ -295,28 +296,20 @@ const PostNewNeed = () => {
                 className="text-2xl font-black tracking-tight"
                 style={{ color: "var(--text-primary)" }}
               >
-                Beneficiary Information
+                Delivery Information
               </h2>
               <p
                 className="text-xs text-left font-medium"
                 style={{ color: "var(--text-muted)" }}
               >
-                Who will benefit from this donation
+                Where the items should be delivered or distributed
               </p>
             </div>
           </div>
 
           <div className="p-8 grid grid-cols-1 gap-8">
             <ResuableInput
-              label="Beneficiaries"
-              placeholder="e.g., Children & Youth, Senior Citizens"
-              value={formData.beneficiaries}
-              onChange={(value) => handleValueChange("beneficiaries", value)}
-              required
-            />
-
-            <ResuableInput
-              label="Distribution Location"
+              label="Distribution Address"
               placeholder="e.g., Community Center A, Shelter B"
               value={formData.location}
               onChange={(value) => handleValueChange("location", value)}
@@ -324,7 +317,7 @@ const PostNewNeed = () => {
             />
 
             <ResuableTextarea
-              label="Additional Description"
+              label="Description"
               rows={5}
               placeholder="Provide any additional details about this need..."
               value={formData.description}

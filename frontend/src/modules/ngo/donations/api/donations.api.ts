@@ -8,7 +8,7 @@ export const ngoDonationsService = {
     try {
       const response = await axiosInstance.get("donations/", {
         params: {
-          status: "PENDING", // Only show donations not yet claimed
+          marketplace: "true", 
         }
       });
       return response.data;
@@ -40,6 +40,19 @@ export const ngoDonationsService = {
       return response.data;
     } catch (error) {
       console.error(`Error accepting donation ${donationId}:`, error);
+      throw error;
+    }
+  },
+  
+  /**
+   * NGO supports/fulfills another NGO's need.
+   */
+  supportNeed: async (needId: number, data?: { quantity: number; phone: string }) => {
+    try {
+      const response = await axiosInstance.post(`needs/${needId}/support/`, data);
+      return response.data;
+    } catch (error) {
+      console.error(`Error supporting need ${needId}:`, error);
       throw error;
     }
   }

@@ -1,5 +1,6 @@
 import React from "react";
 import { Icon } from "./Icon";
+import { Plus, Minus } from "lucide-react";
 
 interface ResuableInputProps {
   label?: string;
@@ -15,6 +16,9 @@ interface ResuableInputProps {
   inputClassName?: string;
   startContent?: React.ReactNode;
   endContent?: React.ReactNode;
+  min?: string | number;
+  max?: string | number;
+  step?: string | number;
 }
 
 const ResuableInput: React.FC<ResuableInputProps> = ({
@@ -31,6 +35,9 @@ const ResuableInput: React.FC<ResuableInputProps> = ({
   inputClassName = "",
   startContent,
   endContent,
+  min,
+  max,
+  step,
 }) => {
   const alignClass =
     align === "left"
@@ -91,7 +98,10 @@ const ResuableInput: React.FC<ResuableInputProps> = ({
           onChange={(e) => onChange(e.target.value)}
           disabled={disabled}
           required={required}
-          className={`w-full border py-3 rounded-sm text-[13px] font-semibold focus:outline-none focus:ring-4 focus:ring-hf-green/5 focus:border-hf-green transition-all disabled:opacity-50 disabled:cursor-not-allowed ${alignClass} ${inputClassName}`}
+          min={min}
+          max={max}
+          step={step}
+          className={`w-full border py-3 rounded-sm text-[13px] font-semibold focus:outline-none focus:ring-4 focus:ring-hf-green/5 focus:border-hf-green transition-all disabled:opacity-50 disabled:cursor-not-allowed ${alignClass} ${inputClassName} [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
           style={{
             backgroundColor: inputClassName.includes("bg-")
               ? undefined
@@ -99,11 +109,39 @@ const ResuableInput: React.FC<ResuableInputProps> = ({
             borderColor: "var(--border-color)",
             color: "var(--text-primary)",
             paddingLeft: startContent ? "2.75rem" : "1rem",
-            paddingRight: endContent ? "2.75rem" : "1rem",
+            paddingRight: type === "number" || endContent ? "4.5rem" : "1rem",
             caretColor: "var(--color-emerald)",
           }}
         />
-        {endContent && (
+        {(type === "number") && (
+            <div className="absolute right-2 flex items-center gap-1">
+                <button
+                    type="button"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        const current = parseInt(value) || 0;
+                        const m = min !== undefined ? Number(min) : -Infinity;
+                        if (current > m) onChange((current - 1).toString());
+                    }}
+                    className="p-1.5 hover:bg-[var(--bg-tertiary)] rounded-md transition-colors text-[var(--text-muted)] hover:text-emerald-500 border border-[var(--border-color)]"
+                >
+                    <Minus size={12} strokeWidth={3} />
+                </button>
+                <button
+                    type="button"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        const current = parseInt(value) || 0;
+                        const mx = max !== undefined ? Number(max) : Infinity;
+                        if (current < mx) onChange((current + 1).toString());
+                    }}
+                    className="p-1.5 hover:bg-[var(--bg-tertiary)] rounded-md transition-colors text-[var(--text-muted)] hover:text-emerald-500 border border-[var(--border-color)]"
+                >
+                    <Plus size={12} strokeWidth={3} />
+                </button>
+            </div>
+        )}
+        {endContent && !type && (
           <div className="absolute right-2.5 flex items-center pointer-events-none">
             {endContent}
           </div>

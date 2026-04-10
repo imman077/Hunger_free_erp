@@ -36,6 +36,7 @@ import SettingsPage from "./modules/admin/settings/components/SettingsPage";
 import DonorDashboard from "./modules/donor/dashboard/components/Dashboard";
 import DonorMyDonations from "./modules/donor/donations/components/MyDonations";
 import DonorCreateDonation from "./modules/donor/donations/components/CreateDonation";
+import DonorNGOPosts from "./modules/donor/donations/components/NGOPosts";
 import DonorProfile from "./modules/donor/profile/components/Profile";
 import DonorPaymentMethods from "./modules/donor/profile/components/PaymentMethods";
 import DonorRewards from "./modules/donor/rewards/components/Rewards";
@@ -164,6 +165,7 @@ function App() {
             <Route path="dashboard" element={<DonorDashboard />} />
             <Route path="donations" element={<DonorMyDonations />} />
             <Route path="donations/create" element={<DonorCreateDonation />} />
+            <Route path="donations/marketplace" element={<DonorNGOPosts />} />
             <Route path="rewards" element={<DonorRewards />} />
             <Route path="rewards/benefits" element={<DonorBenefits />} />
             <Route path="profile" element={<DonorProfile />} />

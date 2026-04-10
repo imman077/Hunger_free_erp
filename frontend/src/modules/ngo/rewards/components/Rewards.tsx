@@ -473,7 +473,7 @@ const NGORewards = () => {
 
         <div className="flex items-center gap-4">
           {/* Manage Payout Methods Button */}
-          <button
+          {/* <button
             onClick={() => navigate("/ngo/profile/payments")}
             className="flex items-center gap-3.5 border p-4 rounded-sm transition-all group"
             style={{
@@ -510,7 +510,7 @@ const NGORewards = () => {
                 />
               </div>
             </div>
-          </button>
+          </button> */}
 
           {/* Impact Points Card */}
           <div

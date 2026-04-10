@@ -197,7 +197,7 @@ const TaskCard: React.FC<{
           }}
         >
           {task.status === "AVAILABLE"
-            ? "Claim"
+            ? "Accept"
             : task.status === "IN PROGRESS"
               ? "Update"
               : "Details"}
@@ -249,7 +249,7 @@ const VolunteerTasks = () => {
         stops: 1,
         duration: "Quick",
         load: d.quantity,
-        status: d.status === "ASSIGNED" ? "AVAILABLE" : (d.status === "IN_TRANSIT" ? "IN PROGRESS" : "COMPLETED"),
+        status: d.status === "ACCEPTED" ? "AVAILABLE" : (d.status === "ASSIGNED" || d.status === "PICKED_UP" ? "IN PROGRESS" : "COMPLETED"),
         type: "delivery",
         description: d.description,
         location: d.pickup_address,
@@ -257,14 +257,14 @@ const VolunteerTasks = () => {
         contactPhone: d.contact_phone,
         baseAddress: d.pickup_address,
         destinations: [d.assigned_ngo_name || "Assigned NGO"],
-        isPickupReached: d.pickup_time !== null,
-        completedDestinations: d.status === "COMPLETED" ? [0] : [],
+        isPickupReached: d.status === "PICKED_UP" || d.status === "DELIVERED",
+        completedDestinations: d.status === "DELIVERED" ? [0] : [],
       });
 
       setTasks({
-        active: activeRaw.filter((d: any) => d.status === "IN_TRANSIT" || d.status === "ASSIGNED").map(mapTask),
+        active: activeRaw.filter((d: any) => d.status === "PICKED_UP" || d.status === "ASSIGNED").map(mapTask),
         opps: oppsRaw.map(mapTask),
-        past: activeRaw.filter((d: any) => d.status === "COMPLETED").map(mapTask),
+        past: activeRaw.filter((d: any) => d.status === "DELIVERED").map(mapTask),
       });
     } catch (error) {
       toast.error("Failed to load tasks");
@@ -376,11 +376,11 @@ const VolunteerTasks = () => {
     setIsClaiming(true);
     try {
       await volunteerTasksService.acceptPickup(Number(selectedTask.id));
-      toast.success("Task claimed and added to your dispatch!");
+      toast.success("Task accepted and added to your dispatch!");
       setIsClaimModalOpen(false);
       fetchTasks(); // Refresh
     } catch (error) {
-      toast.error("Failed to claim task. It might already be taken.");
+      toast.error("Failed to accept task. It might already be taken.");
     } finally {
       setIsClaiming(false);
     }
@@ -1146,12 +1146,12 @@ const VolunteerTasks = () => {
         )}
       </ResuableDrawer>
 
-      {/* Claim Confirmation Modal */}
+      {/* Accept Task Modal */}
       <ResuableModal
         isOpen={isClaimModalOpen}
         onOpenChange={setIsClaimModalOpen}
-        title="Task Assignment"
-        subtitle="Confirm Claim"
+        title="Task Acceptance"
+        subtitle="Confirm Acceptance"
         size="sm"
         footer={
           <div className="flex gap-2 w-full">
@@ -1168,7 +1168,7 @@ const VolunteerTasks = () => {
               onClick={handleConfirmClaim}
               disabled={isClaiming}
             >
-              {isClaiming ? "Saving..." : "Confirm"}
+              {isClaiming ? "Accepting..." : "Confirm"}
             </ResuableButton>
           </div>
         }
@@ -1190,7 +1190,7 @@ const VolunteerTasks = () => {
                 className="text-lg font-black uppercase tracking-tight"
                 style={{ color: "var(--text-primary)" }}
               >
-                Claim Task?
+                Accept Task?
               </h3>
               <p
                 className="text-xs font-bold leading-relaxed"

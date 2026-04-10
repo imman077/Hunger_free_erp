@@ -279,12 +279,12 @@ const DonorProfile = () => {
                 resetSupportHub();
                 setIsRequestDrawerOpen(true);
               }}
-              className="w-full md:w-auto px-8 py-4 md:py-7 rounded-2xl shadow-2xl shadow-hf-green/10 text-white text-[10px] md:text-[11px] font-black uppercase tracking-[0.15em] md:tracking-[0.2em] flex items-center justify-center gap-2.5 active:scale-95 transition-all hover:brightness-110"
+              className="w-full md:w-auto px-4 py-3 md:py-4 rounded-2xl shadow-2xl shadow-hf-green/10 text-white text-[10px] md:text-[11px] font-black uppercase tracking-[0.15em] md:tracking-[0.2em] flex items-center justify-center gap-2.5 active:scale-95 transition-all hover:brightness-110"
             >
               <ShieldCheck size={18} className="shrink-0" />
               <span className="lg:hidden">Update Info</span>
               <span className="hidden lg:inline">
-                Request Information Update
+                Request Update
               </span>
             </ResuableButton>
           </div>
@@ -830,7 +830,7 @@ const DonorProfile = () => {
                       className="text-[9px] font-black uppercase tracking-widest"
                       style={{ color: "var(--text-muted)" }}
                     >
-                      Reference ID
+                      Request ID
                     </span>
                     <span
                       className="text-[11px] font-black font-mono"

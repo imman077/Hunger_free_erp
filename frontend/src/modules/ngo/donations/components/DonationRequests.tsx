@@ -1,7 +1,9 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ngoDonationsService } from "../api/donations.api";
+import { ngoNeedsService } from "../../needs/api/needs.api";
 import { toast } from "sonner";
+import { useAuthStore } from "../../../../global/contexts/auth-store";
 import {
   MapPin,
   Plus,
@@ -18,13 +20,14 @@ import {
   Activity,
   Building2,
   Phone,
-  Info,
   Star,
   Check,
   Loader2,
   AlertTriangle,
   Navigation,
   Box,
+  ChevronUp,
+  ChevronDown,
 } from "lucide-react";
 import { Button } from "@heroui/react";
 import ReusableTable, {
@@ -52,6 +55,10 @@ interface DonationRequest {
   quality?: string;
   pickupAddress?: string;
   deliveryAddress?: string;
+  expiryTime?: string;
+  origin: "DONATION" | "NEED";
+  isMine?: boolean;
+  isSupported?: boolean;
   volunteer?: {
     name: string;
     phone: string;
@@ -61,8 +68,9 @@ interface DonationRequest {
 
 const DonationRequests = () => {
   const navigate = useNavigate();
+  const { user } = useAuthStore();
   const [viewMode, setViewMode] = useState<"table" | "card">("card");
-  const [activeTab, setActiveTab] = useState<"marketplace" | "my-requests">(
+  const [activeTab, setActiveTab] = useState<"marketplace" | "my-requests" | "community-requests">(
     "marketplace",
   );
   const [selectedRequest, setSelectedRequest] =
@@ -75,6 +83,19 @@ const DonationRequests = () => {
   const [isAcceptSuccess, setIsAcceptSuccess] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState<"ALL" | "DONOR" | "NGO">("ALL");
+  const [supportQty, setSupportQty] = useState("");
+  const [supportPhone, setSupportPhone] = useState("");
+
+  // Sync state when modal opens for a NEED
+  useEffect(() => {
+    if (isAcceptModalOpen && acceptingDonation?.origin === "NEED") {
+      // Pre-fill quantity (strip 'packs', 'kg' etc if possible or just use string)
+      setSupportQty(acceptingDonation.quantity?.split(' ')[0] || "");
+      // Pre-fill phone from user profile
+      const phone = user?.ngo_profile?.contact_number || user?.profile?.phone || "";
+      setSupportPhone(phone);
+    }
+  }, [isAcceptModalOpen, acceptingDonation, user]);
 
   const handleViewTracking = (donation: DonationRequest) => {
     if (activeTab === "my-requests" || donation.status !== "Available") {
@@ -88,33 +109,7 @@ const DonationRequests = () => {
     setIsAcceptModalOpen(true);
   }, []);
 
-  const nearbyVolunteers = [
-    {
-      id: 1,
-      name: "Rahul Sharma",
-      distance: "1.2 km away",
-      rating: "4.9",
-      initials: "RS",
-    },
-    {
-      id: 2,
-      name: "Priya Singh",
-      distance: "1.8 km away",
-      rating: "4.8",
-      initials: "PS",
-    },
-    {
-      id: 3,
-      name: "Amit Kumar",
-      distance: "2.4 km away",
-      rating: "4.7",
-      initials: "AK",
-    },
-  ];
 
-  const [selectedVolunteer, setSelectedVolunteer] = useState(
-    nearbyVolunteers[0],
-  );
   const [isTimerPaused, setIsTimerPaused] = useState(false);
   const timerRef = React.useRef<any>(null);
   const startTimeRef = React.useRef<number>(0);
@@ -148,7 +143,15 @@ const DonationRequests = () => {
     
     setIsAccepting(true);
     try {
-      await ngoDonationsService.acceptDonation(acceptingDonation.id);
+      if (acceptingDonation.origin === "NEED") {
+        await ngoDonationsService.supportNeed(acceptingDonation.id, {
+          quantity: parseFloat(supportQty) || 0,
+          phone: supportPhone
+        });
+      } else {
+        await ngoDonationsService.acceptDonation(acceptingDonation.id);
+      }
+      
       setIsAccepting(false);
       setIsAcceptSuccess(true);
       startCloseTimer(2500);
@@ -157,7 +160,11 @@ const DonationRequests = () => {
       fetchDonations();
     } catch (error) {
       setIsAccepting(false);
-      toast.error("Failed to accept donation. It might already be claimed.");
+      toast.error(
+        acceptingDonation.origin === "NEED" 
+          ? "Failed to support need. It might already be closed."
+          : "Failed to accept donation. It might already be claimed."
+      );
       setIsAcceptModalOpen(false);
     }
   };
@@ -181,41 +188,77 @@ const DonationRequests = () => {
   };
 
   const [donations, setDonations] = useState<DonationRequest[]>([]);
-  const [loading, setLoading] = useState(true);
 
   const fetchDonations = useCallback(async () => {
     try {
-      setLoading(true);
-      let rawData;
+      let rawDonations = [];
+      let rawNeeds = [];
+
+      // Use try-catch blocks individually if needed, but here we'll handle the array results
       if (activeTab === "marketplace") {
-        rawData = await ngoDonationsService.getMarketplaceDonations();
+        const response = await ngoDonationsService.getMarketplaceDonations();
+        rawDonations = response?.results || (Array.isArray(response) ? response : []);
+      } else if (activeTab === "community-requests") {
+        const response = await ngoNeedsService.getMyNeeds(); // Backend returns all needs
+        rawNeeds = response?.results || (Array.isArray(response) ? response : []);
       } else {
-        rawData = await ngoDonationsService.getMyRequests();
+        const results = await Promise.allSettled([
+          ngoDonationsService.getMyRequests(),
+          ngoNeedsService.getMyNeeds()
+        ]);
+        
+        const donationsRes = results[0].status === 'fulfilled' ? results[0].value : [];
+        const needsRes = results[1].status === 'fulfilled' ? results[1].value : [];
+        
+        rawDonations = donationsRes?.results || (Array.isArray(donationsRes) ? donationsRes : []);
+        rawNeeds = needsRes?.results || (Array.isArray(needsRes) ? needsRes : []);
       }
 
-      // Map backend to UI format
-      const mappedData: DonationRequest[] = rawData.map((d: any) => ({
+      // Map Donations
+      const mappedDonations: DonationRequest[] = rawDonations.map((d: any) => ({
         id: d.id,
         title: d.title || d.food_category,
         source: d.donor_name || "Private Donor",
-        sourceType: "DONOR",
-        isOwn: d.assigned_ngo_name !== null, // If assigned to someone, and it's us (backend filters my_requests)
+        sourceType: d.donor_role || "DONOR",
+        isOwn: d.accepted_ngo === user?.id || Boolean(d.accepted_ngo_name && activeTab === "my-requests"), 
         distance: "Nearby",
         icon: d.food_category === "Cooked Food" ? "🥗" : "🥖",
-        time: new Date(d.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        time: d.created_at ? new Date(d.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Recently",
         urgency: d.status === "PENDING" ? "High" : "Normal",
-        status: d.status === "PENDING" ? "Available" : d.status,
-        progress: d.status === "PENDING" ? 25 : (d.status === "ASSIGNED" ? 50 : 75),
+        status: d.status === "PENDING" ? "Available" : (d.status === "ACCEPTED" ? "Approved" : d.status),
+        progress: d.status === "PENDING" ? 25 : (d.status === "ACCEPTED" ? 50 : 75),
         description: d.description,
         quantity: d.quantity,
+        expiryTime: d.expiry_time ? new Date(d.expiry_time).toLocaleDateString() : "No Expiry",
         pickupAddress: d.pickup_address,
+        origin: "DONATION",
+        isMine: d.donor_id === user?.id,
+        isSupported: d.accepted_ngo === user?.id,
       }));
 
-      setDonations(mappedData);
+      // Map Needs
+      const mappedNeeds: DonationRequest[] = rawNeeds.map((n: any) => ({
+        id: n.id,
+        title: n.item_name,
+        source: n.ngo_name || "Partner NGO",
+        sourceType: "NGO",
+        isOwn: Boolean(n.is_mine) || (Array.isArray(n.supporter_ids) && n.supporter_ids.includes(user?.id)), 
+        distance: "Community",
+        icon: "📋",
+        time: n.created_at ? new Date(n.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Recently",
+        urgency: n.urgency || "Normal",
+        status: n.status || "Open",
+        progress: 10,
+        description: n.description,
+        quantity: `${n.quantity} ${n.unit}`,
+        origin: "NEED",
+        isMine: Boolean(n.is_mine),
+        isSupported: Array.isArray(n.supporter_ids) && n.supporter_ids.includes(user?.id),
+      }));
+
+      setDonations([...mappedDonations, ...mappedNeeds]);
     } catch (error) {
-      toast.error("Failed to load donations");
-    } finally {
-      setLoading(false);
+      toast.error("Failed to load requests");
     }
   }, [activeTab]);
 
@@ -224,20 +267,157 @@ const DonationRequests = () => {
   }, [fetchDonations]);
 
   const finalFilteredDonations = donations
-    .filter((d) => (activeTab === "marketplace" ? !d.isOwn : d.isOwn))
+    .filter((d) => {
+      // 1. Marketplace: Only show external Donor donations that are available
+      if (activeTab === "marketplace") {
+        return d.origin === "DONATION" && !d.isOwn && d.status === "Available";
+      }
+      
+      // 2. Community: Only show external NGO Needs
+      if (activeTab === "community-requests") {
+        return d.origin === "NEED" && !d.isOwn;
+      }
+      
+      // 3. My Records: Show ONLY actual fulfillments (accepted/supported)
+      if (activeTab === "my-requests") {
+        return d.isSupported;
+      }
+      return true;
+    })
     .filter((d) => roleFilter === "ALL" || d.sourceType === roleFilter)
-    .filter(
-      (d) =>
-        d.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        d.source.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        d.id.toString().includes(searchQuery),
-    );
+    .filter((d) => {
+      const search = searchQuery.toLowerCase();
+      if (!search) return true;
+      return (
+        d.title?.toLowerCase().includes(search) ||
+        d.source?.toLowerCase().includes(search) ||
+        d.id?.toString().includes(search)
+      );
+    });
 
   const handleAccept = useCallback(
     (donation: DonationRequest) => {
       handleAcceptClick(donation);
     },
-    [handleAcceptClick],
+    [handleAcceptClick]
+  );
+
+  const renderEmptyState = () => (
+    <div className="flex flex-col items-center justify-center py-20 px-4 text-center w-full col-span-full">
+      <div className="w-20 h-20 rounded-full flex items-center justify-center mb-6 shadow-sm border bg-[var(--bg-secondary)] border-[var(--border-color)]">
+        <Search size={32} className="text-[var(--text-muted)]" />
+      </div>
+      <h3 className="text-xl font-black uppercase tracking-tight mb-2 text-[var(--text-primary)]">
+        No Matching Requests
+      </h3>
+      <p className="text-sm font-medium max-w-xs text-[var(--text-muted)]">
+        We couldn't find any donations or needs matching your current filters.
+      </p>
+    </div>
+  );
+
+  const renderCard = (donation: DonationRequest) => (
+    <div
+      className="group relative flex flex-col rounded-[24px] border transition-all duration-500 hover:-translate-y-1.5 bg-[var(--bg-primary)]/90 backdrop-blur-lg overflow-hidden"
+      style={{ 
+        borderColor: "var(--border-color)",
+        boxShadow: "0 12px 24px -12px rgba(0,0,0,0.08)"
+      }}
+    >
+      {/* Precision Side Status Indicator */}
+      <div
+        className={`absolute left-0 top-4 bottom-4 w-1 rounded-r-full transition-all duration-500 group-hover:w-1.5 ${
+          donation.status === "Assigned"
+            ? "bg-amber-400 shadow-[2px_0_8px_rgba(251,191,36,0.4)]"
+            : donation.status === "In Transit"
+              ? "bg-blue-400 shadow-[2px_0_8px_rgba(96,165,250,0.4)]"
+              : donation.status === "Completed"
+                ? "bg-emerald-400 shadow-[2px_0_8px_rgba(52,211,153,0.4)]"
+                : activeTab === "community-requests"
+                  ? "bg-blue-500 shadow-[2px_0_8px_rgba(59,130,246,0.3)]"
+                  : "bg-emerald-500 shadow-[2px_0_8px_rgba(16,185,129,0.3)]"
+        }`}
+      />
+
+      <div className="p-5 flex-grow flex flex-col items-center text-center relative z-10">
+        {/* Header Area */}
+        <div className="w-full flex justify-between items-center mb-4">
+          <div className="w-10 h-10 rounded-[14px] bg-[var(--bg-secondary)] flex items-center justify-center text-lg shadow-inner border border-[var(--border-color)] group-hover:scale-105 transition-transform duration-500">
+            {donation.icon}
+          </div>
+          <div className={`px-2 py-0.5 rounded-lg text-[7px] font-black uppercase tracking-[0.2em] border ${
+            donation.urgency === "High"
+              ? "bg-red-50 text-red-600 border-red-100"
+              : "bg-emerald-50 text-emerald-600 border-emerald-100"
+          }`}>
+            {donation.urgency}
+          </div>
+        </div>
+
+        {/* Informative Title */}
+        <h4 className={`text-[15px] font-[800] tracking-tight leading-tight mb-3 px-1 transition-colors ${
+            activeTab === "community-requests" ? "text-blue-600" : (activeTab === "marketplace" ? "text-emerald-600" : "text-[var(--text-primary)]")
+        }`}>
+          {donation.title}
+        </h4>
+
+        {/* Minimalist Entity Pill */}
+        <div className="flex flex-col items-center gap-3 w-full mb-4">
+           <div className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-xl border bg-[var(--bg-secondary)]/50 border-[var(--border-color)] shadow-sm group-hover:bg-white transition-colors duration-500 h-8">
+              <div className={`w-6 h-6 rounded-md flex items-center justify-center text-[8px] font-black text-white shadow-sm ${
+                 donation.sourceType === "DONOR" ? "bg-gradient-to-br from-emerald-400 to-emerald-600" : "bg-gradient-to-br from-blue-400 to-blue-600"
+              }`}>
+                {donation.source.substring(0,2)}
+              </div>
+              <span className="text-[10px] font-bold uppercase tracking-tight text-[var(--text-primary)]">{donation.source}</span>
+           </div>
+
+           <div className="flex items-center gap-4 opacity-50 group-hover:opacity-100 transition-opacity">
+              <div className="flex items-center gap-1">
+                <Clock size={10} className="text-[var(--text-muted)]" />
+                <span className="text-[8px] font-bold uppercase text-[var(--text-primary)]">{donation.time}</span>
+              </div>
+              {activeTab === "marketplace" && (
+                <div className="flex items-center gap-1">
+                  <MapPin size={10} className="text-emerald-500" />
+                  <span className="text-[8px] font-bold uppercase text-[var(--text-primary)]">{donation.distance}</span>
+                </div>
+              )}
+           </div>
+        </div>
+      </div>
+
+      {/* Optimized Action Area */}
+      <div className="px-5 pb-5 pt-0">
+          {activeTab === "my-requests" ? (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleViewTracking(donation);
+              }}
+              className="w-full h-9 flex items-center justify-center gap-2 rounded-[12px] text-[8px] font-black uppercase tracking-[0.25em] transition-all border bg-white border-[var(--border-color)] text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] hover:shadow-sm active:scale-95"
+            >
+              <Eye size={12} className="text-emerald-500" />
+              Live Trace
+            </button>
+          ) : (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleAccept(donation);
+              }}
+              className={`w-full h-9 flex items-center justify-center gap-2 text-white rounded-[12px] text-[8px] font-black uppercase tracking-[0.25em] transition-all shadow-md active:scale-95 ${
+                donation.origin === "NEED" 
+                  ? "bg-blue-600 hover:bg-blue-700" 
+                  : "bg-emerald-600 hover:bg-emerald-700"
+              }`}
+            >
+              <CheckCircle2 size={12} />
+              {donation.origin === "NEED" ? "Support" : "Accept"}
+            </button>
+          )}
+      </div>
+    </div>
   );
 
   return (
@@ -261,7 +441,7 @@ const DonationRequests = () => {
                 className="text-2xl md:text-3xl font-black tracking-tighter uppercase leading-none"
                 style={{ color: "var(--text-primary)" }}
               >
-                Donation <span className="text-hf-green">Hub</span>
+                NGO <span className="text-hf-green">Requests</span>
               </h1>
             </div>
           </div>
@@ -272,7 +452,7 @@ const DonationRequests = () => {
           >
             <Plus size={16} className="font-black" />
             <span className="text-[10px] font-black uppercase tracking-widest pt-0.5">
-              Post Request
+              Request Food
             </span>
           </button>
         </div>
@@ -294,8 +474,9 @@ const DonationRequests = () => {
             }}
           >
             {[
-              { id: "marketplace", label: "All Needs" },
-              { id: "my-requests", label: "My Requests" },
+              { id: "marketplace", label: "Marketplace" },
+              { id: "community-requests", label: "Community Needs" },
+              { id: "my-requests", label: "My Records" },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -508,7 +689,7 @@ const DonationRequests = () => {
                     return (
                       <div className="py-1">
                         <span
-                          className="text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md border shadow-sm"
+                          className="text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md border shadow-sm flex items-center gap-2"
                           style={{
                             backgroundColor:
                               donation.sourceType === "DONOR"
@@ -524,6 +705,11 @@ const DonationRequests = () => {
                                 : "#3b82f6",
                           }}
                         >
+                          {donation.origin === "NEED" ? (
+                            <span className="text-[7px] bg-[#3b82f6]/10 text-[#3b82f6] px-1 rounded-sm">POSTED NEED</span>
+                          ) : (
+                            <span className="text-[7px] bg-[#10b981]/10 text-[#10b981] px-1 rounded-sm">ACCEPTED</span>
+                          )}
                           {donation.sourceType}
                         </span>
                       </div>
@@ -630,161 +816,109 @@ const DonationRequests = () => {
         )}
 
         {viewMode === "card" && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {finalFilteredDonations.map((donation) => (
-              <div
-                key={donation.id}
-                onClick={() => {
-                  if (activeTab === "my-requests") {
-                    handleViewTracking(donation);
-                  }
-                }}
-                className={`group border rounded-2xl overflow-hidden flex flex-col transition-all duration-500 shadow-sm hover:shadow-xl hover:shadow-green-500/5 relative ${
-                  activeTab === "my-requests"
-                    ? "cursor-pointer hover:border-[#22c55e]/30"
-                    : ""
-                }`}
-                style={{
-                  backgroundColor: "var(--bg-primary)",
-                  borderColor: "var(--border-color)",
-                }}
-              >
-                <div className="p-5 flex-grow flex flex-col items-center text-center">
-                  {/* Top Indicator */}
-                  <div className="w-full flex justify-between items-center mb-4">
-                    <div
-                      className="w-8 h-8 rounded-lg border flex items-center justify-center text-lg shadow-sm group-hover:scale-110 transition-transform duration-500"
-                      style={{
-                        backgroundColor: "var(--bg-secondary)",
-                        borderColor: "var(--border-color)",
-                      }}
-                    >
-                      {donation.icon}
-                    </div>
-                    <span
-                      className="px-2.5 py-0.5 rounded-full text-[7px] font-black uppercase tracking-widest border"
-                      style={{
-                        backgroundColor:
-                          donation.urgency === "High"
-                            ? "rgba(245, 158, 11, 0.08)"
-                            : "rgba(34, 197, 94, 0.08)",
-                        borderColor:
-                          donation.urgency === "High"
-                            ? "rgba(245, 158, 11, 0.2)"
-                            : "rgba(34, 197, 94, 0.2)",
-                        color:
-                          donation.urgency === "High" ? "#f59e0b" : "#22c55e",
-                      }}
-                    >
-                      {donation.urgency}
-                    </span>
-                  </div>
-
-                  {/* Title */}
-                  <h4
-                    className={`text-[15px] font-black tracking-tight leading-tight mb-3 px-2 ${
-                      activeTab === "marketplace" ? "text-[#22c55e]" : ""
-                    }`}
-                    style={{
-                      color:
-                        activeTab === "marketplace"
-                          ? undefined
-                          : "var(--text-primary)",
-                    }}
-                  >
-                    {donation.title}
-                  </h4>
-
-                  {/* Metadata Row */}
-                  <div className="flex flex-col items-center gap-2 w-full">
-                    <div
-                      className="flex items-center gap-2 pl-1.5 pr-3 py-1 rounded-full border"
-                      style={{
-                        backgroundColor: "var(--bg-secondary)",
-                        borderColor: "var(--border-color)",
-                      }}
-                    >
-                      <div
-                        className={`w-5 h-5 rounded-full flex items-center justify-center text-[8px] font-black text-white border border-white/20 uppercase ${
-                          donation.sourceType === "DONOR"
-                            ? "bg-emerald-500"
-                            : "bg-blue-500"
-                        }`}
-                      >
-                        {donation.source.substring(0, 2)}
+          <div className="w-full">
+            {activeTab === "my-requests" ? (
+              <div className="space-y-20">
+                {/* Hub 1: Accepted Donor Donations */}
+                <div className="space-y-10 group/hub">
+                  <div className="flex items-center justify-between px-4">
+                    <div className="flex items-center gap-6">
+                      <div className="w-14 h-14 rounded-[22px] bg-emerald-500/10 flex items-center justify-center text-emerald-600 border border-emerald-500/20 shadow-lg shadow-emerald-500/5 group-hover/hub:scale-110 transition-transform duration-500">
+                        <Box size={24} className="stroke-[2.5]" />
                       </div>
-                      <span
-                        className="text-[10px] font-bold uppercase tracking-tight"
-                        style={{ color: "var(--text-primary)" }}
-                      >
-                        {donation.source}
+                      <div className="space-y-1">
+                        <h3 className="text-lg font-black uppercase tracking-[0.3em] text-[var(--text-primary)]">
+                          Donor Hub
+                        </h3>
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-600/70">
+                          Verified food donations from individual donors
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <span className="text-xs font-black px-4 py-1.5 bg-emerald-500 text-white rounded-xl shadow-lg shadow-emerald-500/20">
+                        {finalFilteredDonations.filter(d => d.sourceType === "DONOR").length} ACTIVE
                       </span>
                     </div>
+                  </div>
 
-                    {activeTab === "marketplace" && (
-                      <div
-                        className="flex items-center gap-1"
-                        style={{ color: "var(--text-muted)" }}
-                      >
-                        <MapPin size={10} className="text-[#22c55e]" />
-                        <span className="text-[9px] font-black uppercase tracking-wider">
-                          {donation.distance}
-                        </span>
-                      </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 p-2">
+                    {finalFilteredDonations.filter(d => d.sourceType === "DONOR").length > 0 ? (
+                      finalFilteredDonations
+                        .filter(d => d.sourceType === "DONOR")
+                        .map((donation) => (
+                        <div key={donation.id} onClick={() => handleViewTracking(donation)} className="h-full">
+                           {renderCard(donation)}
+                        </div>
+                      ))
+                    ) : (
+                       renderEmptyState()
                     )}
                   </div>
                 </div>
 
-                {/* Footer Action Area */}
-                <div className="px-5 pb-5 pt-0 bg-transparent flex flex-col items-center gap-3">
-                  <div
-                    className="flex items-center gap-1 px-3 py-1 rounded-full border"
-                    style={{
-                      backgroundColor: "var(--bg-secondary)",
-                      borderColor: "var(--border-color)",
-                    }}
-                  >
-                    <Clock
-                      size={8}
-                      className="text-muted"
-                      style={{ color: "var(--text-muted)" }}
-                    />
-                    <span
-                      className="text-[8px] font-bold uppercase tracking-widest"
-                      style={{ color: "var(--text-muted)" }}
-                    >
-                      {donation.time}
-                    </span>
+                {/* Horizontal Glass Divider */}
+                <div className="relative h-[1px] w-full flex items-center justify-center">
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[var(--border-color)] to-transparent opacity-50" />
+                  <div className="absolute px-6 bg-[var(--bg-primary)] border border-[var(--border-color)] rounded-full py-1 text-[8px] font-black uppercase tracking-[0.4em] text-[var(--text-muted)]">
+                    Community Context Separation
+                  </div>
+                </div>
+
+                {/* Hub 2: Community Needs Hub */}
+                <div className="space-y-10 group/hub">
+                  <div className="flex items-center justify-between px-4">
+                    <div className="flex items-center gap-6">
+                      <div className="w-14 h-14 rounded-[22px] bg-blue-500/10 flex items-center justify-center text-blue-600 border border-blue-500/20 shadow-lg shadow-blue-500/5 group-hover/hub:scale-110 transition-transform duration-500">
+                        <Building2 size={24} className="stroke-[2.5]" />
+                      </div>
+                      <div className="space-y-1">
+                        <h3 className="text-lg font-black uppercase tracking-[0.3em] text-[var(--text-primary)]">
+                          Community Hub
+                        </h3>
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-blue-600/70">
+                          B2B Collaboration between NGO networks
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <span className="text-xs font-black px-4 py-1.5 bg-blue-500 text-white rounded-xl shadow-lg shadow-blue-500/20">
+                        {finalFilteredDonations.filter(d => d.sourceType === "NGO").length} ACTIVE
+                      </span>
+                    </div>
                   </div>
 
-                  <div className="w-full">
-                    {activeTab === "marketplace" ? (
-                      <button
-                        onClick={() => handleAccept(donation)}
-                        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-[#22c55e] hover:bg-green-600 text-white rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all shadow-lg shadow-green-500/10 active:scale-95"
-                      >
-                        <CheckCircle2 size={12} /> Accept
-                      </button>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 p-2">
+                    {finalFilteredDonations.filter(d => d.sourceType === "NGO").length > 0 ? (
+                      finalFilteredDonations
+                        .filter(d => d.sourceType === "NGO")
+                        .map((donation) => (
+                        <div key={donation.id} onClick={() => handleViewTracking(donation)} className="h-full">
+                           {renderCard(donation)}
+                        </div>
+                      ))
                     ) : (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleViewTracking(donation);
-                        }}
-                        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all shadow-sm active:scale-95 border"
-                        style={{
-                          backgroundColor: "var(--bg-primary)",
-                          borderColor: "var(--border-color)",
-                          color: "var(--text-secondary)",
-                        }}
-                      >
-                        <Eye size={12} /> Live Trace
-                      </button>
+                       renderEmptyState()
                     )}
                   </div>
                 </div>
               </div>
-            ))}
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 p-2">
+                {finalFilteredDonations.map((donation) => (
+                  <div
+                    key={donation.id}
+                    onClick={() => {
+                        handleAcceptClick(donation);
+                    }}
+                    className="h-full"
+                  >
+                    {renderCard(donation)}
+                  </div>
+                ))}
+                {finalFilteredDonations.length === 0 && renderEmptyState()}
+              </div>
+            )}
           </div>
         )}
         {/* Live Tracking Drawer */}
@@ -848,7 +982,7 @@ const DonationRequests = () => {
                   style={{ color: "var(--text-secondary)" }}
                 >
                   {selectedRequest.description ||
-                    "Active donation request being processed through the HungerFree Intelligence Network."}
+                    "We are coordinating your donation with our volunteers and partners to ensure a safe and timely delivery."}
                 </p>
               </div>
 
@@ -865,7 +999,7 @@ const DonationRequests = () => {
                     className="text-[7px] font-black uppercase tracking-widest block"
                     style={{ color: "var(--text-muted)" }}
                   >
-                    AMOUNT
+                    QUANTITY
                   </span>
                   <span
                     className="text-[10px] font-bold"
@@ -912,31 +1046,29 @@ const DonationRequests = () => {
                     style={{ color: "var(--text-muted)" }}
                   >
                     <Clock size={14} className="text-[#22c55e]" />
-                    Live Status
+                    Live Trace
                   </h4>
                   <div className="relative space-y-4 before:absolute before:inset-0 before:ml-2.5 before:h-full before:w-0.5 before:bg-[var(--border-color)]">
                     {[
                       {
                         status: selectedRequest.isOwn
-                          ? "Need Broadcasted"
-                          : "Request Posted",
+                          ? "Request Logged"
+                          : "Donation Posted",
                         time: "10:45 AM",
                         date: "Today",
                         icon: Package,
                         completed: true,
                       },
                       {
-                        status: selectedRequest.isOwn
-                          ? "Volunteer Accepted"
-                          : "Volunteer Assigned",
+                        status: "Agent Assigned",
                         time: "11:15 AM",
                         date: "Today",
                         icon: User,
                         completed: true,
                       },
                       {
-                        status: "In Transit",
-                        time: "Sensing...",
+                        status: "On the Way",
+                        time: "Tracking Live",
                         date: "Active",
                         icon: Truck,
                         completed:
@@ -944,7 +1076,7 @@ const DonationRequests = () => {
                           selectedRequest.status === "Completed",
                       },
                       {
-                        status: "Delivery Confirmed",
+                        status: "Delivered",
                         time: "-- : --",
                         date: "Pending",
                         icon: CheckCircle2,
@@ -1214,15 +1346,15 @@ const DonationRequests = () => {
                   onClick={handleConfirmAccept}
                   className="bg-[#22c55e] hover:bg-green-600 shadow-lg shadow-green-500/20 px-5 py-1.5 !rounded-lg"
                 >
-                  {isAccepting ? (
+                    {isAccepting ? (
                     <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-wider">
                       <Loader2 size={13} className="animate-spin" />
-                      <span>Assigning...</span>
+                      <span>Accepting...</span>
                     </div>
                   ) : (
                     <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-wider">
-                      <Truck size={13} />
-                      <span>Confirm & Assign</span>
+                      <CheckCircle2 size={13} />
+                      <span>Confirm Acceptance</span>
                     </div>
                   )}
                 </ResuableButton>
@@ -1246,13 +1378,13 @@ const DonationRequests = () => {
 
                 <div className="text-center space-y-3 z-10">
                   <h3 className="text-[9px] font-black uppercase tracking-[0.4em] text-[#22c55e] leading-none mb-1">
-                    Assigned
+                    Success
                   </h3>
                   <h2
                     className="text-xl font-black tracking-tight leading-none uppercase"
                     style={{ color: "var(--text-primary)" }}
                   >
-                    Mission Assigned!
+                    Donation Accepted!
                   </h2>
                   <p
                     className="text-[12px] font-bold max-w-[320px] leading-relaxed mx-auto"
@@ -1268,11 +1400,8 @@ const DonationRequests = () => {
                     >
                       #{acceptingDonation?.id}
                     </span>{" "}
-                    has been accepted and mission assigned to{" "}
-                    <span className="text-[#22c55e] font-black">
-                      {selectedVolunteer.name}
-                    </span>{" "}
-                    (Nearby Field Agent).
+                    has been successfully accepted. A volunteer will be notified
+                    for the pickup soon.
                   </p>
                 </div>
 
@@ -1362,116 +1491,15 @@ const DonationRequests = () => {
                         className="text-[9px] font-black uppercase tracking-[0.1em]"
                         style={{ color: "var(--color-emerald-dark)" }}
                       >
-                        Logistic Optimization
+                        Acceptance Policy
                       </p>
                       <p
                         className="text-[9px] font-bold leading-relaxed opacity-80"
                         style={{ color: "var(--color-emerald-dark)" }}
                       >
-                        By accepting, our system will automatically broadcast
-                        this mission to nearby field agents for immediate
-                        pickup.
+                        By confirming, you agree to receive and distribute this
+                        food donation to your registered beneficiaries.
                       </p>
-                    </div>
-                  </div>
-
-                  {/* Nearby Volunteer Selection */}
-                  <div
-                    className="p-2.5 border rounded-xl space-y-1.5"
-                    style={{
-                      backgroundColor: "var(--bg-secondary)",
-                      borderColor: "var(--border-color)",
-                    }}
-                  >
-                    <div className="flex items-center justify-between">
-                      <span
-                        className="text-[8px] font-black uppercase tracking-widest"
-                        style={{ color: "var(--text-muted)" }}
-                      >
-                        Nearby Field Agents
-                      </span>
-                      <span
-                        className="text-[8px] font-black bg-white dark:bg-slate-900 border px-1 py-0.5 rounded-full shadow-sm"
-                        style={{
-                          color: "var(--color-emerald)",
-                          borderColor: "rgba(34, 197, 94, 0.2)",
-                        }}
-                      >
-                        {nearbyVolunteers.length} Active
-                      </span>
-                    </div>
-
-                    <div className="space-y-1">
-                      {nearbyVolunteers.map((vol) => (
-                        <div
-                          key={vol.id}
-                          onClick={() => setSelectedVolunteer(vol)}
-                          className={`flex items-center justify-between p-1.5 rounded-lg cursor-pointer transition-all duration-300 border ${
-                            selectedVolunteer.id === vol.id
-                              ? "shadow-sm"
-                              : "bg-transparent border-transparent grayscale-[0.5] opacity-70 hover:opacity-100"
-                          }`}
-                          style={{
-                            backgroundColor:
-                              selectedVolunteer.id === vol.id
-                                ? "var(--bg-primary)"
-                                : undefined,
-                            borderColor:
-                              selectedVolunteer.id === vol.id
-                                ? "rgba(34, 197, 94, 0.3)"
-                                : undefined,
-                          }}
-                        >
-                          <div className="flex items-center gap-2">
-                            <div
-                              className="w-6 h-6 rounded-full flex items-center justify-center text-[8px] font-black border uppercase shadow-inner transition-colors"
-                              style={{
-                                backgroundColor:
-                                  selectedVolunteer.id === vol.id
-                                    ? "rgba(34, 197, 94, 0.08)"
-                                    : "var(--bg-primary)",
-                                borderColor:
-                                  selectedVolunteer.id === vol.id
-                                    ? "rgba(34, 197, 94, 0.2)"
-                                    : "var(--border-color)",
-                                color:
-                                  selectedVolunteer.id === vol.id
-                                    ? "#22c55e"
-                                    : "var(--text-muted)",
-                              }}
-                            >
-                              {vol.initials}
-                            </div>
-                            <div>
-                              <p
-                                className="text-[11px] font-black uppercase tracking-tight transition-colors"
-                                style={{
-                                  color:
-                                    selectedVolunteer.id === vol.id
-                                      ? "var(--text-primary)"
-                                      : "var(--text-secondary)",
-                                }}
-                              >
-                                {vol.name}
-                              </p>
-                              <p
-                                className="text-[8px] font-black"
-                                style={{ color: "var(--text-muted)" }}
-                              >
-                                {vol.distance} • ★ {vol.rating}
-                              </p>
-                            </div>
-                          </div>
-                          {selectedVolunteer.id === vol.id && (
-                            <div className="flex items-center gap-1 animate-in fade-in zoom-in duration-300">
-                              <div className="w-1 h-1 rounded-full bg-[#22c55e] animate-pulse" />
-                              <span className="text-[7px] font-black text-[#22c55e] uppercase tracking-[0.05em] leading-none">
-                                Selected
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      ))}
                     </div>
                   </div>
 
@@ -1539,18 +1567,74 @@ const DonationRequests = () => {
                         className="text-[8px] font-black uppercase tracking-[0.1em]"
                         style={{ color: "var(--text-muted)" }}
                       >
-                        Value
+                        Expiry
                       </p>
-                      <div className="pt-1 border-t border-[var(--border-color)]">
+                      <div className="pt-1 border-t border-[var(--border-color)] flex items-center gap-1">
+                        <Clock size={10} style={{ color: "var(--text-muted)" }} />
                         <p
                           className="text-[12px] font-black uppercase tracking-tight"
                           style={{ color: "var(--text-primary)" }}
                         >
-                          Premium
+                          {acceptingDonation?.expiryTime || "Soon"}
                         </p>
                       </div>
                     </div>
                   </div>
+
+                  {acceptingDonation?.origin === "NEED" && (
+                    <div className="space-y-3 pt-2 border-t border-[var(--border-color)]">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-emerald-600">
+                        Fulfillment Details
+                      </p>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-1.5">
+                          <label className="text-[8px] font-bold uppercase text-[var(--text-muted)] tracking-wider">
+                            Amount to Donate
+                          </label>
+                          <div className="relative group">
+                            <Box size={12} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] group-focus-within:text-emerald-500 transition-colors" />
+                            <input 
+                              type="number"
+                              value={supportQty}
+                              onChange={(e) => setSupportQty(e.target.value)}
+                              className="w-full bg-[var(--bg-primary)] border border-[var(--border-color)] rounded-xl py-2 pl-9 pr-10 text-[12px] font-bold focus:outline-none focus:ring-1 focus:ring-emerald-500/20 focus:border-emerald-500/40 transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                              placeholder="0"
+                            />
+                            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex flex-col gap-0.5">
+                              <button 
+                                onClick={() => setSupportQty(prev => ((parseInt(prev) || 0) + 1).toString())}
+                                className="p-0.5 hover:bg-emerald-50 rounded text-[var(--text-muted)] hover:text-emerald-600 transition-colors"
+                              >
+                                <ChevronUp size={10} />
+                              </button>
+                              <button 
+                                onClick={() => setSupportQty(prev => Math.max(0, (parseInt(prev) || 0) - 1).toString())}
+                                className="p-0.5 hover:bg-emerald-50 rounded text-[var(--text-muted)] hover:text-emerald-600 transition-colors"
+                              >
+                                <ChevronDown size={10} />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="space-y-1.5">
+                          <label className="text-[8px] font-bold uppercase text-[var(--text-muted)] tracking-wider">
+                            Direct Contact
+                          </label>
+                          <div className="relative group">
+                            <Phone size={12} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] group-focus-within:text-emerald-500 transition-colors" />
+                            <input 
+                              type="text"
+                              value={supportPhone}
+                              onChange={(e) => setSupportPhone(e.target.value)}
+                              disabled={Boolean(user?.ngo_profile?.contact_number)}
+                              className={`w-full bg-[var(--bg-primary)] border border-[var(--border-color)] rounded-xl py-2 pl-9 pr-4 text-[12px] font-bold focus:outline-none focus:ring-1 focus:ring-emerald-500/20 focus:border-emerald-500/40 transition-all ${user?.ngo_profile?.contact_number ? 'opacity-70 cursor-not-allowed grayscale-[0.5]' : ''}`}
+                              placeholder="+1..."
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             )}

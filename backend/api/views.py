@@ -3,20 +3,25 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from django_filters.rest_framework import DjangoFilterBackend
+from django.db import models
+from django.utils import timezone
 from .models import (
-    UserProfile, DonorProfile, NGOProfile, VolunteerProfile, 
+    UserProfile, DonorProfile, DonorDocument, NGOProfile, VolunteerProfile, 
     Donation, NGOInventoryItem, NGONeed, VolunteerTask,
     Reward, RewardClaim, Milestone, Enquiry, SystemConfiguration,
-    BankAccount, UPIIdentity, RewardTier, Badge, UserBadge, PointsHistory
+    BankAccount, UPIIdentity, RewardTier, Badge, UserBadge, PointsHistory,
+    Category, CategorySuggestion, LuckySpinPrize, LuckySpinDraw
 )
 from .serializers import (
-    UserSerializer, UserProfileSerializer, DonorProfileSerializer, 
+    UserSerializer, UserProfileSerializer, DonorProfileSerializer, DonorDocumentSerializer,
     NGOProfileSerializer, VolunteerProfileSerializer, RegisterSerializer,
     DonationSerializer, NGOInventoryItemSerializer, NGONeedSerializer, 
     VolunteerTaskSerializer, RewardSerializer, RewardClaimSerializer, 
     MilestoneSerializer, EnquirySerializer, SystemConfigurationSerializer,
     BankAccountSerializer, UPIIdentitySerializer, RewardTierSerializer, 
-    BadgeSerializer, UserBadgeSerializer, PointsHistorySerializer
+    BadgeSerializer, UserBadgeSerializer, PointsHistorySerializer,
+    CategorySerializer, CategorySuggestionSerializer,
+    LuckySpinPrizeSerializer, LuckySpinDrawSerializer
 )
 
 # --- Base ViewSets ---
@@ -40,6 +45,13 @@ class DonorProfileViewSet(viewsets.ModelViewSet):
     queryset = DonorProfile.objects.all()
     serializer_class = DonorProfileSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+class DonorDocumentViewSet(viewsets.ModelViewSet):
+    queryset = DonorDocument.objects.all()
+    serializer_class = DonorDocumentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['donor', 'document_type', 'is_verified']
 
 class NGOProfileViewSet(viewsets.ModelViewSet):
     queryset = NGOProfile.objects.all()
@@ -66,7 +78,18 @@ class DonationViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     parser_classes = (MultiPartParser, FormParser)
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    filterset_fields = ['status', 'food_category', 'donor', 'assigned_volunteer', 'assigned_ngo']
+    filterset_fields = ['status', 'food_category', 'donor', 'accepted_volunteer', 'accepted_ngo']
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = Donation.objects.all().order_by('-created_at')
+        
+        # Marketplace specific filtering: Only show PENDING and NOT mine
+        marketplace = self.request.query_params.get('marketplace')
+        if marketplace:
+            queryset = queryset.filter(status='PENDING', accepted_ngo__isnull=True).exclude(donor=user)
+            
+        return queryset
 
     def perform_create(self, serializer):
         # Auto assign the donor to the current logged in user
@@ -93,10 +116,10 @@ class DonationViewSet(viewsets.ModelViewSet):
         if donation.status != 'PENDING':
             return Response({'error': 'Donation already accepted or processed'}, status=status.HTTP_400_BAD_REQUEST)
         
-        donation.status = 'ASSIGNED'
-        donation.assigned_ngo = request.user
+        donation.status = 'ACCEPTED'
+        donation.accepted_ngo = request.user
         donation.tracking_history.append({
-            'status': 'ASSIGNED',
+            'status': 'ACCEPTED',
             'updated_by': request.user.username,
             'timestamp': timezone.now().isoformat(),
             'message': f'Accepted by NGO: {request.user.username}'
@@ -107,12 +130,13 @@ class DonationViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'])
     def volunteer_accept(self, request, pk=None):
         donation = self.get_object()
-        if donation.status != 'ASSIGNED':
+        if donation.status != 'ACCEPTED':
             return Response({'error': 'Donation not ready for volunteer pickup'}, status=status.HTTP_400_BAD_REQUEST)
-        if donation.assigned_volunteer:
+        if donation.accepted_volunteer:
             return Response({'error': 'Volunteer already assigned'}, status=status.HTTP_400_BAD_REQUEST)
         
-        donation.assigned_volunteer = request.user
+        donation.status = 'ASSIGNED'
+        donation.accepted_volunteer = request.user
         donation.tracking_history.append({
             'status': 'ASSIGNED',
             'updated_by': request.user.username,
@@ -125,7 +149,7 @@ class DonationViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'])
     def pickup(self, request, pk=None):
         donation = self.get_object()
-        if donation.assigned_volunteer != request.user:
+        if donation.accepted_volunteer != request.user:
             return Response({'error': 'Only the assigned volunteer can mark as picked up'}, status=status.HTTP_403_FORBIDDEN)
         
         donation.status = 'IN_TRANSIT'
@@ -142,7 +166,7 @@ class DonationViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def my_tasks(self, request):
         user = request.user
-        donations = Donation.objects.filter(assigned_volunteer=user).order_by('-created_at')
+        donations = Donation.objects.filter(accepted_volunteer=user).order_by('-created_at')
         
         page = self.paginate_queryset(donations)
         if page is not None:
@@ -155,12 +179,20 @@ class DonationViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def my_requests(self, request):
         user = request.user
-        # Shows donations where user is donor, assigned ngo, or assigned volunteer
-        donations = Donation.objects.filter(
-            models.Q(donor=user) | 
-            models.Q(assigned_ngo=user) | 
-            models.Q(assigned_volunteer=user)
-        ).order_by('-created_at')
+        
+        # Determine filtering based on user role
+        is_ngo = user.groups.filter(name='NGO').exists()
+        
+        if is_ngo:
+            # For NGOs, only show what they have accepted/claimed
+            donations = Donation.objects.filter(accepted_ngo=user).order_by('-created_at')
+        else:
+            # For Donors, show what they donated or are involved in
+            donations = Donation.objects.filter(
+                models.Q(donor=user) | 
+                models.Q(accepted_ngo=user) | 
+                models.Q(accepted_volunteer=user)
+            ).order_by('-created_at')
         
         page = self.paginate_queryset(donations)
         if page is not None:
@@ -183,6 +215,34 @@ class NGONeedViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['ngo', 'category', 'urgency', 'status']
+
+    @action(detail=True, methods=['post'])
+    def support(self, request, pk=None):
+        need = self.get_object()
+        user_id = request.user.id
+        supporter_quantity = float(request.data.get('quantity', 0))
+        
+        # Add to supporter_ids if not already there
+        if user_id not in need.supporter_ids:
+            need.supporter_ids.append(user_id)
+            
+        # Update fulfilled quantity
+        need.fulfilled_quantity += supporter_quantity
+            
+        # Update status based on quantity
+        if need.fulfilled_quantity >= need.quantity:
+            need.status = 'Fulfilled'
+        else:
+            need.status = 'Fulfilling'
+            
+        need.accepted_by = request.user
+        need.accepted_at = timezone.now()
+        need.save()
+        return Response({
+            'status': 'Successfully supported the community need',
+            'current_fulfillment': need.fulfilled_quantity,
+            'need_status': need.status
+        })
 
 class BankAccountViewSet(viewsets.ModelViewSet):
     queryset = BankAccount.objects.all()
@@ -275,6 +335,35 @@ class SystemConfigurationViewSet(viewsets.ModelViewSet):
     serializer_class = SystemConfigurationSerializer
     permission_classes = [permissions.IsAuthenticated]
     lookup_field = 'key'
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = [permissions.IsAuthenticated]
+    filterset_fields = ['type', 'is_active']
+
+class CategorySuggestionViewSet(viewsets.ModelViewSet):
+    queryset = CategorySuggestion.objects.all().order_by('-created_at')
+    serializer_class = CategorySuggestionSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    filterset_fields = ['status']
+    
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+class LuckySpinPrizeViewSet(viewsets.ModelViewSet):
+    queryset = LuckySpinPrize.objects.filter(is_active=True)
+    serializer_class = LuckySpinPrizeSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    filterset_fields = ['role']
+
+class LuckySpinDrawViewSet(viewsets.ModelViewSet):
+    queryset = LuckySpinDraw.objects.all().order_by('-drawn_at')
+    serializer_class = LuckySpinDrawSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 # --- Auth ---
 

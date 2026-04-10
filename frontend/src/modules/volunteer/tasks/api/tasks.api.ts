@@ -8,8 +8,7 @@ export const volunteerTasksService = {
     try {
       const response = await axiosInstance.get("donations/", {
         params: {
-          status: "ASSIGNED", // Accepted by NGO, awaiting volunteer
-          assigned_volunteer: "null", // Placeholder for "none assigned"
+          status: "ACCEPTED", // NGO accepted, ready for volunteer pickup
         }
       });
       return response.data;
