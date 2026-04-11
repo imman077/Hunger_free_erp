@@ -25,5 +25,20 @@ export const ngoNeedsService = {
       console.error("Error fetching NGO needs:", error);
       throw error;
     }
+  },
+
+  /**
+   * Fetches all needs available in the marketplace (public).
+   */
+  getAllNeeds: async () => {
+    try {
+      const response = await axiosInstance.get("needs/", {
+        params: { marketplace: "true" }
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching all needs:", error);
+      throw error;
+    }
   }
 };

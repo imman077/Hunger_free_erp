@@ -28,6 +28,7 @@ import {
   Box,
   ChevronUp,
   ChevronDown,
+  CalendarDays,
 } from "lucide-react";
 import { Button } from "@heroui/react";
 import ReusableTable, {
@@ -59,6 +60,7 @@ interface DonationRequest {
   origin: "DONATION" | "NEED";
   isMine?: boolean;
   isSupported?: boolean;
+  isClaimed?: boolean;
   volunteer?: {
     name: string;
     phone: string;
@@ -195,72 +197,144 @@ const DonationRequests = () => {
       let rawNeeds = [];
 
       // Use try-catch blocks individually if needed, but here we'll handle the array results
+      // Always fetch both for Community and My Records to ensure all resource types are visible
       if (activeTab === "marketplace") {
         const response = await ngoDonationsService.getMarketplaceDonations();
         rawDonations = response?.results || (Array.isArray(response) ? response : []);
       } else if (activeTab === "community-requests") {
-        const response = await ngoNeedsService.getMyNeeds(); // Backend returns all needs
-        rawNeeds = response?.results || (Array.isArray(response) ? response : []);
-      } else {
         const results = await Promise.allSettled([
-          ngoDonationsService.getMyRequests(),
-          ngoNeedsService.getMyNeeds()
+          ngoDonationsService.getMarketplaceDonations(),
+          ngoNeedsService.getAllNeeds()
         ]);
-        
         const donationsRes = results[0].status === 'fulfilled' ? results[0].value : [];
         const needsRes = results[1].status === 'fulfilled' ? results[1].value : [];
-        
         rawDonations = donationsRes?.results || (Array.isArray(donationsRes) ? donationsRes : []);
+        rawNeeds = needsRes?.results || (Array.isArray(needsRes) ? needsRes : []);
+      } else if (activeTab === "my-requests") {
+        const results = await Promise.allSettled([
+          ngoDonationsService.getMyRequests(),
+          ngoDonationsService.getAllDonations(),
+          ngoNeedsService.getAllNeeds()
+        ]);
+        const d1 = results[0].status === 'fulfilled' ? results[0].value : [];
+        const d2 = results[1].status === 'fulfilled' ? results[1].value : [];
+        const needsRes = results[2].status === 'fulfilled' ? results[2].value : [];
+        
+        const res1 = d1?.results || (Array.isArray(d1) ? d1 : []);
+        const res2 = d2?.results || (Array.isArray(d2) ? d2 : []);
+        const allDonations = [...res1, ...res2];
+        
+        // Deduplicate by ID
+        const seenIds = new Set();
+        rawDonations = allDonations.filter(d => {
+          if (seenIds.has(d.id)) return false;
+          seenIds.add(d.id);
+          return true;
+        });
+
         rawNeeds = needsRes?.results || (Array.isArray(needsRes) ? needsRes : []);
       }
 
       // Map Donations
-      const mappedDonations: DonationRequest[] = rawDonations.map((d: any) => ({
-        id: d.id,
-        title: d.title || d.food_category,
-        source: d.donor_name || "Private Donor",
-        sourceType: d.donor_role || "DONOR",
-        isOwn: d.accepted_ngo === user?.id || Boolean(d.accepted_ngo_name && activeTab === "my-requests"), 
-        distance: "Nearby",
-        icon: d.food_category === "Cooked Food" ? "🥗" : "🥖",
-        time: d.created_at ? new Date(d.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Recently",
-        urgency: d.status === "PENDING" ? "High" : "Normal",
-        status: d.status === "PENDING" ? "Available" : (d.status === "ACCEPTED" ? "Approved" : d.status),
-        progress: d.status === "PENDING" ? 25 : (d.status === "ACCEPTED" ? 50 : 75),
-        description: d.description,
-        quantity: d.quantity,
-        expiryTime: d.expiry_time ? new Date(d.expiry_time).toLocaleDateString() : "No Expiry",
-        pickupAddress: d.pickup_address,
-        origin: "DONATION",
-        isMine: d.donor_id === user?.id,
-        isSupported: d.accepted_ngo === user?.id,
-      }));
+      const mappedDonations: DonationRequest[] = rawDonations.map((d: any) => {
+        const userId = String(user?.id);
+        const ngoProfileId = String((user?.ngo_profile as any)?.id || "");
+        
+        // Check against BOTH the user ID and the NGO profile ID
+        const matchesNGO = (val: any) => {
+          const s = String(val);
+          return s === userId || (ngoProfileId && s === ngoProfileId);
+        };
+
+        // Robust ID matching for NGO Support — accepted_ngo_id in DB stores user ID
+        const isSupported = 
+          matchesNGO(d.accepted_ngo) || 
+          matchesNGO(d.accepted_ngo_id) ||
+          matchesNGO(d.accepted_by_id) ||
+          matchesNGO(d.accepted_by) ||
+          (d.accepted_ngo && matchesNGO(d.accepted_ngo.id));
+
+        // Donor ownership
+        const isMine = 
+          matchesNGO(d.donor_id) || 
+          matchesNGO(d.donor) ||
+          (d.donor && matchesNGO(d.donor.id));
+
+        // Is anyone supporting this?
+        const isClaimed = 
+          !!d.accepted_ngo || 
+          !!d.accepted_ngo_id || 
+          !!d.accepted_by || 
+          !!d.accepted_by_id;
+
+        return {
+          id: d.id,
+          title: d.title || d.food_items || d.food_category,
+          source: d.donor_name || d.donor?.name || "Private Donor",
+          sourceType: d.donor_role || "DONOR",
+          isMine: isMine,
+          isSupported: isSupported,
+          isOwn: isMine || isSupported, 
+          isClaimed: isClaimed,
+          distance: "Nearby",
+          icon: (d.food_category === "Cooked Food" || d.food_items?.toLowerCase().includes("rice")) ? "🥗" : "🥖",
+          time: d.created_at ? new Date(d.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Recently",
+          urgency: (d.status === "PENDING" || d.urgency === "High") ? "High" : "Normal",
+          status: d.status === "PENDING" && !isClaimed ? "Available" : (isSupported ? "Fulfilling" : "Claimed"),
+          progress: isClaimed ? 60 : (d.status === "PENDING" ? 25 : 75),
+          description: d.description || d.food_items,
+          quantity: d.quantity || "N/A",
+          expiryTime: d.expiry_time ? new Date(d.expiry_time).toLocaleDateString() : "No Expiry",
+          pickupAddress: d.pickup_address,
+          origin: "DONATION",
+        }
+      });
 
       // Map Needs
-      const mappedNeeds: DonationRequest[] = rawNeeds.map((n: any) => ({
-        id: n.id,
-        title: n.item_name,
-        source: n.ngo_name || "Partner NGO",
-        sourceType: "NGO",
-        isOwn: Boolean(n.is_mine) || (Array.isArray(n.supporter_ids) && n.supporter_ids.includes(user?.id)), 
-        distance: "Community",
-        icon: "📋",
-        time: n.created_at ? new Date(n.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Recently",
-        urgency: n.urgency || "Normal",
-        status: n.status || "Open",
-        progress: 10,
-        description: n.description,
-        quantity: `${n.quantity} ${n.unit}`,
-        origin: "NEED",
-        isMine: Boolean(n.is_mine),
-        isSupported: Array.isArray(n.supporter_ids) && n.supporter_ids.includes(user?.id),
-      }));
+      const mappedNeeds: DonationRequest[] = rawNeeds.map((n: any) => {
+        const userId = String(user?.id);
+        const ngoProfileId = String((user?.ngo_profile as any)?.id || "");
+
+        const matchesNGO = (val: any) => {
+          const s = String(val);
+          return s === userId || (ngoProfileId && s === ngoProfileId);
+        };
+        
+        // Robust ID matching for NGO Support/Acceptance
+        const isSupported = 
+          (Array.isArray(n.supporter_ids) && n.supporter_ids.map(String).some((id: string) => id === userId || id === ngoProfileId)) || 
+          matchesNGO(n.accepted_by) ||
+          matchesNGO(n.accepted_by_id) ||
+          matchesNGO(n.accepted_ngo_id) ||
+          (n.accepted_by && matchesNGO(n.accepted_by.id));
+
+        const isMine = Boolean(n.is_mine) || matchesNGO(n.ngo_id) || matchesNGO(n.ngo);
+
+        return {
+          id: n.id,
+          title: n.item_name || n.title,
+          source: n.ngo_name || n.ngo?.name || "Partner NGO",
+          sourceType: "NGO",
+          isMine: isMine,
+          isSupported: isSupported,
+          isOwn: isMine || isSupported, 
+          distance: "Community",
+          icon: "📋",
+          time: n.created_at ? new Date(n.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Recently",
+          urgency: n.urgency || "Normal",
+          status: n.status || (isSupported ? "Fulfilling" : "Open"),
+          progress: isSupported ? 40 : 10,
+          description: n.description,
+          quantity: n.quantity ? `${n.quantity} ${n.unit || ""}` : "N/A",
+          origin: "NEED",
+        }
+      });
 
       setDonations([...mappedDonations, ...mappedNeeds]);
     } catch (error) {
       toast.error("Failed to load requests");
     }
-  }, [activeTab]);
+  }, [activeTab, user]);
 
   useEffect(() => {
     fetchDonations();
@@ -270,17 +344,29 @@ const DonationRequests = () => {
     .filter((d) => {
       // 1. Marketplace: Only show external Donor donations that are available
       if (activeTab === "marketplace") {
-        return d.origin === "DONATION" && !d.isOwn && d.status === "Available";
+        return d.origin === "DONATION" && d.sourceType === "DONOR" && !d.isClaimed && !d.isOwn;
       }
       
-      // 2. Community: Only show external NGO Needs
+      // 2. Community: Show resources from other NGOs, OR my own items if they are still 'Open'
       if (activeTab === "community-requests") {
-        return d.origin === "NEED" && !d.isOwn;
+        const isNGOResource = d.origin === "NEED" || (d.origin === "DONATION" && d.sourceType === "NGO");
+        const status = d.status?.toLowerCase();
+        
+        // Show if: it's an NGO resource AND it's 'Open'
+        // This includes my own open requests so others can see them
+        const isOpen = status === "open" || status === "available";
+        const isExternalAndActive = !d.isMine && !d.isSupported && (status === "open" || status === "available" || status === "pending");
+        
+        return isNGOResource && (isOpen || isExternalAndActive);
       }
       
-      // 3. My Records: Show ONLY actual fulfillments (accepted/supported)
+      // 3. My Records: Show ONLY what I am actually fulfilling/accepted (isSupported)
       if (activeTab === "my-requests") {
-        return d.isSupported;
+        const status = d.status?.toLowerCase();
+        // Don't show in 'My Records' if it's my own request but still 'Open'
+        // (Those belong in the Community Needs tab for now)
+        if (d.isMine && status === "open") return false;
+        return d.isOwn;
       }
       return true;
     })
@@ -318,294 +404,317 @@ const DonationRequests = () => {
 
   const renderCard = (donation: DonationRequest) => (
     <div
-      className="group relative flex flex-col rounded-[24px] border transition-all duration-500 hover:-translate-y-1.5 bg-[var(--bg-primary)]/90 backdrop-blur-lg overflow-hidden"
-      style={{ 
-        borderColor: "var(--border-color)",
-        boxShadow: "0 12px 24px -12px rgba(0,0,0,0.08)"
-      }}
+      className="group relative flex flex-col rounded-[24px] bg-white border border-[var(--border-color)] shadow-sm overflow-hidden h-full"
     >
-      {/* Precision Side Status Indicator */}
-      <div
-        className={`absolute left-0 top-4 bottom-4 w-1 rounded-r-full transition-all duration-500 group-hover:w-1.5 ${
-          donation.status === "Assigned"
-            ? "bg-amber-400 shadow-[2px_0_8px_rgba(251,191,36,0.4)]"
-            : donation.status === "In Transit"
-              ? "bg-blue-400 shadow-[2px_0_8px_rgba(96,165,250,0.4)]"
-              : donation.status === "Completed"
-                ? "bg-emerald-400 shadow-[2px_0_8px_rgba(52,211,153,0.4)]"
-                : activeTab === "community-requests"
-                  ? "bg-blue-500 shadow-[2px_0_8px_rgba(59,130,246,0.3)]"
-                  : "bg-emerald-500 shadow-[2px_0_8px_rgba(16,185,129,0.3)]"
-        }`}
-      />
-
-      <div className="p-5 flex-grow flex flex-col items-center text-center relative z-10">
-        {/* Header Area */}
-        <div className="w-full flex justify-between items-center mb-4">
-          <div className="w-10 h-10 rounded-[14px] bg-[var(--bg-secondary)] flex items-center justify-center text-lg shadow-inner border border-[var(--border-color)] group-hover:scale-105 transition-transform duration-500">
-            {donation.icon}
-          </div>
-          <div className={`px-2 py-0.5 rounded-lg text-[7px] font-black uppercase tracking-[0.2em] border ${
-            donation.urgency === "High"
-              ? "bg-red-50 text-red-600 border-red-100"
-              : "bg-emerald-50 text-emerald-600 border-emerald-100"
-          }`}>
-            {donation.urgency}
-          </div>
+      {/* 1. Top Visual Hub (Compact Height) */}
+      <div className={`w-full h-28 relative flex items-center justify-center overflow-hidden ${
+        donation.sourceType === "DONOR" ? "bg-green-50/40" : "bg-blue-50/40"
+      }`}>
+        {/* Subtle Gradient Glow */}
+        <div className={`absolute top-0 right-0 w-24 h-24 blur-2xl opacity-20 -mr-6 -mt-6 ${
+          donation.sourceType === "DONOR" ? "bg-green-400" : "bg-blue-400"
+        }`} />
+        
+        {/* Circular Hub - Compact */}
+        <div className="relative z-10 w-[64px] h-[64px] rounded-full border-[5px] border-white/80 bg-white shadow-sm flex items-center justify-center text-2xl">
+           <span className="relative z-10 filter drop-shadow-[0_2px_2px_rgba(0,0,0,0.05)]">
+             {donation.icon}
+           </span>
         </div>
 
-        {/* Informative Title */}
-        <h4 className={`text-[15px] font-[800] tracking-tight leading-tight mb-3 px-1 transition-colors ${
-            activeTab === "community-requests" ? "text-blue-600" : (activeTab === "marketplace" ? "text-emerald-600" : "text-[var(--text-primary)]")
-        }`}>
-          {donation.title}
-        </h4>
-
-        {/* Minimalist Entity Pill */}
-        <div className="flex flex-col items-center gap-3 w-full mb-4">
-           <div className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-xl border bg-[var(--bg-secondary)]/50 border-[var(--border-color)] shadow-sm group-hover:bg-white transition-colors duration-500 h-8">
-              <div className={`w-6 h-6 rounded-md flex items-center justify-center text-[8px] font-black text-white shadow-sm ${
-                 donation.sourceType === "DONOR" ? "bg-gradient-to-br from-emerald-400 to-emerald-600" : "bg-gradient-to-br from-blue-400 to-blue-600"
-              }`}>
-                {donation.source.substring(0,2)}
-              </div>
-              <span className="text-[10px] font-bold uppercase tracking-tight text-[var(--text-primary)]">{donation.source}</span>
-           </div>
-
-           <div className="flex items-center gap-4 opacity-50 group-hover:opacity-100 transition-opacity">
-              <div className="flex items-center gap-1">
-                <Clock size={10} className="text-[var(--text-muted)]" />
-                <span className="text-[8px] font-bold uppercase text-[var(--text-primary)]">{donation.time}</span>
-              </div>
-              {activeTab === "marketplace" && (
-                <div className="flex items-center gap-1">
-                  <MapPin size={10} className="text-emerald-500" />
-                  <span className="text-[8px] font-bold uppercase text-[var(--text-primary)]">{donation.distance}</span>
-                </div>
-              )}
-           </div>
+        {/* Action Button - Scaled */}
+        <div className="absolute bottom-2 right-3 z-20">
+          {activeTab === "my-requests" ? (
+             <div 
+               onClick={(e) => { e.stopPropagation(); handleViewTracking(donation); }} 
+               className="w-10 h-10 rounded-full bg-white border border-[var(--border-color)] text-[var(--text-primary)] flex items-center justify-center shadow-sm cursor-pointer hover:bg-slate-50 transition-colors"
+             >
+                <Eye size={18} />
+             </div>
+          ) : (
+             <div 
+               onClick={(e) => { e.stopPropagation(); handleAccept(donation); }} 
+               className={`w-10 h-10 rounded-full text-white flex items-center justify-center shadow-lg cursor-pointer transition-transform active:scale-90 ${
+                 donation.origin === "NEED" ? "bg-blue-600" : "bg-[#22c55e]"
+               }`}
+             >
+                <Check size={18} strokeWidth={3} />
+             </div>
+          )}
         </div>
       </div>
 
-      {/* Optimized Action Area */}
-      <div className="px-5 pb-5 pt-0">
-          {activeTab === "my-requests" ? (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handleViewTracking(donation);
-              }}
-              className="w-full h-9 flex items-center justify-center gap-2 rounded-[12px] text-[8px] font-black uppercase tracking-[0.25em] transition-all border bg-white border-[var(--border-color)] text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] hover:shadow-sm active:scale-95"
-            >
-              <Eye size={12} className="text-emerald-500" />
-              Live Trace
-            </button>
-          ) : (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handleAccept(donation);
-              }}
-              className={`w-full h-9 flex items-center justify-center gap-2 text-white rounded-[12px] text-[8px] font-black uppercase tracking-[0.25em] transition-all shadow-md active:scale-95 ${
-                donation.origin === "NEED" 
-                  ? "bg-blue-600 hover:bg-blue-700" 
-                  : "bg-emerald-600 hover:bg-emerald-700"
-              }`}
-            >
-              <CheckCircle2 size={12} />
-              {donation.origin === "NEED" ? "Support" : "Accept"}
-            </button>
-          )}
+      {/* 2. Bottom Content Section - Data Dense */}
+      <div className="flex-1 p-4 flex flex-col justify-between relative z-10">
+        <div className="space-y-4 text-left">
+          {/* Header Row: Big Labels */}
+          <div className="flex items-center justify-between">
+            <div className={`px-2.5 py-0.5 rounded-md text-[10px] font-black uppercase tracking-[0.1em] border ${
+              donation.urgency === "High"
+                ? "bg-red-50 text-red-600 border-red-100"
+                : "bg-gray-50 text-[var(--text-muted)] border-gray-100"
+            }`}>
+              {donation.urgency}
+            </div>
+            <div className={`text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 ${
+              activeTab === "community-requests" ? "text-blue-600" : "text-[#22c55e]"
+            }`}>
+              <div className={`w-2 h-2 rounded-full ${
+                 activeTab === "community-requests" ? "bg-blue-600" : "bg-[#22c55e]"
+              }`} />
+              {donation.status}
+            </div>
+          </div>
+
+          {/* Title Area + Global Quantity (Industrial Scale) */}
+          <div className="space-y-1.5">
+            <h4 className={`text-[20px] font-black tracking-tight leading-[1.2] pr-2 line-clamp-2 ${
+              activeTab === "community-requests" ? "text-blue-800" : (activeTab === "marketplace" ? "text-[#16a34a]" : "text-[var(--text-primary)]")
+            }`}>
+              {donation.title}
+            </h4>
+            <div className="flex items-center gap-2">
+               <span className="text-[11px] font-black uppercase tracking-widest text-[var(--text-muted)]">Vol:</span>
+               <span className={`text-[14px] font-[1000] px-3 py-0.5 rounded-lg tabular-nums ${
+                 activeTab === "community-requests" ? "bg-blue-50 text-blue-700" : "bg-green-50 text-[#15803d]"
+               }`}>
+                 {donation.quantity || "N/A"}
+               </span>
+            </div>
+          </div>
+
+          {/* Data Matrix: High Legibility Meta */}
+          <div className="grid grid-cols-2 gap-4 pt-1 border-t border-[var(--border-color)]/10">
+            {/* Source Info */}
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 shrink-0 rounded-xl bg-[var(--bg-secondary)] flex items-center justify-center border border-[var(--border-color)]">
+                <MapPin size={14} className={activeTab === "community-requests" ? "text-blue-500" : "text-[#22c55e]"} />
+              </div>
+              <div className="flex flex-col min-w-0">
+                <span className="text-[11px] font-black text-[var(--text-primary)] tracking-tight truncate leading-tight">{donation.source}</span>
+                <span className="text-[8px] font-black uppercase tracking-widest text-[var(--text-muted)]">PROVIDER</span>
+              </div>
+            </div>
+
+            {/* Lifecycle Info */}
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 shrink-0 rounded-xl bg-[var(--bg-secondary)] flex items-center justify-center border border-[var(--border-color)]">
+                <CalendarDays size={14} className="text-amber-500" />
+              </div>
+              <div className="flex flex-col min-w-0">
+                <span className="text-[11px] font-black text-[var(--text-primary)] tracking-tight truncate leading-tight">
+                  {donation.origin === "DONATION" ? (donation.expiryTime || "Ongoing") : (donation.urgency === "High" ? "Urgent" : "Normal")}
+                </span>
+                <span className="text-[8px] font-black uppercase tracking-widest text-[var(--text-muted)] leading-tight">
+                  {donation.origin === "DONATION" ? "EXPIRES" : "TIMELINE"}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
 
   return (
-    <div className="w-full space-y-6 max-w-[1400px] mx-auto p-4 md:p-8 bg-transparent">
+    <div className="w-full p-0 bg-transparent">
       <div
-        className="rounded-xl border shadow-sm relative"
+        className="border-b shadow-sm relative"
         style={{
           backgroundColor: "var(--bg-primary)",
           borderColor: "var(--border-color)",
         }}
       >
         {/* Isolated Decoration Layer */}
-        <div className="absolute inset-0 overflow-hidden rounded-xl pointer-events-none">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[300px] h-[300px] bg-[#22c55e] opacity-[0.03] blur-[100px] rounded-full" />
         </div>
-
-        <div className="relative z-10 px-6 py-6 border-b border-[var(--border-color)] flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-5 text-start w-full md:w-auto">
-            <div className="space-y-1">
-              <h1
-                className="text-2xl md:text-3xl font-black tracking-tighter uppercase leading-none"
-                style={{ color: "var(--text-primary)" }}
-              >
-                NGO <span className="text-hf-green">Requests</span>
-              </h1>
+        {/* Sticky Header Hub */}
+        <div className="sticky top-0 z-[100] overflow-hidden shadow-md">
+          <div 
+            className="relative z-10 px-4 md:px-8 py-6 border-b border-[var(--border-color)] flex flex-col md:flex-row items-center justify-between gap-6 backdrop-blur-md"
+            style={{ backgroundColor: "var(--bg-primary)" }}
+          >
+            <div className="flex items-center gap-5 text-start w-full md:w-auto">
+              <div className="space-y-1">
+                <h1
+                  className="text-2xl md:text-3xl font-black tracking-tighter uppercase leading-none"
+                  style={{ color: "var(--text-primary)" }}
+                >
+                  DONATION <span className="text-hf-green">Requests</span>
+                </h1>
+              </div>
             </div>
+
+            <button
+              onClick={() => navigate("/ngo/needs/post")}
+              className="group flex items-center gap-2 px-6 py-3 bg-[#22c55e] hover:bg-green-600 text-white rounded-xl transition-all duration-300 active:scale-95 shadow-lg shadow-green-600/20 w-full md:w-auto justify-center"
+            >
+              <Plus size={16} className="font-black" />
+              <span className="text-[10px] font-black uppercase tracking-widest pt-0.5">
+                Request Food
+              </span>
+            </button>
           </div>
 
-          <button
-            onClick={() => navigate("/ngo/needs/post")}
-            className="group flex items-center gap-2 px-6 py-3 bg-[#22c55e] hover:bg-green-600 text-white rounded-xl transition-all duration-300 active:scale-95 shadow-lg shadow-green-600/20 w-full md:w-auto justify-center"
-          >
-            <Plus size={16} className="font-black" />
-            <span className="text-[10px] font-black uppercase tracking-widest pt-0.5">
-              Request Food
-            </span>
-          </button>
-        </div>
-
-        {/* Global Control Bar */}
-        <div
-          className="relative z-10 px-6 py-4 flex flex-col xl:flex-row items-center justify-between gap-6 border-t"
-          style={{
-            backgroundColor: "var(--bg-secondary)",
-            borderColor: "var(--border-color)",
-          }}
-        >
-          {/* Left: Context Navigation */}
+          {/* Global Control Bar */}
           <div
-            className="flex items-center gap-1 p-1 rounded-xl shadow-sm w-full xl:w-auto border"
+            className="relative z-10 px-4 md:px-8 py-4 flex flex-col xl:flex-row items-center justify-between gap-6 border-t backdrop-blur-md shadow-sm"
             style={{
-              backgroundColor: "var(--bg-primary)",
+              backgroundColor: "var(--bg-secondary)",
               borderColor: "var(--border-color)",
             }}
           >
-            {[
-              { id: "marketplace", label: "Marketplace" },
-              { id: "community-requests", label: "Community Needs" },
-              { id: "my-requests", label: "My Records" },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
-                className={`flex items-center justify-center gap-3 px-6 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all transition-duration-300 w-1/2 xl:w-auto ${
-                  activeTab === tab.id
-                    ? "bg-[#22c55e] text-white shadow-lg shadow-green-500/20"
-                    : "hover:bg-[var(--bg-tertiary)]"
-                }`}
-                style={{
-                  backgroundColor:
-                    activeTab === tab.id ? undefined : "var(--bg-primary)",
-                  borderColor: "var(--border-color)",
-                  color: activeTab === tab.id ? "white" : "var(--text-muted)",
-                }}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Right: Search & View Controls */}
-          <div className="flex flex-col md:flex-row items-center gap-4 w-full xl:w-auto">
-            {/* Search Hub */}
-            {viewMode === "card" && (
-              <div className="relative w-full md:w-[280px]">
-                <Search
-                  size={14}
-                  className="absolute left-4 top-1/2 -translate-y-1/2"
-                  style={{ color: "var(--text-muted)" }}
-                />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search..."
-                  className="w-full pl-11 pr-4 py-2.5 rounded-xl text-[11px] font-bold focus:outline-none focus:ring-2 focus:ring-[#22c55e]/20 transition-all shadow-sm border"
-                  style={{
-                    backgroundColor: "var(--bg-primary)",
-                    borderColor: "var(--border-color)",
-                    color: "var(--text-primary)",
-                  }}
-                />
-              </div>
-            )}
-
-            <div className="flex items-center gap-3 shrink-0">
-              {/* View Switcher */}
+            <div className="flex flex-col gap-2 w-full xl:w-auto">
               <div
-                className="flex items-center gap-1 p-1 rounded-xl shadow-sm border"
+                className="flex items-center gap-1 p-1 rounded-xl shadow-sm border w-full xl:w-auto"
                 style={{
                   backgroundColor: "var(--bg-primary)",
                   borderColor: "var(--border-color)",
                 }}
               >
                 {[
-                  { id: "table", icon: Table, label: "Table" },
-                  { id: "card", icon: LayoutGrid, label: "Cards" },
-                ].map((view) => (
+                  { id: "marketplace", label: "Marketplace" },
+                  { id: "community-requests", label: "Community Needs" },
+                  { id: "my-requests", label: "My Records" },
+                ].map((tab) => (
                   <button
-                    key={view.id}
-                    onClick={() => setViewMode(view.id as any)}
-                    className={`flex items-center gap-2.5 px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${
-                      viewMode === view.id
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id as any)}
+                    className={`flex items-center justify-center gap-3 px-6 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all transition-duration-300 w-1/3 xl:w-auto ${
+                      activeTab === tab.id
                         ? "bg-[#22c55e] text-white shadow-lg shadow-green-500/20"
-                        : "hover:bg-[var(--bg-secondary)]"
+                        : "hover:bg-[var(--bg-tertiary)]"
                     }`}
                     style={{
                       backgroundColor:
-                        viewMode === view.id ? undefined : "var(--bg-primary)",
+                        activeTab === tab.id ? undefined : "var(--bg-primary)",
                       borderColor: "var(--border-color)",
-                      color:
-                        viewMode === view.id ? "white" : "var(--text-muted)",
+                      color: activeTab === tab.id ? "white" : "var(--text-muted)",
                     }}
                   >
-                    <view.icon size={14} />
-                    <span className="hidden sm:inline">{view.label}</span>
+                    {tab.label}
                   </button>
                 ))}
               </div>
+              
+              {/* Descriptive Context: Understanding Text */}
+              <p className="text-[9px] font-bold uppercase tracking-wider text-[var(--text-muted)] pl-2 opacity-60">
+                {activeTab === "marketplace" && "Browse surplus food from local donors"}
+                {activeTab === "community-requests" && "Collaborate with NGO resource networks"}
+                {activeTab === "my-requests" && "Track your active fulfillments and history"}
+              </p>
+            </div>
 
-              {viewMode === "card" && activeTab === "marketplace" && (
-                <div className="relative group/filter">
-                  <div
-                    className="absolute right-0 top-full mt-2 w-48 shadow-xl rounded-xl opacity-0 invisible group-hover/filter:opacity-100 group-hover/filter:visible transition-all z-50 overflow-hidden border"
+            {/* Right: Search & View Controls */}
+            <div className="flex flex-col md:flex-row items-center gap-4 w-full xl:w-auto">
+              {/* Search Hub */}
+              {viewMode === "card" && (
+                <div className="relative w-full md:w-[280px]">
+                  <Search
+                    size={14}
+                    className="absolute left-4 top-1/2 -translate-y-1/2"
+                    style={{ color: "var(--text-muted)" }}
+                  />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search..."
+                    className="w-full pl-11 pr-4 py-2.5 rounded-xl text-[11px] font-bold focus:outline-none focus:ring-2 focus:ring-[#22c55e]/20 transition-all shadow-sm border"
                     style={{
                       backgroundColor: "var(--bg-primary)",
                       borderColor: "var(--border-color)",
+                      color: "var(--text-primary)",
                     }}
-                  >
-                    <div className="p-2 space-y-1">
-                      {[
-                        { value: "ALL", label: "All Entities" },
-                        { value: "DONOR", label: "Donors Only" },
-                        { value: "NGO", label: "NGOs Only" },
-                      ].map((opt) => (
-                        <button
-                          key={opt.value}
-                          onClick={() => setRoleFilter(opt.value as any)}
-                          className={`w-full text-left px-4 py-2.5 text-[10px] font-black uppercase tracking-widest rounded-lg transition-colors ${
-                            roleFilter === opt.value
-                              ? "bg-emerald-500/10 text-[#22c55e]"
-                              : "text-[var(--text-muted)] hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)]"
-                          }`}
-                        >
-                          {opt.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <button
-                    className="flex items-center justify-center w-10 h-10 rounded-xl transition-all shadow-sm border"
-                    style={{
-                      backgroundColor: "var(--bg-primary)",
-                      borderColor: "var(--border-color)",
-                      color: "var(--text-muted)",
-                    }}
-                  >
-                    <Filter size={16} />
-                  </button>
+                  />
                 </div>
               )}
+
+              <div className="flex items-center gap-3 shrink-0">
+                {/* View Switcher */}
+                <div
+                  className="flex items-center gap-1 p-1 rounded-xl shadow-sm border"
+                  style={{
+                    backgroundColor: "var(--bg-primary)",
+                    borderColor: "var(--border-color)",
+                  }}
+                >
+                  {[
+                    { id: "table", icon: Table, label: "Table" },
+                    { id: "card", icon: LayoutGrid, label: "Cards" },
+                  ].map((view) => (
+                    <button
+                      key={view.id}
+                      onClick={() => setViewMode(view.id as any)}
+                      className={`flex items-center gap-2.5 px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${
+                        viewMode === view.id
+                          ? "bg-[#22c55e] text-white shadow-lg shadow-green-500/20"
+                          : "hover:bg-[var(--bg-secondary)]"
+                      }`}
+                      style={{
+                        backgroundColor:
+                          viewMode === view.id ? undefined : "var(--bg-primary)",
+                        borderColor: "var(--border-color)",
+                        color:
+                          viewMode === view.id ? "white" : "var(--text-muted)",
+                      }}
+                    >
+                      <view.icon size={14} />
+                      <span className="hidden sm:inline">{view.label}</span>
+                    </button>
+                  ))}
+                </div>
+
+                {/* Filter Menu */}
+                {viewMode === "card" && activeTab === "marketplace" && (
+                  <div className="relative group/filter">
+                    <div
+                      className="absolute right-0 top-full mt-2 w-48 shadow-xl rounded-xl opacity-0 invisible group-hover/filter:opacity-100 group-hover/filter:visible transition-all z-50 overflow-hidden border"
+                      style={{
+                        backgroundColor: "var(--bg-primary)",
+                        borderColor: "var(--border-color)",
+                      }}
+                    >
+                      <div className="p-2 space-y-1">
+                        {[
+                          { value: "ALL", label: "All Entities" },
+                          { value: "DONOR", label: "Donors Only" },
+                          { value: "NGO", label: "NGOs Only" },
+                        ].map((opt) => (
+                          <button
+                            key={opt.value}
+                            onClick={() => setRoleFilter(opt.value as any)}
+                            className={`w-full text-left px-4 py-2.5 text-[10px] font-black uppercase tracking-widest rounded-lg transition-colors ${
+                              roleFilter === opt.value
+                                ? "bg-emerald-500/10 text-[#22c55e]"
+                                : "text-[var(--text-muted)] hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)]"
+                            }`}
+                          >
+                            {opt.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <button
+                      className="flex items-center justify-center w-10 h-10 rounded-xl transition-all shadow-sm border"
+                      style={{
+                        backgroundColor: "var(--bg-primary)",
+                        borderColor: "var(--border-color)",
+                        color: "var(--text-muted)",
+                      }}
+                    >
+                      <Filter size={16} />
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
       {/* Dynamic Content Based on View Mode */}
-      <div className="h-auto">
+      <div className="h-auto p-4 md:p-8">
         {viewMode === "table" && (
           <div
             className="border rounded-md shadow-sm p-2 overflow-hidden"
@@ -818,105 +927,104 @@ const DonationRequests = () => {
         {viewMode === "card" && (
           <div className="w-full">
             {activeTab === "my-requests" ? (
-              <div className="space-y-20">
-                {/* Hub 1: Accepted Donor Donations */}
-                <div className="space-y-10 group/hub">
-                  <div className="flex items-center justify-between px-4">
-                    <div className="flex items-center gap-6">
-                      <div className="w-14 h-14 rounded-[22px] bg-emerald-500/10 flex items-center justify-center text-emerald-600 border border-emerald-500/20 shadow-lg shadow-emerald-500/5 group-hover/hub:scale-110 transition-transform duration-500">
-                        <Box size={24} className="stroke-[2.5]" />
+              // Split Column Hubs ONLY for My Records
+              finalFilteredDonations.length > 0 ? (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+                  {/* Column 1: Donor Hub (Left Side) - Added visible separator border */}
+                  <div className="space-y-8 group/hub border-r-0 lg:border-r border-slate-200 pr-0 lg:pr-10">
+                    <div className="flex items-center justify-between px-4 pb-5 border-b border-slate-100">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-[20px] bg-emerald-500/10 flex items-center justify-center text-emerald-500 border border-emerald-500/20 shadow-sm group-hover/hub:scale-110 transition-transform duration-500">
+                          <Box size={20} className="stroke-[2.5]" />
+                        </div>
+                        <div className="space-y-0.5">
+                          <h3 className="text-base font-[1000] uppercase tracking-[0.2em] text-[var(--text-primary)]">
+                            Donor Hub
+                          </h3>
+                          <p className="text-[9px] font-black uppercase tracking-widest text-[#22c55e]">
+                            ACCEPTED DONOR REQUESTS
+                          </p>
+                        </div>
                       </div>
-                      <div className="space-y-1">
-                        <h3 className="text-lg font-black uppercase tracking-[0.3em] text-[var(--text-primary)]">
-                          Donor Hub
-                        </h3>
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-600/70">
-                          Verified food donations from individual donors
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <span className="text-xs font-black px-4 py-1.5 bg-emerald-500 text-white rounded-xl shadow-lg shadow-emerald-500/20">
-                        {finalFilteredDonations.filter(d => d.sourceType === "DONOR").length} ACTIVE
+                      <span className="text-[10px] font-black px-4 py-1.5 bg-[#22c55e] text-white rounded-xl shadow-lg shadow-emerald-500/20">
+                        {finalFilteredDonations.filter(d => d.origin === "DONATION").length} ACTIVE
                       </span>
                     </div>
-                  </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 p-2">
-                    {finalFilteredDonations.filter(d => d.sourceType === "DONOR").length > 0 ? (
-                      finalFilteredDonations
-                        .filter(d => d.sourceType === "DONOR")
-                        .map((donation) => (
-                        <div key={donation.id} onClick={() => handleViewTracking(donation)} className="h-full">
-                           {renderCard(donation)}
-                        </div>
-                      ))
-                    ) : (
-                       renderEmptyState()
-                    )}
-                  </div>
-                </div>
-
-                {/* Horizontal Glass Divider */}
-                <div className="relative h-[1px] w-full flex items-center justify-center">
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[var(--border-color)] to-transparent opacity-50" />
-                  <div className="absolute px-6 bg-[var(--bg-primary)] border border-[var(--border-color)] rounded-full py-1 text-[8px] font-black uppercase tracking-[0.4em] text-[var(--text-muted)]">
-                    Community Context Separation
-                  </div>
-                </div>
-
-                {/* Hub 2: Community Needs Hub */}
-                <div className="space-y-10 group/hub">
-                  <div className="flex items-center justify-between px-4">
-                    <div className="flex items-center gap-6">
-                      <div className="w-14 h-14 rounded-[22px] bg-blue-500/10 flex items-center justify-center text-blue-600 border border-blue-500/20 shadow-lg shadow-blue-500/5 group-hover/hub:scale-110 transition-transform duration-500">
-                        <Building2 size={24} className="stroke-[2.5]" />
-                      </div>
-                      <div className="space-y-1">
-                        <h3 className="text-lg font-black uppercase tracking-[0.3em] text-[var(--text-primary)]">
-                          Community Hub
-                        </h3>
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-blue-600/70">
-                          B2B Collaboration between NGO networks
-                        </p>
-                      </div>
+                    <div className="grid grid-cols-1 gap-6 p-1">
+                      {finalFilteredDonations.filter(d => d.origin === "DONATION").length > 0 ? (
+                        finalFilteredDonations
+                          .filter(d => d.origin === "DONATION")
+                          .map((donation) => (
+                          <div key={donation.id} onClick={() => handleViewTracking(donation)} className="h-full">
+                             {renderCard(donation)}
+                          </div>
+                        ))
+                      ) : (
+                         <div className="opacity-40 grayscale scale-90">
+                           {renderEmptyState()}
+                         </div>
+                      )}
                     </div>
-                    <div className="flex items-center gap-4">
-                      <span className="text-xs font-black px-4 py-1.5 bg-blue-500 text-white rounded-xl shadow-lg shadow-blue-500/20">
-                        {finalFilteredDonations.filter(d => d.sourceType === "NGO").length} ACTIVE
+                  </div>
+
+                  {/* Column 2: Community Hub (Right Side) */}
+                  <div className="space-y-8 group/hub">
+                    <div className="flex items-center justify-between px-4 pb-5 border-b border-slate-100">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-[20px] bg-blue-500/10 flex items-center justify-center text-blue-500 border border-blue-500/20 shadow-sm group-hover/hub:scale-110 transition-transform duration-500">
+                          <Building2 size={20} className="stroke-[2.5]" />
+                        </div>
+                        <div className="space-y-0.5">
+                          <h3 className="text-base font-[1000] uppercase tracking-[0.2em] text-[var(--text-primary)]">
+                            Community Hub
+                          </h3>
+                          <p className="text-[9px] font-black uppercase tracking-widest text-blue-500">
+                            NGO COLLABORATIONS
+                          </p>
+                        </div>
+                      </div>
+                      <span className="text-[10px] font-black px-4 py-1.5 bg-[#3b82f6] text-white rounded-xl shadow-lg shadow-blue-500/20">
+                        {finalFilteredDonations.filter(d => d.origin === "NEED").length} ACTIVE
                       </span>
                     </div>
-                  </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 p-2">
-                    {finalFilteredDonations.filter(d => d.sourceType === "NGO").length > 0 ? (
-                      finalFilteredDonations
-                        .filter(d => d.sourceType === "NGO")
-                        .map((donation) => (
-                        <div key={donation.id} onClick={() => handleViewTracking(donation)} className="h-full">
-                           {renderCard(donation)}
-                        </div>
-                      ))
-                    ) : (
-                       renderEmptyState()
-                    )}
+                    <div className="grid grid-cols-1 gap-6 p-1">
+                      {finalFilteredDonations.filter(d => d.origin === "NEED").length > 0 ? (
+                        finalFilteredDonations
+                          .filter(d => d.origin === "NEED")
+                          .map((donation) => (
+                          <div key={donation.id} onClick={() => handleViewTracking(donation)} className="h-full">
+                             {renderCard(donation)}
+                          </div>
+                        ))
+                      ) : (
+                         <div className="opacity-40 grayscale scale-90">
+                           {renderEmptyState()}
+                         </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
+              ) : (
+                 <div className="py-20">
+                   {renderEmptyState()}
+                 </div>
+              )
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 p-2">
-                {finalFilteredDonations.map((donation) => (
-                  <div
-                    key={donation.id}
-                    onClick={() => {
-                        handleAcceptClick(donation);
-                    }}
-                    className="h-full"
-                  >
-                    {renderCard(donation)}
+              // Standard Unified Grid for Marketplace and Community Needs
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-1">
+                {finalFilteredDonations.length > 0 ? (
+                  finalFilteredDonations.map((donation) => (
+                    <div key={donation.id} onClick={() => handleAcceptClick(donation)} className="h-full">
+                      {renderCard(donation)}
+                    </div>
+                  ))
+                ) : (
+                  <div className="col-span-full py-20">
+                    {renderEmptyState()}
                   </div>
-                ))}
-                {finalFilteredDonations.length === 0 && renderEmptyState()}
+                )}
               </div>
             )}
           </div>
@@ -1250,7 +1358,6 @@ const DonationRequests = () => {
                       </span>
                       {/* Operational Status Indicator */}
                       <div className="absolute -top-1 -right-1 flex items-center justify-center">
-                        <div className="absolute w-3 h-3 rounded-full bg-hf-green/20 animate-ping" />
                         <div className="w-2 h-2 rounded-full bg-hf-green border border-[var(--bg-primary)] shadow-sm" />
                       </div>
                     </div>
@@ -1370,7 +1477,6 @@ const DonationRequests = () => {
                 onMouseLeave={handleMouseLeaveSuccess}
               >
                 <div className="relative mb-8">
-                  <div className="absolute inset-0 rounded-full bg-emerald-100 dark:bg-emerald-900/40 animate-ping opacity-20 scale-150" />
                   <div className="w-16 h-16 bg-[#22c55e] rounded-full flex items-center justify-center relative z-10 shadow-lg shadow-green-500/20">
                     <Check className="text-white" size={32} strokeWidth={3} />
                   </div>
@@ -1642,7 +1748,8 @@ const DonationRequests = () => {
         </ResuableModal>
       </div>
     </div>
-  );
+  </div>
+);
 };
 
 export default DonationRequests;

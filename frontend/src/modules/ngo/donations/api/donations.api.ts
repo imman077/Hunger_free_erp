@@ -19,6 +19,19 @@ export const ngoDonationsService = {
   },
 
   /**
+   * Fetches all donations in the system (no filters).
+   */
+  getAllDonations: async () => {
+    try {
+      const response = await axiosInstance.get("donations/");
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching all donations:", error);
+      throw error;
+    }
+  },
+
+  /**
    * Fetches donations already claimed by the current NGO.
    */
   getMyRequests: async () => {
