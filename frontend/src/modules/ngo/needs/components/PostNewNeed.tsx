@@ -51,6 +51,7 @@ const PostNewNeed = () => {
   const unitOptions = [
     { value: "units", label: "Units" },
     { value: "kg", label: "Kilograms (kg)" },
+    { value: "pieces", label: "Pieces"},
     { value: "packs", label: "Packs" },
     { value: "boxes", label: "Boxes" },
   ];
@@ -74,18 +75,25 @@ const PostNewNeed = () => {
     setIsSubmitting(true);
     
     try {
-      const submitData = {
-        item_name: formData.itemName,
-        category: formData.category === "other" ? formData.otherCategory : formData.category,
-        description: formData.description || `Delivery at ${formData.location}`,
-        quantity: parseFloat(formData.quantity),
-        unit: formData.unit,
-        distribution_address: formData.location,
-        urgency: formData.urgency.charAt(0).toUpperCase() + formData.urgency.slice(1), // low -> Low
-        status: "Open"
-      };
+      const payload = new FormData();
+      payload.append("item_name", formData.itemName);
+      payload.append("category", formData.category === "other" ? formData.otherCategory : formData.category);
+      payload.append("description", formData.description || `Delivery at ${formData.location}`);
+      payload.append("quantity", formData.quantity);
+      payload.append("unit", formData.unit);
+      payload.append("distribution_address", formData.location);
+      payload.append("urgency", formData.urgency.charAt(0).toUpperCase() + formData.urgency.slice(1));
+      payload.append("status", "Open");
+      
+      if (formData.requiredBy) {
+        payload.append("required_by", formData.requiredBy);
+      }
+      
+      if (formData.itemImage) {
+        payload.append("image", formData.itemImage);
+      }
 
-      await ngoNeedsService.postNeed(submitData);
+      await ngoNeedsService.postNeed(payload);
       
       toast.success("Need posted successfully!");
       setIsSuccess(true);
@@ -146,7 +154,7 @@ const PostNewNeed = () => {
 
       <form
         onSubmit={handleSubmit}
-        className="max-w-5xl mx-auto space-y-10 pb-32"
+        className="max-w-5xl mx-auto space-y-10"
       >
         {/* Card 01: Item Info */}
         <div

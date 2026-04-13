@@ -14,6 +14,7 @@ import ResuableModal from "../../../../global/components/resuable-components/mod
 import ResuableTextarea from "../../../../global/components/resuable-components/textarea";
 import { ResuableDatePicker } from "../../../../global/components/resuable-components/datepicker";
 import { toast } from "sonner";
+import { ngoInventoryService } from "../api/inventory.api";
 
 const AddItem = () => {
   const navigate = useNavigate();
@@ -75,18 +76,36 @@ const AddItem = () => {
     }
   }, [formData.expiryDate]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const submitData = {
+        item_name: formData.name,
+        category: formData.category === "other" ? formData.otherCategory : formData.category,
+        quantity: parseFloat(formData.quantity) || 0,
+        unit: formData.unit,
+        expiry_date: formData.expiryDate || null,
+        location: formData.location,
+        condition: formData.condition,
+        notes: formData.notes
+      };
+
+      await ngoInventoryService.addItem(submitData);
+      
       setIsSubmitting(false);
       toast.success("Item Added", {
         description: `${formData.name} added to inventory.`,
       });
       navigate("/ngo/inventory");
-    }, 1500);
+    } catch (error) {
+      console.error("Error adding inventory item:", error);
+      setIsSubmitting(false);
+      toast.error("Failed to add item", {
+        description: "An error occurred while saving to the database."
+      });
+    }
   };
 
   return (

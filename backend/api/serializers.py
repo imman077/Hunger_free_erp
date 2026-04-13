@@ -91,6 +91,7 @@ class NGOInventoryItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = NGOInventoryItem
         fields = '__all__'
+        read_only_fields = ('ngo',)
 
 class NGONeedSerializer(serializers.ModelSerializer):
     ngo_name = serializers.ReadOnlyField(source='ngo.username')
@@ -98,6 +99,7 @@ class NGONeedSerializer(serializers.ModelSerializer):
     class Meta:
         model = NGONeed
         fields = '__all__'
+        read_only_fields = ('ngo',)
     
     def get_is_mine(self, obj):
         request = self.context.get('request')

@@ -20,20 +20,20 @@ import ResuableDrawer from "../../../../global/components/resuable-components/dr
 import ResuableInput from "../../../../global/components/resuable-components/input";
 import ResuableButton from "../../../../global/components/resuable-components/button";
 import ResuableDropdown from "../../../../global/components/resuable-components/dropdown";
+import { ngoInventoryService } from "../api/inventory.api";
 
-interface DistributionRecord {
+interface InventoryItem {
   id: number;
-  item: string;
+  item_name: string;
   category: string;
-  quantity: string;
+  quantity: number;
   unit: string;
   location: string;
-  date: string;
-  expiryDate: string;
-  status: "Dispatched" | "In Transit" | "Delivered";
-  urgency: "High" | "Normal";
-  condition: "Excellent" | "Good" | "Critical";
-  notes?: string;
+  expiry_date: string;
+  condition: string;
+  notes: string;
+  status?: string;
+  urgency?: string;
 }
 
 const NGOInventory = () => {
@@ -65,65 +65,10 @@ const NGOInventory = () => {
     },
   ];
 
-  const distributionData: DistributionRecord[] = [
-    {
-      id: 1,
-      item: "Rice Packs",
-      category: "Grains & Rice",
-      quantity: "50",
-      unit: "kg",
-      location: "Community Center A",
-      date: "28 Dec, 2025",
-      expiryDate: "2026-06-15",
-      status: "Delivered",
-      urgency: "Normal",
-      condition: "Excellent",
-      notes: "Stored in dry section, Block 1",
-    },
-    {
-      id: 2,
-      item: "Canned Soup",
-      category: "Basic Essentials",
-      quantity: "120",
-      unit: "units",
-      location: "Soup Kitchen B",
-      date: "27 Dec, 2025",
-      expiryDate: "2026-03-10",
-      status: "In Transit",
-      urgency: "High",
-      condition: "Good",
-    },
-    {
-      id: 3,
-      item: "Hygiene Kits",
-      category: "Medical Supplies",
-      quantity: "30",
-      unit: "units",
-      location: "Shelter C",
-      date: "26 Dec, 2025",
-      expiryDate: "2026-12-01",
-      status: "Dispatched",
-      urgency: "Normal",
-      condition: "Excellent",
-    },
-    {
-      id: 4,
-      item: "Drinking Water",
-      category: "Beverages",
-      quantity: "200",
-      unit: "liters",
-      location: "Crisis Zone 4",
-      date: "29 Dec, 2025",
-      expiryDate: "2026-01-20",
-      status: "Dispatched",
-      urgency: "High",
-      condition: "Critical",
-      notes: "Needs immediate distribution",
-    },
-  ];
-
+  const [items, setItems] = useState<InventoryItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedRecord, setSelectedRecord] =
-    useState<DistributionRecord | null>(null);
+    useState<InventoryItem | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -133,29 +78,75 @@ const NGOInventory = () => {
     status: "" as any,
   });
 
-  const handleViewDetails = (record: DistributionRecord) => {
+  const fetchedRef = React.useRef(false);
+
+  const fetchInventory = React.useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const data = await ngoInventoryService.getInventory();
+      // Ensure specific fields exist or set defaults
+      const mapped = (data.results || data).map((item: any) => ({
+        ...item,
+        status: item.status || "Stored",
+        urgency: item.urgency || "Normal"
+      }));
+      setItems(mapped);
+    } catch (error) {
+      toast.error("Failed to load inventory");
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    if (!fetchedRef.current) {
+      fetchInventory();
+      fetchedRef.current = true;
+    }
+  }, [fetchInventory]);
+
+  const handleViewDetails = (record: InventoryItem) => {
     setSelectedRecord(record);
     setEditFormData({
-      quantity: record.quantity,
-      status: record.status,
+      quantity: String(record.quantity),
+      status: record.status || "Stored",
     });
     setIsEditing(false);
     setIsDrawerOpen(true);
   };
 
-  const handleUpdateStock = () => {
+  const handleUpdateStock = async () => {
+    if (!selectedRecord) return;
     setIsUpdating(true);
-    // Simulate API transmission
-    setTimeout(() => {
-      setIsUpdating(false);
+    try {
+      await ngoInventoryService.updateItem(selectedRecord.id, {
+        quantity: parseFloat(editFormData.quantity) || 0,
+        status: editFormData.status
+      });
       toast.success("Stock Updated", {
-        description: `${selectedRecord?.item} levels have been updated.`,
+        description: `${selectedRecord.item_name} levels have been updated.`,
       });
       setIsDrawerOpen(false);
-    }, 1500);
+      fetchInventory();
+    } catch (error) {
+      toast.error("Failed to update stock");
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
-  const filteredData = distributionData;
+  const filteredData = items;
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] w-full gap-4">
+        <div className="w-12 h-12 border-4 border-hf-green border-t-transparent rounded-full animate-spin" />
+        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-hf-green">
+          Fetching Inventory...
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full space-y-4 max-w-[1600px] mx-auto bg-transparent">
@@ -204,26 +195,26 @@ const NGOInventory = () => {
           columns={[
             {
               name: "Item Details",
-              uid: "item",
+              uid: "item_name",
               sortable: true,
               align: "start",
             },
             { name: "Category", uid: "category", sortable: true },
             { name: "Quantity", uid: "quantity", sortable: false },
             { name: "Condition", uid: "condition", sortable: true },
-            { name: "Expiry", uid: "expiryDate", sortable: true },
+            { name: "Expiry", uid: "expiry_date", sortable: true },
             { name: "Status", uid: "status", sortable: true },
             { name: "Urgency", uid: "urgency", sortable: true },
             { name: "Actions", uid: "actions", sortable: false },
           ]}
-          renderCell={(record: DistributionRecord, columnKey: React.Key) => {
+          renderCell={(record: any, columnKey: React.Key) => {
             switch (columnKey) {
-              case "item":
+              case "item_name":
                 return (
                   <div className="py-2 text-left">
                     <TableChip
-                      text={record.item}
-                      initials={record.item.substring(0, 1)}
+                      text={record.item_name}
+                      initials={record.item_name.substring(0, 1)}
                       iconClassName="bg-hf-green text-white border-hf-green/40 border transition-colors duration-300"
                     />
                   </div>
@@ -272,14 +263,14 @@ const NGOInventory = () => {
                     </span>
                   </div>
                 );
-              case "expiryDate":
+              case "expiry_date":
                 return (
                   <div className="flex items-center gap-2">
                     <span
                       className="text-[11px] font-bold font-mono uppercase"
                       style={{ color: "var(--text-secondary)" }}
                     >
-                      {record.expiryDate}
+                      {record.expiry_date || "N/A"}
                     </span>
                   </div>
                 );
@@ -369,7 +360,7 @@ const NGOInventory = () => {
                     className="text-xs font-medium whitespace-nowrap px-1"
                     style={{ color: "var(--text-primary)" }}
                   >
-                    {String(record[columnKey as keyof DistributionRecord])}
+                    {String(record[columnKey as keyof InventoryItem])}
                   </span>
                 );
             }
@@ -397,14 +388,14 @@ const NGOInventory = () => {
                 <Package size={120} className="text-hf-green" />
               </div>
               <div className="w-14 h-14 bg-hf-green rounded-sm border border-hf-green/40 flex items-center justify-center text-2xl font-black text-white relative z-10 uppercase shrink-0">
-                {selectedRecord.item.substring(0, 1)}
+                {selectedRecord.item_name.substring(0, 1)}
               </div>
               <div className="flex-1 min-w-0 space-y-2 relative z-10">
                 <h4
                   className="text-[17px] font-black uppercase tracking-tight leading-none"
                   style={{ color: "var(--text-primary)" }}
                 >
-                  {selectedRecord.item}
+                  {selectedRecord.item_name}
                 </h4>
                 <div className="flex flex-wrap items-center gap-2">
                   <div
@@ -524,7 +515,7 @@ const NGOInventory = () => {
                         style={{ color: "var(--text-primary)" }}
                       >
                         <Calendar size={14} className="text-[#22c55e]" />
-                        {selectedRecord.expiryDate}
+                        {selectedRecord.expiry_date || "N/A"}
                       </span>
                     </div>
                     <div

@@ -6,13 +6,8 @@ import {
   CheckCircle,
   Lock,
   ChevronRight,
-  IndianRupee,
-  Globe,
-  HandHeart,
   Zap,
-  Truck,
   Info,
-  ExternalLink,
 } from "lucide-react";
 import { Modal, ModalContent, ModalBody, Tooltip } from "@heroui/react";
 import { Check as CheckIcon, Building2, QrCode } from "lucide-react";

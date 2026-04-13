@@ -209,12 +209,19 @@ class NGOInventoryViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['ngo', 'category', 'status']
 
+    def perform_create(self, serializer):
+        serializer.save(ngo=self.request.user)
+
 class NGONeedViewSet(viewsets.ModelViewSet):
     queryset = NGONeed.objects.all()
     serializer_class = NGONeedSerializer
     permission_classes = [permissions.IsAuthenticated]
+    parser_classes = (MultiPartParser, FormParser)
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['ngo', 'category', 'urgency', 'status']
+
+    def perform_create(self, serializer):
+        serializer.save(ngo=self.request.user)
 
     @action(detail=True, methods=['post'])
     def support(self, request, pk=None):

@@ -347,25 +347,18 @@ const DonationRequests = () => {
         return d.origin === "DONATION" && d.sourceType === "DONOR" && !d.isClaimed && !d.isOwn;
       }
       
-      // 2. Community: Show resources from other NGOs, OR my own items if they are still 'Open'
+      // 2. Community: Show resources from other NGOs only
       if (activeTab === "community-requests") {
         const isNGOResource = d.origin === "NEED" || (d.origin === "DONATION" && d.sourceType === "NGO");
         const status = d.status?.toLowerCase();
         
-        // Show if: it's an NGO resource AND it's 'Open'
-        // This includes my own open requests so others can see them
-        const isOpen = status === "open" || status === "available";
-        const isExternalAndActive = !d.isMine && !d.isSupported && (status === "open" || status === "available" || status === "pending");
-        
-        return isNGOResource && (isOpen || isExternalAndActive);
+        // Match only if it belongs to someone else and is currently active/open
+        const isOpen = status === "open" || status === "available" || status === "pending";
+        return isNGOResource && !d.isMine && isOpen;
       }
       
-      // 3. My Records: Show ONLY what I am actually fulfilling/accepted (isSupported)
+      // 3. My Records: Show EVERYTHING I am involved in (My own posts + items I am fulfilling)
       if (activeTab === "my-requests") {
-        const status = d.status?.toLowerCase();
-        // Don't show in 'My Records' if it's my own request but still 'Open'
-        // (Those belong in the Community Needs tab for now)
-        if (d.isMine && status === "open") return false;
         return d.isOwn;
       }
       return true;
