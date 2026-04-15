@@ -58,6 +58,14 @@ class NGOProfileViewSet(viewsets.ModelViewSet):
     serializer_class = NGOProfileSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    @action(detail=False, methods=['get'])
+    def me(self, request):
+        profile = NGOProfile.objects.filter(user=request.user).first()
+        if not profile:
+            return Response({'error': 'NGO Profile not found'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = self.get_serializer(profile)
+        return Response(serializer.data)
+
 class VolunteerProfileViewSet(viewsets.ModelViewSet):
     queryset = VolunteerProfile.objects.all()
     serializer_class = VolunteerProfileSerializer
@@ -162,6 +170,60 @@ class DonationViewSet(viewsets.ModelViewSet):
         })
         donation.save()
         return Response({'status': 'Marked as picked up'})
+
+    @action(detail=True, methods=['post'])
+    def deliver(self, request, pk=None):
+        donation = self.get_object()
+        # Verify permissions: Only the assigned volunteer OR the accepted NGO can mark as delivered
+        if request.user != donation.accepted_volunteer and request.user != donation.accepted_ngo:
+            return Response({'error': 'Unauthorized to deliver this donation'}, status=status.HTTP_403_FORBIDDEN)
+        
+        if donation.status == 'DELIVERED':
+             return Response({'error': 'Already delivered'}, status=status.HTTP_400_BAD_REQUEST)
+
+        donation.status = 'DELIVERED'
+        donation.completed_at = timezone.now()
+        donation.tracking_history.append({
+            'status': 'DELIVERED',
+            'updated_by': request.user.username,
+            'timestamp': timezone.now().isoformat(),
+            'message': 'Food successfully delivered to NGO'
+        })
+        donation.save()
+
+        # --- Update NGO Stats ---
+        if donation.accepted_ngo:
+            ngo_profile = NGOProfile.objects.filter(user=donation.accepted_ngo).first()
+            if ngo_profile:
+                # 1. Increment Rescues
+                ngo_profile.total_donations_count += 1
+                
+                # 2. Calculate People Served (Rough estimate: 1 unit/kg = 2.5 people)
+                impact_factor = 2.5
+                people_helped = donation.quantity * impact_factor
+                ngo_profile.beneficiaries_helped_count = float(ngo_profile.beneficiaries_helped_count) + people_helped
+                
+                # 3. Award Donation Points (NGO)
+                ngo_profile.donation_points += 50
+                ngo_profile.save()
+
+        # --- Update Donor Stats ---
+        donor_profile = DonorProfile.objects.filter(user=donation.donor).first()
+        if donor_profile:
+            donor_profile.total_donations_count += 1
+            # Award points based on weight: 10 pts per kg/unit
+            points_earned = int(donation.quantity * 10)
+            donor_profile.donation_points += points_earned
+            donor_profile.lifetime_points += points_earned
+            donor_profile.save()
+
+        return Response({
+            'status': 'Successfully delivered',
+            'ngo_stats': {
+                'total_rescues': ngo_profile.total_donations_count if donation.accepted_ngo else 0,
+                'people_helped': float(ngo_profile.beneficiaries_helped_count) if donation.accepted_ngo else 0
+            }
+        })
 
     @action(detail=False, methods=['get'])
     def my_tasks(self, request):

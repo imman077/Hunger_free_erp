@@ -14,6 +14,8 @@ export const NgoProfileSchema = z.object({
   bankName: z.string(),
   accountNumber: z.string(),
   upiId: z.string(),
+  beneficiariesServed: z.number().optional(),
+  donationsAccepted: z.number().optional(),
 });
 
 export const NgoStatSchema = z.object({
@@ -82,6 +84,13 @@ export const NgoDataSchema = z.object({
     mega: z.array(RewardSchema),
     social: z.array(RewardSchema),
   }),
+  tiers: z.array(
+    z.object({
+      name: z.string(),
+      points: z.string(),
+      color: z.string(),
+    })
+  ).optional(),
 });
 
 export type NgoProfile = z.infer<typeof NgoProfileSchema>;

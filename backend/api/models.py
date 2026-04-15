@@ -102,6 +102,7 @@ class NGOProfile(models.Model):
     total_donations_count = models.IntegerField(default=0) 
     beneficiaries_helped_count = models.DecimalField(max_digits=10, decimal_places=1, default=0.0) 
     active_needs_count = models.IntegerField(default=0) 
+    donation_points = models.IntegerField(default=0)
     
     # Status
     status = models.CharField(max_length=20, default='PENDING') 
@@ -219,11 +220,19 @@ class VolunteerTask(models.Model):
 # --- Rewards & Gamification ---
 
 class Reward(models.Model):
+    ROLE_CHOICES = (
+        ('DONOR', 'Donor'),
+        ('NGO', 'NGO'),
+        ('VOLUNTEER', 'Volunteer'),
+    )
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     points_required = models.IntegerField()
-    category = models.CharField(max_length=100) # Voucher, Gift, Membership, Service
-    provider = models.CharField(max_length=255, blank=True) # Partner brand
+    category = models.CharField(max_length=100) # Quick Money, Big Funds, Aid & Tools, etc.
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='NGO')
+    amount = models.CharField(max_length=50, blank=True, null=True) # e.g. ₹5,000
+    available = models.BooleanField(default=True)
+    details = models.JSONField(blank=True, null=True) # For Aid & Tools bullet points
     image_url = models.URLField(max_length=500, blank=True, null=True)
     status = models.CharField(max_length=20, default='Active')
 

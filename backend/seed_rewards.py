@@ -10,16 +10,16 @@ from api.models import Reward, RewardTier, Badge
 def seed_rewards():
     # 1. Seed Reward Tiers (Same as before)
     tiers = [
-        {'role': 'DONOR', 'name': 'Bronze', 'min_points': 0, 'badge_icon': '🥉'},
-        {'role': 'DONOR', 'name': 'Silver', 'min_points': 5000, 'badge_icon': '🥈'},
-        {'role': 'DONOR', 'name': 'Gold', 'min_points': 15000, 'badge_icon': '🥇'},
-        {'role': 'DONOR', 'name': 'Platinum', 'min_points': 50000, 'badge_icon': '💎'},
-        {'role': 'NGO', 'name': 'Partner', 'min_points': 0, 'badge_icon': '🤝'},
-        {'role': 'NGO', 'name': 'Premium', 'min_points': 10000, 'badge_icon': '🌟'},
-        {'role': 'NGO', 'name': 'Legend', 'min_points': 30000, 'badge_icon': '👑'},
-        {'role': 'VOLUNTEER', 'name': 'Rookie', 'min_points': 0, 'badge_icon': '🌱'},
-        {'role': 'VOLUNTEER', 'name': 'Pro', 'min_points': 5000, 'badge_icon': '⚡'},
-        {'role': 'VOLUNTEER', 'name': 'Master', 'min_points': 15000, 'badge_icon': '🏆'},
+        {'role': 'DONOR', 'name': 'Bronze', 'min_points': 0, 'icon': '🥉'},
+        {'role': 'DONOR', 'name': 'Silver', 'min_points': 5000, 'icon': '🥈'},
+        {'role': 'DONOR', 'name': 'Gold', 'min_points': 15000, 'icon': '🥇'},
+        {'role': 'DONOR', 'name': 'Platinum', 'min_points': 50000, 'icon': '💎'},
+        {'role': 'NGO', 'name': 'Partner', 'min_points': 0, 'icon': '🤝'},
+        {'role': 'NGO', 'name': 'Premium', 'min_points': 10000, 'icon': '🌟'},
+        {'role': 'NGO', 'name': 'Legend', 'min_points': 30000, 'icon': '👑'},
+        {'role': 'VOLUNTEER', 'name': 'Rookie', 'min_points': 0, 'icon': '🌱'},
+        {'role': 'VOLUNTEER', 'name': 'Pro', 'min_points': 5000, 'icon': '⚡'},
+        {'role': 'VOLUNTEER', 'name': 'Master', 'min_points': 15000, 'icon': '🏆'},
     ]
     
     for t in tiers:
@@ -27,27 +27,68 @@ def seed_rewards():
     
     # 2. Seed Rewards from Frontend Mocks
     rewards_data = [
-        # Donor
-        {'name': 'Quick Cash ₹1,000', 'category': 'cash', 'points_required': 600, 'provider': 'Donor-Role'},
-        {'name': 'Cash Bonus ₹2,500', 'category': 'cash', 'points_required': 1200, 'provider': 'Donor-Role'},
-        {'name': 'Big Win ₹5,000', 'category': 'cash', 'points_required': 2500, 'provider': 'Donor-Role'},
-        {'name': 'Goa Beach Trip', 'category': 'tours', 'points_required': 8000, 'provider': 'Donor-Role'},
-        {'name': 'Rajasthan Heritage Lux', 'category': 'tours', 'points_required': 18000, 'provider': 'Donor-Role'},
-        {'name': 'Gaming Console', 'category': 'youth', 'points_required': 18000, 'provider': 'Donor-Role'},
+        # --- NGO Rewards: [Quick Money] (Category: cash) ---
+        {
+            'name': 'Operational Cash', 'amount': '₹5,000', 'category': 'cash', 
+            'points_required': 1200, 'role': 'NGO', 'available': True,
+            'description': 'Immediate impact funding for local operations.'
+        },
+        {
+            'name': 'Emerging Fund', 'amount': '₹15,000', 'category': 'cash', 
+            'points_required': 3500, 'role': 'NGO', 'available': True,
+            'description': 'Support for growing social initiatives.'
+        },
+        {
+            'name': 'Growth Capital', 'amount': '₹25,000', 'category': 'cash', 
+            'points_required': 6000, 'role': 'NGO', 'available': False,
+            'description': 'Strategic capital for expanding your reach.'
+        },
         
-        # NGO
-        {'name': 'Operations Fund ₹5,000', 'category': 'grants', 'points_required': 1000, 'provider': 'NGO-Role'},
-        {'name': 'Growth Fund ₹15,000', 'category': 'grants', 'points_required': 2500, 'provider': 'NGO-Role'},
-        {'name': 'Impact Fund ₹30,000', 'category': 'grants', 'points_required': 5000, 'provider': 'NGO-Role'},
-        {'name': 'Expansion Fund ₹75,000', 'category': 'grants', 'points_required': 10000, 'provider': 'NGO-Role'},
-        {'name': 'Direct Relief Grant', 'category': 'social', 'points_required': 5000, 'provider': 'NGO-Role'},
-        
-        # Volunteer
-        {'name': 'Fuel Voucher ₹500', 'category': 'grants', 'points_required': 1000, 'provider': 'Volunteer-Role'},
-        {'name': 'Maintenance Fund ₹1,500', 'category': 'grants', 'points_required': 2500, 'provider': 'Volunteer-Role'},
-        {'name': 'Gear Upgrade ₹3,000', 'category': 'grants', 'points_required': 5000, 'provider': 'Volunteer-Role'},
-        {'name': 'Monthly Bonus ₹5,000', 'category': 'mega', 'points_required': 15000, 'provider': 'Volunteer-Role'},
-        {'name': 'Direct Relief Fund', 'category': 'social', 'points_required': 5000, 'provider': 'Volunteer-Role'},
+        # --- NGO Rewards: [Big Funds] (Category: grants) ---
+        {
+            'name': 'Scale-Up Grant', 'amount': '₹50,000', 'category': 'grants', 
+            'points_required': 12000, 'role': 'NGO', 'available': True,
+            'description': 'Formal grant for large scale food rescue.'
+        },
+        {
+            'name': 'National Impact', 'amount': '₹1,50,000', 'category': 'grants', 
+            'points_required': 35000, 'role': 'NGO', 'available': True,
+            'description': 'Major funding for nationwide distribution.'
+        },
+
+        # --- NGO Rewards: [Aid & Tools] (Category: social) ---
+        {
+            'name': 'Cold Storage Unit', 'category': 'social', 
+            'points_required': 15000, 'role': 'NGO', 'available': True,
+            'details': [
+                {'group': 'Impact', 'text': 'Prevents 500kg/mo waste'},
+                {'group': 'Hardware', 'text': 'Industrial 200L Capacity'}
+            ]
+        },
+        {
+            'name': 'Digital ERP License', 'category': 'social', 
+            'points_required': 5000, 'role': 'NGO', 'available': True,
+            'details': [
+                {'group': 'Digital', 'text': 'Lifetime Admin Access'},
+                {'group': 'Training', 'text': 'Full Team Onboarding'}
+            ]
+        },
+        {
+            'name': 'Smart Scales', 'category': 'social', 
+            'points_required': 2500, 'role': 'NGO', 'available': False,
+            'details': [
+                {'group': 'Logistics', 'text': 'IoT Enabled Tracking'},
+                {'group': 'Accuracy', 'text': '0.01kg precision level'}
+            ]
+        },
+
+        # --- Donor Rewards ---
+        {'name': 'Quick Cash ₹1,000', 'category': 'cash', 'points_required': 600, 'role': 'DONOR', 'available': True},
+        {'name': 'Goa Beach Trip', 'category': 'tours', 'points_required': 8000, 'role': 'DONOR', 'available': True},
+
+        # --- Volunteer Rewards ---
+        {'name': 'Fuel Voucher ₹500', 'category': 'grants', 'points_required': 1000, 'role': 'VOLUNTEER', 'available': True},
+        {'name': 'Monthly Bonus ₹5,000', 'category': 'mega', 'points_required': 15000, 'role': 'VOLUNTEER', 'available': True},
     ]
     
     for r in rewards_data:

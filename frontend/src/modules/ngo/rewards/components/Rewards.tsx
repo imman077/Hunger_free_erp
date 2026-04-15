@@ -3,14 +3,22 @@ import { useNavigate } from "react-router-dom";
 import {
   Star,
   TrendingUp,
-  CheckCircle,
   Lock,
   ChevronRight,
   Zap,
   Info,
+  Check as CheckIcon,
+  Building2,
+  QrCode,
+  Target,
+  Handshake,
+  Trophy,
+  Crown,
+  Diamond,
+  Users,
+  Package,
 } from "lucide-react";
 import { Modal, ModalContent, ModalBody, Tooltip } from "@heroui/react";
-import { Check as CheckIcon, Building2, QrCode } from "lucide-react";
 import ResuableDrawer from "../../../../global/components/resuable-components/drawer";
 
 export interface Prize {
@@ -284,21 +292,39 @@ import { useNgoRewards } from "../hooks/useNgoRewards";
 const NGORewards = () => {
   const navigate = useNavigate();
   const {
+    data,
     prizes: storePrizes,
     rewards: storeRewards,
+    tiers,
     currentPoints,
     isLoading,
   } = useNgoRewards();
 
-  const userStats = {
-    totalPoints: currentPoints,
-    currentTier: "Legend",
-    nextTier: "Titan",
-    pointsToNextTier: 5000,
-    beneficiariesServed: 12500,
-    donationsAccepted: 842,
-    treesPlanted: 150,
-  };
+  const userStats = useMemo(() => {
+    const currentTierObj = tiers.slice().reverse().find(t => {
+      const minPoints = parseInt(t.points.split(/[+-]/)[0].replace(/,/g, ''));
+      return currentPoints >= minPoints;
+    }) || tiers[0] || { name: "Beginner", points: "0" };
+
+    const currentIndex = tiers.findIndex(t => t.name === currentTierObj.name);
+    const nextTierObj = tiers[currentIndex + 1] || null;
+    
+    let pointsToNext = 0;
+    if (nextTierObj) {
+      const nextMinPoints = parseInt(nextTierObj.points.split(/[+-]/)[0].replace(/,/g, ''));
+      pointsToNext = nextMinPoints - currentPoints;
+    }
+
+    return {
+      totalPoints: currentPoints,
+      currentTier: currentTierObj.name,
+      nextTier: nextTierObj ? nextTierObj.name : "Max Tier",
+      pointsToNextTier: pointsToNext > 0 ? pointsToNext : 0,
+      beneficiariesServed: data.profile.beneficiariesServed || 0,
+      donationsAccepted: data.profile.donationsAccepted || 0,
+      treesPlanted: 150,
+    };
+  }, [currentPoints, tiers, data.profile.beneficiariesServed, data.profile.donationsAccepted]);
 
   // --- Spin the Wheel Logic ---
   const [isSpinModalOpen, setIsSpinModalOpen] = useState(false);
@@ -328,7 +354,14 @@ const NGORewards = () => {
       setIsSpinning(false);
       const prize = prizes[targetIndex];
       setWonPrize(prize);
-      setIsPrizeModalOpen(true);
+      
+      // Close the wheel modal first for a clean sequence
+      setIsSpinModalOpen(false);
+      
+      // Wait for wheel modal exit animation to finish before showing the win
+      setTimeout(() => {
+        setIsPrizeModalOpen(true);
+      }, 500); 
     }, 5000);
   };
 
@@ -339,23 +372,9 @@ const NGORewards = () => {
     return `Incredible! ${wonPrize.label} has been added to your grant pool!`;
   }, [wonPrize]);
 
-  const tiers = [
-    { name: "Beginner", points: "0-1,000", color: "text-gray-400" },
-    { name: "Partner", points: "1,001-5,000", color: "text-[#22c55e]" },
-    { name: "Elite", points: "5,001-15,000", color: "text-blue-600" },
-    { name: "Master", points: "15,001-35,000", color: "text-purple-600" },
-    { name: "Legend", points: "35,001-75,000", color: "text-amber-600" },
-    { name: "Titan", points: "75,001+", color: "text-red-600" },
-  ];
+  // Tiers come from hook now
 
   const rewards = storeRewards;
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  const getCurrentTierIndex = () =>
-    tiers.findIndex((t) => t.name === userStats.currentTier);
 
   // --- Claim Logic ---
   const [isClaimDrawerOpen, setIsClaimDrawerOpen] = useState(false);
@@ -364,6 +383,26 @@ const NGORewards = () => {
   const [showClaimSuccess, setShowClaimSuccess] = useState(false);
   const [pendingClaims, setPendingClaims] = useState<number[]>([]);
   const [selectedPayout, setSelectedPayout] = useState<"bank" | "upi">("bank");
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  const getCurrentTierIndex = () => {
+    if (!tiers || tiers.length === 0) return -1;
+    return tiers.findIndex((t) => t.name === userStats.currentTier);
+  };
+
+  const getTierIcon = (name: string, size: number, color: string) => {
+    const iconName = name.toLowerCase();
+    if (iconName.includes("beginner")) return <Target size={size} className={color} />;
+    if (iconName.includes("partner")) return <Handshake size={size} className={color} />;
+    if (iconName.includes("elite")) return <Zap size={size} className={color} />;
+    if (iconName.includes("master")) return <Trophy size={size} className={color} />;
+    if (iconName.includes("legend")) return <Crown size={size} className={color} />;
+    if (iconName.includes("titan")) return <Diamond size={size} className={color} />;
+    return <Star size={size} className={color} />;
+  };
 
   // Mock Primary Payment Methods for NGO
   const primaryBank = {
@@ -544,6 +583,82 @@ const NGORewards = () => {
               </div>
             </div>
           </div>
+
+          {/* Beneficiaries Card */}
+          <div
+            className="flex items-center gap-3.5 border p-4 rounded-sm text-left"
+            style={{
+              backgroundColor: "var(--bg-primary)",
+              borderColor: "var(--border-color)",
+            }}
+          >
+            <div
+              className="w-11 h-11 border flex items-center justify-center rounded-sm text-blue-500"
+              style={{
+                backgroundColor: "rgba(59, 130, 246, 0.08)",
+                borderColor: "rgba(59, 130, 246, 0.2)",
+              }}
+            >
+              <Users size={22} />
+            </div>
+            <div className="text-start">
+              <p
+                className="text-[9px] font-black uppercase tracking-widest mb-1"
+                style={{ color: "var(--text-muted)" }}
+              >
+                People Served
+              </p>
+              <div className="flex items-baseline gap-1.5">
+                <span
+                  className="text-xl font-black tabular-nums leading-none"
+                  style={{ color: "var(--text-primary)" }}
+                >
+                  {userStats.beneficiariesServed.toLocaleString()}
+                </span>
+                <span className="text-[9px] font-black text-blue-500 uppercase">
+                  Impact
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Donations Card */}
+          <div
+            className="flex items-center gap-3.5 border p-4 rounded-sm text-left"
+            style={{
+              backgroundColor: "var(--bg-primary)",
+              borderColor: "var(--border-color)",
+            }}
+          >
+            <div
+              className="w-11 h-11 border flex items-center justify-center rounded-sm text-orange-500"
+              style={{
+                backgroundColor: "rgba(249, 115, 22, 0.08)",
+                borderColor: "rgba(249, 115, 22, 0.2)",
+              }}
+            >
+              <Package size={22} />
+            </div>
+            <div className="text-start">
+              <p
+                className="text-[9px] font-black uppercase tracking-widest mb-1"
+                style={{ color: "var(--text-muted)" }}
+              >
+                Rescues
+              </p>
+              <div className="flex items-baseline gap-1.5">
+                <span
+                  className="text-xl font-black tabular-nums leading-none"
+                  style={{ color: "var(--text-primary)" }}
+                >
+                  {userStats.donationsAccepted.toLocaleString()}
+                </span>
+                <span className="text-[9px] font-black text-orange-500 uppercase">
+                  Donations
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -572,9 +687,22 @@ const NGORewards = () => {
           </div>
 
           <div className="relative mb-6">
+            {/* Background Line (Gray) */}
             <div
-              className="absolute top-1/2 left-0 w-full h-0.5 -translate-y-1/2 z-0 hidden lg:block"
+              className="absolute top-1/2 left-[8.33%] right-[8.33%] h-[1px] -translate-y-1/2 z-0 hidden lg:block"
               style={{ backgroundColor: "var(--border-color)" }}
+            />
+
+            {/* Active Progress Line (Green) */}
+            <div
+              className="absolute top-1/2 left-[8.33%] h-[1.5px] -translate-y-1/2 z-0 hidden lg:block transition-all duration-700 ease-in-out"
+              style={{
+                backgroundColor: "#22c55e",
+                width: tiers.length > 1 
+                  ? `${(getCurrentTierIndex() / (tiers.length - 1)) * 83.33}%` 
+                  : "0%",
+                boxShadow: "0 0 10px rgba(34, 197, 94, 0.2)"
+              }}
             />
 
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 relative z-10">
@@ -584,42 +712,57 @@ const NGORewards = () => {
 
                 return (
                   <div key={tier.name} className="flex flex-col items-center">
-                    <div
-                      className={`w-12 h-12 flex items-center justify-center border transition-all duration-500 rounded-sm ${
-                        isCurrent
-                          ? "bg-[#22c55e] border-white ring-4 ring-emerald-500/10"
-                          : isPast
-                            ? "border-[#22c55e] bg-emerald-500/10"
+                    <div className="h-16 flex items-center justify-center mb-3">
+                      <div
+                        className={`relative flex items-center justify-center border transition-all duration-500 rounded-sm ${
+                          isCurrent
+                            ? "bg-[#22c55e] border-white z-20 w-16 h-16 outline outline-4 outline-offset-4 outline-[#22c55e]"
+                            : "w-12 h-12"
+                        } ${
+                          isPast
+                            ? "border-[#22c55e]"
                             : ""
-                      }`}
-                      style={{
-                        backgroundColor:
-                          !isCurrent && !isPast
-                            ? "var(--bg-secondary)"
-                            : undefined,
-                        borderColor:
-                          !isCurrent && !isPast
-                            ? "var(--border-color)"
-                            : undefined,
-                      }}
-                    >
-                      {isPast ? (
-                        <CheckCircle className="text-[#22c55e]" size={20} />
-                      ) : isCurrent ? (
-                        <Star
-                          className="text-white"
-                          size={20}
-                          fill="currentColor"
-                        />
-                      ) : (
-                        <Lock
-                          size={16}
-                          style={{ color: "var(--text-muted)", opacity: 0.3 }}
-                        />
-                      )}
+                        }`}
+                        style={{
+                          backgroundColor: isCurrent 
+                            ? undefined 
+                            : isPast 
+                              ? "var(--bg-primary)" 
+                              : "var(--bg-secondary)",
+                          borderColor:
+                            !isCurrent && !isPast
+                              ? "var(--border-color)"
+                              : undefined,
+                        }}
+                      >
+                        {/* Status Badge in top right corner */}
+                        {isPast ? (
+                          <div className="absolute -top-2 -right-2 bg-[#22c55e] border-2 border-white rounded-full w-5 h-5 flex items-center justify-center z-30 shadow-sm ring-2 ring-emerald-500/5">
+                            <CheckIcon className="text-white" size={10} strokeWidth={4} />
+                          </div>
+                        ) : !isCurrent ? (
+                          <div className="absolute -top-2 -right-2 bg-slate-100 border-2 border-white rounded-full w-5 h-5 flex items-center justify-center z-30 shadow-sm">
+                            <Lock className="text-slate-600" size={10} strokeWidth={2.5} />
+                          </div>
+                        ) : null}
+
+                        {isCurrent ? (
+                          <Star
+                            className="text-white"
+                            size={28}
+                            fill="currentColor"
+                          />
+                        ) : (
+                          getTierIcon(
+                            tier.name, 
+                            20, 
+                            isPast ? "text-[#22c55e]" : "text-black dark:text-zinc-400 opacity-40"
+                          )
+                        )}
+                      </div>
                     </div>
                     <p
-                      className={`text-[10px] font-black uppercase tracking-widest mt-3`}
+                      className={`text-[10px] font-black uppercase tracking-widest`}
                       style={{
                         color: isCurrent ? "#22c55e" : "var(--text-muted)",
                       }}
@@ -704,13 +847,13 @@ const NGORewards = () => {
               className="text-4xl font-black tabular-nums tracking-tighter"
               style={{ color: "var(--text-primary)" }}
             >
-              ₹2,00,000
+              {storePrizes.find(p => p.label.includes("GRANT"))?.label.split("WIN")[0] || "₹2,50,000"}
             </p>
             <p
               className="text-[10px] font-black uppercase mt-2 tracking-[0.3em]"
               style={{ color: "var(--text-muted)" }}
             >
-              Special Grant
+              {storePrizes.find(p => p.label.includes("GRANT"))?.label || "Special Grant"}
             </p>
           </div>
 

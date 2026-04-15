@@ -218,6 +218,14 @@ const initialData: NgoData = {
       },
     ],
   },
+  tiers: [
+    { name: "Beginner", points: "0-1,000", color: "text-gray-400" },
+    { name: "Partner", points: "1,001-5,000", color: "text-[#22c55e]" },
+    { name: "Elite", points: "5,001-15,000", color: "text-blue-600" },
+    { name: "Master", points: "15,001-35,000", color: "text-purple-600" },
+    { name: "Legend", points: "35,001-75,000", color: "text-amber-600" },
+    { name: "Titan", points: "75,001+", color: "text-red-600" },
+  ],
 };
 
 export const useNgoStore = create<NgoState>((set) => ({
