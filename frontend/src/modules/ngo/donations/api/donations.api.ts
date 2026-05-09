@@ -68,5 +68,19 @@ export const ngoDonationsService = {
       console.error(`Error supporting need ${needId}:`, error);
       throw error;
     }
+  },
+  /**
+   * Verifies the delivery OTP to complete the donation life-cycle.
+   * @param donationId The primary key of the donation.
+   * @param otp The 4-digit verification code.
+   */
+  verifyDelivery: async (donationId: number | string, otp: string) => {
+    try {
+      const response = await axiosInstance.post(`donations/${donationId}/deliver/`, { otp });
+      return response.data;
+    } catch (error) {
+      console.error(`Error verifying delivery for ${donationId}:`, error);
+      throw error;
+    }
   }
 };

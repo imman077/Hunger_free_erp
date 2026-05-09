@@ -48,4 +48,18 @@ export const donationService = {
       throw error;
     }
   },
+  /**
+   * Verifies the pickup OTP for a donation.
+   * @param donationId The primary key of the donation.
+   * @param otp The 4-digit verification code.
+   */
+  verifyPickup: async (donationId: number | string, otp: string) => {
+    try {
+      const response = await axiosInstance.post(`donations/${donationId}/pickup/`, { otp });
+      return response.data;
+    } catch (error) {
+      console.error(`Error verifying pickup for ${donationId}:`, error);
+      throw error;
+    }
+  },
 };

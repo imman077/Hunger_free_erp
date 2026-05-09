@@ -91,6 +91,22 @@ export const NgoDataSchema = z.object({
       color: z.string(),
     })
   ).optional(),
+  myRequests: z.array(z.object({
+    id: z.number(),
+    foodType: z.string(),
+    quantity: z.string(),
+    donor: z.string(),
+    donorPhone: z.string().optional(),
+    status: z.string(),
+    date: z.string(),
+    pickupAddress: z.string(),
+    volunteer: z.object({
+        name: z.string(),
+        phone: z.string(),
+        rating: z.string()
+    }).optional(),
+    trackingHistory: z.array(z.any()).optional()
+  })).optional()
 });
 
 export type NgoProfile = z.infer<typeof NgoProfileSchema>;

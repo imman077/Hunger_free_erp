@@ -396,11 +396,12 @@ const NGORewards = () => {
   const getTierIcon = (name: string, size: number, color: string) => {
     const iconName = name.toLowerCase();
     if (iconName.includes("beginner")) return <Target size={size} className={color} />;
-    if (iconName.includes("partner")) return <Handshake size={size} className={color} />;
-    if (iconName.includes("elite")) return <Zap size={size} className={color} />;
-    if (iconName.includes("master")) return <Trophy size={size} className={color} />;
-    if (iconName.includes("legend")) return <Crown size={size} className={color} />;
-    if (iconName.includes("titan")) return <Diamond size={size} className={color} />;
+    if (iconName.includes("bronze")) return <Handshake size={size} className={color} />;
+    if (iconName.includes("silver")) return <Zap size={size} className={color} />;
+    if (iconName.includes("gold")) return <Trophy size={size} className={color} />;
+    if (iconName.includes("platinum")) return <Crown size={size} className={color} />;
+    if (iconName.includes("diamond")) return <Diamond size={size} className={color} />;
+    if (iconName.includes("legend")) return <Star size={size} className={color} fill="currentColor" />;
     return <Star size={size} className={color} />;
   };
 
@@ -689,23 +690,28 @@ const NGORewards = () => {
           <div className="relative mb-6">
             {/* Background Line (Gray) */}
             <div
-              className="absolute top-1/2 left-[8.33%] right-[8.33%] h-[1px] -translate-y-1/2 z-0 hidden lg:block"
-              style={{ backgroundColor: "var(--border-color)" }}
+              className="absolute top-[32px] left-[7.14%] h-[1px] -translate-y-1/2 z-0 hidden lg:block"
+              style={{ 
+                backgroundColor: "var(--border-color)",
+                width: tiers.length > 1 
+                  ? `${(Math.min(tiers.length, 7) - 1) * 14.28}%` 
+                  : "0%"
+              }}
             />
 
             {/* Active Progress Line (Green) */}
             <div
-              className="absolute top-1/2 left-[8.33%] h-[1.5px] -translate-y-1/2 z-0 hidden lg:block transition-all duration-700 ease-in-out"
+              className="absolute top-[32px] left-[7.14%] h-[1.5px] -translate-y-1/2 z-0 hidden lg:block transition-all duration-700 ease-in-out"
               style={{
                 backgroundColor: "#22c55e",
                 width: tiers.length > 1 
-                  ? `${(getCurrentTierIndex() / (tiers.length - 1)) * 83.33}%` 
+                  ? `${(Math.min(getCurrentTierIndex(), 6)) * 14.28}%` 
                   : "0%",
                 boxShadow: "0 0 10px rgba(34, 197, 94, 0.2)"
               }}
             />
 
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 relative z-10">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4 relative z-10">
               {tiers.map((tier, idx) => {
                 const isCurrent = tier.name === userStats.currentTier;
                 const isPast = idx < getCurrentTierIndex();

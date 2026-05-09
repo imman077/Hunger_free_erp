@@ -17,6 +17,7 @@ import ResuableModal from "../../../../global/components/resuable-components/mod
 import FileUploadSlot from "../../../../global/components/resuable-components/FileUploadSlot";
 import { ngoNeedsService } from "../api/needs.api";
 import { toast } from "sonner";
+import { NEED_CATEGORIES, UNIT_OPTIONS, URGENCY_OPTIONS } from "../../../../global/constants/donation_config";
 
 const PostNewNeed = () => {
   const navigate = useNavigate();
@@ -39,29 +40,9 @@ const PostNewNeed = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const categoryOptions = [
-    { value: "food", label: "Food Items" },
-    { value: "hygiene", label: "Hygiene Kits" },
-    { value: "clothing", label: "Clothing" },
-    { value: "medical", label: "Medical Supplies" },
-    { value: "educational", label: "Educational Materials" },
-    { value: "other", label: "Other" },
-  ];
-
-  const unitOptions = [
-    { value: "units", label: "Units" },
-    { value: "kg", label: "Kilograms (kg)" },
-    { value: "pieces", label: "Pieces"},
-    { value: "packs", label: "Packs" },
-    { value: "boxes", label: "Boxes" },
-  ];
-
-  const urgencyOptions = [
-    { value: "low", label: "Low Priority" },
-    { value: "medium", label: "Medium Priority" },
-    { value: "high", label: "High Priority" },
-    { value: "urgent", label: "Urgent" },
-  ];
+  const categoryOptions = NEED_CATEGORIES;
+  const unitOptions = UNIT_OPTIONS;
+  const urgencyOptions = URGENCY_OPTIONS;
 
   const handleValueChange = (name: string, value: string) => {
     setFormData((prev) => ({
@@ -221,7 +202,7 @@ const PostNewNeed = () => {
             </div>
 
             {formData.category === "other" && (
-              <div className="md:col-span-2">
+              <div className="md:col-span-1">
                 <ResuableInput
                   label="Specify Category"
                   placeholder="Enter custom category"

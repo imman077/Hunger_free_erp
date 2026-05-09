@@ -71,9 +71,17 @@ class VolunteerProfileViewSet(viewsets.ModelViewSet):
     serializer_class = VolunteerProfileSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    @action(detail=False, methods=['get'])
+    def me(self, request):
+        profile = VolunteerProfile.objects.filter(user=request.user).first()
+        if not profile:
+            return Response({'error': 'Volunteer Profile not found'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = self.get_serializer(profile)
+        return Response(serializer.data)
+
 # --- Core Business Logic ViewSets ---
 
-from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 
 from django.utils import timezone
 from rest_framework.decorators import action
@@ -84,7 +92,7 @@ class DonationViewSet(viewsets.ModelViewSet):
     queryset = Donation.objects.all().order_by('-created_at')
     serializer_class = DonationSerializer
     permission_classes = [permissions.IsAuthenticated]
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['status', 'food_category', 'donor', 'accepted_volunteer', 'accepted_ngo']
 
@@ -92,10 +100,32 @@ class DonationViewSet(viewsets.ModelViewSet):
         user = self.request.user
         queryset = Donation.objects.all().order_by('-created_at')
         
-        # Marketplace specific filtering: Only show PENDING and NOT mine
+        # 1. Marketplace specific filtering: Only show PENDING and NOT mine
         marketplace = self.request.query_params.get('marketplace')
         if marketplace:
-            queryset = queryset.filter(status='PENDING', accepted_ngo__isnull=True).exclude(donor=user)
+            return queryset.filter(status='PENDING', accepted_ngo__isnull=True).exclude(donor=user)
+        
+        # 2. Status specific filtering (e.g., Volunteer looking for available pickups)
+        status_param = self.request.query_params.get('status')
+        if status_param:
+            # Important: Volunteers should only see ACCEPTED donations for discovery
+            # They should NEVER see PENDING donations (NGO hasn't taken them yet)
+            if status_param == 'ACCEPTED':
+                return queryset.filter(status='ACCEPTED', accepted_volunteer__isnull=True)
+            return queryset.filter(status=status_param)
+        
+        # 3. Role-based filtering for default "My" views
+        try:
+            role = user.profile.role
+            if role == 'DONOR':
+                queryset = queryset.filter(donor=user)
+            elif role == 'NGO':
+                queryset = queryset.filter(accepted_ngo=user)
+            elif role == 'VOLUNTEER':
+                queryset = queryset.filter(accepted_volunteer=user)
+        except:
+            # Fallback if profile doesn't exist yet
+            queryset = queryset.filter(donor=user)
             
         return queryset
 
@@ -145,39 +175,61 @@ class DonationViewSet(viewsets.ModelViewSet):
         
         donation.status = 'ASSIGNED'
         donation.accepted_volunteer = request.user
+        donation.pickup_otp = donation.generate_otp() # Generate Pickup OTP
         donation.tracking_history.append({
             'status': 'ASSIGNED',
             'updated_by': request.user.username,
             'timestamp': timezone.now().isoformat(),
-            'message': f'Volunteer claimed pickup: {request.user.username}'
+            'message': f'Volunteer claimed pickup: {request.user.username}. Pickup OTP generated.'
         })
         donation.save()
-        return Response({'status': 'Pickup claimed'})
+        
+        # --- Create VolunteerTask record for the database ---
+        VolunteerTask.objects.create(
+            volunteer=request.user,
+            donation=donation,
+            task_type="Standard Pickup & Delivery",
+            title=f"Delivery of {donation.food_category}",
+            description=f"Route: {donation.donor_hotel or 'Donor'} to {donation.ngo_org_name or 'NGO Hub'}",
+            status="Assigned"
+        )
+        
+        return Response({'status': 'Pickup claimed', 'pickup_otp': donation.pickup_otp})
 
     @action(detail=True, methods=['post'])
     def pickup(self, request, pk=None):
         donation = self.get_object()
-        if donation.accepted_volunteer != request.user:
-            return Response({'error': 'Only the assigned volunteer can mark as picked up'}, status=status.HTTP_403_FORBIDDEN)
+        otp = request.data.get('otp')
         
-        donation.status = 'IN_TRANSIT'
-        donation.pickup_time = timezone.now() # Record actual pickup time
+        if donation.accepted_volunteer != request.user and donation.donor != request.user:
+            return Response({'error': 'Only the assigned volunteer or the donor can mark as picked up'}, status=status.HTTP_403_FORBIDDEN)
+        
+        if donation.pickup_otp != otp:
+            return Response({'error': 'Invalid Pickup OTP'}, status=status.HTTP_400_BAD_REQUEST)
+
+        donation.status = 'PICKED_UP'
+        donation.pickup_time = timezone.now()
+        donation.delivery_otp = donation.generate_otp() # Generate Delivery OTP for NGO
         donation.tracking_history.append({
-            'status': 'IN_TRANSIT',
+            'status': 'PICKED_UP',
             'updated_by': request.user.username,
             'timestamp': timezone.now().isoformat(),
-            'message': 'Food picked up and in transit'
+            'message': 'Food picked up successfully. Delivery OTP generated.'
         })
         donation.save()
-        return Response({'status': 'Marked as picked up'})
+        return Response({'status': 'Marked as picked up', 'delivery_otp': donation.delivery_otp})
 
     @action(detail=True, methods=['post'])
     def deliver(self, request, pk=None):
         donation = self.get_object()
-        # Verify permissions: Only the assigned volunteer OR the accepted NGO can mark as delivered
+        otp = request.data.get('otp')
+
         if request.user != donation.accepted_volunteer and request.user != donation.accepted_ngo:
             return Response({'error': 'Unauthorized to deliver this donation'}, status=status.HTTP_403_FORBIDDEN)
         
+        if donation.delivery_otp != otp:
+             return Response({'error': 'Invalid Delivery OTP'}, status=status.HTTP_400_BAD_REQUEST)
+
         if donation.status == 'DELIVERED':
              return Response({'error': 'Already delivered'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -187,9 +239,16 @@ class DonationViewSet(viewsets.ModelViewSet):
             'status': 'DELIVERED',
             'updated_by': request.user.username,
             'timestamp': timezone.now().isoformat(),
-            'message': 'Food successfully delivered to NGO'
+            'message': 'Food successfully delivered to NGO and verified via OTP'
         })
         donation.save()
+
+        # --- Update VolunteerTask record to COMPLETED ---
+        vt = VolunteerTask.objects.filter(donation=donation, volunteer=donation.accepted_volunteer).first()
+        if vt:
+            vt.status = "Completed"
+            vt.completed_at = timezone.now()
+            vt.save()
 
         # --- Update NGO Stats ---
         if donation.accepted_ngo:
@@ -278,7 +337,7 @@ class NGONeedViewSet(viewsets.ModelViewSet):
     queryset = NGONeed.objects.all()
     serializer_class = NGONeedSerializer
     permission_classes = [permissions.IsAuthenticated]
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['ngo', 'category', 'urgency', 'status']
 

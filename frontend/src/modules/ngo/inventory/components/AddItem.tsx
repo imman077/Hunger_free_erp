@@ -14,6 +14,7 @@ import ResuableModal from "../../../../global/components/resuable-components/mod
 import ResuableTextarea from "../../../../global/components/resuable-components/textarea";
 import { ResuableDatePicker } from "../../../../global/components/resuable-components/datepicker";
 import { toast } from "sonner";
+import { NEED_CATEGORIES, UNIT_OPTIONS } from "../../../../global/constants/donation_config";
 import { ngoInventoryService } from "../api/inventory.api";
 
 const AddItem = () => {
@@ -37,22 +38,8 @@ const AddItem = () => {
   const [suggestionReason, setSuggestionReason] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const categories = [
-    { value: "Perishable", label: "Fresh" },
-    { value: "Grains", label: "Grains" },
-    { value: "Essentials", label: "Essentials" },
-    { value: "Medical", label: "Medical" },
-    { value: "Beverages", label: "Beverages" },
-    { value: "other", label: "Other" },
-  ];
-
-  const units = [
-    { value: "kg", label: "kg" },
-    { value: "units", label: "Units" },
-    { value: "packs", label: "Packs" },
-    { value: "liters", label: "Liters" },
-    { value: "boxes", label: "Boxes" },
-  ];
+  const categories = NEED_CATEGORIES;
+  const units = UNIT_OPTIONS;
 
   useEffect(() => {
     if (formData.expiryDate) {
@@ -205,7 +192,7 @@ const AddItem = () => {
                 </div>
 
                 {formData.category === "other" && (
-                  <div className="md:col-span-2">
+                  <div className="md:col-span-1">
                     <ResuableInput
                       label="Specify Classification"
                       placeholder="Enter custom classification"

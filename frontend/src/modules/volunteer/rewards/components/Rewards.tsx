@@ -5,6 +5,7 @@ import {
   Lock,
   ChevronRight,
   Zap,
+  Check as CheckIcon,
   Building2,
   QrCode,
   Info,
@@ -16,6 +17,7 @@ import ResuableDrawer from "../../../../global/components/resuable-components/dr
 import ResuableDatePicker from "../../../../global/components/resuable-components/datepicker";
 import ResuableInput from "../../../../global/components/resuable-components/input";
 import ResuableTextarea from "../../../../global/components/resuable-components/textarea";
+import { useVolunteerRewards } from "../hooks/useVolunteerRewards";
 
 // --- TYPES ---
 export interface Prize {
@@ -283,7 +285,6 @@ const Wheel: React.FC<WheelProps> = ({
   );
 };
 
-import { useVolunteerRewards } from "../hooks/useVolunteerRewards";
 
 // --- MAIN VOLUNTEER REWARDS ---
 const VolunteerRewards = () => {
@@ -296,7 +297,7 @@ const VolunteerRewards = () => {
   } = useVolunteerRewards();
 
   const userStats = {
-    totalPoints: currentPoints,
+    totalPoints: currentPoints || 0,
     currentTier: "Platinum",
     nextTier: "Diamond",
     pointsToNextTier: 2500,
@@ -362,13 +363,6 @@ const VolunteerRewards = () => {
     youth: storeRewards.social,
   };
 
-  if (isLoading) {
-    return (
-      <div className="w-full flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500" />
-      </div>
-    );
-  }
 
   const primaryBank = {
     bankName: "HDFC BANK",
@@ -465,6 +459,14 @@ const VolunteerRewards = () => {
 
   const getCurrentTierIndex = () =>
     tiers.findIndex((t) => t.name === userStats.currentTier);
+
+  if (isLoading) {
+    return (
+      <div className="w-full flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500" />
+      </div>
+    );
+  }
 
   return (
     <div
@@ -639,10 +641,29 @@ const VolunteerRewards = () => {
           </div>
 
           <div className="relative mb-6">
+            {/* Background Line (Gray) */}
             <div
-              className="absolute top-1/2 left-0 w-full h-0.5 -translate-y-1/2 z-0 hidden lg:block"
-              style={{ backgroundColor: "var(--border-color)" }}
+              className="absolute top-[32px] left-[7.14%] h-[1px] -translate-y-1/2 z-0 hidden lg:block"
+              style={{ 
+                backgroundColor: "var(--border-color)",
+                width: tiers.length > 1 
+                  ? `${(Math.min(tiers.length, 7) - 1) * 14.28}%` 
+                  : "0%"
+              }}
             />
+
+            {/* Active Progress Line (Green) */}
+            <div
+              className="absolute top-[32px] left-[7.14%] h-[1.5px] -translate-y-1/2 z-0 hidden lg:block transition-all duration-700 ease-in-out"
+              style={{
+                backgroundColor: "#22c55e",
+                width: tiers.length > 1 
+                  ? `${(Math.min(getCurrentTierIndex(), 6)) * 14.28}%` 
+                  : "0%",
+                boxShadow: "0 0 10px rgba(34, 197, 94, 0.2)"
+              }}
+            />
+
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 relative z-10">
               {tiers.map((tier, idx) => {
                 const isCurrent = tier.name === userStats.currentTier;
@@ -650,42 +671,55 @@ const VolunteerRewards = () => {
 
                 return (
                   <div key={tier.name} className="flex flex-col items-center">
-                    <div
-                      className={`w-12 h-12 flex items-center justify-center border transition-all duration-500 rounded-sm ${
-                        isCurrent
-                          ? "bg-[#22c55e] border-white ring-4 ring-emerald-50/10"
-                          : ""
-                      }`}
-                      style={{
-                        backgroundColor: isCurrent
-                          ? ""
-                          : isPast
-                            ? "rgba(34, 197, 94, 0.05)"
-                            : "var(--bg-primary)",
-                        borderColor: isCurrent
-                          ? "white"
-                          : isPast
-                            ? "rgba(34, 197, 94, 0.2)"
-                            : "var(--border-color)",
-                      }}
-                    >
-                      {isPast ? (
-                        <CheckCircle className="text-[#22c55e]" size={20} />
-                      ) : isCurrent ? (
-                        <Star
-                          className="text-white"
-                          size={20}
-                          fill="currentColor"
-                        />
-                      ) : (
-                        <Lock
-                          size={16}
-                          style={{ color: "var(--text-muted)" }}
-                        />
-                      )}
+                    <div className="h-16 flex items-center justify-center mb-3">
+                      <div
+                        className={`relative flex items-center justify-center border transition-all duration-500 rounded-sm ${
+                          isCurrent
+                            ? "bg-[#22c55e] border-white z-20 w-16 h-16 outline outline-4 outline-offset-4 outline-[#22c55e]"
+                            : "w-12 h-12"
+                        } ${
+                          isPast
+                            ? "border-[#22c55e]"
+                            : ""
+                        }`}
+                        style={{
+                          backgroundColor: isCurrent
+                            ? undefined
+                            : isPast
+                              ? "var(--bg-primary)"
+                              : "var(--bg-secondary)",
+                          borderColor: !isCurrent && !isPast
+                            ? "var(--border-color)"
+                            : undefined,
+                        }}
+                      >
+                        {/* Status Badge in top right corner */}
+                        {isPast ? (
+                          <div className="absolute -top-2 -right-2 bg-[#22c55e] border-2 border-white rounded-full w-5 h-5 flex items-center justify-center z-30 shadow-sm ring-2 ring-emerald-500/5">
+                            <CheckIcon className="text-white" size={10} strokeWidth={4} />
+                          </div>
+                        ) : !isCurrent ? (
+                          <div className="absolute -top-2 -right-2 bg-slate-100 border-2 border-white rounded-full w-5 h-5 flex items-center justify-center z-30 shadow-sm">
+                            <Lock className="text-slate-600" size={10} strokeWidth={2.5} />
+                          </div>
+                        ) : null}
+
+                        {isCurrent ? (
+                          <Star
+                            className="text-white"
+                            size={28}
+                            fill="currentColor"
+                          />
+                        ) : (
+                          <CheckCircle 
+                            className={isPast ? "text-[#22c55e]" : "text-black dark:text-zinc-400 opacity-40"} 
+                            size={20} 
+                          />
+                        )}
+                      </div>
                     </div>
                     <p
-                      className={`text-[10px] font-black uppercase tracking-widest mt-3 ${
+                      className={`text-[10px] font-black uppercase tracking-widest mt-1 ${
                         isCurrent ? "text-[#22c55e]" : ""
                       }`}
                       style={{ color: isCurrent ? "" : "var(--text-muted)" }}

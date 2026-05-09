@@ -61,10 +61,15 @@ class UserSerializer(serializers.ModelSerializer):
 
 class DonationSerializer(serializers.ModelSerializer):
     donor_name = serializers.ReadOnlyField(source='donor.username')
-    donor_role = serializers.ReadOnlyField(source='donor.profile.role')
-    volunteer_name = serializers.SerializerMethodField()
+    donor_hotel = serializers.ReadOnlyField(source='donor.donor_profile.business_name')
+    donor_phone = serializers.ReadOnlyField(source='contact_phone')
+    donor_email = serializers.ReadOnlyField(source='donor.email')
+    
     ngo_name = serializers.ReadOnlyField(source='accepted_ngo.username')
-    accepted_ngo_name = serializers.ReadOnlyField(source='accepted_ngo.username')
+    ngo_org_name = serializers.ReadOnlyField(source='accepted_ngo.ngo_profile.name')
+    ngo_phone = serializers.ReadOnlyField(source='accepted_ngo.ngo_profile.contact_number')
+    
+    volunteer_name = serializers.SerializerMethodField()
 
     class Meta:
         model = Donation
@@ -73,6 +78,31 @@ class DonationSerializer(serializers.ModelSerializer):
 
     def get_volunteer_name(self, obj):
         return obj.accepted_volunteer.username if obj.accepted_volunteer else None
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            # Logic: 
+            # 1. Assigned Volunteer sees both (to facilitate handover)
+            # 2. Donor sees Pickup OTP (to give to volunteer)
+            # 3. NGO sees Delivery OTP (to give to volunteer)
+            
+            is_volunteer = instance.accepted_volunteer == request.user
+            is_donor = instance.donor == request.user
+            is_ngo = instance.accepted_ngo == request.user
+            
+            if not is_volunteer:
+                if not (is_donor and instance.status == 'ASSIGNED'):
+                    representation.pop('pickup_otp', None)
+                if not (is_ngo and instance.status == 'PICKED_UP'):
+                    representation.pop('delivery_otp', None)
+        else:
+            representation.pop('pickup_otp', None)
+            representation.pop('delivery_otp', None)
+            
+        return representation
+
 
 class BankAccountSerializer(serializers.ModelSerializer):
     user_name = serializers.ReadOnlyField(source='user.username')
@@ -96,6 +126,8 @@ class NGOInventoryItemSerializer(serializers.ModelSerializer):
 class NGONeedSerializer(serializers.ModelSerializer):
     ngo_name = serializers.ReadOnlyField(source='ngo.username')
     is_mine = serializers.SerializerMethodField()
+    title = serializers.ReadOnlyField(source='item_name')
+    quantity_required = serializers.ReadOnlyField(source='quantity')
     class Meta:
         model = NGONeed
         fields = '__all__'
@@ -216,6 +248,22 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        # Default validation (checks username/password)
+        data = super().validate(attrs)
+        
+        # Check if the requested role matches the user's actual role
+        # Note: self.user is set by super().validate(attrs)
+        request_role = self.context['request'].data.get('role')
+        if request_role and hasattr(self.user, 'profile'):
+            if self.user.profile.role != request_role:
+                from rest_framework import serializers
+                raise serializers.ValidationError({
+                    "detail": f"Access Denied: This account is registered as {self.user.profile.role}, not {request_role}."
+                })
+        
+        return data
+
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)

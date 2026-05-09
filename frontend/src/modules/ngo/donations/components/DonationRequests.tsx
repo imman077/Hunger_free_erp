@@ -4,6 +4,7 @@ import { ngoDonationsService } from "../api/donations.api";
 import { ngoNeedsService } from "../../needs/api/needs.api";
 import { toast } from "sonner";
 import { useAuthStore } from "../../../../global/contexts/auth-store";
+import { useNgoDonations } from "../hooks/useNgoDonations";
 import {
   MapPin,
   Plus,
@@ -29,6 +30,7 @@ import {
   ChevronUp,
   ChevronDown,
   CalendarDays,
+  ShieldCheck,
 } from "lucide-react";
 import { Button } from "@heroui/react";
 import ReusableTable, {
@@ -48,7 +50,8 @@ interface DonationRequest {
   icon: string;
   time: string;
   urgency: "High" | "Normal";
-  status: "Available" | "Assigned" | "In Transit" | "Completed";
+  status: string;
+  rawStatus?: string;
   progress: number;
   description?: string;
   quantity?: string;
@@ -75,6 +78,7 @@ const DonationRequests = () => {
   const [activeTab, setActiveTab] = useState<"marketplace" | "my-requests" | "community-requests">(
     "marketplace",
   );
+  const { verifyDelivery, refreshData } = useNgoDonations();
   const [selectedRequest, setSelectedRequest] =
     useState<DonationRequest | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -87,6 +91,14 @@ const DonationRequests = () => {
   const [roleFilter, setRoleFilter] = useState<"ALL" | "DONOR" | "NGO">("ALL");
   const [supportQty, setSupportQty] = useState("");
   const [supportPhone, setSupportPhone] = useState("");
+
+  const [otpValue, setOtpValue] = useState("");
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [otpError, setOtpError] = useState("");
+
+  useEffect(() => {
+    refreshData();
+  }, [refreshData]);
 
   // Sync state when modal opens for a NEED
   useEffect(() => {
@@ -110,6 +122,22 @@ const DonationRequests = () => {
     setAcceptingDonation(donation);
     setIsAcceptModalOpen(true);
   }, []);
+
+  const handleVerifyOTP = async () => {
+    if (!selectedRequest) return;
+    setIsVerifying(true);
+    setOtpError("");
+    const result = await verifyDelivery(selectedRequest.id, otpValue);
+    if (result.success) {
+      toast.success("Food delivery confirmed securely!");
+      setIsDrawerOpen(false);
+      refreshData();
+    } else {
+      setOtpError(result.error);
+      toast.error(result.error);
+    }
+    setIsVerifying(false);
+  };
 
 
   const [isTimerPaused, setIsTimerPaused] = useState(false);
@@ -280,13 +308,19 @@ const DonationRequests = () => {
           icon: (d.food_category === "Cooked Food" || d.food_items?.toLowerCase().includes("rice")) ? "🥗" : "🥖",
           time: d.created_at ? new Date(d.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Recently",
           urgency: (d.status === "PENDING" || d.urgency === "High") ? "High" : "Normal",
-          status: d.status === "PENDING" && !isClaimed ? "Available" : (isSupported ? "Fulfilling" : "Claimed"),
+          rawStatus: d.status,
+          status: d.status === "PENDING" && !isClaimed ? "Available" : (isSupported ? d.status : "Claimed"),
           progress: isClaimed ? 60 : (d.status === "PENDING" ? 25 : 75),
           description: d.description || d.food_items,
           quantity: d.quantity || "N/A",
           expiryTime: d.expiry_time ? new Date(d.expiry_time).toLocaleDateString() : "No Expiry",
           pickupAddress: d.pickup_address,
           origin: "DONATION",
+          volunteer: d.accepted_volunteer_detail ? {
+             name: d.accepted_volunteer_detail.name,
+             phone: d.accepted_volunteer_detail.phone,
+             rating: "4.8"
+          } : undefined
         }
       });
 
@@ -1063,7 +1097,7 @@ const DonationRequests = () => {
                         className="text-[10px] font-bold uppercase tracking-widest opacity-60"
                         style={{ color: "var(--text-secondary)" }}
                       >
-                        • {selectedRequest.urgency} Urgency
+                        * {selectedRequest.urgency} Urgency
                       </span>
                     </div>
                   </div>
@@ -1082,10 +1116,76 @@ const DonationRequests = () => {
                   className="text-[11px] font-medium leading-relaxed"
                   style={{ color: "var(--text-secondary)" }}
                 >
-                  {selectedRequest.description ||
-                    "We are coordinating your donation with our volunteers and partners to ensure a safe and timely delivery."}
+                  {selectedRequest.description ? selectedRequest.description : "Secure mission trace enabled. Coordination in progress."}
                 </p>
               </div>
+
+              {/* Secure Delivery Verification Terminal (NGO Side) - MOVED TO TOP FOR VISIBILITY */}
+              {selectedRequest.rawStatus === "PICKED_UP" && (
+                <div
+                  className="p-5 rounded-sm border-2 border-hf-green space-y-4 relative overflow-hidden group animate-in slide-in-from-top-10 duration-1000"
+                  style={{
+                    backgroundColor: "rgba(34, 197, 94, 0.03)",
+                  }}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-sm bg-hf-green/10 border border-hf-green/20 flex items-center justify-center text-hf-green shadow-[0_0_20px_rgba(34,197,94,0.1)]">
+                      <ShieldCheck size={24} className="animate-pulse" />
+                    </div>
+                    <div>
+                      <h4 className="text-[11px] font-[1000] uppercase tracking-widest text-hf-green">
+                        Handover Protocol
+                      </h4>
+                      <p className="text-[9px] font-black text-hf-green/60 uppercase tracking-widest">
+                        AGENT IS AT DESTINATION | ENTER CODE
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4 relative z-10">
+                    <div className="flex gap-3">
+                      <input
+                        type="text"
+                        maxLength={4}
+                        placeholder="----"
+                        value={otpValue}
+                        onChange={(e) => setOtpValue(e.target.value.replace(/\D/g, ""))}
+                        className={`flex-1 h-16 bg-white border-2 text-center text-3xl font-black tracking-[0.5em] rounded-sm focus:outline-none transition-all ${
+                          otpError ? "border-red-500 text-red-600 shadow-[0_0_15px_rgba(239,68,68,0.1)]" : "border-hf-green/30 text-hf-green focus:border-hf-green"
+                        }`}
+                      />
+                      <ResuableButton
+                        variant="primary"
+                        onClick={handleVerifyOTP}
+                        disabled={otpValue.length < 4 || isVerifying}
+                        className="h-16 w-16 !rounded-sm bg-hf-green hover:bg-emerald-600 shadow-lg shadow-emerald-500/20 active:scale-90"
+                      >
+                        {isVerifying ? (
+                          <Loader2 size={24} className="animate-spin" />
+                        ) : (
+                          <CheckCircle2 size={24} />
+                        )}
+                      </ResuableButton>
+                    </div>
+
+                    {otpError && (
+                      <div className="flex items-center justify-center gap-2 text-red-600 animate-bounce">
+                         <AlertTriangle size={12} />
+                         <p className="text-[10px] font-[1000] uppercase tracking-widest">
+                           {otpError}
+                         </p>
+                      </div>
+                    )}
+
+                    <p className="text-[9px] font-black text-center opacity-40 uppercase tracking-[0.2em] leading-relaxed">
+                      Verify the handover by entering the 4-digit code <br /> from the delivery agent.
+                    </p>
+                  </div>
+                  
+                  {/* Subtle Scanning Effect Wrap */}
+                  <div className="absolute inset-0 pointer-events-none border border-hf-green/10 opacity-50" />
+                </div>
+              )}
 
               {/* Resource Intelligence Grid */}
               <div
@@ -1153,35 +1253,35 @@ const DonationRequests = () => {
                     {[
                       {
                         status: selectedRequest.isOwn
-                          ? "Request Logged"
+                          ? "Mission Initialized"
                           : "Donation Posted",
-                        time: "10:45 AM",
-                        date: "Today",
+                        time: "Verified",
+                        date: "Checkpoint 01",
                         icon: Package,
                         completed: true,
                       },
                       {
-                        status: "Agent Assigned",
-                        time: "11:15 AM",
-                        date: "Today",
+                        status: "Volunteer Assigned",
+                        time: selectedRequest.volunteer ? "Active" : "Searching",
+                        date: "Checkpoint 02",
                         icon: User,
-                        completed: true,
+                        completed: !!selectedRequest.volunteer,
                       },
                       {
-                        status: "On the Way",
-                        time: "Tracking Live",
-                        date: "Active",
+                        status: "Food Picked Up",
+                        time: selectedRequest.rawStatus === "PICKED_UP" ? "Live" : "Pending",
+                        date: "Checkpoint 03",
                         icon: Truck,
                         completed:
-                          selectedRequest.status === "In Transit" ||
-                          selectedRequest.status === "Completed",
+                          selectedRequest.rawStatus === "PICKED_UP" ||
+                          selectedRequest.rawStatus === "DELIVERED",
                       },
                       {
-                        status: "Delivered",
-                        time: "-- : --",
-                        date: "Pending",
+                        status: "Mission Complete",
+                        time: selectedRequest.rawStatus === "DELIVERED" ? "Success" : "-- : --",
+                        date: "Final Point",
                         icon: CheckCircle2,
-                        completed: selectedRequest.status === "Completed",
+                        completed: selectedRequest.rawStatus === "DELIVERED",
                       },
                     ].map((step, idx) => (
                       <div

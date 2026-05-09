@@ -8,8 +8,12 @@ import ResuableDatePicker from "../../../../global/components/resuable-component
 import ResuableTimePicker from "../../../../global/components/resuable-components/TimePicker";
 import FileUploadSlot from "../../../../global/components/resuable-components/FileUploadSlot";
 
+import { FOOD_CATEGORIES, UNIT_OPTIONS } from "../../../../global/constants/donation_config";
 import { donationService } from "../api/donations.api";
 import { toast } from "sonner";
+import ResuableModal from "../../../../global/components/resuable-components/modal";
+import ResuableTextarea from "../../../../global/components/resuable-components/textarea";
+import { Loader2, Check } from "lucide-react";
 
 const CreateDonation = () => {
   const navigate = useNavigate();
@@ -28,23 +32,17 @@ const CreateDonation = () => {
     pickupAddress: "",
     contactPhone: "",
     foodPhoto: null as File | null,
+    otherCategory: "",
   });
 
-  const foodCategories = [
-    { value: "Fresh Produce", label: "Fresh Produce" },
-    { value: "Cooked Meals", label: "Cooked Meals" },
-    { value: "Packaged Food", label: "Packaged Food" },
-    { value: "Bakery Items", label: "Bakery Items" },
-    { value: "Dairy Products", label: "Dairy Products" },
-    { value: "Other", label: "Other" },
-  ];
+  const [isSuggestModalOpen, setIsSuggestModalOpen] = useState(false);
+  const [suggestionCategoryName, setSuggestionCategoryName] = useState("");
+  const [suggestionReason, setSuggestionReason] = useState("");
+  const [isSubmittingSuggestion, setIsSubmittingSuggestion] = useState(false);
+  const [isSuggestionSuccess, setIsSuggestionSuccess] = useState(false);
 
-  const unitOptions = [
-    { value: "kg", label: "Kilograms (kg)" },
-    { value: "portions", label: "Portions" },
-    { value: "items", label: "Items" },
-    { value: "liters", label: "Liters" },
-  ];
+  const foodCategories = FOOD_CATEGORIES;
+  const unitOptions = UNIT_OPTIONS;
 
   const handleValueChange = (name: string, value: string | File | null) => {
     setFormData((prev) => ({
@@ -62,7 +60,7 @@ const CreateDonation = () => {
       const submitData = new FormData();
 
       // 2. Map frontend state names to backend model naming conventions
-      submitData.append("food_category", formData.foodCategory);
+      submitData.append("food_category", formData.foodCategory === "other" ? formData.otherCategory : formData.foodCategory);
       submitData.append("food_items", formData.description);
       submitData.append("quantity", formData.quantity);
       submitData.append("unit", formData.unit);
@@ -214,15 +212,36 @@ const CreateDonation = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <ResuableDropdown
-                label="Food Category"
-                value={formData.foodCategory}
-                onChange={(val) => handleValueChange("foodCategory", val)}
-                options={foodCategories}
-                placeholder="Select Type"
-                required
-                align="left"
-              />
+              <div className="flex flex-col gap-1.5">
+                <ResuableDropdown
+                    label="Food Category"
+                    value={formData.foodCategory}
+                    onChange={(val) => handleValueChange("foodCategory", val)}
+                    options={foodCategories}
+                    placeholder="Select Type"
+                    required
+                    align="left"
+                />
+                <button
+                    type="button"
+                    onClick={() => setIsSuggestModalOpen(true)}
+                    className="self-start flex items-center gap-1.5 text-[9px] font-black text-[#22c55e] hover:text-[#16a34a] transition-colors uppercase tracking-[0.2em] px-1 hover:underline underline-offset-4 decoration-2"
+                >
+                    Request new category
+                </button>
+              </div>
+
+              {formData.foodCategory === "other" && (
+                  <div className="md:col-span-1">
+                      <ResuableInput
+                          label="Specify Category"
+                          placeholder="Enter custom category"
+                          value={formData.otherCategory}
+                          onChange={(val) => handleValueChange("otherCategory", val)}
+                          required
+                      />
+                  </div>
+              )}
 
               <ResuableInput
                 label="Quantity"
@@ -382,6 +401,155 @@ const CreateDonation = () => {
           </div>
         </div>
       </form>
+
+      {/* Suggest Category Modal */}
+      <ResuableModal
+        isOpen={isSuggestModalOpen}
+        onOpenChange={setIsSuggestModalOpen}
+        title="Category Suggestion"
+        footer={
+          !isSuggestionSuccess && (
+            <div className="flex items-center justify-end gap-3">
+              <ResuableButton
+                variant="ghost"
+                size="sm"
+                disabled={isSubmittingSuggestion}
+                onClick={() => {
+                  setIsSuggestModalOpen(false);
+                  setSuggestionReason("");
+                  setSuggestionCategoryName("");
+                }}
+              >
+                Cancel
+              </ResuableButton>
+              <ResuableButton
+                variant="dark"
+                size="sm"
+                className="!bg-[#16a34a] hover:!bg-[#15803d]"
+                disabled={isSubmittingSuggestion || !suggestionCategoryName}
+                onClick={() => {
+                  setIsSubmittingSuggestion(true);
+                  // Simulate system transmission
+                  setTimeout(() => {
+                    setIsSubmittingSuggestion(false);
+                    setIsSuggestionSuccess(true);
+                    // Automatic reset and close
+                    setTimeout(() => {
+                      setIsSuggestionSuccess(false);
+                      setIsSuggestModalOpen(false);
+                      setSuggestionReason("");
+                      setSuggestionCategoryName("");
+                    }, 2500);
+                  }, 1500);
+                }}
+              >
+                {isSubmittingSuggestion ? (
+                  <div className="flex items-center gap-2">
+                    <Loader2 size={14} className="animate-spin" />
+                    Submitting...
+                  </div>
+                ) : (
+                  "Submit Request"
+                )}
+              </ResuableButton>
+            </div>
+          )
+        }
+      >
+        <div className="space-y-6 py-4">
+          {isSuggestionSuccess ? (
+            <div className="relative flex flex-col items-center justify-center py-16 animate-in fade-in zoom-in duration-500 overflow-hidden text-center">
+              <div className="relative mb-8">
+                {/* Outer decorative ring */}
+                <div className="absolute inset-0 rounded-full bg-green-100 animate-ping opacity-20 scale-150" />
+                <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center relative z-10 shadow-lg shadow-green-500/20">
+                  <Check className="text-white" size={32} strokeWidth={3} />
+                </div>
+              </div>
+
+              <div className="space-y-3 z-10 px-4">
+                <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-green-600 leading-none mb-1">
+                  Sent
+                </h3>
+                <h2
+                  className="text-2xl font-black tracking-tight leading-none"
+                  style={{ color: "var(--text-primary)" }}
+                >
+                  Request Sent!
+                </h2>
+                <p
+                  className="text-[13px] font-medium max-w-[320px] leading-relaxed mx-auto text-left"
+                  style={{ color: "var(--text-muted)" }}
+                >
+                  We've received your suggestion for{" "}
+                  <span
+                    className="font-bold px-1.5 py-0.5 rounded-sm"
+                    style={{
+                      backgroundColor: "var(--bg-secondary)",
+                      color: "var(--text-primary)",
+                    }}
+                  >
+                    {suggestionCategoryName}
+                  </span>{" "}
+                  and our team will review it soon.
+                </p>
+              </div>
+
+              {/* Automatic dismissal indicator */}
+              <div
+                className="absolute bottom-0 left-0 right-0 h-1"
+                style={{ backgroundColor: "var(--bg-secondary)" }}
+              >
+                <div className="h-full bg-green-500 animate-[progress-shrink_2.5s_linear_forwards]" />
+              </div>
+
+              <p
+                className="absolute bottom-4 text-[9px] font-bold uppercase tracking-widest"
+                style={{ color: "var(--text-muted)" }}
+              >
+                Closing automatically...
+              </p>
+
+              <style>{`
+                @keyframes progress-shrink {
+                  from { width: 100%; }
+                  to { width: 0%; }
+                }
+              `}</style>
+            </div>
+          ) : (
+            <>
+              <div className="space-y-2">
+                <ResuableInput
+                  label="Category name"
+                  placeholder="e.g., Organic Fertilizers"
+                  value={suggestionCategoryName}
+                  onChange={setSuggestionCategoryName}
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <ResuableTextarea
+                  value={suggestionReason}
+                  onChange={setSuggestionReason}
+                  label="Why should we add this?"
+                  placeholder="Briefly describe the importance of this category..."
+                  rows={3}
+                />
+              </div>
+
+              <p
+                className="text-[10px] font-medium italic"
+                style={{ color: "var(--text-muted)" }}
+              >
+                * Our administrators will review this request and update the
+                global list if approved.
+              </p>
+            </>
+          )}
+        </div>
+      </ResuableModal>
     </div>
   );
 };

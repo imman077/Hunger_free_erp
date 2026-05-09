@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Package, MapPin, Clock, Building2, Phone, Info } from "lucide-react";
+import { Package, MapPin, Clock, Building2, Phone, Info, ShieldCheck, CheckCircle2 } from "lucide-react";
 import DonationActivityCard from "../../../../global/components/resuable-components/DonationActivityCard";
 import ResuableDrawer from "../../../../global/components/resuable-components/drawer";
 import { useDonorDonations } from "../hooks/useDonorDonations";
@@ -8,14 +8,40 @@ import type { DonationDetail } from "../../store/donor-schemas";
 
 const MyDonations = () => {
   const navigate = useNavigate();
-  const { donationHistory } = useDonorDonations();
+  const { donationHistory, verifyPickup, refreshData } = useDonorDonations();
   const [selectedDonation, setSelectedDonation] =
     useState<DonationDetail | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [otpValue, setOtpValue] = useState("");
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [otpError, setOtpError] = useState("");
+
+  useEffect(() => {
+    refreshData();
+  }, []);
 
   const handleDetailsClick = (donation: DonationDetail) => {
     setSelectedDonation(donation);
+    setOtpValue("");
+    setOtpError("");
     setIsDrawerOpen(true);
+  };
+
+  const onOtpSubmit = async () => {
+    if (!selectedDonation || otpValue.length !== 4) return;
+    
+    setIsVerifying(true);
+    setOtpError("");
+    
+    const result = await verifyPickup(selectedDonation.id, otpValue);
+    
+    if (result.success) {
+      setIsDrawerOpen(false);
+      setOtpValue("");
+    } else {
+      setOtpError("Invalid verification code. Please try again.");
+    }
+    setIsVerifying(false);
   };
 
   return (
@@ -324,6 +350,70 @@ const MyDonations = () => {
                     <Phone size={16} />
                     Call Volunteer
                   </button>
+                </div>
+              </div>
+            )}
+
+            {/* Secure Handover Protocol - OTP Entry */}
+            {selectedDonation.status === "ASSIGNED" && (
+              <div
+                className="p-6 rounded-2xl border-2 border-dashed space-y-6 relative overflow-hidden group"
+                style={{
+                  backgroundColor: "var(--bg-secondary)",
+                  borderColor: "rgba(34, 197, 94, 0.2)",
+                  background: "linear-gradient(145deg, var(--bg-secondary) 0%, rgba(34, 197, 94, 0.05) 100%)"
+                }}
+              >
+                <div className="absolute -top-10 -right-10 w-32 h-32 bg-hf-green/5 rounded-full blur-3xl" />
+                
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-hf-green/10 flex items-center justify-center border border-hf-green/20">
+                    <ShieldCheck className="text-hf-green" size={20} />
+                  </div>
+                  <div>
+                    <h4 className="text-[11px] font-black uppercase tracking-[0.2em] text-[#22c55e]">
+                      Secure Handover
+                    </h4>
+                    <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">
+                      Enter Volunteer's Device Code
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="text"
+                      maxLength={4}
+                      value={otpValue}
+                      onChange={(e) => setOtpValue(e.target.value.replace(/\D/g, ""))}
+                      placeholder="• • • •"
+                      disabled={isVerifying}
+                      className="w-full bg-[var(--bg-primary)] border border-[var(--border-color)] rounded-xl py-4 text-center text-3xl font-black tracking-[0.5em] text-hf-green placeholder:text-[var(--text-muted)]/20 focus:border-hf-green/50 focus:ring-4 focus:ring-hf-green/5 outline-none transition-all"
+                    />
+                    <button
+                      onClick={onOtpSubmit}
+                      disabled={isVerifying || otpValue.length !== 4}
+                      className="h-[68px] aspect-square rounded-xl bg-[#22c55e] text-white flex items-center justify-center hover:bg-[#16a34a] disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-green-500/20 active:scale-95 shrink-0"
+                    >
+                      {isVerifying ? (
+                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      ) : (
+                        <CheckCircle2 size={24} />
+                      )}
+                    </button>
+                  </div>
+                  
+                  {otpError && (
+                    <p className="text-[10px] font-bold text-red-500 uppercase tracking-widest text-center animate-pulse">
+                      {otpError}
+                    </p>
+                  )}
+                  
+                  <p className="text-[9px] font-bold text-[var(--text-muted)] uppercase text-center opacity-60 leading-relaxed italic">
+                    The volunteer will show you a 4-digit code on their device. 
+                    Ask them for the code to finalize the pickup.
+                  </p>
                 </div>
               </div>
             )}

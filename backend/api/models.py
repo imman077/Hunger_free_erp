@@ -165,9 +165,15 @@ class Donation(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
     accepted_volunteer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='accepted_donations_volunteer')
     accepted_ngo = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='accepted_donations_ngo')
+    pickup_otp = models.CharField(max_length=4, blank=True, null=True)
+    delivery_otp = models.CharField(max_length=4, blank=True, null=True)
     tracking_history = models.JSONField(default=list) # List of status changes with timestamps
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def generate_otp(self):
+        import random
+        return str(random.randint(1000, 9999))
 
 class NGOInventoryItem(models.Model):
     ngo = models.ForeignKey(User, on_delete=models.CASCADE, related_name='inventory')

@@ -8,7 +8,7 @@ class EmailBackend(ModelBackend):
         # Email is passed in as 'username' from TokenObtainPairRequest
         email = username
         try:
-            user = UserModel.objects.get(email=email)
+            user = UserModel.objects.get(email__iexact=email)
         except UserModel.DoesNotExist:
             # Maybe they typed their username instead
             try:

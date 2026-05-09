@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { DonorDataSchema } from "./donor-schemas";
 import type { DonorData } from "./donor-schemas";
+import { donationService } from "../donations/api/donations.api";
 
 interface DonorState {
   data: DonorData;
@@ -11,6 +12,7 @@ interface DonorState {
   setDonorData: (data: DonorData) => void;
   setLoading: (isLoading: boolean) => void;
   setError: (error: string | null) => void;
+  refreshData: () => Promise<void>;
 }
 
 const initialData: DonorData = {
@@ -258,4 +260,41 @@ export const useDonorStore = create<DonorState>((set) => ({
 
   setLoading: (isLoading) => set({ isLoading }),
   setError: (error) => set({ error }),
+  refreshData: async () => {
+    set({ isLoading: true });
+    try {
+      const response = await donationService.getMyDonations();
+      // Ensure we merge with current data structure
+      set((state) => ({
+        data: {
+          ...state.data,
+          donationHistory: response.map((d: any) => ({
+            id: d.id,
+            foodType: d.food_category,
+            quantity: `${d.quantity} ${d.unit}`,
+            ngo: d.ngo_org_name || "Maching...",
+            date: new Date(d.created_at).toLocaleDateString(),
+            status: d.status,
+            pickupAddress: d.pickup_address,
+            deliveryAddress: d.ngo_distribution_address || "Pending NGO Confirmation",
+            description: d.food_items || d.description,
+            volunteer: d.accepted_volunteer_detail ? {
+              name: d.accepted_volunteer_detail.name,
+              phone: d.accepted_volunteer_detail.phone,
+              rating: "4.9"
+            } : undefined,
+            timeline: d.tracking_history?.map((th: any) => ({
+              status: th.status,
+              date: new Date(th.timestamp).toLocaleDateString(),
+              time: new Date(th.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              completed: true
+            })) || []
+          }))
+        },
+        isLoading: false
+      }));
+    } catch (err) {
+      set({ error: "Failed to sync with server", isLoading: false });
+    }
+  }
 }));

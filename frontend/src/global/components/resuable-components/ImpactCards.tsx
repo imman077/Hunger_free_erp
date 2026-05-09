@@ -1,10 +1,18 @@
 import React from "react";
+import {
+  type LucideIcon,
+  TrendingUp,
+  AlertCircle,
+  CheckCircle2,
+} from "lucide-react";
 
 export interface ImpactCardData {
   label: string;
   val: string;
   trend: string;
   color: string;
+  icon?: LucideIcon;
+  image?: string;
 }
 
 export interface ImpactCardsProps {
@@ -15,52 +23,73 @@ export interface ImpactCardsProps {
 
 const ImpactCard: React.FC<
   ImpactCardData & { orientation: "horizontal" | "vertical" }
-> = ({ label, val, trend, color }) => {
+> = ({ label, val, trend, color, icon: Icon, image }) => {
+  // Determine if it's a positive or alert state
+  const isGreen =
+    color.includes("emerald") ||
+    color.includes("green") ||
+    color.includes("#22c55e");
+  const isRed =
+    color.includes("red") ||
+    color.includes("#ef4444") ||
+    trend.toLowerCase().includes("attention");
+  const isClear = trend.toLowerCase().includes("clear");
+
   return (
     <div
-      className="group/impact p-3 sm:p-4 md:p-6 rounded-xl border transition-all duration-500 flex flex-col items-center justify-center min-h-[110px] sm:min-h-[130px] md:min-h-[150px] relative overflow-hidden"
+      className="group/impact p-6 md:p-8 rounded-2xl border-[0.5px] transition-all duration-500 flex flex-row items-center min-h-[140px] min-w-[280px] relative overflow-hidden bg-white hover:-translate-y-0.5"
       style={{
-        backgroundColor: "var(--bg-primary)",
-        borderColor: "var(--border-color)",
+        borderColor: "var(--border-color, #f1f5f9)",
       }}
     >
-      {/* Dynamic Ambient Background */}
+      {/* Icon/Image Section */}
       <div
-        className={`absolute -top-12 -right-12 w-32 h-32 blur-[60px] rounded-full opacity-0 group-hover:opacity-10 transition-opacity duration-700
-          ${color.includes("emerald") || color.includes("green") || color.includes("#22c55e") ? "bg-[#22c55e]" : "bg-slate-400"}`}
-      />
+        className={`w-14 h-14 rounded-full flex items-center justify-center shrink-0 transition-transform duration-500 group-hover/impact:scale-105 overflow-hidden
+          ${isGreen ? "bg-green-50 text-green-500" : isRed ? "bg-red-50 text-red-500" : "bg-blue-50 text-blue-500"}`}
+      >
+        {image ? (
+          <img src={image} alt={label} className="w-full h-full object-cover" />
+        ) : Icon ? (
+          <Icon size={24} strokeWidth={2.5} />
+        ) : isGreen ? (
+          <TrendingUp size={24} strokeWidth={2.5} />
+        ) : (
+          <AlertCircle size={24} strokeWidth={2.5} />
+        )}
+      </div>
 
-      <div className="mb-3 relative z-10 text-center transition-transform duration-500 group-hover/impact:-translate-y-1 w-full px-1">
+      {/* Content Section */}
+      <div className="ml-5 flex flex-col justify-center">
         <p
-          className="text-[9px] font-black uppercase tracking-wider mb-2 opacity-80 leading-tight"
-          style={{ color: "var(--text-secondary)" }}
+          className="text-[9px] font-black uppercase tracking-[0.15em] mb-1 opacity-40"
+          style={{ color: "var(--text-secondary, #64748b)" }}
         >
           {label}
         </p>
+
         <h4
-          className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black tracking-tight tabular-nums leading-none transition-colors duration-500 group-hover/impact:text-[#22c55e] break-words"
-          style={{ color: "var(--text-primary)" }}
+          className="text-2xl font-black tracking-tight tabular-nums leading-none mb-2"
+          style={{ color: "var(--text-primary, #0f172a)" }}
         >
           {val}
         </h4>
-      </div>
 
-      <div className="relative z-10 mt-1 max-w-full">
+        {/* Trend/Status Badge */}
         <div
-          className={`flex items-start justify-center gap-1.5 px-3 py-1.5 rounded-lg border transition-all duration-500 w-fit mx-auto
-            ${color.includes("emerald") || color.includes("green") || color.includes("#22c55e") ? "bg-[#22c55e]/5 border-[#22c55e]/20" : "bg-slate-500/5 border-slate-500/10"}`}
+          className={`flex items-center gap-1.5 px-3 py-1 rounded-full w-fit transition-all duration-500
+          ${isGreen ? "bg-green-50/80 text-green-500" : isRed ? "bg-red-50/80 text-red-600" : isClear ? "bg-slate-50 text-slate-500" : "bg-blue-50 text-blue-600"}`}
         >
-          {/* <div
-            className={`w-1 h-1 mt-[3px] rounded-full flex-shrink-0 ${color === "bg-emerald-500" ? "bg-emerald-500 animate-pulse" : "bg-slate-400"}`}
-          /> */}
-          <span
-            className={`text-[8px] md:text-[9px] font-black uppercase tracking-wider text-center leading-tight whitespace-normal break-words
-              ${color.includes("emerald") || color.includes("green") || color.includes("#22c55e") ? "text-[#22c55e]" : "text-slate-400"}`}
-          >
+          <span className="text-[9px] font-black uppercase tracking-wider">
             {trend}
           </span>
         </div>
       </div>
+
+      {/* Subtle Background Accent */}
+      <div
+        className={`absolute -right-4 -bottom-4 w-20 h-20 blur-3xl rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-700
+        ${isGreen ? "bg-green-400" : isRed ? "bg-red-400" : "bg-blue-400"}`}
+      />
     </div>
   );
 };
@@ -74,7 +103,7 @@ export const ImpactCards: React.FC<ImpactCardsProps> = ({
     <div
       className={`${
         orientation === "horizontal"
-          ? "grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-4 gap-3 md:gap-6"
+          ? `grid grid-cols-1 sm:grid-cols-2 ${data.length > 2 ? "xl:grid-cols-4" : ""} gap-4 md:gap-6`
           : "flex flex-col gap-4"
       } ${className}`}
     >

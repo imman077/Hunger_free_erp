@@ -30,6 +30,7 @@ interface VolunteerState {
   setActivities: (activities: VolunteerActivity[]) => void;
   setTasks: (tasks: VolunteerTask[]) => void;
   setBadges: (badges: VolunteerBadge[]) => void;
+  setRewardsData: (rewards: any) => void;
   setLoading: (isLoading: boolean) => void;
   setError: (error: string | null) => void;
 }
@@ -207,6 +208,7 @@ export const useVolunteerStore = create<VolunteerState>((set) => ({
   setActivities: (activities) => set({ activities }),
   setTasks: (tasks) => set({ tasks }),
   setBadges: (badges) => set({ badges }),
+  setRewardsData: (rewards) => set({ rewards }),
   setLoading: (isLoading) => set({ isLoading }),
   setError: (error) => set({ error }),
 }));

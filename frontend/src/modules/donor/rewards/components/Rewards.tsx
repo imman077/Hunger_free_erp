@@ -5,9 +5,6 @@ import {
   CheckCircle,
   Lock,
   ChevronRight,
-  Plane,
-  Gamepad2,
-  Smartphone,
   Check as CheckIcon,
   Building2,
   QrCode,
@@ -579,54 +576,85 @@ const DonorRewards = () => {
           </div>
 
           <div className="relative mb-6">
+            {/* Background Line (Gray) */}
             <div
-              className="absolute top-1/2 left-0 w-full h-0.5 -translate-y-1/2 z-0 hidden lg:block"
-              style={{ backgroundColor: "var(--border-color)" }}
+              className="absolute top-[32px] left-[7.14%] h-[1px] -translate-y-1/2 z-0 hidden lg:block"
+              style={{ 
+                backgroundColor: "var(--border-color)",
+                width: tiers.length > 1 
+                  ? `${(Math.min(tiers.length, 7) - 1) * 14.28}%` 
+                  : "0%"
+              }}
             />
+
+            {/* Active Progress Line (Green) */}
+            <div
+              className="absolute top-[32px] left-[7.14%] h-[1.5px] -translate-y-1/2 z-0 hidden lg:block transition-all duration-700 ease-in-out"
+              style={{
+                backgroundColor: "#22c55e",
+                width: tiers.length > 1 
+                  ? `${(Math.min(getCurrentTierIndex(), 6)) * 14.28}%` 
+                  : "0%",
+                boxShadow: "0 0 10px rgba(34, 197, 94, 0.2)"
+              }}
+            />
+
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 relative z-10">
               {tiers.map((tier, idx) => {
                 const isCurrent = tier.name === userStats.currentTier;
                 const isPast = idx < getCurrentTierIndex();
+
                 return (
                   <div key={tier.name} className="flex flex-col items-center">
-                    <div
-                      className={`w-12 h-12 flex items-center justify-center border transition-all duration-500 rounded-sm ${
-                        isCurrent
-                          ? "bg-green-500 border-white ring-4 ring-green-500/10"
-                          : isPast
+                    <div className="h-16 flex items-center justify-center mb-3">
+                      <div
+                        className={`relative flex items-center justify-center border transition-all duration-500 rounded-sm ${
+                          isCurrent
+                            ? "bg-green-500 border-white z-20 w-16 h-16 outline outline-4 outline-offset-4 outline-green-500"
+                            : "w-12 h-12"
+                        } ${
+                          isPast
                             ? "border-green-500"
                             : ""
-                      }`}
-                      style={{
-                        backgroundColor: isCurrent
-                          ? undefined
-                          : isPast
-                            ? "rgba(34, 197, 94, 0.05)"
-                            : "var(--bg-secondary)",
-                        borderColor: isCurrent
-                          ? undefined
-                          : isPast
+                        }`}
+                        style={{
+                          backgroundColor: isCurrent
                             ? undefined
-                            : "var(--border-color)",
-                      }}
-                    >
-                      {isPast ? (
-                        <CheckCircle className="text-green-500" size={20} />
-                      ) : isCurrent ? (
-                        <Star
-                          className="text-white"
-                          size={20}
-                          fill="currentColor"
-                        />
-                      ) : (
-                        <Lock
-                          size={16}
-                          style={{ color: "var(--text-muted)" }}
-                        />
-                      )}
+                            : isPast
+                              ? "var(--bg-primary)"
+                              : "var(--bg-secondary)",
+                          borderColor: !isCurrent && !isPast
+                            ? "var(--border-color)"
+                            : undefined,
+                        }}
+                      >
+                        {/* Status Badge in top right corner */}
+                        {isPast ? (
+                          <div className="absolute -top-2 -right-2 bg-green-500 border-2 border-white rounded-full w-5 h-5 flex items-center justify-center z-30 shadow-sm ring-2 ring-green-500/5">
+                            <CheckIcon className="text-white" size={10} strokeWidth={4} />
+                          </div>
+                        ) : !isCurrent ? (
+                          <div className="absolute -top-2 -right-2 bg-slate-100 border-2 border-white rounded-full w-5 h-5 flex items-center justify-center z-30 shadow-sm">
+                            <Lock className="text-slate-600" size={10} strokeWidth={2.5} />
+                          </div>
+                        ) : null}
+
+                        {isCurrent ? (
+                          <Star
+                            className="text-white"
+                            size={28}
+                            fill="currentColor"
+                          />
+                        ) : (
+                          <CheckCircle 
+                            className={isPast ? "text-green-500" : "text-black dark:text-zinc-400 opacity-40"} 
+                            size={20} 
+                          />
+                        )}
+                      </div>
                     </div>
                     <p
-                      className={`text-[10px] font-black uppercase tracking-widest mt-3 ${
+                      className={`text-[10px] font-black uppercase tracking-widest mt-1 ${
                         isCurrent ? "text-green-500" : ""
                       }`}
                       style={{

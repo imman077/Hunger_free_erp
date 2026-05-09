@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { NgoDataSchema } from "./ngo-schemas";
 import type { NgoData } from "./ngo-schemas";
+import { ngoDonationsService } from "../donations/api/donations.api";
 
 interface NgoState {
   data: NgoData;
@@ -11,6 +12,7 @@ interface NgoState {
   setNgoData: (data: NgoData) => void;
   setLoading: (isLoading: boolean) => void;
   setError: (error: string | null) => void;
+  refreshData: () => Promise<void>;
 }
 
 const initialData: NgoData = {
@@ -245,4 +247,34 @@ export const useNgoStore = create<NgoState>((set) => ({
 
   setLoading: (isLoading) => set({ isLoading }),
   setError: (error) => set({ error }),
+  refreshData: async () => {
+    set({ isLoading: true });
+    try {
+      const response = await ngoDonationsService.getMyRequests();
+      set((state) => ({
+        data: {
+          ...state.data,
+          myRequests: response.map((d: any) => ({
+            id: d.id,
+            foodType: d.food_category,
+            quantity: `${d.quantity} ${d.unit}`,
+            donor: d.donor_name || d.donor_hotel || "Private Donor",
+            donorPhone: d.contact_phone,
+            status: d.status,
+            date: new Date(d.created_at).toLocaleDateString(),
+            pickupAddress: d.pickup_address,
+            volunteer: d.accepted_volunteer_detail ? {
+                name: d.accepted_volunteer_detail.name,
+                phone: d.accepted_volunteer_detail.phone,
+                rating: "4.8"
+            } : undefined,
+            trackingHistory: d.tracking_history || []
+          }))
+        },
+        isLoading: false
+      }));
+    } catch (err) {
+      set({ error: "Failed to sync NGO data", isLoading: false });
+    }
+  }
 }));

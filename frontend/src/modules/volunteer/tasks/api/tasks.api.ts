@@ -45,14 +45,27 @@ export const volunteerTasksService = {
   },
 
   /**
-   * Marks a donation as picked up.
+   * Marks a donation as picked up via OTP verification.
    */
-  markAsPickedUp: async (donationId: number) => {
+  markAsPickedUp: async (donationId: number, otp: string) => {
       try {
-          const response = await axiosInstance.post(`donations/${donationId}/pickup/`);
+          const response = await axiosInstance.post(`donations/${donationId}/pickup/`, { otp });
           return response.data;
       } catch (error) {
           console.error(`Error marking as picked up ${donationId}:`, error);
+          throw error;
+      }
+  },
+
+  /**
+   * Marks a donation as delivered via OTP verification.
+   */
+  markAsDelivered: async (donationId: number, otp: string) => {
+      try {
+          const response = await axiosInstance.post(`donations/${donationId}/deliver/`, { otp });
+          return response.data;
+      } catch (error) {
+          console.error(`Error marking as delivered ${donationId}:`, error);
           throw error;
       }
   }

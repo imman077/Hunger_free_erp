@@ -87,8 +87,12 @@ const ResuableDropdown: React.FC<ResuableDropdownProps> = ({
 
   // Auto-close on scroll or resize to maintain UI stability
   useEffect(() => {
-    const handleScrollOrResize = () => {
+    const handleScrollOrResize = (event: Event) => {
       if (isOpen) {
+        // If the scroll event happened inside the menu, don't close it
+        if (menuRef.current && menuRef.current.contains(event.target as Node)) {
+          return;
+        }
         setIsOpen(false);
       }
     };
@@ -115,6 +119,13 @@ const ResuableDropdown: React.FC<ResuableDropdownProps> = ({
       : align === "right"
         ? "text-right"
         : "text-center";
+
+  const justifyClass =
+    align === "left"
+      ? "justify-start"
+      : align === "right"
+        ? "justify-end"
+        : "justify-center";
 
   return (
     <div className={`w-full ${alignClass} ${className}`}>
@@ -155,7 +166,7 @@ const ResuableDropdown: React.FC<ResuableDropdownProps> = ({
           )}
         </div>
       )}
-
+ 
       <div className="relative" ref={dropdownRef}>
         <button
           type="button"
@@ -173,7 +184,10 @@ const ResuableDropdown: React.FC<ResuableDropdownProps> = ({
             disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
           } ${alignClass}`}
         >
-          <span className={`flex-1 truncate ${alignClass}`}>
+          <span 
+            className={`flex-1 truncate ${alignClass}`}
+            title={selectedOption ? selectedOption.label : placeholder}
+          >
             {selectedOption ? selectedOption.label : placeholder}
           </span>
           <span
@@ -189,16 +203,17 @@ const ResuableDropdown: React.FC<ResuableDropdownProps> = ({
             <Icon name="chevron-down" className="w-4 h-4" />
           </span>
         </button>
-
+ 
         {isOpen && (
           <div
             ref={menuRef}
-            className={`absolute left-0 right-0 border rounded-sm z-[9999] max-h-60 overflow-y-auto no-scrollbar animate-in fade-in zoom-in-95 duration-200 ${
-              openUpward ? "bottom-full mb-1" : "top-full mt-1"
-            }`}
+            className={`absolute left-0 right-0 border rounded-sm z-[9999] max-h-72 overflow-y-auto animate-in fade-in zoom-in-95 duration-200 
+              scrollbar-thin scrollbar-track-transparent scrollbar-thumb-[var(--border-color)] hover:scrollbar-thumb-[#22c55e] scrollbar-thumb-rounded-full
+              ${openUpward ? "bottom-full mb-1" : "top-full mt-1"}`}
             style={{
               backgroundColor: "var(--bg-primary)",
               borderColor: "var(--border-color)",
+              scrollbarGutter: "stable"
             }}
           >
             {options.map((opt) => (
@@ -206,7 +221,8 @@ const ResuableDropdown: React.FC<ResuableDropdownProps> = ({
                 key={opt.value}
                 type="button"
                 onClick={() => handleSelect(opt.value)}
-                className={`relative w-full px-4 py-3 text-xs font-semibold transition-all border-b last:border-none flex items-center justify-center group ${alignClass}`}
+                className={`relative w-full px-4 py-3 text-xs font-semibold transition-all border-b last:border-none flex items-center group ${alignClass} ${justifyClass}`}
+                title={opt.label}
                 style={{
                   borderBottomColor: "var(--border-color)",
                   backgroundColor:

@@ -61,8 +61,8 @@ def finalize_system_data():
                 name=t['name'], 
                 min_points=t['min_points'],
                 max_points=t['max_points'],
-                earning_bonus=t['earning_bonus'],
-                badge_icon=meta['badge_icon']
+                bonus_percentage=t['earning_bonus'],
+                icon=meta['badge_icon']
             )
 
     print("Successfully synchronized tiers using ONLY names and icons (no benefits).")
