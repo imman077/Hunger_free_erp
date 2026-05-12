@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { Package, ArrowRight, Heart, Users } from "lucide-react";
+import { Package, ArrowRight, Heart, Users, ShieldCheck, MapPin, Clock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { ngoNeedsService } from "../api/needs.api";
 import { toast } from "sonner";
+import { motion } from "framer-motion";
 
 interface NGONeed {
   id: number;
@@ -30,7 +31,44 @@ const NGONeedsFeed = () => {
     try {
       setLoading(true);
       const data = await ngoNeedsService.getNeeds();
-      setNeeds(data);
+      
+      // For demonstration purposes, if no needs are returned, add mock data matching the new UI
+      if (data.length === 0) {
+        setNeeds([
+          {
+            id: 1,
+            ngo: 101,
+            ngo_name: "Green Harvest NGO",
+            title: "Fresh Vegetables & Fruits for Shelter",
+            description: "Seeking donations of seasonal vegetables and fruits.",
+            category: "Perishables",
+            quantity_required: "50 KG",
+            urgency: "High",
+            status: "Active",
+            created_at: new Date().toISOString(),
+            beneficiaries: "120 People",
+            location: "Koramangala, Bengaluru",
+            pickup_by: "Today, 6:00 PM"
+          } as any,
+          {
+            id: 2,
+            ngo: 102,
+            ngo_name: "Hope Shelter",
+            title: "Cooked Meals for Night Shift Workers",
+            description: "Looking for cooked meal portions.",
+            category: "Cooked Food",
+            quantity_required: "100 PORTIONS",
+            urgency: "Medium",
+            status: "Active",
+            created_at: new Date().toISOString(),
+            beneficiaries: "80 People",
+            location: "Jayanagar, Bengaluru",
+            pickup_by: "Tomorrow, 10:00 AM"
+          } as any
+        ]);
+      } else {
+        setNeeds(data);
+      }
     } catch (error) {
       toast.error("Failed to load community needs");
     } finally {
@@ -42,24 +80,30 @@ const NGONeedsFeed = () => {
     switch (urgency) {
       case "High":
         return {
-          bg: "bg-red-500/10",
-          text: "text-red-500",
-          border: "border-red-500/20",
-          dot: "bg-red-500",
+          bg: "bg-[#fff1f2]",
+          text: "text-[#e11d48]",
+          border: "border-[#fecdd3]",
+          dot: "bg-[#e11d48]",
+          iconBg: "bg-[#fff1f2]",
+          iconColor: "#e11d48"
         };
       case "Medium":
         return {
-          bg: "bg-orange-500/10",
-          text: "text-orange-500",
-          border: "border-orange-500/20",
-          dot: "bg-orange-500",
+          bg: "bg-[#fff7ed]",
+          text: "text-[#ea580c]",
+          border: "border-[#ffedd5]",
+          dot: "bg-[#ea580c]",
+          iconBg: "bg-[#fff7ed]",
+          iconColor: "#ea580c"
         };
       default:
         return {
-          bg: "bg-blue-500/10",
-          text: "text-blue-500",
-          border: "border-blue-500/20",
-          dot: "bg-blue-500",
+          bg: "bg-[#f0f9ff]",
+          text: "text-[#0284c7]",
+          border: "border-[#e0f2fe]",
+          dot: "bg-[#0284c7]",
+          iconBg: "bg-[#f0f9ff]",
+          iconColor: "#0284c7"
         };
     }
   };
@@ -79,7 +123,7 @@ const NGONeedsFeed = () => {
 
   return (
     <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm h-full flex flex-col">
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center">
             <Heart size={16} className="text-red-500 fill-red-500/10" />
@@ -97,104 +141,144 @@ const NGONeedsFeed = () => {
 
       <div className="flex-1 flex flex-col">
         {needs.length === 0 ? (
-          <div className="flex-1 flex flex-col items-center justify-center py-12 border-2 border-dashed rounded-xl border-slate-100 bg-slate-50/30">
-            <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mb-4">
-              <Users size={32} className="text-slate-300" />
+          <div className="flex-1 flex flex-col items-center justify-center py-6">
+            <div className="relative w-48 h-40 mb-1">
+              <img 
+                src="/empty card.png" 
+                alt="No active requests" 
+                className="w-full h-full object-contain select-none pointer-events-none"
+              />
             </div>
-            <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2">
-              No active requests found
-            </h3>
-            <p className="text-[12px] font-medium text-slate-400 max-w-[320px] text-center leading-relaxed">
-              Great news! There are no urgent requests right now. <br />
-              Check back later to help more communities.
-            </p>
+            
+            <div className="text-center space-y-2 mb-8">
+              <h3 className="text-base font-black text-slate-800 flex items-center justify-center gap-2">
+                No active urgent requests <span className="text-lg">🎉</span>
+              </h3>
+              <p className="text-[11px] font-medium text-slate-400 max-w-[300px] leading-relaxed mx-auto">
+                Great news! There are no urgent requests right now. <br />
+                Check back later to help more communities.
+              </p>
+            </div>
+
+            <button 
+              onClick={() => navigate('/donor/donations/needs')}
+              className="flex items-center gap-4 px-10 py-3 bg-[#f0fcf4] hover:bg-[#e6f9ed] text-[#22c55e] rounded-full text-[11px] font-black uppercase tracking-[0.1em] transition-all group"
+            >
+              View all requests
+              <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+            </button>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4">
-            {needs.map((need) => {
+            {needs.map((need: any) => {
               const styles = getUrgencyStyles(need.urgency);
+              const isPerishable = need.category === "Perishables";
+              
               return (
-                <div
+                <motion.div
                   key={need.id}
-                  className="group relative overflow-hidden transition-all duration-500 hover:scale-[1.01]"
+                  whileHover={{ y: -1 }}
+                  className="group relative bg-white rounded-xl border border-slate-100 overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-slate-200/40 cursor-pointer"
                 >
-                  <div className="p-5 md:p-6 rounded-md border bg-[var(--bg-primary)] border-[var(--border-color)] shadow-sm hover:shadow-xl hover:shadow-green-500/5 transition-all duration-500">
-                    <div className="flex flex-col md:flex-row gap-6 md:items-center">
-                      {/* Status & Category Column */}
-                      <div className="flex md:flex-col items-center md:items-start justify-between md:justify-center gap-3 shrink-0 md:w-32 border-b md:border-b-0 md:border-r pb-4 md:pb-0 md:pr-6 border-[var(--border-color)]">
-                        <div
-                          className={`px-2.5 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider flex items-center gap-1.5 ${styles.bg} ${styles.text} border ${styles.border}`}
-                        >
-                          <span
-                            className={`w-1 h-1 rounded-full animate-pulse ${styles.dot}`}
-                          />
-                          {need.urgency} Priority
+                  <div className="flex items-stretch min-h-[140px]">
+                    <div className="flex-1 flex p-3.5 gap-5">
+                      {/* Left Column: Category & Priority - Compact */}
+                      <div className="flex flex-col items-center gap-2.5 shrink-0 w-24 pr-4 justify-center">
+                        <div className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[7px] font-black uppercase tracking-wider ${styles.bg} ${styles.text} border ${styles.border}`}>
+                          <div className={`w-0.5 h-0.5 rounded-full ${styles.dot}`} />
+                          {need.urgency}
                         </div>
-                        <div className="text-start">
-                          <p className="text-[7px] font-black text-[var(--text-muted)] uppercase tracking-[0.2em] mb-1">
-                            REQ CATEGORY
-                          </p>
-                          <h4 className="text-[11px] font-black text-[var(--text-primary)] uppercase tracking-tight">
-                            {need.category}
-                          </h4>
+                        
+                        <div className={`w-14 h-14 rounded-full flex items-center justify-center ${styles.iconBg} overflow-hidden border border-slate-50 shadow-sm transition-all duration-300 group-hover:scale-110`}>
+                          <img 
+                            src={isPerishable ? "/vegandfruits.png" : "/cookedfood.png"} 
+                            alt={need.category}
+                            className="w-11 h-11 object-contain"
+                          />
+                        </div>
+
+                        <div className="text-center">
+                          <p className="text-[6.5px] font-black text-slate-400 uppercase tracking-widest mb-0.5">CATEGORY</p>
+                          <h4 className="text-[9px] font-black text-slate-800 uppercase tracking-tight leading-none">{need.category}</h4>
                         </div>
                       </div>
 
-                      {/* Content Column */}
-                      <div className="flex-1 space-y-2 min-w-0">
-                        <div className="flex items-center gap-3">
-                          <h3 className="text-sm md:text-base font-black text-[var(--text-primary)] tracking-tight truncate group-hover:text-green-600 transition-colors">
+                      {/* Middle Column: Details */}
+                      <div className="flex-1 flex flex-col justify-center">
+                        <div className="mb-2.5">
+                          <h3 className="text-[15px] font-black text-slate-800 tracking-tight leading-tight mb-1 group-hover:text-green-600 transition-colors truncate">
                             {need.title}
                           </h3>
-                        </div>
-                        <p className="text-xs font-medium text-[var(--text-muted)] leading-relaxed line-clamp-2">
-                          {need.description}
-                        </p>
-
-                        <div className="flex items-center gap-6 pt-2">
-                          <div className="flex items-center gap-2">
-                            <Users size={12} className="text-green-500" />
-                            <span className="text-[10px] font-black uppercase tracking-wider text-[var(--text-muted)]">
-                              Posted by{" "}
-                              <span className="text-[var(--text-primary)]">
-                                {need.ngo_name}
-                              </span>
-                            </span>
+                          
+                          <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-1.5">
+                              <div className="w-5 h-5 rounded-full bg-slate-50 flex items-center justify-center">
+                                <Users size={10} className="text-slate-400" />
+                              </div>
+                              <span className="text-[10px] font-black text-slate-500 uppercase tracking-tight">{need.ngo_name}</span>
+                            </div>
+                            <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-green-50 text-green-600 border border-green-100">
+                              <ShieldCheck size={9} className="fill-green-600/10" />
+                              <span className="text-[7.5px] font-black uppercase tracking-widest">Verified</span>
+                            </div>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <Package size={12} className="text-green-500" />
-                            <span className="text-[10px] font-black uppercase tracking-wider text-[var(--text-muted)]">
-                              Goal:{" "}
-                              <span className="text-[var(--text-primary)]">
-                                {need.quantity_required}
-                              </span>
+                        </div>
+
+                        {/* Goal & Impact Card - Unified with Urgency Color */}
+                        <div className={`flex items-center rounded-lg p-2 mb-2.5 ${styles.bg}`}>
+                          <div className="flex-1 flex items-center gap-2.5">
+                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center shadow-sm border bg-white ${styles.border}`}>
+                              <Package size={16} className={styles.text.replace('text-', 'text-')} />
+                            </div>
+                            <div>
+                              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-0.5">Goal</p>
+                              <p className={`text-[10px] font-black leading-none ${styles.text}`}>{need.quantity_required}</p>
+                            </div>
+                          </div>
+                          <div className="w-px h-6 bg-slate-200/50 mx-3" />
+                          <div className="flex-1 flex items-center gap-2.5">
+                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center shadow-sm border bg-white ${styles.border}`}>
+                              <Users size={16} className={styles.text.replace('text-', 'text-')} />
+                            </div>
+                            <div>
+                              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-0.5">Impact</p>
+                              <p className={`text-[10px] font-black leading-none ${styles.text}`}>{need.beneficiaries || "120 People"}</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Location & Time Footer - Compact */}
+                        <div className="flex items-center gap-4">
+                          <div className="flex items-center gap-1.5 text-slate-400">
+                            <MapPin size={12} className="stroke-[2.5]" />
+                            <span className="text-[9px] font-black uppercase tracking-tight">{need.location || "Koramangala, Bengaluru"}</span>
+                          </div>
+                          <div className="w-0.5 h-0.5 rounded-full bg-slate-200" />
+                          <div className="flex items-center gap-1.5">
+                            <Clock size={12} className="text-slate-400 stroke-[2.5]" />
+                            <span className="text-[9px] font-black uppercase tracking-tight text-slate-400">
+                              Pickup: <span className={styles.text}>{need.pickup_by || "Today, 6:00 PM"}</span>
                             </span>
                           </div>
                         </div>
                       </div>
 
-                      {/* Action Column */}
-                      <div className="shrink-0">
+                      {/* Right Column: Actions - Scaled Down */}
+                      <div className="flex flex-col justify-center gap-2 shrink-0 w-28 pl-4">
                         <button
-                          onClick={() =>
-                            navigate(
-                              `/donor/donations/create?need_id=${need.id}&ngo_id=${need.ngo}`,
-                            )
-                          }
-                          className="w-full md:w-auto h-12 px-6 rounded-md bg-green-600 hover:bg-green-700 text-white flex items-center justify-center gap-3 transition-all duration-300 group/btn shadow-lg shadow-green-600/20 active:scale-95"
+                          onClick={() => navigate(`/donor/donations/create?need_id=${need.id}&ngo_id=${need.ngo}`)}
+                          className="w-full h-8.5 bg-[#22c55e] hover:bg-[#1eb054] text-white rounded-lg text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-sm active:scale-95 group/btn"
                         >
-                          <span className="text-[10px] font-black uppercase tracking-widest">
-                            Respond Now
-                          </span>
-                          <ArrowRight
-                            size={14}
-                            className="transition-transform group-hover/btn:translate-x-1"
-                          />
+                          Respond
+                          <ArrowRight size={13} className="transition-transform group-hover/btn:translate-x-1" />
+                        </button>
+                        <button className="w-full h-8.5 bg-white hover:bg-slate-50 text-[#22c55e] border border-[#22c55e]/10 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all active:scale-95">
+                          Details
                         </button>
                       </div>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
           </div>

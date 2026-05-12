@@ -18,15 +18,39 @@ export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
   required = false,
   align = "left",
 }) => {
+  // Helper to parse YYYY-MM-DD strings in local time to avoid UTC shifts
+  const parseValue = (val: string | null) => {
+    if (!val) return new Date();
+    const [year, month, day] = val.split("-").map(Number);
+    return new Date(year, month - 1, day);
+  };
+
+  // Helper to format Date to YYYY-MM-DD in local time
+  const formatDate = (d: Date) => {
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
   const [isOpen, setIsOpen] = useState(false);
   const [openUpward, setOpenUpward] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const date = value ? new Date(value) : new Date();
-  const [viewDate, setViewDate] = useState(
-    new Date(date.getFullYear(), date.getMonth(), 1),
-  );
+  // Initialize viewDate based on value or today
+  const [viewDate, setViewDate] = useState(() => {
+    const initialDate = parseValue(value);
+    return new Date(initialDate.getFullYear(), initialDate.getMonth(), 1);
+  });
+
+  // Sync viewDate when value changes from outside (optional, but improves UX)
+  useEffect(() => {
+    if (value && !isOpen) {
+      const newDate = parseValue(value);
+      setViewDate(new Date(newDate.getFullYear(), newDate.getMonth(), 1));
+    }
+  }, [value, isOpen]);
 
   // Handle click outside to close
   useEffect(() => {
@@ -53,14 +77,12 @@ export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
   useEffect(() => {
     if (isOpen && buttonRef.current) {
       const buttonRect = buttonRef.current.getBoundingClientRect();
-      const dropdownHeight = 380; // Approximate calendar height
+      const dropdownHeight = 340; // Calibrated height
       const viewportHeight = window.innerHeight;
 
       const spaceBelow = viewportHeight - buttonRect.bottom;
       const spaceAbove = buttonRect.top;
 
-      // Logic: Open upward if there's no space below AND there is enough space above
-      // OR if it's already touching the bottom when opening
       if (spaceBelow < dropdownHeight && spaceAbove > dropdownHeight) {
         setOpenUpward(true);
       } else {
@@ -103,7 +125,7 @@ export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
 
   const handleSelectDay = (day: number) => {
     const selected = new Date(viewDate.getFullYear(), viewDate.getMonth(), day);
-    onChange(selected.toISOString().split("T")[0]);
+    onChange(formatDate(selected));
     setIsOpen(false);
   };
 
@@ -117,9 +139,9 @@ export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
   };
 
   const isSelected = (day: number) => {
-    const current = value ? new Date(value) : null;
+    if (!value) return false;
+    const current = parseValue(value);
     return (
-      current &&
       current.getDate() === day &&
       current.getMonth() === viewDate.getMonth() &&
       current.getFullYear() === viewDate.getFullYear()
@@ -127,18 +149,8 @@ export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
   };
 
   const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December",
   ];
 
   const days = [];
@@ -287,8 +299,8 @@ export const ResuableDatePicker: React.FC<ResuableDatePickerProps> = ({
               <button
                 type="button"
                 onClick={() => {
-                  const today = new Date().toISOString().split("T")[0];
-                  onChange(today);
+                  const today = new Date();
+                  onChange(formatDate(today));
                   setIsOpen(false);
                 }}
                 className="text-[9px] font-bold text-[#22c55e] uppercase tracking-widest hover:underline"

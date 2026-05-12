@@ -1,11 +1,15 @@
 import { motion } from "framer-motion";
 import {
-  Package,
   Clock,
   TrendingUp,
   Trophy,
   ArrowUpRight,
   Sparkles,
+  Truck,
+  CheckCircle2,
+  Leaf,
+  ShieldCheck,
+  Utensils,
 } from "lucide-react";
 import ImpactCards from "../../../../global/components/resuable-components/ImpactCards";
 import {
@@ -314,15 +318,15 @@ const DonorDashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 pb-4 items-stretch">
-        {/* Left Column: NGO Needs Feed */}
-        <div className="lg:col-span-8 flex flex-col h-full">
+        {/* Left Column: NGO Needs Feed (Equal Width) */}
+        <div className="lg:col-span-6 flex flex-col h-full">
           <NGONeedsFeed />
         </div>
 
-        {/* Right Column: Activity */}
-        <div className="lg:col-span-4 flex flex-col h-full">
+        {/* Right Column: Activity (Equal Width) */}
+        <div className="lg:col-span-6 flex flex-col h-full">
           <div
-            className="rounded-md p-5 md:p-6 space-y-6 flex flex-col h-full overflow-hidden border"
+            className="rounded-md p-4 md:p-5 space-y-4 flex flex-col h-full overflow-hidden border"
             style={{
               backgroundColor: "var(--bg-primary)",
               borderColor: "var(--border-color)",
@@ -330,7 +334,7 @@ const DonorDashboard = () => {
           >
             <div className="flex items-center justify-between px-1">
               <h2
-                className="text-[11px] font-black uppercase tracking-widest"
+                className="text-[10px] font-black uppercase tracking-widest opacity-70"
                 style={{ color: "var(--text-primary)" }}
               >
                 Recent Activity
@@ -340,69 +344,85 @@ const DonorDashboard = () => {
               </button>
             </div>
 
-            <div className="space-y-4 flex-1">
+            <div className="space-y-2 flex-1 overflow-y-auto pr-1 thin-scrollbar">
               {recentActivities.map((activity: RecentActivity, idx: number) => {
                 const isCollected = activity.status === "Collected";
-
+                
                 return (
-                  <div
+                  <motion.div
                     key={idx}
-                    className="group flex items-center justify-between p-3 px-4 rounded-md transition-all duration-300 hover:bg-slate-500/5 cursor-pointer border shadow-sm"
-                    style={{ borderColor: "var(--border-color)" }}
+                    whileHover={{ x: 2 }}
+                    className="group flex items-stretch bg-white rounded-lg transition-all duration-300 hover:shadow-sm cursor-pointer border border-slate-100 overflow-hidden"
                   >
-                    <div className="flex items-center gap-4 min-w-0">
-                      <div
-                        className={`w-10 h-10 rounded-md shrink-0 flex items-center justify-center transition-all duration-300 group-hover:scale-105 ${
-                          isCollected
-                            ? "bg-green-500/10 text-green-500 border border-green-500/10"
-                            : "bg-blue-500/10 text-blue-500 border border-blue-500/10"
-                        }`}
-                      >
-                        <Package
-                          size={18}
-                          className="transition-transform group-hover:-translate-y-0.5"
+                    {/* Left: Content Section - Refined Alignment */}
+                    <div className="flex-1 flex items-center gap-3 p-3">
+                      {/* Icon Box - Professional Image Assets */}
+                      <div className="w-12 h-12 rounded-xl shrink-0 flex items-center justify-center transition-all duration-300 group-hover:scale-110 bg-slate-50 border border-slate-100 overflow-hidden shadow-sm">
+                        <img 
+                          src={isCollected ? "/vegandfruits.png" : "/cookedfood.png"} 
+                          alt="Activity Icon" 
+                          className="w-9 h-9 object-contain"
                         />
                       </div>
 
-                      <div className="min-w-0 text-start">
-                        <h3
-                          className="text-sm font-black tracking-tight truncate group-hover:text-green-500 transition-colors mb-0.5 leading-none"
-                          style={{ color: "var(--text-primary)" }}
-                        >
-                          {activity.title}
-                        </h3>
-                        <div className="flex items-center gap-2">
-                          <p
-                            className="text-[9px] font-black uppercase tracking-widest truncate leading-none"
-                            style={{ color: "var(--text-muted)" }}
-                          >
+                      {/* Info - Vertical Stack to prevent overlap */}
+                      <div className="min-w-0 flex-1 flex flex-col justify-center">
+                        <div className="mb-2">
+                          <h3 className="text-[14px] font-black tracking-tight text-slate-800 leading-tight truncate">
+                            {activity.title}
+                          </h3>
+                          <p className="text-[8.5px] font-black text-slate-400 uppercase tracking-[0.15em] leading-none mt-1 truncate">
                             {activity.ngo}
                           </p>
+                        </div>
+                        
+                        <div className="flex items-center gap-3 overflow-hidden">
+                          <div className={`flex items-center gap-1.5 text-[9px] font-black shrink-0 ${
+                            isCollected ? "text-[#22c55e]" : "text-[#3b82f6]"
+                          }`}>
+                            {isCollected ? <Leaf size={11} /> : <Utensils size={11} />}
+                            <span className="uppercase tracking-widest opacity-70">
+                              {isCollected ? "12 kg vegetables" : "10 meals on way"}
+                            </span>
+                          </div>
+                          
+                          <div className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider shrink-0 ${
+                            isCollected 
+                              ? "bg-[#f0fdf4] text-[#22c55e] border border-[#22c55e]/10" 
+                              : "bg-[#eff6ff] text-[#3b82f6] border border-[#3b82f6]/10"
+                          }`}>
+                            {isCollected ? <ShieldCheck size={10} /> : <Sparkles size={10} />}
+                            {isCollected ? "Impact" : "Community"}
+                          </div>
                         </div>
                       </div>
                     </div>
 
-                    <div
-                      className="flex flex-col items-end gap-1.5 shrink-0 ml-4 border-l pl-4"
-                      style={{ borderColor: "var(--border-color)" }}
-                    >
-                      <span
-                        className="text-[8px] font-black uppercase tracking-[0.2em] tabular-nums font-sans"
-                        style={{ color: "var(--text-muted)" }}
-                      >
-                        {activity.time}
-                      </span>
-                      <span
-                        className={`px-2.5 py-0.5 rounded-sm text-[7px] font-black uppercase tracking-[0.2em] border ${
-                          isCollected
-                            ? "text-green-500 bg-green-500/10 border-green-500/20"
-                            : "text-blue-500 bg-blue-500/10 border-blue-500/20"
-                        }`}
-                      >
-                        {activity.status}
-                      </span>
+                    {/* Right: Status Section - Perfected Alignment */}
+                    <div className="w-[120px] flex flex-col items-center justify-center gap-3 border-l border-slate-50 bg-slate-50/20 p-3">
+                      <div className="flex items-center gap-1.5 text-slate-400">
+                        <Clock size={12} className="stroke-[2.5]" />
+                        <span className="text-[9px] font-black uppercase tracking-wide whitespace-nowrap">
+                          {activity.time}
+                        </span>
+                      </div>
+                      
+                      <div className={`flex items-center gap-2 px-3.5 py-2 rounded-full border shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] transition-all duration-300 group-hover:scale-105 ${
+                        isCollected 
+                          ? "bg-white border-green-100 text-[#22c55e]" 
+                          : "bg-white border-blue-100 text-[#3b82f6]"
+                      }`}>
+                        {isCollected ? (
+                          <CheckCircle2 size={13} className="stroke-[2.5]" />
+                        ) : (
+                          <Truck size={13} className="stroke-[2.5]" />
+                        )}
+                        <span className="text-[9px] font-black uppercase tracking-[0.05em] leading-none whitespace-nowrap">
+                          {activity.status}
+                        </span>
+                      </div>
                     </div>
-                  </div>
+                  </motion.div>
                 );
               })}
             </div>
@@ -411,27 +431,22 @@ const DonorDashboard = () => {
       </div>
 
       {/* Full Width Row: Impact Milestones */}
-      <div className="">
+      <div className="mt-4">
         <div
-          className="rounded-md p-5 md:p-8 space-y-8 flex flex-col h-full overflow-hidden border"
-          style={{
-            backgroundColor: "var(--bg-primary)",
-            borderColor: "var(--border-color)",
-          }}
+          className="rounded-xl p-4 md:p-5 space-y-5 flex flex-col overflow-hidden border border-slate-100 shadow-sm bg-white"
         >
           <div className="flex items-center justify-between px-1">
             <h2
-              className="text-[11px] font-black uppercase tracking-widest"
-              style={{ color: "var(--text-primary)" }}
+              className="text-[12px] font-black uppercase tracking-[0.2em] text-slate-800"
             >
               Impact Milestones
             </h2>
-            <button className="text-[8px] font-black text-green-500 hover:text-green-700 uppercase tracking-widest transition-colors focus:outline-none">
+            <button className="text-[9px] font-black text-green-500 hover:text-green-700 uppercase tracking-widest transition-colors focus:outline-none">
               VIEW ALL
             </button>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 overflow-y-auto pr-2 h-auto max-h-[400px] thin-scrollbar scroll-smooth">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-5 overflow-y-auto pr-2 max-h-[260px] thin-scrollbar scroll-smooth">
             {INITIAL_MILESTONES.filter((badge) => badge.category === "donors")
               .map((badge, i) => ({
                 badge,

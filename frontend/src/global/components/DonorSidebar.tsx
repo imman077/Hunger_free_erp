@@ -56,21 +56,19 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
 
   const content = (
     <div
-      className={`group relative flex items-center transition-all duration-200 cursor-pointer mb-1 mx-auto
+      className={`group relative flex items-center transition-all duration-300 cursor-pointer mb-2 px-4 py-2.5 rounded-2xl
         ${
-          isActive || isSubItemActive
-            ? expanded
-              ? "w-full p-2.5 bg-emerald-50 text-emerald-600 font-semibold border-l-4 border-[#22c55e] rounded-xl"
-              : "w-11 h-11 bg-emerald-50 text-emerald-600 font-semibold rounded-xl justify-center"
+          (isActive || isSubItemActive) && expanded
+            ? "bg-emerald-50 text-emerald-600 font-bold"
             : expanded
-              ? "w-full p-2.5 text-slate-400 hover:bg-slate-100 hover:text-emerald-500 rounded-xl"
-              : "w-11 h-11 text-slate-400 hover:bg-slate-100 hover:text-emerald-500 rounded-xl justify-center"
+              ? "text-slate-600 hover:bg-slate-50 hover:text-emerald-500"
+              : isActive || isSubItemActive
+                ? "w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl justify-center mx-auto"
+                : "w-12 h-12 text-slate-400 hover:bg-slate-50 hover:text-emerald-500 rounded-2xl justify-center mx-auto"
         }`}
       onClick={handleClick}
     >
-      <div
-        className={`flex items-center justify-center shrink-0 ${expanded ? "w-7 h-7" : ""}`}
-      >
+      <div className={`flex items-center justify-center shrink-0 ${expanded ? "w-6 h-6" : ""}`}>
         <Icon
           name={
             typeof icon === "string"
@@ -80,17 +78,17 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           className={`w-5 h-5 transition-all duration-300 ${
             isActive || isSubItemActive
               ? "text-emerald-600 opacity-100"
-              : "opacity-25 group-hover:opacity-60"
+              : "opacity-40 group-hover:opacity-100"
           }`}
         />
       </div>
       {expanded && (
-        <div className="flex items-center flex-1 ml-2.5 animate-in fade-in slide-in-from-left-2 duration-300 min-w-0">
-          <span className="text-[15px]">{label}</span>
+        <div className="flex items-center flex-1 ml-3 animate-in fade-in slide-in-from-left-2 duration-300">
+          <span className="text-[15px] tracking-tight">{label}</span>
           {subItems && (
             <Icon
               name="chevron-down"
-              className={`w-4 h-4 transition-transform duration-300 ml-auto ${isOpen ? "rotate-180" : ""}`}
+              className={`w-4 h-4 transition-transform duration-300 ml-auto ${isOpen ? "rotate-180" : "opacity-40"}`}
             />
           )}
         </div>
@@ -99,7 +97,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   );
 
   return (
-    <div className="w-full">
+    <div className="w-full relative">
       {to && !subItems ? (
         <Link to={to} onClick={onNavigate}>
           {content}
@@ -107,42 +105,46 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
       ) : (
         content
       )}
-      {subItems && expanded && (
-        <div
-          className={`overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] ${
-            isOpen ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0"
-          }`}
-        >
+
+      {subItems && expanded && isOpen && (
+        <div className="relative ml-[35px] mt-1 space-y-1">
+          {/* Vertical Connector Line */}
           <div
-            className="ml-8 space-y-0.5 mt-0.5"
-            style={{ borderLeft: "1px solid var(--border-color)" }}
-          >
-            {subItems.map((item) => {
-              const isSubActive = location.pathname === item.to;
-              return (
-                <Link
-                  key={item.to}
-                  to={item.to}
-                  onClick={onNavigate}
-                  className={`w-full flex items-center justify-between px-3 py-1.5 text-sm rounded-lg transition-all duration-200 ${
+            className="absolute left-0 top-[-15px] bottom-4 w-[1px] bg-slate-200"
+          />
+
+          {subItems.map((item) => {
+            const isSubActive = location.pathname === item.to;
+            return (
+              <Link
+                key={item.to}
+                to={item.to}
+                onClick={onNavigate}
+                className={`relative flex items-center pl-6 pr-4 py-2 text-[14px] transition-all duration-300 rounded-xl
+                  ${
                     isSubActive
-                      ? "text-emerald-600 font-semibold bg-emerald-500/10"
-                      : "text-slate-500 hover:text-[#22c55e] hover:translate-x-1"
+                      ? "text-emerald-600 font-semibold bg-emerald-50/50"
+                      : "text-slate-400 hover:text-emerald-600 hover:bg-slate-50/30"
                   }`}
-                >
-                  <span className="truncate">{item.label}</span>
-                  {isSubActive && (
-                    <div className="w-1.5 h-1.5 rounded-full bg-[#22c55e] shadow-[0_0_8px_rgba(34,197,94,0.4)]" />
-                  )}
-                </Link>
-              );
-            })}
-          </div>
+              >
+                {/* Horizontal Tick for Connector */}
+                <div
+                  className="absolute left-0 w-4 h-[1px] bg-slate-200 top-1/2 -translate-y-1/2"
+                />
+                <span className="truncate">{item.label}</span>
+                {isSubActive && (
+                  <div className="ml-auto w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                )}
+              </Link>
+            );
+          })}
+
         </div>
       )}
     </div>
   );
 };
+
 
 const DonorSidebar: React.FC = () => {
   const { expanded, setExpanded, mobileOpen, setMobileOpen } = useSidebar();
@@ -173,11 +175,11 @@ const DonorSidebar: React.FC = () => {
   }) => (
     <div className="flex-1 flex flex-col overflow-hidden h-full">
       <nav
-        className={`flex-1 overflow-y-auto no-scrollbar space-y-1 ${
-          inDrawer ? "px-4" : expanded ? "px-4" : "px-2"
+        className={`flex-1 overflow-y-auto no-scrollbar py-4 ${
+          inDrawer ? "px-6" : expanded ? "px-6" : "px-3"
         }`}
       >
-        <div className="space-y-1">
+        <div className="space-y-2">
           <SidebarItem
             icon={<Icon name="dashboard" />}
             label="Dashboard"
@@ -200,7 +202,7 @@ const DonorSidebar: React.FC = () => {
             onNavigate={onNavigate}
           />
           <SidebarItem
-            icon={<Icon name="users" />}
+            icon={<Icon name="user" />}
             label="Profile"
             expanded={inDrawer ? true : expanded}
             subItems={profileSubItems}
@@ -216,42 +218,51 @@ const DonorSidebar: React.FC = () => {
       {/* Desktop sidebar */}
       <aside
         className={`hidden md:flex fixed top-0 left-0 h-screen transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] flex-col z-[50] ${
-          expanded ? "w-[260px]" : "w-[70px]"
+          expanded ? "w-[280px]" : "w-[88px]"
         }`}
         style={{
-          backgroundColor: "var(--bg-primary)",
-          borderRight: "1px solid var(--border-color)",
+          backgroundColor: "white",
+          borderRight: "1px solid #f1f5f9",
         }}
       >
-        <div className="h-20 flex items-center flex-shrink-0 w-full overflow-hidden mb-4">
-          <div className="w-full flex items-center justify-center">
-            {expanded ? (
-              <div
-                className="w-full cursor-pointer hover:opacity-80 transition-opacity"
-                onClick={() => setExpanded(!expanded)}
-              >
-                <img
-                  src="/HungerFree.svg"
-                  className="h-[72px] w-auto object-contain mx-auto"
-                  alt="HungerFree Logo"
-                />
-              </div>
-            ) : (
+        <div 
+          className="h-20 flex items-center justify-center flex-shrink-0 border-b transition-all duration-300 w-full overflow-hidden"
+          style={{ 
+            backgroundColor: "var(--bg-primary)",
+            borderColor: "var(--border-color)" 
+          }}
+        >
+          {expanded ? (
+            <div
+              className="flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-[1.02] active:scale-95 w-full h-full"
+              onClick={() => setExpanded(!expanded)}
+            >
+              <img
+                src="/project_logo1.png"
+                className="w-full h-full object-contain px-1"
+                alt="HungerFree Logo"
+              />
+            </div>
+          ) : (
+
+
+            <div className="flex justify-center w-full">
               <button
                 onClick={() => setExpanded(!expanded)}
-                className="w-11 h-11 rounded-xl flex items-center justify-center border transition-all shadow-sm active:scale-95"
-                style={{
-                  borderColor: "var(--border-color)",
-                  backgroundColor: "var(--bg-secondary)",
-                }}
+                className="w-11 h-11 rounded-xl flex items-center justify-center bg-slate-50 border border-slate-100 transition-all hover:bg-emerald-50 hover:border-emerald-100 group"
               >
-                <Icon name="menu" className="w-5 h-5 text-emerald-500" />
+                <Icon name="menu" className="w-5 h-5 text-slate-400 group-hover:text-emerald-500" />
               </button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
+
+
+
+
         <NavContent />
       </aside>
+
 
       {/* Mobile backdrop */}
       {mobileOpen && (
@@ -293,17 +304,25 @@ const DonorSidebar: React.FC = () => {
               style={{ padding: 0, margin: 0 }}
             >
               <div
-                className="h-20 flex items-center justify-between px-4 flex-shrink-0 w-full overflow-hidden border-b"
-                style={{ borderColor: "var(--border-color)" }}
+                className="h-16 flex items-center justify-center flex-shrink-0 w-full overflow-hidden border-b"
+                style={{ 
+                  backgroundColor: "var(--bg-primary)",
+                  borderColor: "var(--border-color)" 
+                }}
               >
-                <div className="flex-1 flex justify-center">
+                <div className="flex items-center justify-center w-full h-full">
                   <img
-                    src="/HungerFree.svg"
-                    className="h-16 w-auto object-contain"
+                    src="/project_logo1.png"
+                    className="w-full h-full object-contain px-1"
                     alt="HungerFree Logo"
                   />
                 </div>
               </div>
+
+
+
+
+
               <div className="flex-1 overflow-hidden flex flex-col min-h-0">
                 <NavContent inDrawer onNavigate={() => setMobileOpen(false)} />
               </div>
