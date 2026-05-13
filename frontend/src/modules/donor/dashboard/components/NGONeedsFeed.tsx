@@ -141,31 +141,32 @@ const NGONeedsFeed = () => {
 
       <div className="flex-1 flex flex-col">
         {needs.length === 0 ? (
-          <div className="flex-1 flex flex-col items-center justify-center py-6">
-            <div className="relative w-48 h-40 mb-1">
+          <div className="flex-1 flex flex-col items-center justify-center py-10 text-center">
+            <div className="relative w-48 h-40 mb-6">
               <img 
-                src="/empty card.png" 
+                src="/empty_food.png" 
                 alt="No active requests" 
                 className="w-full h-full object-contain select-none pointer-events-none"
               />
             </div>
             
-            <div className="text-center space-y-2 mb-8">
-              <h3 className="text-base font-black text-slate-800 flex items-center justify-center gap-2">
-                No active urgent requests <span className="text-lg">🎉</span>
+            <div className="text-center space-y-2 mb-10">
+              <h3 className="text-xl font-black text-slate-800">
+                No active urgent requests
               </h3>
-              <p className="text-[11px] font-medium text-slate-400 max-w-[300px] leading-relaxed mx-auto">
-                Great news! There are no urgent requests right now. <br />
-                Check back later to help more communities.
+              <p className="text-[11px] font-medium text-slate-400 max-w-[280px] leading-relaxed mx-auto">
+                Great news! There are no urgent requests right now. Check back later to help more communities.
               </p>
             </div>
 
             <button 
               onClick={() => navigate('/donor/donations/needs')}
-              className="flex items-center gap-4 px-10 py-3 bg-[#f0fcf4] hover:bg-[#e6f9ed] text-[#22c55e] rounded-full text-[11px] font-black uppercase tracking-[0.1em] transition-all group"
+              className="group relative px-8 py-3.5 bg-[#16a34a] text-white rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-[#15803d] transition-all flex items-center justify-center gap-4 active:scale-95 shadow-xl shadow-green-500/10 overflow-hidden"
             >
-              View all requests
-              <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+              <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
+                <img src="/giving.png" className="w-4 h-4 object-contain invert brightness-0" alt="Icon" />
+              </div>
+              <span className="relative z-10">View all requests</span>
             </button>
           </div>
         ) : (

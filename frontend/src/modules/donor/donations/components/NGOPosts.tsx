@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
+import { motion } from "framer-motion";
 import { ngoNeedsService } from "../../../ngo/needs/api/needs.api";
 import { toast } from "sonner";
 import {
@@ -217,9 +218,9 @@ const NGOPosts = () => {
   ];
 
   return (
-    <div className="w-full space-y-6 mx-auto p-4 bg-transparent">
+    <div className="w-full h-[calc(100vh-64px)] flex flex-col space-y-4 max-w-[1600px] mx-auto p-4 bg-transparent overflow-hidden">
       <div
-        className="rounded-xl border shadow-sm relative overflow-hidden"
+        className="rounded-xl border shadow-sm relative overflow-hidden shrink-0"
         style={{
           backgroundColor: "var(--bg-primary)",
           borderColor: "var(--border-color)",
@@ -343,292 +344,313 @@ const NGOPosts = () => {
         </div>
       </div>
 
-      {isLoading ? (
-        <div className="flex flex-col items-center justify-center py-24 gap-4 animate-in fade-in duration-500">
-          <div className="relative">
-            <div
-              className="w-16 h-16 border-4 border-emerald-500/10 rounded-full animate-spin"
-              style={{ borderTopColor: "var(--color-emerald-500)" }}
-            />
-            <Loader2
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-emerald-500 animate-pulse"
-              size={24}
-            />
-          </div>
-          <p className="text-[11px] font-black uppercase tracking-[0.3em] text-[var(--text-muted)] animate-pulse">
-            Fetching fresh needs...
-          </p>
-        </div>
-      ) : filteredNeeds.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-24 bg-[var(--bg-primary)] border border-[var(--border-color)] border-dashed rounded-2xl gap-6">
-          <div className="bg-emerald-500/5 p-8 rounded-full">
-            <Box size={48} className="text-emerald-500/20" />
-          </div>
-          <div className="text-center space-y-2">
-            <h3 className="text-xl font-bold tracking-tight">
-              No needs found matching your criteria
-            </h3>
-            <p className="text-[var(--text-muted)] text-sm max-w-sm">
-              Every NGO is currently well-stocked. Check back soon for new
-              opportunities to support.
+      <div className="flex-1 overflow-y-auto no-scrollbar pr-1">
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center py-24 gap-4 animate-in fade-in duration-500">
+            <div className="relative">
+              <div
+                className="w-16 h-16 border-4 border-emerald-500/10 rounded-full animate-spin"
+                style={{ borderTopColor: "var(--color-emerald-500)" }}
+              />
+              <Loader2
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-emerald-500 animate-pulse"
+                size={24}
+              />
+            </div>
+            <p className="text-[11px] font-black uppercase tracking-[0.3em] text-[var(--text-muted)] animate-pulse">
+              Fetching fresh needs...
             </p>
           </div>
-          <Button
-            variant="flat"
-            className="font-black text-[10px] uppercase tracking-widest"
-            onPress={() => {
-              setSearchQuery("");
-              setCategoryFilter("ALL");
-            }}
+        ) : filteredNeeds.length === 0 ? (
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="flex flex-col items-center justify-center bg-white shadow-[0_8px_30px_rgba(0,0,0,0.02)] border border-slate-100 rounded-[24px] relative overflow-hidden group"
           >
-            Clear all filters
-          </Button>
-        </div>
-      ) : viewMode === "table" ? (
-        <div className="border rounded-2xl shadow-sm p-4 overflow-hidden bg-[var(--bg-primary)] border-[var(--border-color)]">
-          <ReusableTable
-            data={filteredNeeds}
-            onRowClick={(need: NGONeed) => {
-              setSelectedNeed(need);
-              setIsDrawerOpen(true);
-            }}
-            columns={[
-              { name: "Need ID", uid: "id", sortable: true },
-              { name: "Required Item", uid: "item_name", sortable: true },
-              { name: "Organization", uid: "ngo_name", sortable: true },
-              { name: "Urgency", uid: "urgency", sortable: true },
-              { name: "Help Location", uid: "location", sortable: true },
-              { name: "Quantity", uid: "quantity", sortable: true },
-              { name: "Deadline", uid: "required_by", sortable: true },
-              { name: "Actions", uid: "actions", sortable: false },
-            ]}
-            renderCell={(need: NGONeed, columnKey: React.Key) => {
-              switch (columnKey) {
-                case "id":
-                  return (
-                    <span className="text-[10px] font-black border px-2 py-1 rounded-sm bg-[var(--bg-secondary)] border-[var(--border-color)]">
-                      #NEED-{need.id}
-                    </span>
-                  );
-                case "item_name":
-                  return (
-                    <TableChip
-                      text={need.item_name}
-                      icon={<Box size={14} className="text-emerald-500" />}
+            {/* Subtle Decorative elements */}
+            <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
+              <div className="absolute -top-12 -left-12 w-48 h-48 bg-emerald-50/20 rounded-full blur-[80px]" />
+            </div>
+
+            <div className="relative z-10 flex flex-col items-center text-center">
+              {/* Illustration */}
+              <div className="relative w-56 h-40 md:w-64 md:h-48 mb-4">
+                <img
+                  src="/empty_food.png"
+                  alt="No Needs"
+                  className="w-full h-full object-contain opacity-90"
+                />
+              </div>
+
+              {/* Content Area */}
+              <div className="space-y-2 mb-8">
+                <h3 className="text-2xl md:text-3xl font-black text-slate-800 tracking-tight leading-tight">
+                  No active requests found
+                </h3>
+                <p className="text-slate-500/70 text-[13px] md:text-sm font-bold max-w-xs mx-auto leading-relaxed">
+                  Every NGO is currently well-stocked. <br />
+                  Check back soon for new opportunities to support.
+                </p>
+              </div>
+
+              {/* <Button
+                variant="flat"
+                className="px-10 py-7 rounded-2xl bg-emerald-500 text-white font-black text-[11px] uppercase tracking-widest hover:bg-emerald-600 transition-all active:scale-95 shadow-md shadow-emerald-500/10"
+                onPress={() => {
+                  setSearchQuery("");
+                  setCategoryFilter("ALL");
+                }}
+              >
+                Clear all filters
+              </Button> */}
+            </div>
+          </motion.div>
+        ) : viewMode === "table" ? (
+          <div className="border rounded-2xl shadow-sm p-4 overflow-hidden bg-[var(--bg-primary)] border-[var(--border-color)]">
+            <ReusableTable
+              data={filteredNeeds}
+              onRowClick={(need: NGONeed) => {
+                setSelectedNeed(need);
+                setIsDrawerOpen(true);
+              }}
+              columns={[
+                { name: "Need ID", uid: "id", sortable: true },
+                { name: "Required Item", uid: "item_name", sortable: true },
+                { name: "Organization", uid: "ngo_name", sortable: true },
+                { name: "Urgency", uid: "urgency", sortable: true },
+                { name: "Help Location", uid: "location", sortable: true },
+                { name: "Quantity", uid: "quantity", sortable: true },
+                { name: "Deadline", uid: "required_by", sortable: true },
+                { name: "Actions", uid: "actions", sortable: false },
+              ]}
+              renderCell={(need: NGONeed, columnKey: React.Key) => {
+                switch (columnKey) {
+                  case "id":
+                    return (
+                      <span className="text-[10px] font-black border px-2 py-1 rounded-sm bg-[var(--bg-secondary)] border-[var(--border-color)]">
+                        #NEED-{need.id}
+                      </span>
+                    );
+                  case "item_name":
+                    return (
+                      <TableChip
+                        text={need.item_name}
+                        icon={<Box size={14} className="text-emerald-500" />}
+                      />
+                    );
+                  case "ngo_name":
+                    return (
+                      <TableChip
+                        text={need.ngo_name || "Authorized NGO"}
+                        initials={(need.ngo_name || "AN").substring(0, 2)}
+                      />
+                    );
+                  case "urgency":
+                    return (
+                      <span
+                        className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border ${
+                          need.urgency === "Urgent"
+                            ? "bg-red-500/10 text-red-500 border-red-500/20"
+                            : need.urgency === "High"
+                              ? "bg-amber-500/10 text-amber-500 border-amber-500/20"
+                              : "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
+                        }`}
+                      >
+                        {need.urgency}
+                      </span>
+                    );
+                  case "location":
+                    return (
+                      <div className="flex items-center gap-2">
+                        <MapPin size={12} className="text-emerald-500" />
+                        <span className="text-[11px] font-bold">
+                          {need.distribution_address || "Service Zone"}
+                        </span>
+                      </div>
+                    );
+                  case "quantity":
+                    return (
+                      <span className="text-[11px] font-bold tabular-nums">
+                        {need.fulfilled_quantity && need.fulfilled_quantity > 0 ? (
+                          <span className="text-emerald-500">{need.quantity - need.fulfilled_quantity} {need.unit} left</span>
+                        ) : (
+                          <span>{need.quantity} {need.unit}</span>
+                        )}
+                      </span>
+                    );
+                  case "required_by":
+                    return (
+                      <div className="flex items-center gap-2 text-[var(--text-muted)]">
+                        <Clock size={12} />
+                        <span className="text-[11px] font-bold">
+                          {need.required_by || "Flexible"}
+                        </span>
+                      </div>
+                    );
+                  case "actions":
+                    return (
+                      <div className="flex items-center gap-2">
+                        <Button
+                          size="sm"
+                          className={`${
+                            user && user.profile.role === "NGO" && (need.ngo === user.id || need.is_mine)
+                              ? "bg-blue-500"
+                              : "bg-emerald-500"
+                          } text-white font-black text-[9px] uppercase tracking-widest px-4 h-8 rounded-lg`}
+                          onPress={() => handleApplyToHelp(need)}
+                        >
+                          {user && user.profile.role === "NGO" && (need.ngo === user.id || need.is_mine) ? "Track" : need.status === "PENDING_DONATION" ? "Accept" : "Fulfill"}
+                        </Button>
+                      </div>
+                    );
+                  default:
+                    return null;
+                }
+              }}
+            />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredNeeds.map((need) => (
+              <div
+                key={need.id}
+                className="group relative flex flex-col bg-[var(--bg-primary)] border border-[var(--border-color)] rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-emerald-500/10 transition-all duration-500"
+              >
+                {/* Image / Icon Header */}
+                <div className="relative h-48 overflow-hidden bg-[var(--bg-secondary)]">
+                  {need.image ? (
+                    <img
+                      src={need.image}
+                      alt={need.item_name}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
-                  );
-                case "ngo_name":
-                  return (
-                    <TableChip
-                      text={need.ngo_name || "Authorized NGO"}
-                      initials={(need.ngo_name || "AN").substring(0, 2)}
-                    />
-                  );
-                case "urgency":
-                  return (
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center opacity-20">
+                      <Box size={80} className="text-emerald-500" />
+                    </div>
+                  )}
+
+                  {/* Badges Over Image */}
+                  <div className="absolute top-4 right-4 z-20 flex flex-col items-end gap-2">
                     <span
-                      className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border ${
+                      className={`px-4 py-1.5 rounded-full text-[8px] font-black uppercase tracking-[0.2em] shadow-xl backdrop-blur-md border ${
                         need.urgency === "Urgent"
-                          ? "bg-red-500/10 text-red-500 border-red-500/20"
+                          ? "bg-red-500 text-white border-red-400/50 animate-pulse"
                           : need.urgency === "High"
-                            ? "bg-amber-500/10 text-amber-500 border-amber-500/20"
-                            : "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
+                            ? "bg-amber-500 text-white border-amber-400/50"
+                            : "bg-emerald-500 text-white border-emerald-400/50"
                       }`}
                     >
                       {need.urgency}
                     </span>
-                  );
-                case "location":
-                  return (
-                    <div className="flex items-center gap-2">
-                      <MapPin size={12} className="text-emerald-500" />
-                      <span className="text-[11px] font-bold">
+                    
+                    {need.status === "Fulfilling" && (
+                      <span className="px-4 py-1.5 rounded-full text-[8px] font-black uppercase tracking-[0.2em] shadow-xl backdrop-blur-md border bg-blue-500 text-white border-blue-400/50">
+                        In Progress
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="absolute bottom-4 left-4 z-20">
+                    <div className="flex items-center gap-2 px-3 py-1 bg-black/40 backdrop-blur-md rounded-lg border border-white/20">
+                      <MapPin size={10} className="text-white" />
+                      <span className="text-[9px] font-black text-white uppercase tracking-widest">
                         {need.distribution_address || "Service Zone"}
                       </span>
                     </div>
-                  );
-                case "quantity":
-                  return (
-                    <span className="text-[11px] font-bold tabular-nums">
-                      {need.fulfilled_quantity && need.fulfilled_quantity > 0 ? (
-                        <span className="text-emerald-500">{need.quantity - need.fulfilled_quantity} {need.unit} left</span>
-                      ) : (
-                        <span>{need.quantity} {need.unit}</span>
-                      )}
-                    </span>
-                  );
-                case "required_by":
-                  return (
-                    <div className="flex items-center gap-2 text-[var(--text-muted)]">
-                      <Clock size={12} />
-                      <span className="text-[11px] font-bold">
-                        {need.required_by || "Flexible"}
+                  </div>
+                </div>
+
+                {/* Content Area */}
+                <div className="p-6 flex-grow flex flex-col gap-5">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-[9px] font-black text-emerald-500 uppercase tracking-widest leading-none bg-emerald-500/5 px-2 py-1 rounded">
+                        {need.category}
                       </span>
                     </div>
-                  );
-                case "actions":
-                  return (
-                    <div className="flex items-center gap-2">
-                      <Button
-                        size="sm"
-                        className={`${
-                          user && user.profile.role === "NGO" && (need.ngo === user.id || need.is_mine)
-                            ? "bg-blue-500"
-                            : "bg-emerald-500"
-                        } text-white font-black text-[9px] uppercase tracking-widest px-4 h-8 rounded-lg`}
-                        onPress={() => handleApplyToHelp(need)}
-                      >
-                        {user && user.profile.role === "NGO" && (need.ngo === user.id || need.is_mine) ? "Track" : need.status === "PENDING_DONATION" ? "Accept" : "Fulfill"}
-                      </Button>
+                    <h3 className="text-xl font-black tracking-tight leading-tight group-hover:text-emerald-500 transition-colors">
+                      {need.item_name}
+                    </h3>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-color)] space-y-3">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-bold text-[var(--text-muted)] uppercase tracking-wider text-[9px]">
+                        Organization
+                      </span>
+                      <span className="font-black text-emerald-500">
+                        {need.ngo_name || "Validated NGO"}
+                      </span>
                     </div>
-                  );
-                default:
-                  return null;
-              }
-            }}
-          />
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredNeeds.map((need) => (
-            <div
-              key={need.id}
-              className="group relative flex flex-col bg-[var(--bg-primary)] border border-[var(--border-color)] rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-emerald-500/10 transition-all duration-500"
-            >
-              {/* Image / Icon Header */}
-              <div className="relative h-48 overflow-hidden bg-[var(--bg-secondary)]">
-                {need.image ? (
-                  <img
-                    src={need.image}
-                    alt={need.item_name}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center opacity-20">
-                    <Box size={80} className="text-emerald-500" />
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-bold text-[var(--text-muted)] uppercase tracking-wider text-[9px]">
+                        Requirement
+                      </span>
+                      <span className="font-black">
+                        {need.fulfilled_quantity && need.fulfilled_quantity > 0 ? (
+                          <span className="flex flex-col items-end">
+                              <span className="text-emerald-500">{need.quantity - need.fulfilled_quantity} {need.unit} left</span>
+                              <span className="text-[9px] text-[var(--text-muted)] font-normal uppercase">of {need.quantity} {need.unit}</span>
+                          </span>
+                        ) : (
+                          <span>{need.quantity} {need.unit}</span>
+                        )}
+                      </span>
+                    </div>
                   </div>
-                )}
 
-                {/* Badges Over Image */}
-                <div className="absolute top-4 right-4 z-20 flex flex-col items-end gap-2">
-                  <span
-                    className={`px-4 py-1.5 rounded-full text-[8px] font-black uppercase tracking-[0.2em] shadow-xl backdrop-blur-md border ${
-                      need.urgency === "Urgent"
-                        ? "bg-red-500 text-white border-red-400/50 animate-pulse"
-                        : need.urgency === "High"
-                          ? "bg-amber-500 text-white border-amber-400/50"
-                          : "bg-emerald-500 text-white border-emerald-400/50"
-                    }`}
-                  >
-                    {need.urgency}
-                  </span>
-                  
-                  {need.status === "Fulfilling" && (
-                    <span className="px-4 py-1.5 rounded-full text-[8px] font-black uppercase tracking-[0.2em] shadow-xl backdrop-blur-md border bg-blue-500 text-white border-blue-400/50">
-                      In Progress
-                    </span>
-                  )}
-                </div>
+                  <p className="text-[11px] leading-relaxed text-[var(--text-muted)] line-clamp-2 italic">
+                    "
+                    {need.description ||
+                      "Help our organization gather resources for local communities in need."}
+                    "
+                  </p>
 
-                <div className="absolute bottom-4 left-4 z-20">
-                  <div className="flex items-center gap-2 px-3 py-1 bg-black/40 backdrop-blur-md rounded-lg border border-white/20">
-                    <MapPin size={10} className="text-white" />
-                    <span className="text-[9px] font-black text-white uppercase tracking-widest">
-                      {need.distribution_address || "Service Zone"}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Content Area */}
-              <div className="p-6 flex-grow flex flex-col gap-5">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-[9px] font-black text-emerald-500 uppercase tracking-widest leading-none bg-emerald-500/5 px-2 py-1 rounded">
-                      {need.category}
-                    </span>
-                  </div>
-                  <h3 className="text-xl font-black tracking-tight leading-tight group-hover:text-emerald-500 transition-colors">
-                    {need.item_name}
-                  </h3>
-                </div>
-
-                <div className="p-4 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-color)] space-y-3">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-bold text-[var(--text-muted)] uppercase tracking-wider text-[9px]">
-                      Organization
-                    </span>
-                    <span className="font-black text-emerald-500">
-                      {need.ngo_name || "Validated NGO"}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-bold text-[var(--text-muted)] uppercase tracking-wider text-[9px]">
-                      Requirement
-                    </span>
-                    <span className="font-black">
-                      {need.fulfilled_quantity && need.fulfilled_quantity > 0 ? (
-                        <span className="flex flex-col items-end">
-                            <span className="text-emerald-500">{need.quantity - need.fulfilled_quantity} {need.unit} left</span>
-                            <span className="text-[9px] text-[var(--text-muted)] font-normal uppercase">of {need.quantity} {need.unit}</span>
-                        </span>
+                  <div className="pt-2 flex items-center gap-2">
+                    <Button
+                      className={`flex-1 font-black text-[10px] uppercase tracking-widest px-6 h-12 rounded-2xl shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 ${
+                        user && user.profile.role === "NGO" && need.ngo === user.id
+                          ? "bg-blue-500 hover:bg-blue-600 shadow-blue-500/20"
+                          : "bg-emerald-500 hover:bg-emerald-600 shadow-emerald-500/20"
+                      } text-white`}
+                      onPress={() => handleApplyToHelp(need)}
+                    >
+                      {user && user.profile.role === "NGO" && (need.ngo === user.id || need.is_mine) ? (
+                        <>
+                          <Clock size={14} />
+                          Track Progress
+                        </>
+                      ) : need.status === "PENDING_DONATION" ? (
+                        <>
+                          <Box size={14} />
+                          Accept Donation
+                        </>
                       ) : (
-                        <span>{need.quantity} {need.unit}</span>
+                        <>
+                          <img src="/giving.png" className="w-5 h-5 object-contain" alt="Giving" />
+                          Support Need
+                        </>
                       )}
-                    </span>
+                    </Button>
+                    <Button
+                      isIconOnly
+                      className="bg-[var(--bg-secondary)] border border-[var(--border-color)] text-[var(--text-muted)] hover:text-emerald-500 h-12 w-12 rounded-2xl transition-all"
+                      onPress={() => {
+                        setSelectedNeed(need);
+                        setIsDrawerOpen(true);
+                      }}
+                    >
+                      <Eye size={18} />
+                    </Button>
                   </div>
                 </div>
-
-                <p className="text-[11px] leading-relaxed text-[var(--text-muted)] line-clamp-2 italic">
-                  "
-                  {need.description ||
-                    "Help our organization gather resources for local communities in need."}
-                  "
-                </p>
-
-                <div className="pt-2 flex items-center gap-3">
-                  <Button
-                    className={`flex-1 font-black text-[10px] uppercase tracking-widest px-6 h-12 rounded-2xl shadow-lg active:scale-95 transition-all ${
-                      user && user.profile.role === "NGO" && need.ngo === user.id
-                        ? "bg-blue-500 hover:bg-blue-600 shadow-blue-500/20"
-                        : "bg-emerald-500 hover:bg-emerald-600 shadow-emerald-500/20"
-                    } text-white`}
-                    onPress={() => handleApplyToHelp(need)}
-                  >
-                    {user && user.profile.role === "NGO" && (need.ngo === user.id || need.is_mine) ? (
-                      <>
-                        <Clock size={14} />
-                        Track Progress
-                      </>
-                    ) : need.status === "PENDING_DONATION" ? (
-                      <>
-                        <Box size={14} />
-                        Accept Donation
-                      </>
-                    ) : (
-                      <>
-                        <Heart size={14} fill="currentColor" />
-                        Support Need
-                      </>
-                    )}
-                  </Button>
-                  <Button
-                    isIconOnly
-                    className="bg-[var(--bg-secondary)] border border-[var(--border-color)] text-[var(--text-muted)] hover:text-emerald-500 h-12 w-12 rounded-2xl transition-all"
-                    onPress={() => {
-                      setSelectedNeed(need);
-                      setIsDrawerOpen(true);
-                    }}
-                  >
-                    <Eye size={18} />
-                  </Button>
-                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
-
+            ))}
+          </div>
+        )}
+      </div>
       {/* Details Drawer */}
       <ResuableDrawer
         isOpen={isDrawerOpen}

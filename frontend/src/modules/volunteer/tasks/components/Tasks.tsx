@@ -1,5 +1,6 @@
 // Task module for volunteer operations
 import { useState, useCallback, useEffect } from "react";
+import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { volunteerTasksService } from "../api/tasks.api";
 import {
@@ -670,36 +671,49 @@ const VolunteerTasks = () => {
             )}
           </div>
         ) : (
-          <div
-            className="py-20 sm:py-32 rounded-lg border border-dashed flex flex-col items-center justify-center gap-4 px-4 text-center"
-            style={{
-              backgroundColor: "var(--bg-primary)",
-              borderColor: "var(--border-color)",
-            }}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col items-center justify-center py-16 md:py-24 px-6 bg-white border border-slate-100 rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden"
           >
-            <div
-              className="w-12 h-12 sm:w-16 sm:h-16 border rounded-sm flex items-center justify-center"
-              style={{
-                backgroundColor: "var(--bg-secondary)",
-                borderColor: "var(--border-color)",
-              }}
-            >
-              <Package size={32} style={{ color: "var(--text-muted)" }} />
+            {/* Decorative background elements */}
+            <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
+              <div className="absolute top-10 left-10 w-32 h-32 bg-green-50 rounded-full blur-3xl opacity-60" />
+              <div className="absolute bottom-10 right-10 w-40 h-40 bg-blue-50 rounded-full blur-3xl opacity-60" />
             </div>
-            <p
-              className="font-black text-[10px] sm:text-xs uppercase tracking-[0.3em]"
-              style={{ color: "var(--text-muted)" }}
-            >
-              No relevant tasks found
-            </p>
-            <ResuableButton
-              variant="secondary"
-              className="px-6 py-2.5 !rounded-sm text-[9px] sm:text-[10px] font-black uppercase tracking-widest"
-              onClick={() => setActiveTab("opps")}
-            >
-              Browse Available
-            </ResuableButton>
-          </div>
+
+            <div className="relative z-10 flex flex-col items-center text-center">
+              {/* Illustration */}
+              <div className="relative w-48 h-36 md:w-64 md:h-48 mb-8">
+                <motion.img
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.2, duration: 0.5 }}
+                  src="/empty_food.png"
+                  alt="No Tasks Illustration"
+                  className="w-full h-full object-contain"
+                />
+              </div>
+
+              {/* Content */}
+              <div className="space-y-4 mb-10">
+                <h3 className="text-2xl md:text-3xl font-black tracking-tight text-slate-800">
+                  No relevant tasks found
+                </h3>
+                <p className="text-[var(--text-muted)] text-sm md:text-base max-w-sm mx-auto font-medium leading-relaxed uppercase tracking-widest">
+                  You're all caught up! Check the available tab for new missions.
+                </p>
+              </div>
+
+              <ResuableButton
+                variant="primary"
+                className="px-10 py-6 !rounded-2xl text-[12px] font-black uppercase tracking-widest bg-[#22c55e] hover:bg-[#16a34a] shadow-xl shadow-green-500/20 active:scale-95"
+                onClick={() => setActiveTab("opps")}
+              >
+                Browse Available Missions
+              </ResuableButton>
+            </div>
+          </motion.div>
         )}
       </div>
       <ResuableDrawer

@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import {
   Clock,
   TrendingUp,
@@ -23,6 +24,7 @@ import NGONeedsFeed from "./NGONeedsFeed";
 import WeeklyImpactBanner from "./WeeklyImpactBanner";
 
 const DonorDashboard = () => {
+  const navigate = useNavigate();
   const { currentPoints, stats, recentActivities, urgentNeedsCount, profile } =
     useDonorDashboard();
 
@@ -344,87 +346,134 @@ const DonorDashboard = () => {
               </button>
             </div>
 
-            <div className="space-y-2 flex-1 overflow-y-auto pr-1 thin-scrollbar">
-              {recentActivities.map((activity: RecentActivity, idx: number) => {
-                const isCollected = activity.status === "Collected";
-                
-                return (
-                  <motion.div
-                    key={idx}
-                    whileHover={{ x: 2 }}
-                    className="group flex items-stretch bg-white rounded-lg transition-all duration-300 hover:shadow-sm cursor-pointer border border-slate-100 overflow-hidden"
-                  >
-                    {/* Left: Content Section - Refined Alignment */}
-                    <div className="flex-1 flex items-center gap-3 p-3">
-                      {/* Icon Box - Professional Image Assets */}
-                      <div className="w-12 h-12 rounded-xl shrink-0 flex items-center justify-center transition-all duration-300 group-hover:scale-110 bg-slate-50 border border-slate-100 overflow-hidden shadow-sm">
-                        <img 
-                          src={isCollected ? "/vegandfruits.png" : "/cookedfood.png"} 
-                          alt="Activity Icon" 
-                          className="w-9 h-9 object-contain"
-                        />
-                      </div>
-
-                      {/* Info - Vertical Stack to prevent overlap */}
-                      <div className="min-w-0 flex-1 flex flex-col justify-center">
-                        <div className="mb-2">
-                          <h3 className="text-[14px] font-black tracking-tight text-slate-800 leading-tight truncate">
-                            {activity.title}
-                          </h3>
-                          <p className="text-[8.5px] font-black text-slate-400 uppercase tracking-[0.15em] leading-none mt-1 truncate">
-                            {activity.ngo}
-                          </p>
+            <div className="space-y-2 flex-1 overflow-y-auto pr-1 thin-scrollbar flex flex-col">
+              {recentActivities.length > 0 ? (
+                recentActivities.map((activity: RecentActivity, idx: number) => {
+                  const isCollected = activity.status === "Collected";
+                  
+                  return (
+                    <motion.div
+                      key={idx}
+                      whileHover={{ x: 2 }}
+                      className="group flex items-stretch bg-white rounded-lg transition-all duration-300 hover:shadow-sm cursor-pointer border border-slate-100 overflow-hidden"
+                    >
+                      {/* Left: Content Section - Refined Alignment */}
+                      <div className="flex-1 flex items-center gap-3 p-3">
+                        {/* Icon Box - Professional Image Assets */}
+                        <div className="w-12 h-12 rounded-xl shrink-0 flex items-center justify-center transition-all duration-300 group-hover:scale-110 bg-slate-50 border border-slate-100 overflow-hidden shadow-sm">
+                          <img 
+                            src={isCollected ? "/vegandfruits.png" : "/cookedfood.png"} 
+                            alt="Activity Icon" 
+                            className="w-9 h-9 object-contain"
+                          />
                         </div>
-                        
-                        <div className="flex items-center gap-3 overflow-hidden">
-                          <div className={`flex items-center gap-1.5 text-[9px] font-black shrink-0 ${
-                            isCollected ? "text-[#22c55e]" : "text-[#3b82f6]"
-                          }`}>
-                            {isCollected ? <Leaf size={11} /> : <Utensils size={11} />}
-                            <span className="uppercase tracking-widest opacity-70">
-                              {isCollected ? "12 kg vegetables" : "10 meals on way"}
-                            </span>
+
+                        {/* Info - Vertical Stack to prevent overlap */}
+                        <div className="min-w-0 flex-1 flex flex-col justify-center">
+                          <div className="mb-2">
+                            <h3 className="text-[14px] font-black tracking-tight text-slate-800 leading-tight truncate">
+                              {activity.title}
+                            </h3>
+                            <p className="text-[8.5px] font-black text-slate-400 uppercase tracking-[0.15em] leading-none mt-1 truncate">
+                              {activity.ngo}
+                            </p>
                           </div>
                           
-                          <div className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider shrink-0 ${
-                            isCollected 
-                              ? "bg-[#f0fdf4] text-[#22c55e] border border-[#22c55e]/10" 
-                              : "bg-[#eff6ff] text-[#3b82f6] border border-[#3b82f6]/10"
-                          }`}>
-                            {isCollected ? <ShieldCheck size={10} /> : <Sparkles size={10} />}
-                            {isCollected ? "Impact" : "Community"}
+                          <div className="flex items-center gap-3 overflow-hidden">
+                            <div className={`flex items-center gap-1.5 text-[9px] font-black shrink-0 ${
+                              isCollected ? "text-[#22c55e]" : "text-[#3b82f6]"
+                            }`}>
+                              {isCollected ? <Leaf size={11} /> : <Utensils size={11} />}
+                              <span className="uppercase tracking-widest opacity-70">
+                                {isCollected ? "12 kg vegetables" : "10 meals on way"}
+                              </span>
+                            </div>
+                            
+                            <div className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider shrink-0 ${
+                              isCollected 
+                                ? "bg-[#f0fdf4] text-[#22c55e] border border-[#22c55e]/10" 
+                                : "bg-[#eff6ff] text-[#3b82f6] border border-[#3b82f6]/10"
+                            }`}>
+                              {isCollected ? <ShieldCheck size={10} /> : <Sparkles size={10} />}
+                              {isCollected ? "Impact" : "Community"}
+                            </div>
                           </div>
                         </div>
                       </div>
+
+                      {/* Right: Status Section - Perfected Alignment */}
+                      <div className="w-[120px] flex flex-col items-center justify-center gap-3 border-l border-slate-50 bg-slate-50/20 p-3">
+                        <div className="flex items-center gap-1.5 text-slate-400">
+                          <Clock size={12} className="stroke-[2.5]" />
+                          <span className="text-[9px] font-black uppercase tracking-wide whitespace-nowrap">
+                            {activity.time}
+                          </span>
+                        </div>
+                        
+                        <div className={`flex items-center gap-2 px-3.5 py-2 rounded-full border shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] transition-all duration-300 group-hover:scale-105 ${
+                          isCollected 
+                            ? "bg-white border-green-100 text-[#22c55e]" 
+                            : "bg-white border-blue-100 text-[#3b82f6]"
+                        }`}>
+                          {isCollected ? (
+                            <CheckCircle2 size={13} className="stroke-[2.5]" />
+                          ) : (
+                            <Truck size={13} className="stroke-[2.5]" />
+                          )}
+                          <span className="text-[9px] font-black uppercase tracking-[0.05em] leading-none whitespace-nowrap">
+                            {activity.status}
+                          </span>
+                        </div>
+                      </div>
+                    </motion.div>
+                  );
+                })
+              ) : (
+                <div className="flex-1 flex flex-col items-center justify-center py-12 px-6 text-center relative overflow-hidden group bg-white/80 backdrop-blur-xl border border-slate-100 rounded-[32px] shadow-[0_8px_30px_rgba(0,0,0,0.02)] mt-2">
+                  {/* Subtle Background Decoration */}
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/5 rounded-full blur-3xl pointer-events-none group-hover:bg-green-500/10 transition-colors duration-700" />
+                  <div className="absolute bottom-0 left-0 w-24 h-24 bg-blue-500/5 rounded-full blur-2xl pointer-events-none group-hover:bg-blue-500/10 transition-colors duration-700" />
+                  
+                  <div className="relative z-10 flex flex-col items-center">
+                    {/* Floating Illustration */}
+                    <motion.div
+                      animate={{ 
+                        y: [0, -8, 0],
+                      }}
+                      transition={{
+                        duration: 5,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }}
+                      className="relative w-40 h-28 -mb-1"
+                    >
+                      <img
+                        src="/empty_food.png"
+                        alt="No Activity"
+                        className="w-full h-full object-contain opacity-90"
+                      />
+                    </motion.div>
+
+                    <div className="space-y-2 mb-8">
+                      <h3 className="text-xl font-black text-slate-800 tracking-tight leading-none">
+                        No activity yet
+                      </h3>
+                      <p className="text-[11px] font-bold text-slate-500/70 max-w-[240px] mx-auto leading-relaxed">
+                        You haven't created any donation requests yet. <br />
+                        Start sharing surplus food and help someone in need.
+                      </p>
                     </div>
 
-                    {/* Right: Status Section - Perfected Alignment */}
-                    <div className="w-[120px] flex flex-col items-center justify-center gap-3 border-l border-slate-50 bg-slate-50/20 p-3">
-                      <div className="flex items-center gap-1.5 text-slate-400">
-                        <Clock size={12} className="stroke-[2.5]" />
-                        <span className="text-[9px] font-black uppercase tracking-wide whitespace-nowrap">
-                          {activity.time}
-                        </span>
-                      </div>
-                      
-                      <div className={`flex items-center gap-2 px-3.5 py-2 rounded-full border shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] transition-all duration-300 group-hover:scale-105 ${
-                        isCollected 
-                          ? "bg-white border-green-100 text-[#22c55e]" 
-                          : "bg-white border-blue-100 text-[#3b82f6]"
-                      }`}>
-                        {isCollected ? (
-                          <CheckCircle2 size={13} className="stroke-[2.5]" />
-                        ) : (
-                          <Truck size={13} className="stroke-[2.5]" />
-                        )}
-                        <span className="text-[9px] font-black uppercase tracking-[0.05em] leading-none whitespace-nowrap">
-                          {activity.status}
-                        </span>
-                      </div>
-                    </div>
-                  </motion.div>
-                );
-              })}
+                    <button
+                      onClick={() => navigate("/donor/donations/create")}
+                      className="px-8 py-3.5 bg-[#22c55e] text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-[#16a34a] transition-all flex items-center justify-center gap-2 active:scale-95 shadow-md shadow-green-500/10"
+                    >
+                      <img src="/giving.png" className="w-5 h-5 object-contain" alt="Giving" />
+                      <span>Start Your Journey</span>
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

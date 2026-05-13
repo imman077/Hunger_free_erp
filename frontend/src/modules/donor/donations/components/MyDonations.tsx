@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { Package, MapPin, Clock, Building2, Phone, Info, ShieldCheck, CheckCircle2, Plus } from "lucide-react";
+import { Package, MapPin, Clock, Building2, Phone, Info, ShieldCheck, CheckCircle2, Plus, Heart } from "lucide-react";
 import DonationActivityCard from "../../../../global/components/resuable-components/DonationActivityCard";
 import ResuableDrawer from "../../../../global/components/resuable-components/drawer";
 import { useDonorDonations } from "../hooks/useDonorDonations";
@@ -41,8 +42,8 @@ const MyDonations = () => {
   };
 
   return (
-    <div className="w-full space-y-8 p-4 md:p-6 lg:p-8">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+    <div className="w-full h-[calc(100vh-64px)] max-w-[1600px] mx-auto flex flex-col p-4 overflow-hidden">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 shrink-0 mb-8">
         <div className="text-start space-y-2">
           <h1
             className="text-4xl md:text-5xl font-black tracking-tighter leading-none flex items-center"
@@ -75,7 +76,7 @@ const MyDonations = () => {
         </div>
         <button
           onClick={() => navigate("/donor/donations/create")}
-          className="group relative w-full sm:w-auto px-7 py-3 bg-[#22c55e] text-white rounded-2xl text-[13px] md:text-[14px] font-bold hover:bg-[#16a34a] transition-all flex items-center justify-center gap-3 active:scale-95 shadow-xl shadow-green-500/20"
+          className="group relative w-full sm:w-auto px-7 py-3 bg-[#22c55e] text-white rounded-2xl text-[13px] md:text-[14px] font-bold hover:bg-[#16a34a] transition-all flex items-center justify-center gap-3 active:scale-95 shadow-xl shadow-green-500/20 shrink-0"
         >
           {/* Decorative Sparks Left */}
           <img 
@@ -98,77 +99,82 @@ const MyDonations = () => {
         </button>
       </div>
 
-      {/* Donation History */}
-      {donationHistory.length > 0 ? (
-        <div className="space-y-6 w-full">
-          <div className="text-left relative">
-            <div className="absolute inset-0 flex items-center" aria-hidden="true">
-              <div className="w-full border-t border-slate-100/60"></div>
+      <div className="flex-1 overflow-y-auto no-scrollbar pr-2">
+        {/* Donation History */}
+        {donationHistory.length > 0 ? (
+          <div className="space-y-6 w-full">
+            <div className="text-left relative">
+              <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                <div className="w-full border-t border-slate-100/60"></div>
+              </div>
+              <div className="relative flex justify-start">
+                <span
+                  className="pr-6 text-[10px] font-black uppercase tracking-[0.4em] text-[#22c55e]"
+                  style={{ backgroundColor: "var(--bg-primary)" }}
+                >
+                  Recent Contributions
+                </span>
+              </div>
             </div>
-            <div className="relative flex justify-start">
-              <span
-                className="pr-6 text-[10px] font-black uppercase tracking-[0.4em] text-[#22c55e]"
-                style={{ backgroundColor: "var(--bg-primary)" }}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full">
+              {donationHistory.map((donation) => (
+                <DonationActivityCard
+                  key={donation.id}
+                  icon={<Package size={24} />}
+                  title={donation.foodType}
+                  subtitle={`${donation.quantity} • ${donation.ngo}`}
+                  status={donation.status}
+                  date={donation.date}
+                  actionLabel="Details"
+                  onActionClick={() => handleDetailsClick(donation)}
+                />
+              ))}
+            </div>
+          </div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="mt-8 flex flex-col items-center justify-center rounded-[24px] border border-slate-100 bg-white shadow-[0_8px_30px_rgba(0,0,0,0.02)] relative overflow-hidden group"
+          >
+            {/* Subtle Decorative elements */}
+            <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
+              <div className="absolute -top-12 -left-12 w-48 h-48 bg-green-50/20 rounded-full blur-[80px]" />
+            </div>
+
+            <div className="relative z-10 flex flex-col items-center text-center">
+              {/* Illustration */}
+              <div className="relative w-56 h-40 md:w-64 md:h-48 mb-4">
+                <img
+                  src="/empty_food.png"
+                  alt="No Donations"
+                  className="w-full h-full object-contain opacity-90"
+                />
+              </div>
+
+              {/* Content */}
+              <div className="space-y-2 mb-8">
+                <h3 className="text-2xl md:text-3xl font-black text-slate-800 tracking-tight">
+                  No donations yet
+                </h3>
+                <p className="text-[13px] md:text-sm font-bold text-slate-500/70 max-w-sm leading-relaxed">
+                  You haven't created any donation requests yet. <br />
+                  Start sharing surplus food and help someone in need.
+                </p>
+              </div>
+
+              <button
+                onClick={() => navigate("/donor/donations/create")}
+                className="px-10 py-4 bg-[#22c55e] text-white rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-[#16a34a] transition-all flex items-center justify-center gap-2 active:scale-95 shadow-md shadow-green-500/10"
               >
-                Recent Contributions
-              </span>
+                <img src="/giving.png" className="w-5 h-5 object-contain" alt="Giving" />
+                <span>Start Your Journey</span>
+              </button>
             </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full">
-            {donationHistory.map((donation) => (
-              <DonationActivityCard
-                key={donation.id}
-                icon={<Package size={24} />}
-                title={donation.foodType}
-                subtitle={`${donation.quantity} • ${donation.ngo}`}
-                status={donation.status}
-                date={donation.date}
-                actionLabel="Details"
-                onActionClick={() => handleDetailsClick(donation)}
-              />
-            ))}
-          </div>
-        </div>
-      ) : (
-        <div
-          className="mt-8 border border-dashed p-16 flex flex-col items-center justify-center rounded-md shadow-sm"
-          style={{
-            borderColor: "var(--border-color)",
-            backgroundColor: "var(--bg-secondary)",
-          }}
-        >
-          <div
-            className="w-16 h-16 border rounded-md flex items-center justify-center mb-6 shadow-inner"
-            style={{
-              borderColor: "var(--border-color)",
-              backgroundColor: "var(--bg-primary)",
-            }}
-          >
-            <Package size={28} style={{ color: "var(--text-muted)" }} className="opacity-30" />
-          </div>
-          <h3
-            className="text-2xl font-black tracking-tighter uppercase mb-2"
-            style={{ color: "var(--text-primary)" }}
-          >
-            No Donations Yet
-          </h3>
-          <p
-            className="text-[11px] font-bold text-center max-w-sm leading-relaxed uppercase tracking-widest mb-8"
-            style={{ color: "var(--text-muted)" }}
-          >
-            Start sharing surplus food with the community.
-          </p>
-          <button
-            onClick={() => navigate("/donor/donations/create")}
-            className="group relative px-10 py-4 bg-[#22c55e] text-white rounded-2xl text-[13px] font-bold hover:bg-[#16a34a] transition-all flex items-center justify-center gap-3 active:scale-95 shadow-xl shadow-green-500/20"
-          >
-            <div className="flex items-center justify-center w-6 h-6 bg-white rounded-full shadow-sm shrink-0">
-              <Plus size={16} className="text-[#22c55e] stroke-[3.5]" />
-            </div>
-            <span className="tracking-tight">Start Your Journey</span>
-          </button>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </div>
 
       {/* Donation Details Drawer */}
       <ResuableDrawer
