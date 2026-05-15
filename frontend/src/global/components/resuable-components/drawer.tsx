@@ -11,8 +11,8 @@ import { X } from "lucide-react";
 interface ResuableDrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  title: string;
-  subtitle?: string;
+  title: React.ReactNode;
+  subtitle?: React.ReactNode;
   children: React.ReactNode;
   footer?: React.ReactNode;
   size?:
@@ -65,7 +65,7 @@ const ResuableDrawer: React.FC<ResuableDrawerProps> = ({
       classNames={{
         base: `rounded-none w-full ${sizeClasses[size as keyof typeof sizeClasses] || "sm:max-w-md"} shadow-none thin-scrollbar`,
         backdrop: "bg-black/40 backdrop-blur-md",
-        header: `${hideHeaderBorder ? "" : "border-b border-[var(--border-color)]"} p-0`,
+        header: `${hideHeaderBorder ? "border-none shadow-none" : "border-b border-[var(--border-color)]"} p-0`,
         body: "p-0 overflow-hidden",
         footer: "border-t border-[var(--border-color)] p-5",
       }}
@@ -79,42 +79,39 @@ const ResuableDrawer: React.FC<ResuableDrawerProps> = ({
       >
         {() => (
           <>
-            <DrawerHeader className="px-6 py-6 flex flex-row items-center justify-between gap-4">
-              <div className="flex flex-col gap-1.5">
-                <h2
-                  className="text-[22px] font-black uppercase tracking-tight leading-[1.1]"
-                  style={{ color: "var(--text-primary)" }}
+            <DrawerHeader className="px-6 py-5 flex flex-row items-center justify-between gap-4 border-none shadow-none">
+              <div className="flex flex-col gap-0.5">
+                <div
+                  className="text-[19px] font-bold tracking-tight text-slate-800"
                 >
                   {title}
-                </h2>
+                </div>
                 {subtitle && (
-                  <span
-                    className="text-[11px] font-black tracking-[0.25em] leading-none ml-1"
-                    style={{ color: "var(--text-muted)" }}
+                  <div
+                    className="text-[11px] font-medium text-slate-400"
                   >
                     {subtitle}
-                  </span>
+                  </div>
                 )}
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-4">
                 {headerExtra}
                 <button
                   onClick={onClose}
-                  className="w-8 h-8 flex items-center justify-center rounded-sm border border-transparent hover:border-[var(--border-color)] hover:bg-[var(--bg-secondary)] transition-all duration-300 group"
-                  style={{ color: "var(--text-muted)" }}
+                  className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-slate-50 transition-all duration-300 group"
                 >
                   <X
-                    size={16}
-                    className="group-hover:rotate-90 transition-transform duration-300"
+                    size={20}
+                    className="text-slate-400 group-hover:text-slate-600 transition-colors"
                   />
                 </button>
               </div>
             </DrawerHeader>
 
             <DrawerBody
-              className="py-1 px-0 overflow-y-auto thin-scrollbar flex-1"
-              style={{ backgroundColor: "var(--bg-secondary)" }}
+              className="py-1 px-0 overflow-y-auto thin-scrollbar flex-1 border-none shadow-none"
+              style={{ backgroundColor: "var(--bg-primary)" }}
             >
               <div className="">{children}</div>
             </DrawerBody>
