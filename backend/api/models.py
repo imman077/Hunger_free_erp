@@ -103,6 +103,8 @@ class NGOProfile(models.Model):
     beneficiaries_helped_count = models.DecimalField(max_digits=10, decimal_places=1, default=0.0) 
     active_needs_count = models.IntegerField(default=0) 
     donation_points = models.IntegerField(default=0)
+    points = models.IntegerField(default=0)
+    current_tier = models.CharField(max_length=50, default='Beginner')
     
     # Status
     status = models.CharField(max_length=20, default='PENDING') 

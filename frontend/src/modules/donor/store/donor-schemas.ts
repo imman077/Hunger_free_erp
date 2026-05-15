@@ -34,6 +34,7 @@ export const DonationDetailSchema = z.object({
       rating: z.string(),
     })
     .optional(),
+  image: z.string().optional(),
   timeline: z.array(
     z.object({
       status: z.string(),

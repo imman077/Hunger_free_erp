@@ -283,6 +283,7 @@ export const useDonorStore = create<DonorState>((set) => ({
               phone: d.accepted_volunteer_detail.phone,
               rating: "4.9"
             } : undefined,
+            image: d.image,
             timeline: d.tracking_history?.map((th: any) => ({
               status: th.status,
               date: new Date(th.timestamp).toLocaleDateString(),

@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useEffect } from "react";
-import { motion } from "framer-motion";
+import React, { useState, useCallback, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { ngoNeedsService } from "../../../ngo/needs/api/needs.api";
 import { toast } from "sonner";
 import {
@@ -14,6 +14,8 @@ import {
   Box,
   Heart,
   TrendingUp,
+  ChevronRight,
+  ChevronLeft,
 } from "lucide-react";
 import { Button } from "@heroui/react";
 import ReusableTable, {
@@ -65,43 +67,34 @@ const NGOPosts = () => {
     pickupAddress: "",
     contactPhone: "",
   });
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  const checkScroll = () => {
+    if (sliderRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = sliderRef.current;
+      setCanScrollLeft(scrollLeft > 10);
+      setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 10);
+    }
+  };
+
+  useEffect(() => {
+    checkScroll();
+    window.addEventListener('resize', checkScroll);
+    return () => window.removeEventListener('resize', checkScroll);
+  }, [needs]);
 
   const fetchNeeds = useCallback(async () => {
     setIsLoading(true);
     try {
-      // Fetch NGO Needs
+      // Only fetch NGO Needs
       const needsResponse = await ngoNeedsService.getMyNeeds();
       const rawNeeds = needsResponse?.results || (Array.isArray(needsResponse) ? needsResponse : []);
       
-      // Fetch Pending Donations (Marketplace)
-      let rawDonations: any[] = [];
-      try {
-        const donationsResponse = await axiosInstance.get("donations/?marketplace=true");
-        rawDonations = donationsResponse.data?.results || (Array.isArray(donationsResponse.data) ? donationsResponse.data : []);
-      } catch (err) {
-        console.error("Failed to load donations", err);
-      }
-
-      // Map donations to NGONeed-like structure for the UI
-      const mappedDonations = rawDonations.map((d: any) => ({
-        id: d.id,
-        ngo: 0, // Not applicable for a donor post
-        item_name: d.food_items,
-        category: d.food_category,
-        quantity: d.quantity,
-        unit: d.unit,
-        urgency: "Normal", // Donors don't set urgency
-        required_by: d.expiry_time?.split('T')[0] || "Flexible",
-        ngo_name: d.donor_name || "Private Donor",
-        description: d.description || d.pickup_address,
-        status: "PENDING_DONATION", // Custom status for UI
-        created_at: d.created_at,
-        donor: d.donor,
-      }));
-
-      setNeeds([...rawNeeds, ...mappedDonations]);
+      setNeeds(rawNeeds);
     } catch (error) {
-      toast.error("Failed to load marketplace content");
+      toast.error("Failed to load requests");
     } finally {
       setIsLoading(false);
     }
@@ -118,7 +111,7 @@ const NGOPosts = () => {
       need.ngo_name?.toLowerCase().includes(searchQuery.toLowerCase());
 
     const matchesCategory = categoryFilter === "ALL" || need.category === categoryFilter;
-    const isOpen = need.status === "Open" || need.status === "Fulfilling" || need.status === "PENDING_DONATION" || !need.status;
+    const isOpen = need.status === "Open" || need.status === "Fulfilling" || !need.status;
     
     return matchesSearch && matchesCategory && isOpen;
   });
@@ -131,27 +124,7 @@ const NGOPosts = () => {
         return;
     }
 
-    // 2. If it's a donor post (PENDING_DONATION), we accept it directly (or could show a confirmation)
-    if (need.status === "PENDING_DONATION") {
-        if (!confirm(`Are you sure you want to accept this donation of ${need.item_name}?`)) return;
-        
-        setIsLoading(true);
-        try {
-            await axiosInstance.patch(`donations/${need.id}/`, {
-                accepted_ngo: user?.id,
-                status: "ACCEPTED"
-            });
-            toast.success("Donation accepted successfully!");
-            fetchNeeds();
-        } catch (err) {
-            toast.error("Failed to accept donation");
-        } finally {
-            setIsLoading(false);
-        }
-        return;
-    }
-
-    // 3. Otherwise, it's a regular NGO Need that needs fulfillment
+    // 2. Otherwise, it's a regular NGO Need that needs fulfillment
     setFulfillForm({
       foodCategory: need.category || "Dry Ration",
       quantity: need.quantity.toString(),
@@ -218,7 +191,7 @@ const NGOPosts = () => {
   ];
 
   return (
-    <div className="w-full h-[calc(100vh-64px)] flex flex-col space-y-4 max-w-[1600px] mx-auto p-4 bg-transparent overflow-hidden">
+    <div className="w-full min-h-full flex flex-col space-y-6 max-w-[1600px] mx-auto p-6 md:p-10 bg-transparent pb-32">
       <div
         className="rounded-xl border shadow-sm relative overflow-hidden shrink-0"
         style={{
@@ -344,7 +317,7 @@ const NGOPosts = () => {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto no-scrollbar pr-1">
+      <div className="w-full space-y-8">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-24 gap-4 animate-in fade-in duration-500">
             <div className="relative">
@@ -377,7 +350,7 @@ const NGOPosts = () => {
               {/* Illustration */}
               <div className="relative w-56 h-40 md:w-64 md:h-48 mb-4">
                 <img
-                  src="/empty_food.png"
+                  src="/no_donation.png"
                   alt="No Needs"
                   className="w-full h-full object-contain opacity-90"
                 />
@@ -511,25 +484,53 @@ const NGOPosts = () => {
             />
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="relative group">
+            <AnimatePresence>
+              {canScrollLeft && (
+                <motion.button 
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ 
+                    opacity: 0.8,
+                    scale: [1, 1.05, 1],
+                    boxShadow: [
+                      "0 0 0 0px rgba(34, 197, 94, 0)",
+                      "0 0 0 8px rgba(34, 197, 94, 0.1)",
+                      "0 0 0 0px rgba(34, 197, 94, 0)"
+                    ]
+                  }}
+                  exit={{ opacity: 0, scale: 0.5 }}
+                  transition={{ 
+                    scale: { repeat: Infinity, duration: 2, ease: "easeInOut" },
+                    opacity: { duration: 0.3 }
+                  }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => {
+                    if (sliderRef.current) sliderRef.current.scrollBy({ left: -460, behavior: 'smooth' });
+                  }}
+                  className="absolute -left-4 md:-left-6 top-1/2 -translate-y-1/2 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] border-2 border-emerald-50 flex items-center justify-center text-[#22c55e] z-20 hover:text-white hover:bg-[#22c55e] transition-all cursor-pointer group/arrow"
+                >
+                  <ChevronLeft size={28} className="transition-transform group-hover/arrow:-translate-x-0.5" strokeWidth={3} />
+                </motion.button>
+              )}
+            </AnimatePresence>
+
+            <div 
+              ref={sliderRef}
+              onScroll={checkScroll}
+              className="ngo-needs-slider flex overflow-x-auto no-scrollbar gap-8 pb-10"
+            >
             {filteredNeeds.map((need) => (
               <div
                 key={need.id}
-                className="group relative flex flex-col bg-[var(--bg-primary)] border border-[var(--border-color)] rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-emerald-500/10 transition-all duration-500"
+                className="flex-shrink-0 w-full sm:w-[420px] group relative flex flex-col bg-[var(--bg-primary)] border border-[var(--border-color)] rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-emerald-500/10 transition-all duration-500"
               >
                 {/* Image / Icon Header */}
                 <div className="relative h-48 overflow-hidden bg-[var(--bg-secondary)]">
-                  {need.image ? (
-                    <img
-                      src={need.image}
-                      alt={need.item_name}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center opacity-20">
-                      <Box size={80} className="text-emerald-500" />
-                    </div>
-                  )}
+                  <img
+                    src={need.image || `/donation_images/${["chicken_gravy.png", "packed_lunch.png", "packet_curry.png"][need.id % 3]}`}
+                    alt={need.item_name}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
 
                   {/* Badges Over Image */}
                   <div className="absolute top-4 right-4 z-20 flex flex-col items-end gap-2">
@@ -622,11 +623,6 @@ const NGOPosts = () => {
                           <Clock size={14} />
                           Track Progress
                         </>
-                      ) : need.status === "PENDING_DONATION" ? (
-                        <>
-                          <Box size={14} />
-                          Accept Donation
-                        </>
                       ) : (
                         <>
                           <img src="/giving.png" className="w-5 h-5 object-contain" alt="Giving" />
@@ -648,6 +644,36 @@ const NGOPosts = () => {
                 </div>
               </div>
             ))}
+          </div>
+
+            <AnimatePresence>
+              {canScrollRight && (
+                <motion.button 
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ 
+                    opacity: 0.8,
+                    scale: [1, 1.05, 1],
+                    boxShadow: [
+                      "0 0 0 0px rgba(34, 197, 94, 0)",
+                      "0 0 0 8px rgba(34, 197, 94, 0.1)",
+                      "0 0 0 0px rgba(34, 197, 94, 0)"
+                    ]
+                  }}
+                  exit={{ opacity: 0, scale: 0.5 }}
+                  transition={{ 
+                    scale: { repeat: Infinity, duration: 2, ease: "easeInOut" },
+                    opacity: { duration: 0.3 }
+                  }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => {
+                    if (sliderRef.current) sliderRef.current.scrollBy({ left: 460, behavior: 'smooth' });
+                  }}
+                  className="absolute -right-4 md:-right-6 top-1/2 -translate-y-1/2 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] border-2 border-emerald-50 flex items-center justify-center text-[#22c55e] z-20 hover:text-white hover:bg-[#22c55e] transition-all cursor-pointer group/arrow"
+                >
+                  <ChevronRight size={28} className="transition-transform group-hover/arrow:translate-x-0.5" strokeWidth={3} />
+                </motion.button>
+              )}
+            </AnimatePresence>
           </div>
         )}
       </div>

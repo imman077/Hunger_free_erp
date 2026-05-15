@@ -218,7 +218,7 @@ const DonorSidebar: React.FC = () => {
       {/* Desktop sidebar */}
       <aside
         className={`hidden md:flex fixed top-0 left-0 h-screen transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] flex-col z-[50] ${
-          expanded ? "w-[280px]" : "w-[88px]"
+          expanded ? "w-[260px]" : "w-[70px]"
         }`}
         style={{
           backgroundColor: "white",
