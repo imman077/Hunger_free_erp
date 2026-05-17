@@ -5,7 +5,7 @@
 
 export const FOOD_CATEGORIES = [
   { value: "Fruits & Vegetables", label: "Fruits & Vegetables" },
-  { value: "Cooked Meals", label: "Cooked Meals" },
+  { value: "Cooked Food", label: "Cooked Food" },
   { value: "Rice, Grains & Pulses", label: "Rice, Grains & Pulses" },
   { value: "Packaged Snacks", label: "Packaged Snacks" },
   { value: "Bread & Bakery", label: "Bread & Bakery" },
@@ -15,7 +15,7 @@ export const FOOD_CATEGORIES = [
   { value: "Water & Drinks", label: "Water & Drinks" },
   { value: "Frozen Food", label: "Frozen Food" },
   { value: "Spices & Oils", label: "Spices & Oils" },
-  { value: "other", label: "Other" },
+
 ];
 
 export const UNIT_OPTIONS = [
@@ -28,6 +28,17 @@ export const UNIT_OPTIONS = [
   { value: "boxes", label: "Boxes" },
   { value: "pieces", label: "Pieces" },
   { value: "grams", label: "Grams (g)" },
+];
+
+export const DIETARY_TYPES = [
+  { value: "Veg", label: "Vegetarian (Veg)" },
+  { value: "Non-Veg", label: "Non-Vegetarian (Non-Veg)" },
+  { value: "Vegan", label: "Vegan" },
+];
+
+export const PREPARATION_TYPES = [
+  { value: "Restaurant", label: "Restaurant Surplus" },
+  { value: "Catering", label: "Catering / Event" },
 ];
 
 export const NEED_CATEGORIES = [

@@ -6,6 +6,7 @@ const enquirySchema = new mongoose.Schema({
   phone: String,
   subject: String,
   message: { type: String, required: true },
+  role: { type: String, default: '' },
   status: { type: String, default: 'Unread' }
 }, {
   timestamps: true

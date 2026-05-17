@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff, ArrowRight, Check, Building2 } from "lucide-react";
-import axios from "axios";
 import { useAuthStore } from "../../../global/contexts/auth-store";
 import { toast } from "sonner";
+import { AuthAPI } from "../api/auth.api";
 
 // ─── Role Config ────────────────────────────────────────────────────────────
 type Role = "donor" | "ngo" | "volunteer" | "admin";
@@ -119,28 +119,14 @@ const AuthPage = () => {
     setIsLoading(true);
 
     try {
-      // 1. Get Access Tokens
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login/`, {
-        username: loginEmail, // Using email as username for this demo
-        password: loginPassword,
-        role: activeRole.toUpperCase(), // Send the selected role
-      });
+      const { token, user } = await AuthAPI.login(loginEmail, loginPassword, activeRole);
 
-      const { access, refresh } = response.data;
+      // Login in store
+      auth.login(user, token, token);
 
-      // 2. Fetch User Profile
-      const userResponse = await axios.get(`${import.meta.env.VITE_API_URL}/auth/me/`, {
-        headers: { Authorization: `Bearer ${access}` },
-      });
+      toast.success(`Welcome back, ${user.username}!`);
 
-      const user = userResponse.data;
-
-      // 3. Login in store
-      auth.login(user, access, refresh);
-
-      toast.success(`Welcome back, ${user.first_name || user.username}!`);
-
-      // 4. Role-based redirect
+      // Role-based redirect
       const backendRoleToFrontendRoute: Record<string, string> = {
         ADMIN: "/admin/dashboard",
         DONOR: "/donor/dashboard",
@@ -148,10 +134,10 @@ const AuthPage = () => {
         VOLUNTEER: "/volunteer/dashboard",
       };
 
-      navigate(backendRoleToFrontendRoute[user.profile.role] || "/auth");
+      navigate(backendRoleToFrontendRoute[user.role] || "/auth");
     } catch (error: any) {
       console.error("Auth Error:", error);
-      const msg = error.response?.data?.detail || "Invalid credentials. Please try again.";
+      const msg = error.message || error.response?.data?.detail || "Invalid credentials. Please try again.";
       toast.error(msg);
     } finally {
       setIsLoading(false);

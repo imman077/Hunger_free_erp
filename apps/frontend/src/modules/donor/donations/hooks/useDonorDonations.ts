@@ -3,7 +3,7 @@ import { useDonorStore } from "../../store/donor-store";
 import { VERIFY_PICKUP } from "../api/donations.graphql";
 
 export const useDonorDonations = () => {
-  const { data, isLoading, error, refreshData } = useDonorStore();
+  const { data, donationStats, isLoading, error, refreshData } = useDonorStore();
   const [verifyPickupMutation] = useMutation(VERIFY_PICKUP);
 
   const handleVerifyPickup = async (donationId: string, otp: string) => {
@@ -21,6 +21,7 @@ export const useDonorDonations = () => {
 
   return {
     donationHistory: data.donationHistory,
+    donationStats,
     isLoading,
     error,
     verifyPickup: handleVerifyPickup,

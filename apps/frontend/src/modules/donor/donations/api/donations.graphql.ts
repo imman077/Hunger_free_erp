@@ -1,10 +1,13 @@
 import { gql } from '@apollo/client';
 
 export const GET_MY_DONATIONS = gql`
-  query GetMyDonations {
-    donations {
+  query GetMyDonations($status: String) {
+    donations(status: $status) {
       id
       foodType
+      category
+      dietaryType
+      preparationType
       quantity
       ngo
       date
@@ -25,6 +28,16 @@ export const GET_MY_DONATIONS = gql`
         completed
       }
     }
+    donationStats {
+      totalDonations
+      pendingCount
+      completedCount
+      inProgressCount
+      totalByCategory {
+        category
+        count
+      }
+    }
   }
 `;
 
@@ -39,6 +52,16 @@ export const VERIFY_PICKUP = gql`
         time
         completed
       }
+    }
+  }
+`;
+export const CREATE_DONATION = gql`
+  mutation CreateDonation($input: CreateDonationInput!) {
+    createDonation(input: $input) {
+      id
+      foodType
+      category
+      status
     }
   }
 `;

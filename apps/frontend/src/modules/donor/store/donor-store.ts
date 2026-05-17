@@ -6,6 +6,12 @@ import { GET_MY_DONATIONS } from "../donations/api/donations.graphql";
 
 interface DonorState {
   data: DonorData;
+  donationStats: {
+    totalDonations: number;
+    pendingCount: number;
+    completedCount: number;
+    inProgressCount: number;
+  };
   isLoading: boolean;
   error: string | null;
 
@@ -13,7 +19,7 @@ interface DonorState {
   setDonorData: (data: DonorData) => void;
   setLoading: (isLoading: boolean) => void;
   setError: (error: string | null) => void;
-  refreshData: () => Promise<void>;
+  refreshData: (status?: string) => Promise<void>;
 }
 
 const initialData: DonorData = {
@@ -71,6 +77,9 @@ const initialData: DonorData = {
     {
       id: 1,
       foodType: "Fresh Vegetables & Fruits",
+      category: "Fruits & Vegetables",
+      dietaryType: "Veg",
+      preparationType: "Homemade",
       quantity: "15 kg",
       ngo: "Green Harvest NGO",
       date: "Dec 27, 2024",
@@ -246,6 +255,12 @@ const initialData: DonorData = {
 
 export const useDonorStore = create<DonorState>((set) => ({
   data: initialData,
+  donationStats: {
+    totalDonations: 0,
+    pendingCount: 0,
+    completedCount: 0,
+    inProgressCount: 0,
+  },
   isLoading: false,
   error: null,
 
@@ -261,11 +276,12 @@ export const useDonorStore = create<DonorState>((set) => ({
 
   setLoading: (isLoading) => set({ isLoading }),
   setError: (error) => set({ error }),
-  refreshData: async () => {
+  refreshData: async (status?: string) => {
     set({ isLoading: true });
     try {
-      const { data } = await client.query<{ donations: any[] }>({
+      const { data } = await client.query<{ donations: any[], donationStats: any }>({
         query: GET_MY_DONATIONS,
+        variables: status ? { status: status === 'Active' ? 'PENDING' : status.toUpperCase() } : {},
         fetchPolicy: 'network-only' // Ensure we get fresh data
       });
       
@@ -278,6 +294,7 @@ export const useDonorStore = create<DonorState>((set) => ({
             id: isNaN(Number(d.id)) ? d.id : Number(d.id)
           }))
         },
+        donationStats: data.donationStats || state.donationStats,
         isLoading: false
       }));
     } catch (err) {

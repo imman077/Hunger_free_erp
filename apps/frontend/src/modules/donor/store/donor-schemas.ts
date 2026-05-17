@@ -20,6 +20,9 @@ export const RecentActivitySchema = z.object({
 export const DonationDetailSchema = z.object({
   id: z.number(),
   foodType: z.string(),
+  category: z.string(),
+  dietaryType: z.string(),
+  preparationType: z.string(),
   quantity: z.string(),
   ngo: z.string(),
   date: z.string(),

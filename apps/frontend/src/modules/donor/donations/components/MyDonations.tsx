@@ -33,9 +33,23 @@ import ImpactCards from "../../../../global/components/resuable-components/Impac
 import { useDonorDonations } from "../hooks/useDonorDonations";
 import type { DonationDetail } from "../../store/donor-schemas";
 
+const categoryImageMap: Record<string, string> = {
+  "Fruits & Vegetables": "fruitsandvegetables.png",
+  "Cooked Meals": "cookedmeals.png",
+  "Rice, Grains & Pulses": "riceandgrains.png",
+  "Packaged Snacks": "packedsnacks.png",
+  "Bread & Bakery": "bakeryitems.png",
+  "Milk & Dairy": "milkanddairy.png",
+  "Meat & Eggs": "meatandeggs.png",
+  "Seafood": "seafood.png",
+  "Water & Drinks": "wateranddrinks.png",
+  "Frozen Food": "frozenfoods.png",
+  "Spices & Oils": "spicesandoils.png",
+};
+
 const MyDonations = () => {
   const navigate = useNavigate();
-  const { donationHistory, verifyPickup, refreshData } = useDonorDonations();
+  const { donationHistory, donationStats, verifyPickup, refreshData } = useDonorDonations();
   const [selectedDonation, setSelectedDonation] =
     useState<DonationDetail | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -63,8 +77,8 @@ const MyDonations = () => {
   }, [donationHistory]);
 
   useEffect(() => {
-    refreshData();
-  }, []);
+    refreshData(statusFilter);
+  }, [statusFilter]);
 
   const handleDetailsClick = (donation: DonationDetail) => {
     setSelectedDonation(donation);
@@ -145,47 +159,34 @@ const MyDonations = () => {
         </button>
       </div>
 
-      {/* Dynamic Impact Stats Section */}
       <ImpactCards
         data={[
           {
             label: "Total Donations",
-            val: donationHistory.length.toString(),
+            val: donationStats?.totalDonations?.toString() || "0",
             trend: "All time",
             color: "#22c55e",
             icon: Utensils,
           },
           {
             label: "Meals Donated",
-            val: donationHistory
-              .reduce(
-                (acc: number, curr: DonationDetail) => acc + (parseFloat(curr.quantity) * 2.5 || 0),
-                0,
-              )
-              .toFixed(0),
-            trend: "All time",
+            // Only counts donations that have successfully been DELIVERED
+            val: ((donationStats?.completedCount || 0) * 15).toString(), 
+            trend: "Delivered",
             color: "#3b82f6",
             icon: Users,
           },
           {
             label: "Food Saved",
-            val: donationHistory
-              .reduce((acc: number, curr: DonationDetail) => acc + (parseFloat(curr.quantity) || 0), 0)
-              .toFixed(1),
+            // Only counts DELIVERED food. Estimates 10.5kg of CO2 prevented per successful delivery
+            val: ((donationStats?.completedCount || 0) * 10.5).toFixed(1), 
             trend: "kg (CO₂ Impact)",
             color: "#f59e0b",
             icon: Leaf,
           },
           {
             label: "Active Requests",
-            val: donationHistory
-              .filter(
-                (d: DonationDetail) =>
-                  d.status === "PENDING" ||
-                  d.status === "ACCEPTED" ||
-                  d.status === "ASSIGNED",
-              )
-              .length.toString(),
+            val: donationStats?.inProgressCount?.toString() || "0",
             trend: "In progress",
             color: "#8b5cf6",
             icon: Package,
@@ -284,20 +285,7 @@ const MyDonations = () => {
               className="donation-history-slider flex overflow-x-auto no-scrollbar gap-6 pb-6"
             >
               {(() => {
-                const statusMap: Record<string, string[]> = {
-                  Pending: ["PENDING"],
-                  Accepted: ["ACCEPTED"],
-                  Assigned: ["ASSIGNED"],
-                  Delivered: ["DELIVERED"],
-                };
-
                 const filtered = (donationHistory || [])
-                  .filter((d: DonationDetail) => {
-                    const allowedStatuses = statusMap[statusFilter] || [
-                      statusFilter.toUpperCase(),
-                    ];
-                    return allowedStatuses.includes(d.status.toUpperCase());
-                  })
                   .sort((a: DonationDetail, b: DonationDetail) => {
                     const dateA = new Date(a.date).getTime();
                     const dateB = new Date(b.date).getTime();
@@ -340,9 +328,10 @@ const MyDonations = () => {
                       <div className="relative aspect-[16/10] rounded-[2rem] overflow-hidden mb-4 shadow-sm">
                         <img
                           src={
-                            donation.status === "PENDING" || donation.status === "ACCEPTED"
-                              ? "/drawer_images/cooked_food.png"
-                              : donation.image || `/donation_images/${["chicken_gravy.png", "packed_lunch.png", "packet_curry.png"][donation.id % 3]}`
+                            donation.image || 
+                            (donation.category && categoryImageMap[donation.category] 
+                              ? `/donation_images/${categoryImageMap[donation.category]}` 
+                              : "/drawer_images/cooked_food.png")
                           }
                           className={`w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-110 ${
                             donation.status === "DELIVERED" ? "saturate-[0.8] opacity-95" : ""
@@ -370,10 +359,13 @@ const MyDonations = () => {
                           }`}>
                             {donation.foodType}
                           </h3>
+                          <div className="flex items-center gap-2">
+                            <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 text-[8px] font-black uppercase tracking-widest">
+                              {donation.category}
+                            </span>
+                          </div>
                           <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">
-                            {donation.status === "PENDING" ? "10 LITERS" : 
-                             donation.status === "ACCEPTED" ? "5 KG" : 
-                             donation.status === "DELIVERED" ? "12 CANS" : "15 UNITS"} • Veg • Homemade
+                            {donation.quantity} • {donation.dietaryType} • {donation.preparationType}
                           </p>
                         </div>
 
@@ -433,7 +425,7 @@ const MyDonations = () => {
                                 <img src="/drawer_images/user.png" className="w-9 h-9 rounded-full object-cover border-2 border-white shadow-sm" alt="V" />
                                 <div className="flex flex-col leading-tight">
                                   <span className="text-[8px] font-black uppercase tracking-wider text-emerald-600/80">Volunteer</span>
-                                  <span className="text-[13px] font-black uppercase tracking-tight text-slate-700">Suresh Kumar</span>
+                                  <span className="text-[13px] font-black uppercase tracking-tight text-slate-700">{donation.volunteer?.name || "Assigning..."}</span>
                                 </div>
                               </div>
                               <button className="w-8 h-8 rounded-full bg-[#22c55e] text-white flex items-center justify-center shadow-md shadow-emerald-500/20 active:scale-90 transition-transform">
@@ -658,7 +650,7 @@ const MyDonations = () => {
                 {/* Background Image (Globe + Bowl) */}
                 <div className="absolute inset-0 w-full h-full pointer-events-none">
                   <img
-                    src="/drawer_images/cooked_food.png"
+                    src={d.image || (d.category && categoryImageMap[d.category] ? `/donation_images/${categoryImageMap[d.category]}` : "/drawer_images/cooked_food.png")}
                     className="w-full h-full object-cover opacity-100"
                     alt="Background"
                   />
@@ -680,6 +672,9 @@ const MyDonations = () => {
                           </span>
                         </div>
                         <p className="text-[13px] font-bold text-slate-400/80 tracking-tight">
+                          {d.quantity} • {d.dietaryType} • {d.preparationType}
+                        </p>
+                        <p className="text-[11px] font-medium text-slate-400/60 mt-1">
                           {d.description || "Freshly Prepared Meals"}
                         </p>
                       </div>
@@ -725,103 +720,54 @@ const MyDonations = () => {
                       className="group-hover:translate-x-0.5 transition-transform"
                     />
                   </button>
-                </div>
-
-                <div className="relative space-y-3 px-1">
-                  {/* Vertical Connecting Line - Mathematically Centered (px-1=4px + node center=12px = 16px) */}
+                  <div className="relative space-y-3 px-1">
+                  {/* Vertical Connecting Line */}
                   <div className="absolute left-[15px] top-6 bottom-6 w-[2px] border-l-2 border-dashed border-slate-200" />
 
-                  {/* Step 1: Picked Up */}
-                  <div className="relative flex items-center gap-4 group/step">
-                    <div className="relative z-10 w-6 h-6 rounded-full bg-white border-2 border-emerald-500 flex items-center justify-center shadow-sm shrink-0">
-                      <div className="w-2 h-2 rounded-full bg-emerald-500" />
-                    </div>
-                    <div className="flex-1 p-3.5 rounded-xl bg-slate-50/50 border border-slate-100/50 flex items-center gap-4 hover:bg-white hover:shadow-lg transition-all duration-300 min-w-0">
-                      <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-emerald-600 shrink-0 border border-emerald-100 shadow-sm">
-                        <ShoppingBag size={18} />
+                  {d.timeline.map((step, idx) => (
+                    <div key={idx} className="relative flex items-center gap-4 group/step">
+                      <div className={`relative z-10 w-6 h-6 rounded-full bg-white border-2 flex items-center justify-center shadow-sm shrink-0 ${
+                        step.completed ? "border-emerald-500" : "border-slate-300"
+                      }`}>
+                        <div className={`w-1.5 h-1.5 rounded-full ${
+                          step.completed ? "bg-emerald-500" : "bg-slate-300"
+                        }`} />
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[13.5px] font-bold text-slate-800 tracking-tight truncate">
-                          Food picked up successfully
-                        </p>
-                        <p className="text-[10px] font-bold text-slate-400">
-                          Today, 10:30 AM
-                        </p>
-                      </div>
-                      <div className="px-2.5 py-1 rounded-lg text-[8px] font-black uppercase bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-sm shrink-0 whitespace-nowrap">
-                        Completed
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Step 2: In Transit */}
-                  <div className="relative flex items-center gap-4 group/step">
-                    <div className="relative z-10 w-6 h-6 rounded-full bg-white border-2 border-blue-400 flex items-center justify-center shadow-sm shrink-0">
-                      <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-                    </div>
-                    <div className="flex-1 p-3.5 rounded-xl bg-slate-50/50 border border-slate-100/50 flex items-center gap-4 hover:bg-white hover:shadow-lg transition-all duration-300 min-w-0">
-                      <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-blue-500 shrink-0 border border-blue-100 shadow-sm">
-                        <User size={18} />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[13.5px] font-bold text-slate-800 tracking-tight truncate">
-                          Food in transit to NGO
-                        </p>
-                        <p className="text-[10px] font-bold text-slate-400">
-                          Today, 11:05 AM •{" "}
-                          {d.volunteer?.name || "Our Volunteer"}
-                        </p>
-                      </div>
-                      <div className="px-2.5 py-1 rounded-lg text-[8px] font-black uppercase bg-blue-50 text-blue-600 border border-blue-100 shadow-sm shrink-0 whitespace-nowrap">
-                        In Transit
+                      <div className={`flex-1 p-3.5 rounded-xl border flex items-center gap-4 min-w-0 ${
+                        step.completed ? "bg-slate-50/50 border-slate-100/50 hover:bg-white hover:shadow-lg" : "bg-slate-50/30 border-slate-100 border-dashed opacity-60"
+                      } transition-all duration-300`}>
+                        <div className={`w-10 h-10 rounded-full bg-white flex items-center justify-center shrink-0 border shadow-sm ${
+                          step.completed ? "text-emerald-600 border-emerald-100" : "text-slate-300 border-emerald-100"
+                        }`}>
+                          {step.status.toLowerCase().includes("pickup") || step.status.toLowerCase().includes("picked") ? (
+                            <ShoppingBag size={18} />
+                          ) : step.status.toLowerCase().includes("delivered") ? (
+                            <CheckCircle2 size={18} />
+                          ) : step.status.toLowerCase().includes("assigned") ? (
+                            <User size={18} />
+                          ) : (
+                            <Clock size={18} />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className={`text-[13.5px] font-bold tracking-tight truncate ${
+                            step.completed ? "text-slate-800" : "text-slate-500"
+                          }`}>
+                            {step.status}
+                          </p>
+                          <p className="text-[10px] font-bold text-slate-400">
+                            {step.date}, {step.time}
+                          </p>
+                        </div>
+                        <div className={`px-2.5 py-1 rounded-lg text-[8px] font-black uppercase border shadow-sm shrink-0 whitespace-nowrap ${
+                          step.completed ? "bg-emerald-50 text-emerald-600 border-emerald-100" : "bg-slate-50 text-slate-400 border-slate-100"
+                        }`}>
+                          {step.completed ? "Completed" : "Pending"}
+                        </div>
                       </div>
                     </div>
-                  </div>
-
-                  {/* Step 3: Pending Delivery */}
-                  <div className="relative flex items-center gap-4 group/step">
-                    <div className="relative z-10 w-6 h-6 rounded-full bg-white border-2 border-slate-300 flex items-center justify-center shadow-sm shrink-0">
-                      <div className="w-1.5 h-1.5 rounded-full bg-slate-300" />
-                    </div>
-                    <div className="flex-1 p-3.5 rounded-xl bg-slate-50/50 border border-slate-100/50 flex items-center gap-4 min-w-0">
-                      <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-400 shrink-0 border border-slate-100 shadow-sm">
-                        <Building2 size={18} />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[13.5px] font-bold text-slate-700 tracking-tight truncate">
-                          NGO will confirm delivery
-                        </p>
-                        <p className="text-[10px] font-bold text-slate-400">
-                          Est. Tomorrow, 2:00 PM
-                        </p>
-                      </div>
-                      <div className="px-2.5 py-1 rounded-lg text-[8px] font-black uppercase bg-slate-100 text-slate-500 border border-slate-200 shadow-sm shrink-0 whitespace-nowrap">
-                        Pending
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Step 4: Final Delivery */}
-                  <div className="relative flex items-center gap-4 group/step opacity-60">
-                    <div className="relative z-10 w-6 h-6 rounded-full bg-white border-2 border-slate-200 flex items-center justify-center shadow-sm shrink-0"></div>
-                    <div className="flex-1 p-3.5 rounded-xl bg-slate-50/30 border border-slate-100 border-dashed flex items-center gap-4 min-w-0">
-                      <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-300 shrink-0 border border-slate-100 shadow-sm">
-                        <CheckCircle2 size={18} />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[13.5px] font-bold text-slate-500 tracking-tight truncate">
-                          Delivery to beneficiary
-                        </p>
-                        <p className="text-[10px] font-bold text-slate-400">
-                          Est. Tomorrow
-                        </p>
-                      </div>
-                      <div className="px-2.5 py-1 rounded-lg text-[8px] font-black uppercase bg-slate-50 text-slate-400 border border-slate-100 shadow-sm shrink-0 whitespace-nowrap">
-                        Upcoming
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                  ))}
+                </div>         </div>
               </div>
 
 
