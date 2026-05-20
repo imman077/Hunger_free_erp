@@ -44,6 +44,7 @@ export const DonationDetailSchema = z.object({
       date: z.string(),
       time: z.string(),
       completed: z.boolean(),
+      description: z.string().optional().nullable(),
     }),
   ),
 });

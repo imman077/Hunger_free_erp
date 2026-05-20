@@ -14,12 +14,14 @@ interface DonorState {
   };
   isLoading: boolean;
   error: string | null;
+  redonatePayload: any | null;
 
   // Actions
   setDonorData: (data: DonorData) => void;
   setLoading: (isLoading: boolean) => void;
   setError: (error: string | null) => void;
-  refreshData: (status?: string) => Promise<void>;
+  refreshData: (status?: string, sortOrder?: string) => Promise<void>;
+  setRedonatePayload: (payload: any | null) => void;
 }
 
 const initialData: DonorData = {
@@ -263,6 +265,7 @@ export const useDonorStore = create<DonorState>((set) => ({
   },
   isLoading: false,
   error: null,
+  redonatePayload: null,
 
   setDonorData: (newData) => {
     const result = DonorDataSchema.safeParse(newData);
@@ -274,14 +277,18 @@ export const useDonorStore = create<DonorState>((set) => ({
     }
   },
 
+  setRedonatePayload: (payload) => set({ redonatePayload: payload }),
   setLoading: (isLoading) => set({ isLoading }),
   setError: (error) => set({ error }),
-  refreshData: async (status?: string) => {
+  refreshData: async (status?: string, sortOrder?: string) => {
     set({ isLoading: true });
     try {
       const { data } = await client.query<{ donations: any[], donationStats: any }>({
         query: GET_MY_DONATIONS,
-        variables: status ? { status: status === 'Active' ? 'PENDING' : status.toUpperCase() } : {},
+        variables: {
+          ...(status ? { status: status === 'Active' ? 'PENDING' : status.toUpperCase() } : {}),
+          ...(sortOrder ? { sortOrder: sortOrder === 'Newest First' ? 'NEWEST_FIRST' : 'OLDEST_FIRST' } : {})
+        },
         fetchPolicy: 'network-only' // Ensure we get fresh data
       });
       

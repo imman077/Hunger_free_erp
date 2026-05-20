@@ -64,7 +64,7 @@ const ResuableDrawer = ({
       hideCloseButton={true}
       classNames={{
         base: `rounded-none w-full ${sizeClasses[size as keyof typeof sizeClasses] || "sm:max-w-md"} shadow-none thin-scrollbar`,
-        backdrop: "bg-black/40 backdrop-blur-md",
+        backdrop: "bg-black/40 backdrop-blur-sm",
         header: `${hideHeaderBorder ? "border-none shadow-none" : "border-b border-[var(--border-color)]"} p-0`,
         body: "p-0 overflow-hidden",
         footer: "border-t border-[var(--border-color)] p-5",
@@ -79,7 +79,7 @@ const ResuableDrawer = ({
       >
         {() => (
           <>
-            <DrawerHeader className="px-6 py-5 flex flex-row items-center justify-between gap-4 border-none shadow-none">
+            <DrawerHeader className="px-6 py-5 flex flex-row items-start justify-between gap-4 border-none shadow-none">
               <div className="flex flex-col gap-0.5">
                 <div
                   className="text-[19px] font-bold tracking-tight text-slate-800"
@@ -95,7 +95,7 @@ const ResuableDrawer = ({
                 )}
               </div>
 
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4 shrink-0 pt-0.5">
                 {headerExtra}
                 <button
                   onClick={onClose}
@@ -110,7 +110,7 @@ const ResuableDrawer = ({
             </DrawerHeader>
 
             <DrawerBody
-              className="py-1 px-0 overflow-y-auto thin-scrollbar flex-1 border-none shadow-none"
+              className="py-1 px-0 overflow-y-auto transform-gpu will-change-transform thin-scrollbar flex-1 border-none shadow-none"
               style={{ backgroundColor: "var(--bg-primary)" }}
             >
               <div className="">{children}</div>

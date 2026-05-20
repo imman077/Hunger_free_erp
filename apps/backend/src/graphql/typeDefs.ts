@@ -6,6 +6,7 @@ export const typeDefs = `#graphql
     date: String
     time: String
     completed: Boolean
+    description: String
   }
 
   type VolunteerInfo {
@@ -134,6 +135,7 @@ export const typeDefs = `#graphql
     pickupAddress: String
     deliveryAddress: String
     description: String
+    expiryTime: String
     volunteer: VolunteerInfo
     image: String
     timeline: [Timeline]
@@ -349,6 +351,7 @@ export const typeDefs = `#graphql
     pickupAddress: String!
     deliveryAddress: String
     description: String!
+    expiryTime: String
     image: String
   }
 
@@ -445,7 +448,7 @@ export const typeDefs = `#graphql
     userById(id: ID!): User
 
     # Donor
-    donations(userId: String, status: String): [Donation]
+    donations(userId: String, status: String, sortOrder: String): [Donation]
     donationById(id: ID!): Donation
 
     # NGO
@@ -519,6 +522,8 @@ export const typeDefs = `#graphql
     createDonation(input: CreateDonationInput!): Donation
     updateDonationStatus(id: ID!, status: String!): Donation
     verifyPickup(id: ID!, otp: String!): Donation
+    cancelDonation(id: ID!, reason: String): Donation
+    deleteDonation(id: ID!): Boolean
 
     # NGO Needs
     createNeed(input: CreateNeedInput!): Need

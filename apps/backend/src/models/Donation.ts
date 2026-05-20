@@ -12,17 +12,19 @@ const donationSchema = new mongoose.Schema({
   pickupAddress: { type: String, required: true },
   deliveryAddress: { type: String }, // Optional until NGO accepts
   description: { type: String, required: true },
+  expiryTime: { type: String }, // Stores Expiry ISO date or custom string
+  image: String,
   volunteer: {
     name: String,
     phone: String,
     rating: String
   },
-  image: String,
   timeline: [{
     status: String,
     date: String,
     time: String,
-    completed: Boolean
+    completed: Boolean,
+    description: String
   }]
 }, {
   timestamps: true

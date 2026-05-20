@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const GET_MY_DONATIONS = gql`
-  query GetMyDonations($status: String) {
-    donations(status: $status) {
+  query GetMyDonations($status: String, $sortOrder: String) {
+    donations(status: $status, sortOrder: $sortOrder) {
       id
       foodType
       category
@@ -26,6 +26,7 @@ export const GET_MY_DONATIONS = gql`
         date
         time
         completed
+        description
       }
     }
     donationStats {
@@ -51,6 +52,7 @@ export const VERIFY_PICKUP = gql`
         date
         time
         completed
+        description
       }
     }
   }
@@ -63,5 +65,38 @@ export const CREATE_DONATION = gql`
       category
       status
     }
+  }
+`;
+
+export const GET_CONFIG_ITEMS = gql`
+  query GetConfigItems($key: String) {
+    configItems(key: $key) {
+      id
+      key
+      name
+      description
+    }
+  }
+`;
+
+export const CANCEL_DONATION = gql`
+  mutation CancelDonation($id: ID!, $reason: String) {
+    cancelDonation(id: $id, reason: $reason) {
+      id
+      status
+      timeline {
+        status
+        date
+        time
+        completed
+        description
+      }
+    }
+  }
+`;
+
+export const DELETE_DONATION = gql`
+  mutation DeleteDonation($id: ID!) {
+    deleteDonation(id: $id)
   }
 `;

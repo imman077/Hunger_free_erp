@@ -79,6 +79,35 @@ const ResuableTimePicker: React.FC<ResuableTimePickerProps> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const isProgrammaticScroll = useRef(false);
+
+  const scrollToValue = (h: number, m: number) => {
+    isProgrammaticScroll.current = true;
+    const scrollToActive = (
+      ref: React.RefObject<HTMLDivElement | null>,
+      val: number,
+    ) => {
+      const active = ref.current?.querySelector(`[data-value="${val}"]`);
+      if (active && ref.current) {
+        const container = ref.current;
+        const activeElement = active as HTMLElement;
+        const containerRect = container.getBoundingClientRect();
+        const activeRect = activeElement.getBoundingClientRect();
+        const scrollOffset =
+          activeRect.top -
+          containerRect.top -
+          container.clientHeight / 2 +
+          activeElement.clientHeight / 2;
+        container.scrollTop += scrollOffset;
+      }
+    };
+    scrollToActive(hourScrollRef, h);
+    scrollToActive(minuteScrollRef, m);
+    setTimeout(() => {
+      isProgrammaticScroll.current = false;
+    }, 150);
+  };
+
   useEffect(() => {
     if (isOpen && containerRef.current) {
       const rect = containerRef.current.getBoundingClientRect();
@@ -91,38 +120,62 @@ const ResuableTimePicker: React.FC<ResuableTimePickerProps> = ({
         setPlacement("bottom");
       }
 
-      const scrollToActive = (
-        ref: React.RefObject<HTMLDivElement | null>,
-        val: number,
-      ) => {
-        const active = ref.current?.querySelector(`[data-value="${val}"]`);
-        if (active && ref.current) {
-          const container = ref.current;
-          const activeElement = active as HTMLElement;
-          const containerRect = container.getBoundingClientRect();
-          const activeRect = activeElement.getBoundingClientRect();
-          const scrollOffset =
-            activeRect.top -
-            containerRect.top -
-            container.clientHeight / 2 +
-            activeElement.clientHeight / 2;
-          container.scrollTop += scrollOffset;
-        }
-      };
       const timer = setTimeout(() => {
-        scrollToActive(hourScrollRef, timeValue.hour);
-        scrollToActive(minuteScrollRef, timeValue.minute);
+        scrollToValue(timeValue.hour, timeValue.minute);
       }, 50);
       return () => clearTimeout(timer);
     }
-  }, [isOpen, timeValue.hour, timeValue.minute]);
+  }, [isOpen]);
+
+  const handleHourClick = (h: number) => {
+    handleTimeValueChange({ ...timeValue, hour: h });
+    setTimeout(() => scrollToValue(h, timeValue.minute), 50);
+  };
+
+  const handleMinuteClick = (m: number) => {
+    handleTimeValueChange({ ...timeValue, minute: m });
+    setTimeout(() => scrollToValue(timeValue.hour, m), 50);
+  };
+
+  const handleScroll = (type: "hour" | "minute") => {
+    if (isProgrammaticScroll.current) return;
+    const ref = type === "hour" ? hourScrollRef : minuteScrollRef;
+    if (!ref.current) return;
+
+    const container = ref.current;
+    const containerCenter = container.getBoundingClientRect().top + container.clientHeight / 2;
+
+    const buttons = Array.from(container.querySelectorAll("button"));
+    let closestVal = null;
+    let minDiff = Infinity;
+
+    buttons.forEach((btn) => {
+      const rect = btn.getBoundingClientRect();
+      const btnCenter = rect.top + rect.height / 2;
+      const diff = Math.abs(btnCenter - containerCenter);
+      if (diff < minDiff) {
+        minDiff = diff;
+        closestVal = Number(btn.getAttribute("data-value"));
+      }
+    });
+
+    if (closestVal !== null) {
+      if (type === "hour" && timeValue.hour !== closestVal) {
+        onChange(formatToString({ ...timeValue, hour: closestVal }));
+      } else if (type === "minute" && timeValue.minute !== closestVal) {
+        onChange(formatToString({ ...timeValue, minute: closestVal }));
+      }
+    }
+  };
 
   const handleNow = () => {
     const now = new Date();
     let h = now.getHours();
     const p = h >= 12 ? "PM" : "AM";
     h = h % 12 || 12;
-    handleTimeValueChange({ hour: h, minute: now.getMinutes(), period: p });
+    const m = now.getMinutes();
+    handleTimeValueChange({ hour: h, minute: m, period: p });
+    setTimeout(() => scrollToValue(h, m), 50);
   };
 
   const displayTime = `${timeValue.hour
@@ -205,17 +258,16 @@ const ResuableTimePicker: React.FC<ResuableTimePickerProps> = ({
 
                 <div
                   ref={hourScrollRef}
+                  onScroll={() => handleScroll("hour")}
                   className="h-full overflow-y-auto no-scrollbar snap-y snap-mandatory"
                 >
-                  <div className="h-10" />
+                  <div className="h-[38px]" />
                   {Array.from({ length: 12 }, (_, i) => i + 1).map((h) => (
                     <button
                       key={h}
                       data-value={h}
                       type="button"
-                      onClick={() =>
-                        handleTimeValueChange({ ...timeValue, hour: h })
-                      }
+                      onClick={() => handleHourClick(h)}
                       className={`w-full h-9 flex items-center justify-center text-base font-bold transition-all snap-center ${
                         timeValue.hour === h
                           ? "scale-110"
@@ -228,22 +280,21 @@ const ResuableTimePicker: React.FC<ResuableTimePickerProps> = ({
                       {h.toString().padStart(2, "0")}
                     </button>
                   ))}
-                  <div className="h-10" />
+                  <div className="h-[38px]" />
                 </div>
 
                 <div
                   ref={minuteScrollRef}
+                  onScroll={() => handleScroll("minute")}
                   className="h-full overflow-y-auto no-scrollbar snap-y snap-mandatory"
                 >
-                  <div className="h-10" />
+                  <div className="h-[38px]" />
                   {Array.from({ length: 60 }, (_, i) => i).map((m) => (
                     <button
                       key={m}
                       data-value={m}
                       type="button"
-                      onClick={() =>
-                        handleTimeValueChange({ ...timeValue, minute: m })
-                      }
+                      onClick={() => handleMinuteClick(m)}
                       className={`w-full h-9 flex items-center justify-center text-base font-bold transition-all snap-center ${
                         timeValue.minute === m
                           ? "scale-110"
@@ -256,7 +307,7 @@ const ResuableTimePicker: React.FC<ResuableTimePickerProps> = ({
                       {m.toString().padStart(2, "0")}
                     </button>
                   ))}
-                  <div className="h-10" />
+                  <div className="h-[38px]" />
                 </div>
 
                 <div
