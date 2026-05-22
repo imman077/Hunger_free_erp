@@ -59,10 +59,12 @@ const categoryImageMap: Record<string, string> = {
 
 const MyDonations = () => {
   const navigate = useNavigate();
-  const { donationHistory, donationStats, verifyPickup, cancelDonation, deleteDonation, updateVolunteerLocation, refreshData } = useDonorDonations();
+  const { donationHistory, donationStats, verifyPickup, cancelDonation, deleteDonation, refreshData } = useDonorDonations();
   const [selectedDonation, setSelectedDonation] =
     useState<DonationDetail | null>(null);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isGeneralDetailsOpen, setIsGeneralDetailsOpen] = useState(false);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [isTrackingModalOpen, setIsTrackingModalOpen] = useState(false);
   const [cancellingId, setCancellingId] = useState<string | null>(null);
   const [otpValue, setOtpValue] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
@@ -70,7 +72,6 @@ const MyDonations = () => {
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [cancellingDonationId, setCancellingDonationId] = useState<string | null>(null);
   const [cancelReason, setCancelReason] = useState("");
-  const [isSimulatingGPS, setIsSimulatingGPS] = useState(false);
   
   // Redonate Modal States
   const [isRedonateModalOpen, setIsRedonateModalOpen] = useState(false);
@@ -134,18 +135,18 @@ const MyDonations = () => {
 
   // Keep selectedDonation in sync with refreshed donationHistory data (for live GPS coordinate updates)
   useEffect(() => {
-    if (isDrawerOpen && selectedDonation) {
+    if ((isGeneralDetailsOpen || isDetailsModalOpen || isTrackingModalOpen) && selectedDonation) {
       const updated = donationHistory.find(d => String(d.id) === String(selectedDonation.id));
       if (updated) {
         setSelectedDonation(updated);
       }
     }
-  }, [donationHistory, isDrawerOpen]);
+  }, [donationHistory, isGeneralDetailsOpen, isDetailsModalOpen, isTrackingModalOpen]);
 
-  // Auto-refresh donation details for active tracking every 5 seconds when drawer is open
+  // Auto-refresh donation details for active tracking every 5 seconds when tracking drawer is open
   useEffect(() => {
     let intervalId: any;
-    if (isDrawerOpen && selectedDonation && (selectedDonation.status === "ASSIGNED" || selectedDonation.status === "PICKED_UP")) {
+    if (isTrackingModalOpen && selectedDonation && (selectedDonation.status === "ASSIGNED" || selectedDonation.status === "PICKED_UP")) {
       intervalId = setInterval(() => {
         refreshData(statusFilter, sortOrder);
       }, 5000);
@@ -153,54 +154,23 @@ const MyDonations = () => {
     return () => {
       if (intervalId) clearInterval(intervalId);
     };
-  }, [isDrawerOpen, selectedDonation, statusFilter, sortOrder]);
-
-  const handleSimulateGPS = async (donation: DonationDetail) => {
-    if (isSimulatingGPS) return;
-    setIsSimulatingGPS(true);
-
-    const startLat = donation.pickupCoords?.lat || 19.0760;
-    const startLng = donation.pickupCoords?.lng || 72.8777;
-    const endLat = donation.deliveryCoords?.lat || 19.1300;
-    const endLng = donation.deliveryCoords?.lng || 72.8900;
-
-    // Generate 10 steps from pickup to delivery coords
-    const totalSteps = 10;
-    const coordinatesList = Array.from({ length: totalSteps + 1 }, (_, i) => {
-      const fraction = i / totalSteps;
-      return {
-        lat: startLat + (endLat - startLat) * fraction,
-        lng: startLng + (endLng - startLng) * fraction,
-      };
-    });
-
-    toast.info("Starting GPS simulation for volunteer en route...", { duration: 3000 });
-
-    let currentStep = 0;
-    const interval = setInterval(async () => {
-      if (currentStep > totalSteps) {
-        clearInterval(interval);
-        setIsSimulatingGPS(false);
-        toast.success("GPS simulation completed! Volunteer has reached destination.", { duration: 4000 });
-        return;
-      }
-
-      const point = coordinatesList[currentStep];
-      // Update coordinates in the DB
-      await updateVolunteerLocation(String(donation.id), point.lat, point.lng);
-      
-      // Pull fresh data from GraphQL backend
-      await refreshData(statusFilter, sortOrder);
-
-      currentStep++;
-    }, 2000);
-  };
+  }, [isTrackingModalOpen, selectedDonation, statusFilter, sortOrder]);
 
   const handleDetailsClick = (donation: DonationDetail) => {
     setSelectedDonation(donation);
     setOtpValue("");
     setOtpError("");
-    setIsDrawerOpen(true);
+    if (donation.status === "ASSIGNED") {
+      setIsDetailsModalOpen(true);
+    } else {
+      setIsGeneralDetailsOpen(true);
+    }
+  };
+
+  const handleLiveTrackClick = (donation: DonationDetail) => {
+    if (donation.status !== "ASSIGNED") return;
+    setSelectedDonation(donation);
+    setIsTrackingModalOpen(true);
   };
   const handleCancelClick = async (donationId: string, status?: string) => {
     if (status && status !== "PENDING") {
@@ -237,7 +207,7 @@ const MyDonations = () => {
     setOtpError("");
     const result = await verifyPickup(String(selectedDonation.id), otpValue, statusFilter);
     if (result.success) {
-      setIsDrawerOpen(false);
+      setIsDetailsModalOpen(false);
       setOtpValue("");
     } else {
       setOtpError("Invalid verification code. Please try again.");
@@ -744,27 +714,30 @@ const MyDonations = () => {
                                 <span>Redonate</span>
                               </button>
                             </>
-                          ) : donation.status !== "ACCEPTED" ? (
+                          ) : donation.status === "ASSIGNED" ? (
                             <button
                               onClick={() => {
-                                if (donation.status === "PENDING") {
-                                  handleCancelClick(String(donation.id), donation.status);
-                                } else {
-                                  handleDetailsClick(donation);
-                                }
+                                handleLiveTrackClick(donation);
                               }}
                               disabled={cancellingId === String(donation.id)}
-                              className={`flex-[1.2] flex items-center justify-center gap-2 px-3 py-3 rounded-2xl font-black uppercase tracking-wider text-[10px] transition-all active:scale-95 shadow-md whitespace-nowrap text-white ${
-                                donation.status === "PENDING" ? "bg-orange-500 hover:bg-orange-600 disabled:bg-orange-300" :
-                                "bg-[#2e7d32] hover:bg-[#1b5e20]"
-                              }`}
+                              className="flex-[1.2] flex items-center justify-center gap-2 px-3 py-3 rounded-2xl font-black uppercase tracking-wider text-[10px] transition-all active:scale-95 shadow-md whitespace-nowrap text-white bg-[#2e7d32] hover:bg-[#1b5e20]"
                             >
                               {cancellingId === String(donation.id) ? (
                                 <div className="animate-spin h-3.5 w-3.5 border-2 border-white border-t-transparent rounded-full" />
-                              ) : donation.status === "PENDING" ? (
-                                "Cancel Donation"
                               ) : (
                                 "Live Track"
+                              )}
+                            </button>
+                          ) : donation.status === "PENDING" ? (
+                            <button
+                              onClick={() => handleCancelClick(String(donation.id), donation.status)}
+                              disabled={cancellingId === String(donation.id)}
+                              className="flex-[1.2] flex items-center justify-center gap-2 px-3 py-3 rounded-2xl font-black uppercase tracking-wider text-[10px] transition-all active:scale-95 shadow-md whitespace-nowrap text-white bg-orange-500 hover:bg-orange-600 disabled:bg-orange-300"
+                            >
+                              {cancellingId === String(donation.id) ? (
+                                <div className="animate-spin h-3.5 w-3.5 border-2 border-white border-t-transparent rounded-full" />
+                              ) : (
+                                "Cancel Donation"
                               )}
                             </button>
                           ) : null}
@@ -866,146 +839,275 @@ const MyDonations = () => {
         )}
       </div>
 
-      {/* Donation Details Drawer */}
+      {/* General Details Drawer for non-assigned cards */}
       <ResuableDrawer
-        isOpen={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}
-        title="Donation Intelligence"
+        isOpen={isGeneralDetailsOpen}
+        onClose={() => setIsGeneralDetailsOpen(false)}
+        title="Donation Details"
         subtitle={
           <span className="block text-slate-400 mt-1 break-all">
-            Tracking ID:{" "}
-            <span className="text-[#22c55e] font-bold">
-              #DON-{selectedDonation?.id}
-            </span>
+            Tracking ID: <span className="text-[#22c55e] font-bold">#DON-{selectedDonation?.id}</span>
           </span>
         }
         size="md"
-        headerExtra={
-          <div className="flex items-center gap-2 px-2.5 py-1.5 bg-emerald-50/60 text-[#22c55e] rounded-xl border border-emerald-100/50 shrink-0 whitespace-nowrap">
-            <div className="w-1.5 h-1.5 bg-[#22c55e] rounded-full animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.4)] shrink-0" />
-            <span className="text-[11px] font-bold tracking-tight whitespace-nowrap">
-              Live Tracking
-            </span>
-          </div>
-        }
       >
         {selectedDonation ? (
+          <div className="space-y-5 p-6 bg-white">
+            <div className="relative rounded-3xl overflow-hidden shadow-lg min-h-[220px] bg-slate-950">
+              <img
+                src={selectedDonation.image || (selectedDonation.category && categoryImageMap[selectedDonation.category] ? `/donation_images/${categoryImageMap[selectedDonation.category]}` : "/drawer_images/cooked_food.png")}
+                className="absolute inset-0 w-full h-full object-cover"
+                alt={selectedDonation.foodType}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/45 to-transparent" />
+              <div className="relative z-10 min-h-[220px] p-6 flex flex-col justify-end">
+                <span className="w-fit px-2.5 py-1 rounded-full bg-white/90 text-emerald-700 text-[9px] font-black uppercase tracking-widest mb-3">
+                  {selectedDonation.status}
+                </span>
+                <h3 className="text-2xl font-black text-white tracking-tight leading-tight">
+                  {selectedDonation.foodType}
+                </h3>
+                <p className="text-[11px] font-black text-slate-200 uppercase tracking-[0.18em] mt-2">
+                  {selectedDonation.quantity} - {selectedDonation.dietaryType} - {selectedDonation.preparationType}
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-3">
+              <div className="flex items-start gap-3 p-4 rounded-2xl bg-slate-50 border border-slate-100">
+                <div className="w-9 h-9 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                  <MapPin size={17} />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-wider">NGO / Location</p>
+                  <p className="text-[13px] font-bold text-slate-800">{selectedDonation.ngo || "Matching in progress"}</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-4 rounded-2xl bg-slate-50 border border-slate-100">
+                <div className="w-9 h-9 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                  <Clock size={17} />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-wider">Pickup Window</p>
+                  <p className="text-[13px] font-bold text-slate-800">{selectedDonation.date}, 6:00 PM - 7:00 PM</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="text-[12px] font-black uppercase tracking-widest text-slate-700">Recent Updates</h4>
+              {(selectedDonation.timeline || []).map((step, idx) => (
+                <div key={idx} className="p-3 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="text-[12px] font-black text-slate-800 truncate">{step.status}</p>
+                    <p className="text-[10px] font-bold text-slate-400 truncate">{step.date}, {step.time}</p>
+                  </div>
+                  <span className={`px-2.5 py-1 rounded-full text-[8px] font-black uppercase ${step.completed ? "bg-emerald-50 text-emerald-600" : "bg-slate-100 text-slate-400"}`}>
+                    {step.completed ? "Completed" : "Pending"}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : null}
+      </ResuableDrawer>
+
+      {/* Assigned Donation Details Drawer */}
+      <ResuableDrawer
+        isOpen={isDetailsModalOpen}
+        onClose={() => setIsDetailsModalOpen(false)}
+        title="Donation Details"
+        subtitle={
+          <span className="block text-slate-400 mt-1 break-all">
+            Tracking ID: <span className="text-[#22c55e] font-bold">#DON-{selectedDonation?.id}</span>
+          </span>
+        }
+        size="md"
+      >
+          {selectedDonation ? (
+            (() => {
+            if (!selectedDonation) return null;
+            const d = selectedDonation;
+
+            return (
+              <div className="bg-white w-full overflow-hidden">
+                <div className="relative h-[230px]">
+                  <img
+                    src={d.image || (d.category && categoryImageMap[d.category] ? `/donation_images/${categoryImageMap[d.category]}` : "/drawer_images/cooked_food.png")}
+                    className="w-full h-full object-cover"
+                    alt={d.foodType}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-900/25 to-transparent" />
+                  <div className="absolute left-5 right-5 bottom-5">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="px-2.5 py-1 rounded-full bg-white/90 text-emerald-700 text-[9px] font-black uppercase tracking-widest">
+                        {d.category}
+                      </span>
+                      <span className="px-2.5 py-1 rounded-full bg-emerald-500 text-white text-[9px] font-black uppercase tracking-widest">
+                        {d.status}
+                      </span>
+                    </div>
+                    <h3 className="text-3xl font-black tracking-tight text-white leading-none">
+                      {d.foodType}
+                    </h3>
+                    <p className="text-[11px] font-black text-slate-200 uppercase tracking-[0.2em] mt-2">
+                      {d.quantity} - {d.dietaryType} - {d.preparationType}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="p-5 md:p-6 space-y-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="flex items-start gap-3 p-3 rounded-2xl bg-slate-50 border border-slate-100">
+                      <div className="w-9 h-9 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                        <MapPin size={17} />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-wider">NGO</p>
+                        <p className="text-[13px] font-bold text-slate-800 truncate">{d.ngo || "Matching in progress"}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 p-3 rounded-2xl bg-slate-50 border border-slate-100">
+                      <div className="w-9 h-9 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                        <Clock size={17} />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-wider">Pickup Window</p>
+                        <p className="text-[13px] font-bold text-slate-800 truncate">{d.date}, 6:00 PM - 7:00 PM</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {d.status === "ASSIGNED" && (
+                    <div className="p-5 rounded-[1.75rem] bg-[#f8fdf9] border border-emerald-100/70 space-y-5 shadow-sm">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 border border-emerald-100/50">
+                          <ShieldCheck size={23} strokeWidth={2.2} />
+                        </div>
+                        <div>
+                          <h4 className="text-[13px] font-black uppercase tracking-wider text-emerald-800">
+                            Delivery Verification
+                          </h4>
+                          <p className="text-[11px] font-medium text-slate-500">
+                            Confirm NGO handoff securely
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <label className="text-[11px] font-bold text-slate-500 uppercase tracking-tight">
+                            Enter verification code
+                          </label>
+                          <span className="text-[10px] font-bold text-slate-400">OTP</span>
+                        </div>
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          maxLength={6}
+                          autoFocus
+                          value={otpValue}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setOtpValue(e.target.value.replace(/\D/g, ""))}
+                          placeholder="000000"
+                          className="w-full h-14 rounded-2xl bg-white border-2 border-emerald-100 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/10 outline-none px-4 text-center text-2xl font-black tracking-[0.45em] text-slate-800 transition-all"
+                        />
+                      </div>
+
+                      {otpError && (
+                        <div className="p-3 rounded-xl bg-red-50 border border-red-100 text-center">
+                          <p className="text-[10px] font-black text-red-500 uppercase tracking-widest">{otpError}</p>
+                        </div>
+                      )}
+
+                      <button
+                        onClick={onOtpSubmit}
+                        disabled={isVerifying || otpValue.length !== 6}
+                        className="w-full py-4 rounded-[1.25rem] bg-[#1b803c] text-white flex items-center justify-center gap-3 hover:bg-[#156d32] transition-all shadow-xl shadow-emerald-900/10 active:scale-[0.98] disabled:opacity-40 font-black uppercase tracking-widest text-[12px]"
+                      >
+                        {isVerifying ? (
+                          <div className="w-5 h-5 border-3 border-white/30 border-t-white rounded-full animate-spin" />
+                        ) : (
+                          <>
+                            <ShieldCheck size={17} strokeWidth={2.5} />
+                            <span>Verify Delivery</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })()
+        ) : null}
+      </ResuableDrawer>
+
+      {/* Live Tracking Modal */}
+      <Modal
+        isOpen={isTrackingModalOpen}
+        onOpenChange={setIsTrackingModalOpen}
+        size="md"
+        backdrop="blur"
+        hideCloseButton={true}
+        scrollBehavior="inside"
+        classNames={{
+          backdrop: "bg-slate-900/60 backdrop-blur-sm",
+          base: "bg-transparent shadow-none border-none outline-none",
+          body: "p-0",
+          wrapper: "z-[9999]",
+        }}
+      >
+        <ModalContent className="bg-transparent border-none outline-none shadow-none ring-0 p-0">
+        {(onClose) => selectedDonation ? (
           (() => {
             const d = selectedDonation!;
             const lastCompletedIdx = [...d.timeline].reverse().findIndex(s => s.completed);
             const currentActiveIdx = lastCompletedIdx !== -1 ? (d.timeline.length - 1 - lastCompletedIdx) : 0;
             return (
-            <div className="space-y-6 p-6 bg-white">
-              {/* Hero Section Card - Exactly as per Image */}
-              <div className="relative rounded-3xl overflow-hidden group shadow-lg min-h-[240px] bg-slate-950 border border-slate-800">
-                {/* Background Image (Globe + Bowl) */}
-                <div className="absolute inset-0 w-full h-full pointer-events-none">
-                  <img
-                    src={d.image || (d.category && categoryImageMap[d.category] ? `/donation_images/${categoryImageMap[d.category]}` : "/drawer_images/cooked_food.png")}
-                    className="w-full h-full object-cover opacity-100"
-                    alt="Background"
-                  />
-                  {/* Premium dark gradient overlay for text readability */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-900/60 to-slate-950/20" />
-                </div>
-
-                <div className="relative p-6 md:p-8 z-10 flex flex-col justify-between h-full min-h-[240px]">
-                  <div className="flex justify-between items-start gap-4">
-                    <div className="space-y-3 min-w-0">
-                      <h3 className="text-2xl md:text-3xl font-black text-white tracking-tight leading-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] truncate">
-                        {d.foodType}
-                      </h3>
-                      
-                      <div className="space-y-1.5">
-                        {/* Status + NGO Row */}
-                        <div className="flex items-center gap-2.5">
-                          <span className={`px-2.5 py-0.5 text-[9px] font-black uppercase tracking-widest rounded-md border shrink-0 ${
-                            d.status?.toUpperCase() === "PENDING"
-                              ? "bg-amber-500/20 text-amber-300 border-amber-500/30"
-                              : d.status?.toUpperCase() === "ACCEPTED"
-                                ? "bg-orange-500/20 text-orange-300 border-orange-500/30"
-                                : d.status?.toUpperCase() === "DELIVERED"
-                                  ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/30"
-                                  : "bg-blue-500/20 text-blue-300 border-blue-500/30"
-                          }`}>
-                            {d.status}
-                          </span>
-                          <span className="w-1.5 h-1.5 rounded-full bg-slate-500/60 shrink-0" />
-                          <span className="text-[11px] font-black text-slate-300/95 uppercase tracking-widest truncate">
-                            {d.ngo}
-                          </span>
-                        </div>
-
-                        {/* Specs Row */}
-                        <div className="flex items-center gap-2 text-[12px] font-bold text-slate-200/90 tracking-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.3)]">
-                          <span>{d.quantity}</span>
-                          <span className="w-1 h-1 rounded-full bg-slate-400/60 shrink-0" />
-                          <span>{d.dietaryType}</span>
-                          <span className="w-1 h-1 rounded-full bg-slate-400/60 shrink-0" />
-                          <span>{d.preparationType}</span>
-                        </div>
-                      </div>
-
-                      <p className="text-[11px] font-medium text-slate-400/90 leading-relaxed max-w-[90%] mt-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.2)] italic truncate">
-                        "{d.description || "Freshly Prepared Meals"}"
-                      </p>
-                    </div>
-
-                    <div className="w-12 h-12 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center text-emerald-400 border border-white/20 shrink-0 shadow-lg shadow-black/10">
-                      <Package size={20} strokeWidth={2.5} />
-                    </div>
+            <div className="w-[92vw] max-w-[720px] max-h-[92vh] overflow-y-auto rounded-[1.75rem] bg-white shadow-[0_28px_80px_rgba(15,23,42,0.18)] border border-slate-100 mx-auto p-4 thin-scrollbar">
+              <div className="flex items-start justify-between gap-3 px-1.5 pb-3">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1.5 text-[#16a34a] mb-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#16a34a] animate-pulse" />
+                    <span className="text-[8px] font-black uppercase tracking-widest">Live Tracking</span>
                   </div>
-
-                  {/* Impact Banner - Premium Glassmorphism */}
-                  <div className="flex items-center gap-2.5 px-3.5 py-2 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl w-fit max-w-[75%] shadow-lg shadow-black/20">
-                    <div className="w-6 h-6 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0 border border-emerald-500/20">
-                      <Leaf size={12} strokeWidth={2.5} />
-                    </div>
-                    <div className="flex flex-col justify-center min-w-0">
-                      <span className="text-[11px] font-black leading-tight text-white truncate">
-                        {d.quantity} of food rescued
-                      </span>
-                      <span className="text-[8px] font-bold text-slate-400 tracking-tight uppercase mt-0.5 truncate">
-                        by {d.ngo}
-                      </span>
-                    </div>
-                  </div>
+                  <h3 className="text-[15px] font-black text-slate-900 tracking-tight truncate">{d.foodType}</h3>
+                  <p className="text-[9px] font-bold text-slate-400 truncate">{d.quantity} - {d.ngo}</p>
                 </div>
+                <button
+                  onClick={onClose}
+                  className="w-8 h-8 rounded-full border border-slate-100 bg-white text-slate-400 hover:text-slate-700 hover:bg-slate-50 flex items-center justify-center transition-all"
+                >
+                  <X size={14} />
+                </button>
               </div>
 
               {/* GPS Route Map Tracker */}
               {(d.status === "ASSIGNED" || d.status === "PICKED_UP") && (
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between px-1">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 border border-blue-100/40 shrink-0">
-                        <Truck size={16} strokeWidth={2.5} />
-                      </div>
-                      <h4 className="text-[13px] font-black uppercase tracking-widest text-slate-700">
-                        Live Route Tracking
-                      </h4>
-                    </div>
-                    {/* Simulated GPS Play Button */}
-                    <button
-                      onClick={() => handleSimulateGPS(d)}
-                      disabled={isSimulatingGPS}
-                      className={`text-[9px] font-black uppercase tracking-wider px-3 py-1.5 rounded-xl transition-all shadow-sm flex items-center gap-1.5 border border-amber-200 ${
-                        isSimulatingGPS 
-                          ? "bg-amber-100 text-amber-700 cursor-not-allowed animate-pulse" 
-                          : "bg-amber-550 hover:bg-amber-600 bg-amber-50 text-amber-700"
-                      }`}
-                    >
-                      <RotateCcw size={10} className={isSimulatingGPS ? "animate-spin" : ""} />
-                      <span>{isSimulatingGPS ? "Simulating GPS..." : "Simulate Live Trip"}</span>
-                    </button>
-                  </div>
-                  
                   <LiveGPSMap
                     pickupCoords={d.pickupCoords}
                     deliveryCoords={d.deliveryCoords}
                     volunteerLocation={d.volunteerLocation}
                     volunteerName={d.volunteer?.name}
                   />
+                  <div className="grid grid-cols-4 gap-2 rounded-2xl border border-slate-100 bg-white p-2 shadow-sm">
+                    {[
+                      { label: "Volunteer", value: d.volunteer?.name || "Assigned", icon: User },
+                      { label: "ETA", value: "20 mins", icon: Clock },
+                      { label: "Distance", value: "2.4 km", icon: MapPin },
+                      { label: "Status", value: "On the way", icon: Truck },
+                    ].map((item) => {
+                      const Icon = item.icon;
+                      return (
+                        <div key={item.label} className="min-w-0 rounded-xl bg-emerald-50/35 px-2 py-2 text-center">
+                          <Icon size={14} className="mx-auto mb-1 text-[#16a34a]" />
+                          <p className="text-[7px] font-black uppercase tracking-wider text-slate-400 truncate">{item.label}</p>
+                          <p className="text-[8.5px] font-black text-slate-700 truncate">{item.value}</p>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               )}
 
@@ -1016,17 +1118,10 @@ const MyDonations = () => {
                     <div className="w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center text-[#22c55e] border border-emerald-100/40 shrink-0">
                       <LayoutList size={16} strokeWidth={2.5} />
                     </div>
-                    <h4 className="text-[13px] font-black uppercase tracking-widest text-slate-700">
-                      Recent Updates
+                    <h4 className="text-[12px] font-black uppercase tracking-widest text-slate-700">
+                      Live Trip Progress
                     </h4>
                   </div>
-                  <button className="text-[10px] font-bold text-emerald-600 flex items-center gap-1 group hover:text-emerald-700 transition-colors">
-                    View all updates
-                    <ChevronRight
-                      size={12}
-                      className="group-hover:translate-x-0.5 transition-transform"
-                    />
-                  </button>
                 </div>
 
                 <div className="relative space-y-0 px-1">
@@ -1134,9 +1229,44 @@ const MyDonations = () => {
               </div>
 
 
-              {/* Enhanced Delivery Verification UI - Exactly as per Image */}
-              {d.status === "ASSIGNED" && (
-                <div className="p-6 rounded-[2rem] bg-[#f8fdf9] border border-emerald-100/50 space-y-6 shadow-sm">
+              <div className="rounded-2xl border border-emerald-100 bg-emerald-50/45 p-3 flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-white text-emerald-600 flex items-center justify-center shadow-sm shrink-0">
+                  <ShieldCheck size={17} />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[11px] font-black text-emerald-800">Your donation is in safe hands</p>
+                  <p className="text-[9px] font-bold text-emerald-700/70 truncate">We ensure timely and secure delivery to reduce food waste.</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <button
+                  onClick={() => {
+                    setIsTrackingModalOpen(false);
+                    handleDetailsClick(d);
+                  }}
+                  className="w-full py-4 rounded-2xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 flex items-center justify-center gap-2 text-[11px] font-black uppercase tracking-wider active:scale-95 transition-all"
+                >
+                  <Info size={15} />
+                  <span>View Details</span>
+                </button>
+                <button
+                  onClick={() => {
+                    if (d.volunteer?.phone) {
+                      window.location.href = `tel:${d.volunteer.phone}`;
+                    } else {
+                      toast.info("Volunteer phone number is not available yet.");
+                    }
+                  }}
+                  className="w-full py-4 rounded-2xl bg-[#16a34a] hover:bg-[#15803d] text-white shadow-lg shadow-emerald-500/15 flex items-center justify-center gap-2 text-[11px] font-black uppercase tracking-wider active:scale-95 transition-all"
+                >
+                  <Phone size={15} fill="currentColor" />
+                  <span>Contact Volunteer</span>
+                </button>
+              </div>
+
+              {false && (
+                <div className="hidden">
                   {/* Header */}
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 border border-emerald-100/50 shadow-inner">
@@ -1227,7 +1357,8 @@ const MyDonations = () => {
             );
           })()
         ) : null}
-      </ResuableDrawer>
+        </ModalContent>
+      </Modal>
 
       {/* Premium Cancellation Confirmation Modal */}
       <Modal 
