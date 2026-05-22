@@ -121,6 +121,11 @@ export const typeDefs = `#graphql
     token: String!
   }
 
+  type Coordinates {
+    lat: Float
+    lng: Float
+  }
+
   # ─── Donation ─────────────────────────────────────────────────────────────────
   type Donation {
     id: ID!
@@ -137,6 +142,9 @@ export const typeDefs = `#graphql
     description: String
     expiryTime: String
     volunteer: VolunteerInfo
+    volunteerLocation: Coordinates
+    pickupCoords: Coordinates
+    deliveryCoords: Coordinates
     image: String
     timeline: [Timeline]
     createdAt: String
@@ -524,6 +532,7 @@ export const typeDefs = `#graphql
     verifyPickup(id: ID!, otp: String!): Donation
     cancelDonation(id: ID!, reason: String): Donation
     deleteDonation(id: ID!): Boolean
+    updateVolunteerLocation(id: ID!, lat: Float!, lng: Float!): Donation
 
     # NGO Needs
     createNeed(input: CreateNeedInput!): Need

@@ -19,6 +19,18 @@ const donationSchema = new mongoose.Schema({
     phone: String,
     rating: String
   },
+  volunteerLocation: {
+    lat: Number,
+    lng: Number
+  },
+  pickupCoords: {
+    lat: Number,
+    lng: Number
+  },
+  deliveryCoords: {
+    lat: Number,
+    lng: Number
+  },
   timeline: [{
     status: String,
     date: String,

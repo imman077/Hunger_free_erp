@@ -1,6 +1,6 @@
 import { useMutation } from "@apollo/client";
 import { useDonorStore } from "../../store/donor-store";
-import { VERIFY_PICKUP, CANCEL_DONATION, CREATE_DONATION, DELETE_DONATION } from "../api/donations.graphql";
+import { VERIFY_PICKUP, CANCEL_DONATION, CREATE_DONATION, DELETE_DONATION, UPDATE_VOLUNTEER_LOCATION } from "../api/donations.graphql";
 
 export const useDonorDonations = () => {
   const { data, donationStats, isLoading, error, refreshData } = useDonorStore();
@@ -8,6 +8,7 @@ export const useDonorDonations = () => {
   const [cancelDonationMutation] = useMutation(CANCEL_DONATION);
   const [createDonationMutation] = useMutation(CREATE_DONATION);
   const [deleteDonationMutation] = useMutation(DELETE_DONATION);
+  const [updateVolunteerLocationMutation] = useMutation(UPDATE_VOLUNTEER_LOCATION);
 
   const handleDeleteDonation = async (donationId: string, currentStatus?: string) => {
     try {
@@ -75,6 +76,18 @@ export const useDonorDonations = () => {
     }
   };
 
+  const handleUpdateVolunteerLocation = async (id: string, lat: number, lng: number) => {
+    try {
+      await updateVolunteerLocationMutation({
+        variables: { id, lat, lng }
+      });
+      return { success: true };
+    } catch (error) {
+      console.error("Update Location Error:", error);
+      return { success: false, error };
+    }
+  };
+
   return {
     donationHistory: data.donationHistory,
     donationStats,
@@ -84,6 +97,7 @@ export const useDonorDonations = () => {
     cancelDonation: handleCancelDonation,
     deleteDonation: handleDeleteDonation,
     redonate: handleRedonate,
+    updateVolunteerLocation: handleUpdateVolunteerLocation,
     refreshData
   };
 };

@@ -167,6 +167,9 @@ export const resolvers = {
       const d = await Donation.create({
         ...input,
         status: 'PENDING',
+        pickupCoords: { lat: 19.0760, lng: 72.8777 },
+        deliveryCoords: { lat: 19.1300, lng: 72.8900 },
+        volunteerLocation: { lat: 19.0760, lng: 72.8777 },
         timeline: [{ status: 'Created', date: new Date().toLocaleDateString(), time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), completed: true }]
       });
       return fmt(d);
@@ -271,6 +274,23 @@ export const resolvers = {
       }
     },
 
+    updateVolunteerLocation: async (_: any, { id, lat, lng }: any) => {
+      try {
+        if (!/^[0-9a-fA-F]{24}$/.test(id)) {
+          return null;
+        }
+        const d = await Donation.findByIdAndUpdate(
+          id,
+          { $set: { volunteerLocation: { lat, lng } } },
+          { new: true }
+        );
+        return fmt(d);
+      } catch (err) {
+        console.error("Error updating volunteer location:", err);
+        return null;
+      }
+    },
+
     createNeed: async (_: any, { input }: any) => fmt(await Need.create(input)),
     updateNeed: async (_: any, { id, status }: any) => fmt(await Need.findByIdAndUpdate(id, { status }, { new: true })),
     deleteNeed: async (_: any, { id }: any) => { await Need.findByIdAndDelete(id); return true; },
@@ -359,27 +379,25 @@ export const resolvers = {
         gamification: { points: 450, lifetimePoints: 900 }
       });
 
-      await User.create({ username: 'admin', email: 'admin@hungerfree.org', role: 'ADMIN', isVerified: true });
-
-      // Seed Donations
+      await User.create({ username: 'admin', email: 'admin@hungerfree.org', role: 'ADMIN', isVerified: true });      // Seed Donations
       await Donation.create([
         // 1. PENDING (Created, waiting for NGO)
-        { foodType: 'Veg Biryani Surplus', category: 'Cooked Food', dietaryType: 'Veg', preparationType: 'Restaurant', quantity: '50 Meals', date: 'May 16, 2026', status: 'PENDING', pickupAddress: 'Star Grand Hotel, Lobby', description: 'Freshly prepared aromatic veg biryani with raita.', timeline: [{ status: 'Created', date: 'May 16, 2026', time: '11:00 AM', completed: true }] },
+        { foodType: 'Veg Biryani Surplus', category: 'Cooked Food', dietaryType: 'Veg', preparationType: 'Restaurant', quantity: '50 Meals', date: 'May 16, 2026', status: 'PENDING', pickupAddress: 'Star Grand Hotel, Lobby', description: 'Freshly prepared aromatic veg biryani with raita.', pickupCoords: { lat: 19.0760, lng: 72.8777 }, deliveryCoords: { lat: 19.1300, lng: 72.8900 }, volunteerLocation: { lat: 19.0760, lng: 72.8777 }, timeline: [{ status: 'Created', date: 'May 16, 2026', time: '11:00 AM', completed: true }] },
         
         // 2. ACCEPTED (NGO accepted, waiting for Volunteer)
-        { foodType: 'Fresh Ponni Rice', category: 'Rice, Grains & Pulses', dietaryType: 'Veg', preparationType: 'Store Bought', quantity: '20 kg', ngo: 'Helping Hands NGO', date: 'May 16, 2026', status: 'ACCEPTED', pickupAddress: 'Star Grand Hotel, Kitchen', deliveryAddress: 'Helping Hands Center, Mumbai', description: 'High quality Ponni rice for cooking.', timeline: [{ status: 'Created', date: 'May 16, 2026', time: '09:00 AM', completed: true }, { status: 'NGO Accepted', date: 'May 16, 2026', time: '09:30 AM', completed: true }] },
-
+        { foodType: 'Fresh Ponni Rice', category: 'Rice, Grains & Pulses', dietaryType: 'Veg', preparationType: 'Store Bought', quantity: '20 kg', ngo: 'Helping Hands NGO', date: 'May 16, 2026', status: 'ACCEPTED', pickupAddress: 'Star Grand Hotel, Kitchen', deliveryAddress: 'Helping Hands Center, Mumbai', description: 'High quality Ponni rice for cooking.', pickupCoords: { lat: 19.0760, lng: 72.8777 }, deliveryCoords: { lat: 19.1300, lng: 72.8900 }, volunteerLocation: { lat: 19.0760, lng: 72.8777 }, timeline: [{ status: 'Created', date: 'May 16, 2026', time: '09:00 AM', completed: true }, { status: 'NGO Accepted', date: 'May 16, 2026', time: '09:30 AM', completed: true }] },
+ 
         // 3. ASSIGNED (Volunteer assigned, waiting for Pickup)
-        { foodType: 'Banana Chips & Murukku', category: 'Packaged Snacks', dietaryType: 'Veg', preparationType: 'Store Bought', quantity: '100 Packets', ngo: 'Helping Hands NGO', date: 'May 16, 2026', status: 'ASSIGNED', pickupAddress: 'Star Grand Hotel, Storage', deliveryAddress: 'Helping Hands Center, Mumbai', description: 'Crispy local snacks and murukku.', volunteer: { name: 'John V', phone: '9876543210', rating: '4.8' }, timeline: [{ status: 'Created', date: 'May 16, 2026', time: '10:00 AM', completed: true }, { status: 'NGO Accepted', date: 'May 16, 2026', time: '10:15 AM', completed: true }, { status: 'Volunteer Assigned', date: 'May 16, 2026', time: '10:30 AM', completed: true }] },
-
+        { foodType: 'Banana Chips & Murukku', category: 'Packaged Snacks', dietaryType: 'Veg', preparationType: 'Store Bought', quantity: '100 Packets', ngo: 'Helping Hands NGO', date: 'May 16, 2026', status: 'ASSIGNED', pickupAddress: 'Star Grand Hotel, Storage', deliveryAddress: 'Helping Hands Center, Mumbai', description: 'Crispy local snacks and murukku.', volunteer: { name: 'John V', phone: '9876543210', rating: '4.8' }, pickupCoords: { lat: 19.0760, lng: 72.8777 }, deliveryCoords: { lat: 19.1300, lng: 72.8900 }, volunteerLocation: { lat: 19.0880, lng: 72.8820 }, timeline: [{ status: 'Created', date: 'May 16, 2026', time: '10:00 AM', completed: true }, { status: 'NGO Accepted', date: 'May 16, 2026', time: '10:15 AM', completed: true }, { status: 'Volunteer Assigned', date: 'May 16, 2026', time: '10:30 AM', completed: true }] },
+ 
         // 4. PICKED_UP (Volunteer picked up, in transit to NGO)
-        { foodType: 'Fresh Aavin Milk', category: 'Milk & Dairy', dietaryType: 'Veg', preparationType: 'Store Bought', quantity: '10 Litres', ngo: 'Helping Hands NGO', date: 'May 16, 2026', status: 'PICKED_UP', pickupAddress: 'Star Grand Hotel, Cold Storage', deliveryAddress: 'Helping Hands Center, Mumbai', description: 'Pure cow milk and fresh curd.', volunteer: { name: 'John V', phone: '9876543210', rating: '4.8' }, timeline: [{ status: 'Created', date: 'May 16, 2026', time: '07:00 AM', completed: true }, { status: 'NGO Accepted', date: 'May 16, 2026', time: '07:15 AM', completed: true }, { status: 'Volunteer Assigned', date: 'May 16, 2026', time: '07:30 AM', completed: true }, { status: 'Picked Up', date: 'May 16, 2026', time: '08:00 AM', completed: true }] },
-
+        { foodType: 'Fresh Aavin Milk', category: 'Milk & Dairy', dietaryType: 'Veg', preparationType: 'Store Bought', quantity: '10 Litres', ngo: 'Helping Hands NGO', date: 'May 16, 2026', status: 'PICKED_UP', pickupAddress: 'Star Grand Hotel, Cold Storage', deliveryAddress: 'Helping Hands Center, Mumbai', description: 'Pure cow milk and fresh curd.', volunteer: { name: 'John V', phone: '9876543210', rating: '4.8' }, pickupCoords: { lat: 19.0760, lng: 72.8777 }, deliveryCoords: { lat: 19.1300, lng: 72.8900 }, volunteerLocation: { lat: 19.1100, lng: 72.8860 }, timeline: [{ status: 'Created', date: 'May 16, 2026', time: '07:00 AM', completed: true }, { status: 'NGO Accepted', date: 'May 16, 2026', time: '07:15 AM', completed: true }, { status: 'Volunteer Assigned', date: 'May 16, 2026', time: '07:30 AM', completed: true }, { status: 'Picked Up', date: 'May 16, 2026', time: '08:00 AM', completed: true }] },
+ 
         // 5. DELIVERED (Successfully completed)
-        { foodType: 'Ooty Varkey & Biscuits', category: 'Bread & Bakery', dietaryType: 'Veg', preparationType: 'Store Bought', quantity: '80 Pieces', ngo: 'Helping Hands NGO', date: 'May 15, 2026', status: 'DELIVERED', pickupAddress: 'Star Grand Hotel, Bakery Section', deliveryAddress: 'Helping Hands Center, Mumbai', description: 'Fresh Ooty varkey and butter biscuits.', volunteer: { name: 'John V', phone: '9876543210', rating: '4.8' }, timeline: [{ status: 'Created', date: 'May 15, 2026', time: '8:00 PM', completed: true }, { status: 'NGO Accepted', date: 'May 15, 2026', time: '8:15 PM', completed: true }, { status: 'Volunteer Assigned', date: 'May 15, 2026', time: '8:45 PM', completed: true }, { status: 'Picked Up', date: 'May 15, 2026', time: '9:30 PM', completed: true }, { status: 'Delivered', date: 'May 15, 2026', time: '10:45 PM', completed: true }] },
-
+        { foodType: 'Ooty Varkey & Biscuits', category: 'Bread & Bakery', dietaryType: 'Veg', preparationType: 'Store Bought', quantity: '80 Pieces', ngo: 'Helping Hands NGO', date: 'May 15, 2026', status: 'DELIVERED', pickupAddress: 'Star Grand Hotel, Bakery Section', deliveryAddress: 'Helping Hands Center, Mumbai', description: 'Fresh Ooty varkey and butter biscuits.', volunteer: { name: 'John V', phone: '9876543210', rating: '4.8' }, pickupCoords: { lat: 19.0760, lng: 72.8777 }, deliveryCoords: { lat: 19.1300, lng: 72.8900 }, volunteerLocation: { lat: 19.1300, lng: 72.8900 }, timeline: [{ status: 'Created', date: 'May 15, 2026', time: '8:00 PM', completed: true }, { status: 'NGO Accepted', date: 'May 15, 2026', time: '8:15 PM', completed: true }, { status: 'Volunteer Assigned', date: 'May 15, 2026', time: '8:45 PM', completed: true }, { status: 'Picked Up', date: 'May 15, 2026', time: '9:30 PM', completed: true }, { status: 'Delivered', date: 'May 15, 2026', time: '10:45 PM', completed: true }] },
+ 
         // 6. CANCELLED (Cancelled by donor or admin)
-        { foodType: 'Idli & Sambar Meals', category: 'Cooked Food', dietaryType: 'Veg', preparationType: 'Homemade', quantity: '20 Meals', date: 'May 15, 2026', status: 'CANCELLED', pickupAddress: 'Star Grand Hotel, Lobby', description: 'Breakfast meals got spoiled.', timeline: [{ status: 'Created', date: 'May 15, 2026', time: '02:00 PM', completed: true }, { status: 'Cancelled', date: 'May 15, 2026', time: '03:00 PM', completed: true }] }
+        { foodType: 'Idli & Sambar Meals', category: 'Cooked Food', dietaryType: 'Veg', preparationType: 'Homemade', quantity: '20 Meals', date: 'May 15, 2026', status: 'CANCELLED', pickupAddress: 'Star Grand Hotel, Lobby', description: 'Breakfast meals got spoiled.', pickupCoords: { lat: 19.0760, lng: 72.8777 }, deliveryCoords: { lat: 19.1300, lng: 72.8900 }, volunteerLocation: { lat: 19.0760, lng: 72.8777 }, timeline: [{ status: 'Created', date: 'May 15, 2026', time: '02:00 PM', completed: true }, { status: 'Cancelled', date: 'May 15, 2026', time: '03:00 PM', completed: true }] }
       ]);
 
       // Seed Needs

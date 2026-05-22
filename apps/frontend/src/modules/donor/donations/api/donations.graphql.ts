@@ -21,6 +21,18 @@ export const GET_MY_DONATIONS = gql`
         rating
       }
       image
+      volunteerLocation {
+        lat
+        lng
+      }
+      pickupCoords {
+        lat
+        lng
+      }
+      deliveryCoords {
+        lat
+        lng
+      }
       timeline {
         status
         date
@@ -98,5 +110,17 @@ export const CANCEL_DONATION = gql`
 export const DELETE_DONATION = gql`
   mutation DeleteDonation($id: ID!) {
     deleteDonation(id: $id)
+  }
+`;
+
+export const UPDATE_VOLUNTEER_LOCATION = gql`
+  mutation UpdateVolunteerLocation($id: ID!, $lat: Float!, $lng: Float!) {
+    updateVolunteerLocation(id: $id, lat: $lat, lng: $lng) {
+      id
+      volunteerLocation {
+        lat
+        lng
+      }
+    }
   }
 `;

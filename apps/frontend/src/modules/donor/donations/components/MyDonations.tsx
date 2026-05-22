@@ -41,6 +41,7 @@ import { useDonorDonations } from "../hooks/useDonorDonations";
 import type { DonationDetail } from "../../store/donor-schemas";
 import { useDonorStore } from "../../store/donor-store";
 import { toast } from "sonner";
+import { LiveGPSMap } from "./LiveGPSMap";
 
 const categoryImageMap: Record<string, string> = {
   "Fruits & Vegetables": "fruitsandvegetables.png",
@@ -58,7 +59,7 @@ const categoryImageMap: Record<string, string> = {
 
 const MyDonations = () => {
   const navigate = useNavigate();
-  const { donationHistory, donationStats, verifyPickup, cancelDonation, deleteDonation, refreshData } = useDonorDonations();
+  const { donationHistory, donationStats, verifyPickup, cancelDonation, deleteDonation, updateVolunteerLocation, refreshData } = useDonorDonations();
   const [selectedDonation, setSelectedDonation] =
     useState<DonationDetail | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -69,11 +70,11 @@ const MyDonations = () => {
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [cancellingDonationId, setCancellingDonationId] = useState<string | null>(null);
   const [cancelReason, setCancelReason] = useState("");
+  const [isSimulatingGPS, setIsSimulatingGPS] = useState(false);
   
   // Redonate Modal States
   const [isRedonateModalOpen, setIsRedonateModalOpen] = useState(false);
   const [redonateDonation, setRedonateDonation] = useState<DonationDetail | null>(null);
-  const [isRedonating, setIsRedonating] = useState(false);
 
   const confirmRedonate = () => {
     if (!redonateDonation) return;
@@ -130,6 +131,70 @@ const MyDonations = () => {
   useEffect(() => {
     refreshData(statusFilter, sortOrder);
   }, [statusFilter, sortOrder]);
+
+  // Keep selectedDonation in sync with refreshed donationHistory data (for live GPS coordinate updates)
+  useEffect(() => {
+    if (isDrawerOpen && selectedDonation) {
+      const updated = donationHistory.find(d => String(d.id) === String(selectedDonation.id));
+      if (updated) {
+        setSelectedDonation(updated);
+      }
+    }
+  }, [donationHistory, isDrawerOpen]);
+
+  // Auto-refresh donation details for active tracking every 5 seconds when drawer is open
+  useEffect(() => {
+    let intervalId: any;
+    if (isDrawerOpen && selectedDonation && (selectedDonation.status === "ASSIGNED" || selectedDonation.status === "PICKED_UP")) {
+      intervalId = setInterval(() => {
+        refreshData(statusFilter, sortOrder);
+      }, 5000);
+    }
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [isDrawerOpen, selectedDonation, statusFilter, sortOrder]);
+
+  const handleSimulateGPS = async (donation: DonationDetail) => {
+    if (isSimulatingGPS) return;
+    setIsSimulatingGPS(true);
+
+    const startLat = donation.pickupCoords?.lat || 19.0760;
+    const startLng = donation.pickupCoords?.lng || 72.8777;
+    const endLat = donation.deliveryCoords?.lat || 19.1300;
+    const endLng = donation.deliveryCoords?.lng || 72.8900;
+
+    // Generate 10 steps from pickup to delivery coords
+    const totalSteps = 10;
+    const coordinatesList = Array.from({ length: totalSteps + 1 }, (_, i) => {
+      const fraction = i / totalSteps;
+      return {
+        lat: startLat + (endLat - startLat) * fraction,
+        lng: startLng + (endLng - startLng) * fraction,
+      };
+    });
+
+    toast.info("Starting GPS simulation for volunteer en route...", { duration: 3000 });
+
+    let currentStep = 0;
+    const interval = setInterval(async () => {
+      if (currentStep > totalSteps) {
+        clearInterval(interval);
+        setIsSimulatingGPS(false);
+        toast.success("GPS simulation completed! Volunteer has reached destination.", { duration: 4000 });
+        return;
+      }
+
+      const point = coordinatesList[currentStep];
+      // Update coordinates in the DB
+      await updateVolunteerLocation(String(donation.id), point.lat, point.lng);
+      
+      // Pull fresh data from GraphQL backend
+      await refreshData(statusFilter, sortOrder);
+
+      currentStep++;
+    }, 2000);
+  };
 
   const handleDetailsClick = (donation: DonationDetail) => {
     setSelectedDonation(donation);
@@ -679,7 +744,7 @@ const MyDonations = () => {
                                 <span>Redonate</span>
                               </button>
                             </>
-                          ) : (
+                          ) : donation.status !== "ACCEPTED" ? (
                             <button
                               onClick={() => {
                                 if (donation.status === "PENDING") {
@@ -691,7 +756,6 @@ const MyDonations = () => {
                               disabled={cancellingId === String(donation.id)}
                               className={`flex-[1.2] flex items-center justify-center gap-2 px-3 py-3 rounded-2xl font-black uppercase tracking-wider text-[10px] transition-all active:scale-95 shadow-md whitespace-nowrap text-white ${
                                 donation.status === "PENDING" ? "bg-orange-500 hover:bg-orange-600 disabled:bg-orange-300" :
-                                donation.status === "ACCEPTED" ? "bg-blue-600 hover:bg-blue-700" :
                                 "bg-[#2e7d32] hover:bg-[#1b5e20]"
                               }`}
                             >
@@ -699,13 +763,11 @@ const MyDonations = () => {
                                 <div className="animate-spin h-3.5 w-3.5 border-2 border-white border-t-transparent rounded-full" />
                               ) : donation.status === "PENDING" ? (
                                 "Cancel Donation"
-                              ) : donation.status === "ACCEPTED" ? (
-                                "Track Flow"
                               ) : (
                                 "Live Track"
                               )}
                             </button>
-                          )}
+                          ) : null}
                         </div>
                       </div>
                     </div>
@@ -910,6 +972,42 @@ const MyDonations = () => {
                   </div>
                 </div>
               </div>
+
+              {/* GPS Route Map Tracker */}
+              {(d.status === "ASSIGNED" || d.status === "PICKED_UP") && (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between px-1">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 border border-blue-100/40 shrink-0">
+                        <Truck size={16} strokeWidth={2.5} />
+                      </div>
+                      <h4 className="text-[13px] font-black uppercase tracking-widest text-slate-700">
+                        Live Route Tracking
+                      </h4>
+                    </div>
+                    {/* Simulated GPS Play Button */}
+                    <button
+                      onClick={() => handleSimulateGPS(d)}
+                      disabled={isSimulatingGPS}
+                      className={`text-[9px] font-black uppercase tracking-wider px-3 py-1.5 rounded-xl transition-all shadow-sm flex items-center gap-1.5 border border-amber-200 ${
+                        isSimulatingGPS 
+                          ? "bg-amber-100 text-amber-700 cursor-not-allowed animate-pulse" 
+                          : "bg-amber-550 hover:bg-amber-600 bg-amber-50 text-amber-700"
+                      }`}
+                    >
+                      <RotateCcw size={10} className={isSimulatingGPS ? "animate-spin" : ""} />
+                      <span>{isSimulatingGPS ? "Simulating GPS..." : "Simulate Live Trip"}</span>
+                    </button>
+                  </div>
+                  
+                  <LiveGPSMap
+                    pickupCoords={d.pickupCoords}
+                    deliveryCoords={d.deliveryCoords}
+                    volunteerLocation={d.volunteerLocation}
+                    volunteerName={d.volunteer?.name}
+                  />
+                </div>
+              )}
 
               {/* Recent Updates Section */}
               <div className="space-y-4">
@@ -1417,17 +1515,10 @@ const MyDonations = () => {
                 {/* Yes, Redonate */}
                 <button
                   onClick={confirmRedonate}
-                  disabled={isRedonating}
-                  className="w-full flex items-center justify-center gap-1.5 py-3 rounded-xl bg-[#1b803c] hover:bg-[#156d32] text-white shadow-lg shadow-emerald-500/10 hover:shadow-emerald-500/25 transition-all active:scale-[0.98] text-[9.5px] font-black uppercase tracking-wider whitespace-nowrap disabled:opacity-50"
+                  className="w-full flex items-center justify-center gap-1.5 py-3 rounded-xl bg-[#1b803c] hover:bg-[#156d32] text-white shadow-lg shadow-emerald-500/10 hover:shadow-emerald-500/25 transition-all active:scale-[0.98] text-[9.5px] font-black uppercase tracking-wider whitespace-nowrap"
                 >
-                  {isRedonating ? (
-                    <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    <>
-                      <RotateCcw size={12} className="stroke-[2.5]" />
-                      <span>YES, REDONATE</span>
-                    </>
-                  )}
+                  <RotateCcw size={12} className="stroke-[2.5]" />
+                  <span>YES, REDONATE</span>
                 </button>
               </div>
 
@@ -1716,23 +1807,6 @@ const MyDonations = () => {
   );
 };
 
-const Star = ({ className, size, ...props }: any) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="currentColor"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className={className}
-    {...props}
-  >
-    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-  </svg>
-);
 
 export default MyDonations;
 

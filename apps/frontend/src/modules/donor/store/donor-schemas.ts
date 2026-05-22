@@ -37,6 +37,27 @@ export const DonationDetailSchema = z.object({
       rating: z.string(),
     })
     .optional(),
+  pickupCoords: z
+    .object({
+      lat: z.number(),
+      lng: z.number(),
+    })
+    .optional()
+    .nullable(),
+  deliveryCoords: z
+    .object({
+      lat: z.number(),
+      lng: z.number(),
+    })
+    .optional()
+    .nullable(),
+  volunteerLocation: z
+    .object({
+      lat: z.number(),
+      lng: z.number(),
+    })
+    .optional()
+    .nullable(),
   image: z.string().optional(),
   timeline: z.array(
     z.object({
