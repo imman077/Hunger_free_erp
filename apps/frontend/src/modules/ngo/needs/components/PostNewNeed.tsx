@@ -15,7 +15,7 @@ import ResuableDatePicker from "../../../../global/components/resuable-component
 import ResuableTextarea from "../../../../global/components/resuable-components/textarea";
 import ResuableModal from "../../../../global/components/resuable-components/modal";
 import FileUploadSlot from "../../../../global/components/resuable-components/FileUploadSlot";
-import { ngoNeedsService } from "../api/needs.api";
+import { ngoNeedsService } from "../api/needs/needs.api";
 import { toast } from "sonner";
 import { NEED_CATEGORIES, UNIT_OPTIONS, URGENCY_OPTIONS } from "../../../../global/constants/donation_config";
 

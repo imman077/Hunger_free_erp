@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ngoDonationsService } from "../api/donations.api";
-import { ngoNeedsService } from "../../needs/api/needs.api";
+import { ngoDonationsService } from "../api/donations/donations.api";
+import { ngoNeedsService } from "../../needs/api/needs/needs.api";
 import { toast } from "sonner";
 import { useAuthStore } from "../../../../global/contexts/auth-store";
 import { useNgoDonations } from "../hooks/useNgoDonations";

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNgoStore } from "../../store/ngo-store";
-import { ngoRewardsService } from "../api/rewards.api";
+import { ngoRewardsService } from "../api/rewards/rewards.api";
 
 export const useNgoRewards = () => {
   const { data, isLoading, error, setNgoData, setLoading, setError } =

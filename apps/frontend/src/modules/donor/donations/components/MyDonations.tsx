@@ -29,7 +29,6 @@ import {
   Copy,
   FileText,
   RotateCcw,
-  Lock,
   XCircle,
   X,
   Trash2,
@@ -93,6 +92,62 @@ const MyDonations = () => {
   // Receipt Modal States
   const [isReceiptModalOpen, setIsReceiptModalOpen] = useState(false);
   const [receiptDonation, setReceiptDonation] = useState<DonationDetail | null>(null);
+
+  // OTP Verification States for 6-digit inputs
+  const [otpDigits, setOtpDigits] = useState<string[]>(Array(6).fill(""));
+  const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  const handleOtpDigitChange = (val: string, index: number) => {
+    const cleanVal = val.replace(/\D/g, "");
+    if (!cleanVal) {
+      const newDigits = [...otpDigits];
+      newDigits[index] = "";
+      setOtpDigits(newDigits);
+      setOtpValue(newDigits.join(""));
+      return;
+    }
+
+    const digit = cleanVal.slice(-1);
+    const newDigits = [...otpDigits];
+    newDigits[index] = digit;
+    setOtpDigits(newDigits);
+    setOtpValue(newDigits.join(""));
+
+    // Move to next input
+    if (index < 5 && otpRefs.current[index + 1]) {
+      otpRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleOtpKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
+    if (e.key === "Backspace") {
+      if (!otpDigits[index] && index > 0 && otpRefs.current[index - 1]) {
+        const newDigits = [...otpDigits];
+        newDigits[index - 1] = "";
+        setOtpDigits(newDigits);
+        setOtpValue(newDigits.join(""));
+        otpRefs.current[index - 1]?.focus();
+      }
+    }
+  };
+
+  const handleOtpPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const pasteData = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+    if (pasteData.length === 6) {
+      const newDigits = pasteData.split("");
+      setOtpDigits(newDigits);
+      setOtpValue(pasteData);
+      otpRefs.current[5]?.focus();
+    }
+  };
+
+  const handleOtpFocus = (index: number) => {
+    const firstEmptyIndex = otpRefs.current.findIndex((ref) => ref && ref.value === "");
+    if (firstEmptyIndex !== -1 && index > firstEmptyIndex) {
+      otpRefs.current[firstEmptyIndex]?.focus();
+    }
+  };
 
   const confirmDelete = async () => {
     if (!deletingDonationId) return;
@@ -159,6 +214,7 @@ const MyDonations = () => {
   const handleDetailsClick = (donation: DonationDetail) => {
     setSelectedDonation(donation);
     setOtpValue("");
+    setOtpDigits(Array(6).fill(""));
     setOtpError("");
     if (donation.status === "ASSIGNED") {
       setIsDetailsModalOpen(true);
@@ -208,6 +264,7 @@ const MyDonations = () => {
     const result = await verifyPickup(String(selectedDonation.id), otpValue, statusFilter);
     if (result.success) {
       setIsDetailsModalOpen(false);
+      setIsTrackingModalOpen(false);
       setOtpValue("");
     } else {
       setOtpError("Invalid verification code. Please try again.");
@@ -581,19 +638,6 @@ const MyDonations = () => {
                                 <span className="text-[14px] font-bold text-slate-700">{donation.ngo} Team</span>
                               </div>
                             </div>
-                          ) : (donation.volunteer || donation.status === "ASSIGNED") && donation.status !== "CANCELLED" ? (
-                            <div className="flex items-center justify-between p-2.5 bg-slate-50/50 rounded-[1.25rem] border border-slate-100/50">
-                              <div className="flex items-center gap-3">
-                                <img src="/drawer_images/user.png" className="w-9 h-9 rounded-full object-cover border-2 border-white shadow-sm" alt="V" />
-                                <div className="flex flex-col leading-tight">
-                                  <span className="text-[8px] font-black uppercase tracking-wider text-emerald-600/80">Volunteer</span>
-                                  <span className="text-[13px] font-black uppercase tracking-tight text-slate-700">{donation.volunteer?.name || "Assigning..."}</span>
-                                </div>
-                              </div>
-                              <button className="w-8 h-8 rounded-full bg-[#22c55e] text-white flex items-center justify-center shadow-md shadow-emerald-500/20 active:scale-90 transition-transform">
-                                <Phone size={14} fill="currentColor" />
-                              </button>
-                            </div>
                           ) : null}
 
                           {/* Green Leaf Thank You Banner for CANCELLED Orders */}
@@ -669,7 +713,7 @@ const MyDonations = () => {
                           </div>
                         )}
                       </div>
-
+                      
                       {/* Footer Actions & Stats - Theme Driven */}
                       <div className="pt-4 border-t border-slate-100/50 space-y-4">
                         <div className="flex items-center gap-2.5">
@@ -719,14 +763,9 @@ const MyDonations = () => {
                               onClick={() => {
                                 handleLiveTrackClick(donation);
                               }}
-                              disabled={cancellingId === String(donation.id)}
                               className="flex-[1.2] flex items-center justify-center gap-2 px-3 py-3 rounded-2xl font-black uppercase tracking-wider text-[10px] transition-all active:scale-95 shadow-md whitespace-nowrap text-white bg-[#2e7d32] hover:bg-[#1b5e20]"
                             >
-                              {cancellingId === String(donation.id) ? (
-                                <div className="animate-spin h-3.5 w-3.5 border-2 border-white border-t-transparent rounded-full" />
-                              ) : (
-                                "Live Track"
-                              )}
+                              Live Track
                             </button>
                           ) : donation.status === "PENDING" ? (
                             <button
@@ -930,15 +969,15 @@ const MyDonations = () => {
             const d = selectedDonation;
 
             return (
-              <div className="bg-white w-full overflow-hidden">
-                <div className="relative h-[230px]">
+              <div className="space-y-5 p-6 bg-white">
+                <div className="relative rounded-3xl overflow-hidden shadow-lg min-h-[220px] bg-slate-950">
                   <img
                     src={d.image || (d.category && categoryImageMap[d.category] ? `/donation_images/${categoryImageMap[d.category]}` : "/drawer_images/cooked_food.png")}
-                    className="w-full h-full object-cover"
+                    className="absolute inset-0 w-full h-full object-cover"
                     alt={d.foodType}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-900/25 to-transparent" />
-                  <div className="absolute left-5 right-5 bottom-5">
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/45 to-transparent" />
+                  <div className="relative z-10 min-h-[220px] p-6 flex flex-col justify-end">
                     <div className="flex items-center gap-2 mb-2">
                       <span className="px-2.5 py-1 rounded-full bg-white/90 text-emerald-700 text-[9px] font-black uppercase tracking-widest">
                         {d.category}
@@ -947,16 +986,16 @@ const MyDonations = () => {
                         {d.status}
                       </span>
                     </div>
-                    <h3 className="text-3xl font-black tracking-tight text-white leading-none">
+                    <h3 className="text-2xl font-black text-white tracking-tight leading-tight">
                       {d.foodType}
                     </h3>
-                    <p className="text-[11px] font-black text-slate-200 uppercase tracking-[0.2em] mt-2">
+                    <p className="text-[11px] font-black text-slate-200 uppercase tracking-[0.18em] mt-2">
                       {d.quantity} - {d.dietaryType} - {d.preparationType}
                     </p>
                   </div>
                 </div>
 
-                <div className="p-5 md:p-6 space-y-5">
+                <div className="space-y-5">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div className="flex items-start gap-3 p-3 rounded-2xl bg-slate-50 border border-slate-100">
                       <div className="w-9 h-9 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
@@ -978,61 +1017,133 @@ const MyDonations = () => {
                     </div>
                   </div>
 
-                  {d.status === "ASSIGNED" && (
-                    <div className="p-5 rounded-[1.75rem] bg-[#f8fdf9] border border-emerald-100/70 space-y-5 shadow-sm">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 border border-emerald-100/50">
-                          <ShieldCheck size={23} strokeWidth={2.2} />
+                  {/* Volunteer Row */}
+                  {(d.volunteer || d.status === "ASSIGNED" || d.status === "PICKED_UP") && (
+                    <div className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-3xl shadow-sm">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-full bg-[#f8fafc] flex items-center justify-center overflow-hidden border border-[#f1f5f9] shrink-0">
+                          <svg className="w-10 h-10 text-[#10b981] translate-y-1.5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                          </svg>
                         </div>
-                        <div>
-                          <h4 className="text-[13px] font-black uppercase tracking-wider text-emerald-800">
-                            Delivery Verification
-                          </h4>
-                          <p className="text-[11px] font-medium text-slate-500">
-                            Confirm NGO handoff securely
-                          </p>
+                        <div className="flex flex-col text-start">
+                          <span className="text-[9px] font-black uppercase text-slate-400 tracking-wider mb-0.5">
+                            Volunteer
+                          </span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-[14px] font-black text-slate-700">
+                              {d.volunteer?.name || "Assigning..."}
+                            </span>
+                            {d.volunteer?.name && (
+                              <span className="flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-[#e8fcf0] text-[#10b981] text-[8px] font-black uppercase tracking-wider border border-[#d1fae5]">
+                                Verified ✓
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </div>
-
-                      <div className="space-y-2">
-                        <div className="flex justify-between items-center">
-                          <label className="text-[11px] font-bold text-slate-500 uppercase tracking-tight">
-                            Enter verification code
-                          </label>
-                          <span className="text-[10px] font-bold text-slate-400">OTP</span>
-                        </div>
-                        <input
-                          type="text"
-                          inputMode="numeric"
-                          maxLength={6}
-                          autoFocus
-                          value={otpValue}
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setOtpValue(e.target.value.replace(/\D/g, ""))}
-                          placeholder="000000"
-                          className="w-full h-14 rounded-2xl bg-white border-2 border-emerald-100 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/10 outline-none px-4 text-center text-2xl font-black tracking-[0.45em] text-slate-800 transition-all"
-                        />
-                      </div>
-
-                      {otpError && (
-                        <div className="p-3 rounded-xl bg-red-50 border border-red-100 text-center">
-                          <p className="text-[10px] font-black text-red-500 uppercase tracking-widest">{otpError}</p>
-                        </div>
-                      )}
-
                       <button
-                        onClick={onOtpSubmit}
-                        disabled={isVerifying || otpValue.length !== 6}
-                        className="w-full py-4 rounded-[1.25rem] bg-[#1b803c] text-white flex items-center justify-center gap-3 hover:bg-[#156d32] transition-all shadow-xl shadow-emerald-900/10 active:scale-[0.98] disabled:opacity-40 font-black uppercase tracking-widest text-[12px]"
+                        onClick={() => {
+                          if (d.volunteer?.phone) {
+                            window.location.href = `tel:${d.volunteer.phone}`;
+                          } else {
+                            toast.info("Volunteer phone number is not available yet.");
+                          }
+                        }}
+                        className="w-11 h-11 rounded-full bg-[#10b981] hover:bg-[#059669] text-white flex items-center justify-center shadow-md shadow-emerald-500/10 active:scale-90 transition-all cursor-pointer shrink-0"
                       >
-                        {isVerifying ? (
-                          <div className="w-5 h-5 border-3 border-white/30 border-t-white rounded-full animate-spin" />
-                        ) : (
-                          <>
-                            <ShieldCheck size={17} strokeWidth={2.5} />
-                            <span>Verify Delivery</span>
-                          </>
-                        )}
+                        <Phone size={15} fill="currentColor" />
                       </button>
+                    </div>
+                  )}
+
+                  {d.status === "ASSIGNED" && (
+                    <div className="space-y-4">
+                      <div className="p-5 rounded-[1.75rem] bg-[#f8fdf9] border border-emerald-100/50 space-y-4 shadow-sm">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 rounded-full bg-[#e8fcf0] flex items-center justify-center text-[#10b981] border border-emerald-100/50 shrink-0">
+                            <ShieldCheck size={22} strokeWidth={2.2} />
+                          </div>
+                          <div className="text-start">
+                            <h4 className="text-[13px] font-black uppercase tracking-wider text-emerald-800">
+                              Delivery Verification
+                            </h4>
+                            <p className="text-[11px] font-medium text-slate-500">
+                              Confirm NGO handoff securely
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <div className="flex justify-between items-center">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider">
+                              Enter verification code
+                            </label>
+                            <span className="text-[10px] font-black text-slate-400 tracking-wider">OTP</span>
+                          </div>
+                          
+                          {/* 6 Digit Individual Inputs */}
+                          <div className="flex gap-2 justify-between items-center py-1">
+                             {otpDigits.map((digit, index) => (
+                              <input
+                                key={index}
+                                ref={(el) => {
+                                  otpRefs.current[index] = el;
+                                }}
+                                type="text"
+                                inputMode="numeric"
+                                maxLength={1}
+                                value={digit}
+                                onChange={(e) => handleOtpDigitChange(e.target.value, index)}
+                                onKeyDown={(e) => handleOtpKeyDown(e, index)}
+                                onFocus={() => handleOtpFocus(index)}
+                                onPaste={index === 0 ? handleOtpPaste : undefined}
+                                autoFocus={index === 0}
+                                className="w-10 h-12 sm:w-12 sm:h-14 rounded-2xl bg-white border border-slate-200 focus:border-[#10b981] outline-none text-center text-lg sm:text-xl font-black text-slate-800 transition-all shadow-sm focus:ring-4 focus:ring-emerald-500/10"
+                                placeholder="0"
+                              />
+                            ))}
+                          </div>
+                        </div>
+
+                        {otpError && (
+                          <div className="p-3 rounded-xl bg-red-50 border border-red-100 text-center">
+                            <p className="text-[10px] font-black text-red-500 uppercase tracking-widest">{otpError}</p>
+                          </div>
+                        )}
+
+                        <button
+                          onClick={onOtpSubmit}
+                          disabled={isVerifying || otpValue.length !== 6}
+                          className="w-full py-4 rounded-[1.25rem] bg-[#10b981] hover:bg-[#059669] text-white flex items-center justify-center gap-2.5 transition-all active:scale-[0.98] disabled:opacity-40 font-black uppercase tracking-widest text-[12px] shadow-lg shadow-emerald-500/15"
+                        >
+                          {isVerifying ? (
+                            <div className="w-5 h-5 border-3 border-white/30 border-t-white rounded-full animate-spin" />
+                          ) : (
+                            <>
+                              <ShieldCheck size={16} strokeWidth={2.5} />
+                              <span>Verify Delivery</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+
+                      {/* Encouragement bottom banner card */}
+                      <div className="p-4 rounded-2xl bg-emerald-50/20 border border-emerald-100/30 flex items-center justify-between gap-3 shadow-sm">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100/30 shrink-0">
+                            <ShieldCheck size={17} strokeWidth={2.2} />
+                          </div>
+                          <div className="text-start leading-tight">
+                            <p className="text-[12.5px] font-black text-slate-800 tracking-tight">Your donation makes a difference!</p>
+                            <p className="text-[10.5px] font-bold text-slate-400">Thank you for helping build a better tomorrow.</p>
+                          </div>
+                        </div>
+                        <div className="relative shrink-0 text-emerald-500 animate-[pulse_2s_infinite] mr-1 flex items-center">
+                          <Heart size={18} fill="currentColor" />
+                          <span className="absolute -top-1 -right-1 text-[8px] animate-pulse">✨</span>
+                        </div>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -1043,322 +1154,200 @@ const MyDonations = () => {
       </ResuableDrawer>
 
       {/* Live Tracking Modal */}
-      <Modal
+      <ResuableDrawer
         isOpen={isTrackingModalOpen}
-        onOpenChange={setIsTrackingModalOpen}
+        onClose={() => setIsTrackingModalOpen(false)}
+        title="Donation Details"
+        subtitle={
+          <span className="block text-slate-400 mt-1 break-all">
+            Tracking ID: <span className="text-[#22c55e] font-bold">#DON-{selectedDonation?.id}</span>
+          </span>
+        }
         size="md"
-        backdrop="blur"
-        hideCloseButton={true}
-        scrollBehavior="inside"
-        classNames={{
-          backdrop: "bg-slate-900/60 backdrop-blur-sm",
-          base: "bg-transparent shadow-none border-none outline-none",
-          body: "p-0",
-          wrapper: "z-[9999]",
-        }}
       >
-        <ModalContent className="bg-transparent border-none outline-none shadow-none ring-0 p-0">
-        {(onClose) => selectedDonation ? (
+        {selectedDonation ? (
           (() => {
             const d = selectedDonation!;
             const lastCompletedIdx = [...d.timeline].reverse().findIndex(s => s.completed);
             const currentActiveIdx = lastCompletedIdx !== -1 ? (d.timeline.length - 1 - lastCompletedIdx) : 0;
             return (
-            <div className="w-[92vw] max-w-[720px] max-h-[92vh] overflow-y-auto rounded-[1.75rem] bg-white shadow-[0_28px_80px_rgba(15,23,42,0.18)] border border-slate-100 mx-auto p-4 thin-scrollbar">
-              <div className="flex items-start justify-between gap-3 px-1.5 pb-3">
-                <div className="min-w-0">
-                  <div className="flex items-center gap-1.5 text-[#16a34a] mb-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#16a34a] animate-pulse" />
-                    <span className="text-[8px] font-black uppercase tracking-widest">Live Tracking</span>
-                  </div>
-                  <h3 className="text-[15px] font-black text-slate-900 tracking-tight truncate">{d.foodType}</h3>
-                  <p className="text-[9px] font-bold text-slate-400 truncate">{d.quantity} - {d.ngo}</p>
-                </div>
-                <button
-                  onClick={onClose}
-                  className="w-8 h-8 rounded-full border border-slate-100 bg-white text-slate-400 hover:text-slate-700 hover:bg-slate-50 flex items-center justify-center transition-all"
-                >
-                  <X size={14} />
-                </button>
-              </div>
+              <div className="space-y-5 p-6 bg-white">
 
-              {/* GPS Route Map Tracker */}
-              {(d.status === "ASSIGNED" || d.status === "PICKED_UP") && (
-                <div className="space-y-3">
-                  <LiveGPSMap
-                    pickupCoords={d.pickupCoords}
-                    deliveryCoords={d.deliveryCoords}
-                    volunteerLocation={d.volunteerLocation}
-                    volunteerName={d.volunteer?.name}
-                  />
-                  <div className="grid grid-cols-4 gap-2 rounded-2xl border border-slate-100 bg-white p-2 shadow-sm">
-                    {[
-                      { label: "Volunteer", value: d.volunteer?.name || "Assigned", icon: User },
-                      { label: "ETA", value: "20 mins", icon: Clock },
-                      { label: "Distance", value: "2.4 km", icon: MapPin },
-                      { label: "Status", value: "On the way", icon: Truck },
-                    ].map((item) => {
-                      const Icon = item.icon;
-                      return (
-                        <div key={item.label} className="min-w-0 rounded-xl bg-emerald-50/35 px-2 py-2 text-center">
-                          <Icon size={14} className="mx-auto mb-1 text-[#16a34a]" />
-                          <p className="text-[7px] font-black uppercase tracking-wider text-slate-400 truncate">{item.label}</p>
-                          <p className="text-[8.5px] font-black text-slate-700 truncate">{item.value}</p>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
 
-              {/* Recent Updates Section */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-between px-1">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center text-[#22c55e] border border-emerald-100/40 shrink-0">
-                      <LayoutList size={16} strokeWidth={2.5} />
-                    </div>
-                    <h4 className="text-[12px] font-black uppercase tracking-widest text-slate-700">
-                      Live Trip Progress
-                    </h4>
-                  </div>
-                </div>
+                <div className="space-y-5">
 
-                <div className="relative space-y-0 px-1">
-                  {d.timeline.map((step, idx) => {
-                    const isCurrent = idx === currentActiveIdx;
-                    const isPast = idx < currentActiveIdx;
-
-                    return (
-                      <div key={idx} className="relative flex items-start gap-4 group/step pb-6 last:pb-0">
-                        {/* Segment Line (Centered under the circle) */}
-                        {idx < d.timeline.length - 1 && (
-                          <div className={`absolute top-[46px] w-[2px] z-0 transition-colors duration-300 ${
-                            isPast
-                              ? "bg-emerald-500"
-                              : "border-l-2 border-dashed border-slate-200"
-                          }`} style={{ left: "12px", transform: "translateX(-50%)", bottom: "-22px" }} />
-                        )}
-
-                        {/* Left Indicator Column */}
-                        <div className="relative flex flex-col items-center shrink-0 pt-[22px] w-6 z-10">
-                          {/* Circle */}
-                          <div className={`relative z-10 w-6 h-6 rounded-full bg-white border-2 flex items-center justify-center shadow-sm shrink-0 transition-all duration-300 ${
-                            isCurrent
-                              ? "border-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)] bg-emerald-50"
-                              : isPast
-                                ? "border-emerald-500 bg-emerald-50"
-                                : "border-slate-200 bg-white"
-                          }`}>
-                            {isCurrent ? (
-                              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                            ) : isPast ? (
-                              <Check className="w-3 text-emerald-500 stroke-[3.5]" />
-                            ) : (
-                              <div className="w-1.5 h-1.5 rounded-full bg-slate-300" />
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Card Content */}
-                        <div className={`flex-1 p-3.5 rounded-xl border flex items-start gap-4 min-w-0 transition-all duration-300 ${
-                          isCurrent
-                            ? "bg-emerald-50/25 border-emerald-500/35 shadow-md shadow-emerald-500/5 hover:bg-emerald-50/30"
-                            : isPast
-                              ? "bg-slate-50/50 border-slate-100/50 hover:bg-white hover:border-slate-200/60 opacity-80"
-                              : "bg-slate-50/10 border-slate-100 border-dashed opacity-25"
-                        }`}>
-                          <div className={`w-10 h-10 rounded-full bg-white flex items-center justify-center shrink-0 border shadow-sm transition-all duration-300 ${
-                            isCurrent
-                              ? "text-emerald-500 border-emerald-200 bg-emerald-50/10 shadow-emerald-500/5"
-                              : isPast
-                                ? "text-emerald-600 border-emerald-100"
-                                : "text-slate-300 border-slate-100"
-                          }`}>
-                            {step.status.toLowerCase().includes("pickup") || step.status.toLowerCase().includes("picked") ? (
-                              <ShoppingBag size={18} />
-                            ) : step.status.toLowerCase().includes("delivered") ? (
-                              <CheckCircle2 size={18} />
-                            ) : step.status.toLowerCase().includes("assigned") ? (
-                              <User size={18} />
-                            ) : (
-                              <Clock size={18} />
-                            )}
-                          </div>
-                          
-                          <div className="flex-1 min-w-0 pt-0.5">
-                            <p className={`text-[13.5px] font-bold tracking-tight truncate transition-all duration-300 ${
-                              isCurrent
-                                ? "text-emerald-700 font-black"
-                                : isPast
-                                  ? "text-slate-800"
-                                  : "text-slate-400"
-                            }`}>
-                              {step.status}
-                            </p>
-                            {step.description && (
-                              <p className={`text-[11px] font-medium mt-0.5 line-clamp-2 leading-relaxed transition-all duration-300 ${
-                                isCurrent
-                                  ? "text-slate-600 font-semibold"
-                                  : isPast
-                                    ? "text-slate-500"
-                                    : "text-slate-400/70"
-                              }`}>
-                                {step.description}
-                              </p>
-                            )}
-                            <p className="text-[10px] font-bold text-slate-400 mt-1">
-                              {step.date}, {step.time}
-                            </p>
-                          </div>
-
-                          <div className={`px-2.5 py-1 rounded-lg text-[8px] font-black uppercase border shadow-sm shrink-0 whitespace-nowrap transition-all duration-300 mt-1 ${
-                            isCurrent
-                              ? "bg-emerald-500 text-white border-emerald-400"
-                              : isPast
-                                ? "bg-emerald-50 text-emerald-600 border-emerald-100"
-                                : "bg-slate-50 text-slate-400 border-slate-100"
-                          }`}>
-                            {isCurrent ? "Active" : isPast ? "Completed" : "Pending"}
-                          </div>
-                        </div>
+                  {/* GPS Route Map Tracker */}
+                  {(d.status === "ASSIGNED" || d.status === "PICKED_UP") && (
+                    <div className="space-y-3">
+                      <LiveGPSMap
+                        pickupCoords={d.pickupCoords}
+                        deliveryCoords={d.deliveryCoords}
+                        volunteerLocation={d.volunteerLocation}
+                        volunteerName={d.volunteer?.name}
+                      />
+                      <div className="grid grid-cols-2 gap-3 rounded-2xl border border-slate-100 bg-white p-2.5 shadow-sm">
+                        {[
+                          { label: "Volunteer", value: d.volunteer?.name || "Assigned", icon: User },
+                          { label: "ETA", value: "20 mins", icon: Clock },
+                          { label: "Distance", value: "2.4 km", icon: MapPin },
+                          { label: "Status", value: "On the way", icon: Truck },
+                        ].map((item) => {
+                          const Icon = item.icon;
+                          return (
+                            <div key={item.label} className="flex items-center gap-3 rounded-xl bg-slate-50 p-3 min-w-0">
+                              <div className="w-9 h-9 rounded-full bg-emerald-50 text-[#16a34a] flex items-center justify-center shrink-0 border border-emerald-100/40">
+                                <Icon size={18} strokeWidth={2.2} />
+                              </div>
+                              <div className="min-w-0">
+                                <p className="text-[9px] font-black uppercase tracking-wider text-slate-400 leading-none mb-1">{item.label}</p>
+                                <p className="text-[13px] font-black text-slate-700 truncate leading-none">{item.value}</p>
+                              </div>
+                            </div>
+                          );
+                        })}
                       </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-
-              <div className="rounded-2xl border border-emerald-100 bg-emerald-50/45 p-3 flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-white text-emerald-600 flex items-center justify-center shadow-sm shrink-0">
-                  <ShieldCheck size={17} />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-[11px] font-black text-emerald-800">Your donation is in safe hands</p>
-                  <p className="text-[9px] font-bold text-emerald-700/70 truncate">We ensure timely and secure delivery to reduce food waste.</p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <button
-                  onClick={() => {
-                    setIsTrackingModalOpen(false);
-                    handleDetailsClick(d);
-                  }}
-                  className="w-full py-4 rounded-2xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 flex items-center justify-center gap-2 text-[11px] font-black uppercase tracking-wider active:scale-95 transition-all"
-                >
-                  <Info size={15} />
-                  <span>View Details</span>
-                </button>
-                <button
-                  onClick={() => {
-                    if (d.volunteer?.phone) {
-                      window.location.href = `tel:${d.volunteer.phone}`;
-                    } else {
-                      toast.info("Volunteer phone number is not available yet.");
-                    }
-                  }}
-                  className="w-full py-4 rounded-2xl bg-[#16a34a] hover:bg-[#15803d] text-white shadow-lg shadow-emerald-500/15 flex items-center justify-center gap-2 text-[11px] font-black uppercase tracking-wider active:scale-95 transition-all"
-                >
-                  <Phone size={15} fill="currentColor" />
-                  <span>Contact Volunteer</span>
-                </button>
-              </div>
-
-              {false && (
-                <div className="hidden">
-                  {/* Header */}
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 border border-emerald-100/50 shadow-inner">
-                      <ShieldCheck size={24} strokeWidth={2} />
-                    </div>
-                    <div className="space-y-0.5">
-                      <h4 className="text-[13px] font-black uppercase tracking-wider text-emerald-800">
-                        Delivery Verification
-                      </h4>
-                      <p className="text-[11px] font-medium text-slate-500">
-                        Confirm NGO handoff securely
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* OTP Label & Timer */}
-                  <div className="flex justify-between items-center px-1">
-                    <label className="text-[11px] font-bold text-slate-500 uppercase tracking-tight">
-                      Enter verification code (OTP)
-                    </label>
-                    <div className="flex items-center gap-1.5 text-slate-400 group cursor-pointer hover:text-emerald-600 transition-colors">
-                      <RotateCcw size={12} className="group-hover:rotate-45 transition-transform" />
-                      <span className="text-[10px] font-bold">Resend OTP in 00:45</span>
-                    </div>
-                  </div>
-
-                  {/* 6-Digit Grid Input */}
-                  <div className="grid grid-cols-6 gap-3">
-                    {[0, 1, 2, 3, 4, 5].map((index) => (
-                      <div 
-                        key={index}
-                        className={`aspect-square rounded-2xl bg-white border-2 flex items-center justify-center text-2xl font-black transition-all duration-300 ${
-                          otpValue[index] 
-                            ? "border-emerald-500 text-slate-800 shadow-md shadow-emerald-500/5" 
-                            : index === otpValue.length
-                              ? "border-emerald-400 ring-4 ring-emerald-500/5"
-                              : "border-slate-100 text-slate-200"
-                        }`}
-                      >
-                        {otpValue[index] || (index === otpValue.length ? "|" : "•")}
-                      </div>
-                    ))}
-                    {/* Hidden Actual Input for Focus */}
-                    <input
-                      type="text"
-                      maxLength={6}
-                      autoFocus
-                      value={otpValue}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setOtpValue(e.target.value.replace(/\D/g, ""))}
-                      className="absolute inset-0 opacity-0 cursor-default"
-                    />
-                  </div>
-
-                  {/* Verify Action */}
-                  <div className="space-y-4">
-                    <button
-                      onClick={onOtpSubmit}
-                      disabled={isVerifying || otpValue.length !== 6}
-                      className="w-full py-5 rounded-[1.5rem] bg-[#1b803c] text-white flex items-center justify-center gap-3 hover:bg-[#156d32] transition-all shadow-xl shadow-emerald-900/10 active:scale-[0.98] disabled:opacity-40 disabled:grayscale font-black uppercase tracking-widest text-[13px]"
-                    >
-                      {isVerifying ? (
-                        <div className="w-5 h-5 border-3 border-white/30 border-t-white rounded-full animate-spin" />
-                      ) : (
-                        <>
-                          <ShieldCheck size={18} strokeWidth={2.5} />
-                          <span>Verify Delivery</span>
-                        </>
-                      )}
-                    </button>
-
-                    {/* Security Footer */}
-                    <div className="flex items-center justify-center gap-2 text-slate-400">
-                      <Lock size={12} />
-                      <span className="text-[10px] font-bold tracking-tight">Secured by HungerFree Intelligence</span>
-                    </div>
-                  </div>
-
-                  {otpError && (
-                    <div className="p-3 rounded-xl bg-red-50 border border-red-100 text-center animate-shake">
-                      <p className="text-[10px] font-black text-red-500 uppercase tracking-widest">
-                        {otpError}
-                      </p>
                     </div>
                   )}
+
+                  {/* Recent Updates Section */}
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between px-1">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center text-[#22c55e] border border-emerald-100/40 shrink-0">
+                          <LayoutList size={16} strokeWidth={2.5} />
+                        </div>
+                        <h4 className="text-[12px] font-black uppercase tracking-widest text-slate-700">
+                          Live Trip Progress
+                        </h4>
+                      </div>
+                    </div>
+
+                    <div className="relative space-y-0 px-1">
+                      {d.timeline.map((step, idx) => {
+                        const isCurrent = idx === currentActiveIdx;
+                        const isPast = idx < currentActiveIdx;
+
+                        return (
+                          <div key={idx} className="relative flex items-start gap-4 group/step pb-6 last:pb-0">
+                            {/* Segment Line (Centered under the circle) */}
+                            {idx < d.timeline.length - 1 && (
+                              <div className={`absolute top-[46px] w-[2px] z-0 transition-colors duration-300 ${
+                                isPast || step.completed
+                                  ? "bg-emerald-500"
+                                  : "border-l-2 border-dashed border-slate-200"
+                              }`} style={{ left: "12px", transform: "translateX(-50%)", bottom: "-22px" }} />
+                            )}
+
+                            {/* Left Indicator Column */}
+                            <div className="relative flex flex-col items-center shrink-0 pt-[22px] w-6 z-10">
+                              {/* Circle */}
+                              <div className={`relative z-10 w-6 h-6 rounded-full bg-white border-2 flex items-center justify-center shadow-sm shrink-0 transition-all duration-300 ${
+                                isCurrent
+                                  ? "border-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)] bg-emerald-50"
+                                  : isPast
+                                    ? "border-emerald-500 bg-emerald-50"
+                                    : "border-slate-200 bg-white"
+                              }`}>
+                                {isCurrent ? (
+                                  <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                                ) : isPast ? (
+                                  <Check className="w-3 text-emerald-500 stroke-[3.5]" />
+                                ) : (
+                                  <div className="w-1.5 h-1.5 rounded-full bg-slate-300" />
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Card Content */}
+                            <div className={`flex-1 p-3.5 rounded-xl border flex items-start gap-4 min-w-0 transition-all duration-300 ${
+                              isCurrent
+                                ? "bg-emerald-50/25 border-emerald-500/35 shadow-md shadow-emerald-500/5 hover:bg-emerald-50/30"
+                                : isPast
+                                  ? "bg-slate-50/50 border-slate-100/50 hover:bg-white hover:border-slate-200/60 opacity-80"
+                                  : "bg-slate-50/10 border-slate-100 border-dashed opacity-25"
+                            }`}>
+                              <div className={`w-10 h-10 rounded-full bg-white flex items-center justify-center shrink-0 border shadow-sm transition-all duration-300 ${
+                                isCurrent
+                                  ? "text-emerald-500 border-emerald-200 bg-emerald-50/10 shadow-emerald-500/5"
+                                  : isPast
+                                    ? "text-emerald-600 border-emerald-100"
+                                    : "text-slate-300 border-slate-100"
+                              }`}>
+                                {step.status.toLowerCase().includes("pickup") || step.status.toLowerCase().includes("picked") ? (
+                                  <ShoppingBag size={18} />
+                                ) : step.status.toLowerCase().includes("delivered") ? (
+                                  <CheckCircle2 size={18} />
+                                ) : step.status.toLowerCase().includes("assigned") ? (
+                                  <User size={18} />
+                                ) : (
+                                  <Clock size={18} />
+                                )}
+                              </div>
+                              
+                              <div className="flex-1 min-w-0 pt-0.5">
+                                <p className={`text-[13.5px] font-bold tracking-tight truncate transition-all duration-300 ${
+                                  isCurrent
+                                    ? "text-emerald-700 font-black"
+                                    : isPast
+                                      ? "text-slate-800"
+                                      : "text-slate-400"
+                                }`}>
+                                  {step.status}
+                                </p>
+                                {step.description && (
+                                  <p className={`text-[11px] font-medium mt-0.5 line-clamp-2 leading-relaxed transition-all duration-300 ${
+                                    isCurrent
+                                      ? "text-slate-600 font-semibold"
+                                      : isPast
+                                        ? "text-slate-500"
+                                        : "text-slate-400/70"
+                                  }`}>
+                                    {step.description}
+                                  </p>
+                                )}
+                                <p className="text-[10px] font-bold text-slate-400 mt-1">
+                                  {step.date}, {step.time}
+                                </p>
+                              </div>
+
+                              <div className={`px-2.5 py-1 rounded-lg text-[8px] font-black uppercase border shadow-sm shrink-0 whitespace-nowrap transition-all duration-300 mt-1 ${
+                                isCurrent
+                                  ? "bg-emerald-500 text-white border-emerald-400"
+                                  : isPast
+                                    ? "bg-emerald-50 text-emerald-600 border-emerald-100"
+                                    : "bg-slate-50 text-slate-400 border-slate-100"
+                              }`}>
+                                {isCurrent ? "Active" : isPast ? "Completed" : "Pending"}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+
+
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div>
+                    {/* <button
+                      onClick={() => {
+                        setIsTrackingModalOpen(false);
+                        handleDetailsClick(d);
+                      }}
+                      className="w-full py-4 rounded-2xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 flex items-center justify-center gap-2 text-[11px] font-black uppercase tracking-wider active:scale-95 transition-all"
+                    >
+                      <Info size={15} />
+                      <span>View Details</span>
+                    </button> */}
+                  </div>
+
                 </div>
-              )}
               </div>
             );
           })()
         ) : null}
-        </ModalContent>
-      </Modal>
+      </ResuableDrawer>
 
       {/* Premium Cancellation Confirmation Modal */}
       <Modal 
@@ -1735,7 +1724,7 @@ const MyDonations = () => {
             const receiptId = `HF-${d.date.replace(/[^0-9]/g, "-") || "2026-05-15"}-${d.id || 6821}`;
 
             return (
-              <div className="bg-white w-full max-w-[440px] rounded-[2rem] p-6 md:p-7 shadow-[0_25px_60px_rgba(0,0,0,0.15)] border border-slate-100/50 flex flex-col relative overflow-hidden mx-auto">
+              <div className="bg-white w-full max-w-[440px] rounded-[2rem] p-6 md:p-7 shadow-[0_25px_60px_rgba(0,0,0,0.15)] border border-slate-100/50 flex flex-col relative max-h-[calc(100vh-2rem)] md:max-h-[calc(100vh-4rem)] overflow-y-auto thin-scrollbar mx-auto">
                 {/* Close Button */}
                 <button
                   onClick={onClose}

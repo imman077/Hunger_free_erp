@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDonorStore } from "../../store/donor-store";
-import { donorRewardsService } from "../api/rewards.api";
+import { donorRewardsService } from "../api/rewards/rewards.api";
 
 export const useDonorRewards = () => {
   const { data, isLoading, error, setDonorData, setLoading, setError } = useDonorStore();

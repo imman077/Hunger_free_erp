@@ -1,22 +1,12 @@
 import { useEffect, useState } from "react";
 import { Package, ArrowRight, Heart, Users, ShieldCheck, MapPin, Clock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { ngoNeedsService } from "../api/needs.api";
+import { ngoNeedsService } from "../api/needs/needs.api";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 
-interface NGONeed {
-  id: number;
-  ngo: number;
-  ngo_name: string;
-  title: string;
-  description: string;
-  category: string;
-  quantity_required: string;
-  urgency: "Low" | "Medium" | "High";
-  status: string;
-  created_at: string;
-}
+import type { NGONeed } from "../api/needs/needs.output";
+
 
 const NGONeedsFeed = () => {
   const [needs, setNeeds] = useState<NGONeed[]>([]);

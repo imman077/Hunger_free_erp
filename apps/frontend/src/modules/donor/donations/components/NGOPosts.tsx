@@ -1,7 +1,30 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ngoNeedsService } from "../../../ngo/needs/api/needs.api";
+import { useQuery, gql } from "@apollo/client";
 import { toast } from "sonner";
+
+const GET_NEEDS = gql`
+  query GetNeeds($status: String) {
+    needs(status: $status) {
+      id
+      ngo
+      ngoName
+      itemName
+      category
+      quantity
+      unit
+      urgency
+      requiredBy
+      image
+      distributionAddress
+      description
+      status
+      fulfilledQuantity
+      supporterIds
+      createdAt
+    }
+  }
+`;
 import {
   MapPin,
   Search,
@@ -25,9 +48,8 @@ import ResuableDrawer from "../../../../global/components/resuable-components/dr
 import ResuableModal from "../../../../global/components/resuable-components/modal";
 import ResuableInput from "../../../../global/components/resuable-components/input";
 import ResuableButton from "../../../../global/components/resuable-components/button";
-import { donationService } from "../api/donations.api";
+import { donationService } from "../api/donations/donations.api";
 import { useAuthStore } from "../../../../global/contexts/auth-store";
-import axiosInstance from "../../../../global/utils/axios-instance";
 
 interface NGONeed {
   id: number;
@@ -50,6 +72,7 @@ interface NGONeed {
 }
 
 const NGOPosts = () => {
+  const { user } = useAuthStore();
   const [viewMode, setViewMode] = useState<"table" | "card">("card");
   const [needs, setNeeds] = useState<NGONeed[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -71,6 +94,12 @@ const NGOPosts = () => {
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
 
+  // Invoke GraphQL Query
+  const { data: graphqlData, loading: graphqlLoading, refetch } = useQuery(GET_NEEDS, {
+    variables: { status: "Open" },
+    fetchPolicy: "network-only",
+  });
+
   const checkScroll = () => {
     if (sliderRef.current) {
       const { scrollLeft, scrollWidth, clientWidth } = sliderRef.current;
@@ -85,26 +114,46 @@ const NGOPosts = () => {
     return () => window.removeEventListener('resize', checkScroll);
   }, [needs]);
 
+  useEffect(() => {
+    setIsLoading(graphqlLoading);
+  }, [graphqlLoading]);
+
+  useEffect(() => {
+    if (graphqlData?.needs) {
+      const mappedNeeds = graphqlData.needs.map((need: any) => ({
+        id: isNaN(Number(need.id)) ? need.id : Number(need.id),
+        ngo: need.ngo,
+        item_name: need.itemName || "",
+        category: need.category || "",
+        quantity: need.quantity || 0,
+        unit: need.unit || "Units",
+        urgency: need.urgency || "Medium Priority",
+        required_by: need.requiredBy || "",
+        ngo_name: need.ngoName || "Authorized NGO",
+        description: need.description || "",
+        status: need.status || "Open",
+        fulfilled_quantity: need.fulfilledQuantity || 0,
+        supporter_ids: need.supporterIds || [],
+        created_at: need.createdAt || "",
+        image: need.image || "",
+        distribution_address: need.distributionAddress || "",
+        is_mine: user ? (need.ngo === user.id || need.ngo === String(user.id)) : false,
+      }));
+      setNeeds(mappedNeeds);
+    }
+  }, [graphqlData, user]);
+
   const fetchNeeds = useCallback(async () => {
     setIsLoading(true);
     try {
-      // Only fetch NGO Needs
-      const needsResponse = await ngoNeedsService.getMyNeeds();
-      const rawNeeds = needsResponse?.results || (Array.isArray(needsResponse) ? needsResponse : []);
-      
-      setNeeds(rawNeeds);
+      await refetch();
     } catch (error) {
       toast.error("Failed to load requests");
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [refetch]);
 
-  useEffect(() => {
-    fetchNeeds();
-  }, [fetchNeeds]);
-
-  const { user } = useAuthStore();
   const filteredNeeds = needs.filter((need) => {
     const matchesSearch =
       need.item_name.toLowerCase().includes(searchQuery.toLowerCase()) ||

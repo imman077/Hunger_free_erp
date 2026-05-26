@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { NgoDataSchema } from "./ngo-schemas";
 import type { NgoData } from "./ngo-schemas";
-import { ngoDonationsService } from "../donations/api/donations.api";
+import { ngoDonationsService } from "../donations/api/donations/donations.api";
 
 interface NgoState {
   data: NgoData;

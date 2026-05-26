@@ -1,5 +1,5 @@
 import { useNgoStore } from "../../store/ngo-store";
-import { ngoDonationsService } from "../api/donations.api";
+import { ngoDonationsService } from "../api/donations/donations.api";
 
 export const useNgoDonations = () => {
   const { data, isLoading, error, refreshData } = useNgoStore();

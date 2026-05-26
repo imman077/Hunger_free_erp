@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDonorStore } from "../../store/donor-store";
-import { ngoNeedsService } from "../api/needs.api";
+import { ngoNeedsService } from "../api/needs/needs.api";
 
 export const useDonorDashboard = () => {
   const { data, isLoading, error } = useDonorStore();

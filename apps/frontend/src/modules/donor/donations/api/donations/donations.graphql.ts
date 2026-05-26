@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 export const GET_MY_DONATIONS = gql`
   query GetMyDonations($status: String, $sortOrder: String) {
@@ -69,6 +69,7 @@ export const VERIFY_PICKUP = gql`
     }
   }
 `;
+
 export const CREATE_DONATION = gql`
   mutation CreateDonation($input: CreateDonationInput!) {
     createDonation(input: $input) {

@@ -535,5 +535,11 @@ export const resolvers = {
 
       return 'All collections seeded successfully!';
     }
+  },
+  Need: {
+    ngoName: async (need: any) => {
+      const user = await User.findById(need.ngo);
+      return user?.ngoProfile?.name || user?.username || 'Helping Hands NGO';
+    }
   }
 };

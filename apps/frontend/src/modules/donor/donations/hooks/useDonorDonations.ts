@@ -1,6 +1,6 @@
 import { useMutation } from "@apollo/client";
 import { useDonorStore } from "../../store/donor-store";
-import { VERIFY_PICKUP, CANCEL_DONATION, CREATE_DONATION, DELETE_DONATION, UPDATE_VOLUNTEER_LOCATION } from "../api/donations.graphql";
+import { VERIFY_PICKUP, CANCEL_DONATION, CREATE_DONATION, DELETE_DONATION, UPDATE_VOLUNTEER_LOCATION } from "../api/donations/donations.graphql";
 
 export const useDonorDonations = () => {
   const { data, donationStats, isLoading, error, refreshData } = useDonorStore();

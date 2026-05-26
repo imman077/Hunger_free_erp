@@ -20,7 +20,7 @@ import ResuableDrawer from "../../../../global/components/resuable-components/dr
 import ResuableInput from "../../../../global/components/resuable-components/input";
 import ResuableButton from "../../../../global/components/resuable-components/button";
 import ResuableDropdown from "../../../../global/components/resuable-components/dropdown";
-import { ngoInventoryService } from "../api/inventory.api";
+import { ngoInventoryService } from "../api/inventory/inventory.api";
 
 interface InventoryItem {
   id: number;

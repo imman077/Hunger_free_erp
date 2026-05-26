@@ -154,6 +154,7 @@ export const typeDefs = `#graphql
   type Need {
     id: ID!
     ngo: String
+    ngoName: String
     itemName: String!
     category: String!
     quantity: Int

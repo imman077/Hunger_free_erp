@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff, ArrowRight, Check, Building2 } from "lucide-react";
 import { useAuthStore } from "../../../global/contexts/auth-store";
 import { toast } from "sonner";
-import { AuthAPI } from "../api/auth.api";
+import { AuthAPI } from "../api/auth/auth.api";
 
 // ─── Role Config ────────────────────────────────────────────────────────────
 type Role = "donor" | "ngo" | "volunteer" | "admin";
@@ -119,10 +119,29 @@ const AuthPage = () => {
     setIsLoading(true);
 
     try {
-      const { token, user } = await AuthAPI.login(loginEmail, loginPassword, activeRole);
+      const { token, user } = await AuthAPI.login({
+        email: loginEmail,
+        password: loginPassword,
+        role: activeRole,
+      });
 
       // Login in store
-      auth.login(user, token, token);
+      auth.login(
+        {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          first_name: "",
+          last_name: "",
+          profile: {
+            role: user.role as any,
+            phone: null,
+            address: null,
+          },
+        },
+        token,
+        token
+      );
 
       toast.success(`Welcome back, ${user.username}!`);
 

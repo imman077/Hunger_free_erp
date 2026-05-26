@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useVolunteerStore } from "../../store/volunteer-store";
-import { volunteerRewardsService } from "../api/rewards.api";
+import { volunteerRewardsService } from "../api/rewards/rewards.api";
 
 export const useVolunteerRewards = () => {
   const { stats, prizes, rewards, badges, isLoading, error, setStats, setLoading, setError, setRewardsData } =

@@ -14,7 +14,7 @@ import ResuableModal from "../../../../global/components/resuable-components/mod
 import ResuableTextarea from "../../../../global/components/resuable-components/textarea";
 
 import { useQuery, useMutation } from "@apollo/client";
-import { GET_CONFIG_ITEMS, CREATE_DONATION, DELETE_DONATION } from "../api/donations.graphql";
+import { GET_CONFIG_ITEMS, CREATE_DONATION, DELETE_DONATION } from "../api/donations/donations.graphql";
 import { useDonorStore } from "../../store/donor-store";
 
 const CreateDonation = () => {

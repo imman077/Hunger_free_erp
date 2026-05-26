@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { DonorDataSchema } from "./donor-schemas";
 import type { DonorData } from "./donor-schemas";
 import client from "../../../global/api/apollo-client";
-import { GET_MY_DONATIONS } from "../donations/api/donations.graphql";
+import { GET_MY_DONATIONS } from "../donations/api/donations/donations.graphql";
 
 interface DonorState {
   data: DonorData;

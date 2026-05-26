@@ -15,7 +15,7 @@ import ResuableTextarea from "../../../../global/components/resuable-components/
 import { ResuableDatePicker } from "../../../../global/components/resuable-components/datepicker";
 import { toast } from "sonner";
 import { NEED_CATEGORIES, UNIT_OPTIONS } from "../../../../global/constants/donation_config";
-import { ngoInventoryService } from "../api/inventory.api";
+import { ngoInventoryService } from "../api/inventory/inventory.api";
 
 const AddItem = () => {
   const navigate = useNavigate();
