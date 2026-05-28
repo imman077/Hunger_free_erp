@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const AddItemInputSchema = z
   .object({
-    name: z.string().min(1),
+    item_name: z.string().min(1),
     quantity: z.number().min(0),
     unit: z.string().min(1),
     category: z.string().optional(),
@@ -14,7 +14,7 @@ export const UpdateItemInputSchema = z.object({
   itemId: z.number(),
   itemData: z
     .object({
-      name: z.string().optional(),
+      item_name: z.string().optional(),
       quantity: z.number().optional(),
       unit: z.string().optional(),
       category: z.string().optional(),

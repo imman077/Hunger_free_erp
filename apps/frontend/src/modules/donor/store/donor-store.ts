@@ -64,7 +64,7 @@ const initialData: DonorData = {
       ngo: "Green Harvest NGO",
       time: "2 hours ago",
       status: "Collected",
-      category: "Food",
+      category: "Cooked Food",
     },
     {
       id: 2,

@@ -23,6 +23,13 @@ export const AuthAPI = {
             username
             email
             role
+            phone
+            donorProfile {
+              businessName
+            }
+            ngoProfile {
+              name
+            }
           }
         }
       }

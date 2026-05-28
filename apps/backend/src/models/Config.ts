@@ -15,7 +15,7 @@ export const ConfigItem = mongoose.model('ConfigItem', configItemSchema);
 // ─── Category Suggestion ──────────────────────────────────────────────────────
 const categorySuggestionSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  type: { type: String, required: true }, // 'food', 'ngo', 'volunteer_skill'
+  type: { type: String, required: true }, // 'cooked_food', 'ngo', 'volunteer_skill'
   isActive: { type: Boolean, default: true }
 }, { timestamps: true });
 

@@ -3,7 +3,7 @@ import { z } from "zod";
 export const InventoryItemSchema = z
   .object({
     id: z.number(),
-    name: z.string(),
+    item_name: z.string(),
     quantity: z.number(),
     unit: z.string(),
     category: z.string().optional().nullable(),

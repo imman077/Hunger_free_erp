@@ -7,6 +7,7 @@ const donationSchema = new mongoose.Schema({
   preparationType: { type: String, required: true },
   quantity: { type: String, required: true },
   ngo: { type: String }, // Optional until NGO accepts
+  donor: { type: String },
   date: { type: String, required: true },
   status: { type: String, required: true, default: 'PENDING' },
   pickupAddress: { type: String, required: true },
@@ -37,7 +38,8 @@ const donationSchema = new mongoose.Schema({
     time: String,
     completed: Boolean,
     description: String
-  }]
+  }],
+  relatedNeed: { type: String }
 }, {
   timestamps: true
 });

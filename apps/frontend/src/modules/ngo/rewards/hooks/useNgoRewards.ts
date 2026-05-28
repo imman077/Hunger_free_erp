@@ -23,41 +23,38 @@ export const useNgoRewards = () => {
           ngoRewardsService.getNGOProfile(),
         ]);
 
-        // Filter rewards for NGO role and map to categories
-        const ngoRewards = rewardsResponse.filter((r: any) => r.role === "NGO");
+        const sanitizeReward = (r: any) => ({
+          id: Number(r.id),
+          name: String(r.name),
+          amount: r.amount !== null ? r.amount : undefined,
+          points: Number(r.points_required ?? r.points),
+          available: Boolean(r.available),
+          desc: (r.description ?? r.desc) !== null ? (r.description ?? r.desc) : undefined,
+          details: r.details || [],
+        });
 
-        const mappedRewards = {
-          grants: ngoRewards
-            .filter((r: any) => r.category === "cash") // "Quick Money" maps to cash in DB
-            .map((r: any) => ({
-              id: r.id,
-              name: r.name,
-              amount: r.amount || r.name,
-              points: r.points_required,
-              available: r.available,
-              desc: r.description,
-            })),
-          mega: ngoRewards
-            .filter((r: any) => r.category === "grants") // "Big Funds" maps to grants in DB
-            .map((r: any) => ({
-              id: r.id,
-              name: r.name,
-              amount: r.amount || r.name,
-              points: r.points_required,
-              available: r.available,
-              desc: r.description,
-            })),
-          social: ngoRewards
-            .filter((r: any) => r.category === "social") // "Aid & Tools" maps to social in DB
-            .map((r: any) => ({
-              id: r.id,
-              name: r.name,
-              points: r.points_required,
-              available: r.available,
-              desc: r.description,
-              details: r.details || [],
-            })),
-        };
+        // Filter rewards for NGO role and map to categories
+        const ngoRewards = Array.isArray(rewardsResponse)
+          ? rewardsResponse.filter((r: any) => r.role === "NGO")
+          : [];
+
+        const mappedRewards = Array.isArray(rewardsResponse)
+          ? {
+              grants: ngoRewards
+                .filter((r: any) => r.category === "cash") // "Quick Money" maps to cash in DB
+                .map(sanitizeReward),
+              mega: ngoRewards
+                .filter((r: any) => r.category === "grants") // "Big Funds" maps to grants in DB
+                .map(sanitizeReward),
+              social: ngoRewards
+                .filter((r: any) => r.category === "social") // "Aid & Tools" maps to social in DB
+                .map(sanitizeReward),
+            }
+          : {
+              grants: (rewardsResponse.grants || []).map(sanitizeReward),
+              mega: (rewardsResponse.mega || []).map(sanitizeReward),
+              social: (rewardsResponse.social || []).map(sanitizeReward),
+            };
 
         // Map prizes
         const mappedPrizes = prizesResponse.map((p: any) => ({

@@ -4,18 +4,9 @@
  */
 
 export const FOOD_CATEGORIES = [
-  { value: "Fruits & Vegetables", label: "Fruits & Vegetables" },
   { value: "Cooked Food", label: "Cooked Food" },
-  { value: "Rice, Grains & Pulses", label: "Rice, Grains & Pulses" },
-  { value: "Packaged Snacks", label: "Packaged Snacks" },
-  { value: "Bread & Bakery", label: "Bread & Bakery" },
-  { value: "Milk & Dairy", label: "Milk & Dairy" },
-  { value: "Meat & Eggs", label: "Meat & Eggs" },
-  { value: "Seafood", label: "Seafood" },
-  { value: "Water & Drinks", label: "Water & Drinks" },
-  { value: "Frozen Food", label: "Frozen Food" },
-  { value: "Spices & Oils", label: "Spices & Oils" },
-
+  { value: "Water Bottle", label: "Water Bottle" },
+  { value: "Water Cane", label: "Water Cane" },
 ];
 
 export const UNIT_OPTIONS = [
@@ -42,20 +33,9 @@ export const PREPARATION_TYPES = [
 ];
 
 export const NEED_CATEGORIES = [
-  { value: "food", label: "Food & Grains" },
-  { value: "water", label: "Drinking Water" },
-  { value: "clothing", label: "Clothing & Apparel" },
-  { value: "hygiene", label: "Hygiene Kits" },
-  { value: "medical", label: "Medical Supplies" },
-  { value: "education", label: "Education Kits" },
-  { value: "bedding", label: "Bedding & Blankets" },
-  { value: "kitchen", label: "Kitchen & Home Items" },
-  { value: "baby", label: "Baby Care" },
-  { value: "elderly", label: "Elderly Care" },
-  { value: "technology", label: "Computers & Tech" },
-  { value: "stationery", label: "Books & Stationery" },
-  { value: "power", label: "Solar & Power" },
-  { value: "other", label: "Other" },
+  { value: "cooked_food", label: "Cooked Food" },
+  { value: "water_bottle", label: "Water Bottle" },
+  { value: "water_cane", label: "Water Cane" },
 ];
 
 export const URGENCY_OPTIONS = [
@@ -64,3 +44,18 @@ export const URGENCY_OPTIONS = [
   { value: "high", label: "High Priority" },
   { value: "urgent", label: "Urgent" },
 ];
+
+export const CATEGORY_IMAGE_MAP: Record<string, string> = {
+  "cooked_food": "https://res.cloudinary.com/deyog3v3w/image/upload/v1779881820/cooked_food_egox4n.jpg",
+  "water_bottle": "https://res.cloudinary.com/deyog3v3w/image/upload/v1779881819/water_bottle_xszila.jpg",
+  "water_cane": "https://res.cloudinary.com/deyog3v3w/image/upload/v1779881820/water_cane_ojz5af.png",
+  "Cooked Food": "https://res.cloudinary.com/deyog3v3w/image/upload/v1779881820/cooked_food_egox4n.jpg",
+  "Water Bottle": "https://res.cloudinary.com/deyog3v3w/image/upload/v1779881819/water_bottle_xszila.jpg",
+  "Water Cane": "https://res.cloudinary.com/deyog3v3w/image/upload/v1779881820/water_cane_ojz5af.png",
+};
+
+export const getCategoryImage = (category?: string): string => {
+  if (!category) return CATEGORY_IMAGE_MAP["cooked_food"];
+  const normalized = category.trim();
+  return CATEGORY_IMAGE_MAP[normalized] || CATEGORY_IMAGE_MAP[normalized.toLowerCase()] || CATEGORY_IMAGE_MAP["cooked_food"];
+};

@@ -1,30 +1,7 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useQuery, gql } from "@apollo/client";
+import { useQuery, useMutation } from "@apollo/client";
 import { toast } from "sonner";
-
-const GET_NEEDS = gql`
-  query GetNeeds($status: String) {
-    needs(status: $status) {
-      id
-      ngo
-      ngoName
-      itemName
-      category
-      quantity
-      unit
-      urgency
-      requiredBy
-      image
-      distributionAddress
-      description
-      status
-      fulfilledQuantity
-      supporterIds
-      createdAt
-    }
-  }
-`;
 import {
   MapPin,
   Search,
@@ -46,9 +23,11 @@ import ReusableTable, {
 } from "../../../../global/components/resuable-components/table";
 import ResuableDrawer from "../../../../global/components/resuable-components/drawer";
 import ResuableModal from "../../../../global/components/resuable-components/modal";
+import { getCategoryImage } from "../../../../global/constants/donation_config";
 import ResuableInput from "../../../../global/components/resuable-components/input";
 import ResuableButton from "../../../../global/components/resuable-components/button";
-import { donationService } from "../api/donations/donations.api";
+import { CREATE_DONATION } from "../api/donations/donations.graphql";
+import { GET_NEEDS } from "../api/needs/needs.graphql";
 import { useAuthStore } from "../../../../global/contexts/auth-store";
 
 interface NGONeed {
@@ -69,10 +48,16 @@ interface NGONeed {
   image?: string;
   distribution_address?: string;
   is_mine?: boolean;
+  supporters_details?: {
+    id: string;
+    name: string;
+    quantity: string;
+  }[];
 }
 
 const NGOPosts = () => {
   const { user } = useAuthStore();
+  const [createDonation] = useMutation(CREATE_DONATION);
   const [viewMode, setViewMode] = useState<"table" | "card">("card");
   const [needs, setNeeds] = useState<NGONeed[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -100,13 +85,14 @@ const NGOPosts = () => {
     fetchPolicy: "network-only",
   });
 
+
   const checkScroll = () => {
     if (sliderRef.current) {
       const { scrollLeft, scrollWidth, clientWidth } = sliderRef.current;
       setCanScrollLeft(scrollLeft > 10);
       setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 10);
     }
-  };
+  };  
 
   useEffect(() => {
     checkScroll();
@@ -138,6 +124,7 @@ const NGOPosts = () => {
         image: need.image || "",
         distribution_address: need.distributionAddress || "",
         is_mine: user ? (need.ngo === user.id || need.ngo === String(user.id)) : false,
+        supporters_details: need.supportersDetails || [],
       }));
       setNeeds(mappedNeeds);
     }
@@ -176,11 +163,11 @@ const NGOPosts = () => {
     // 2. Otherwise, it's a regular NGO Need that needs fulfillment
     setFulfillForm({
       foodCategory: need.category || "Dry Ration",
-      quantity: need.quantity.toString(),
+      quantity: "1",
       expiryDate: "",
       expiryTime: "",
       pickupAddress: "",
-      contactPhone: "",
+      contactPhone: user?.profile?.phone ?? "",
     });
     setSelectedNeed(need);
     setIsFulfillModalOpen(true);
@@ -190,33 +177,67 @@ const NGOPosts = () => {
     e.preventDefault();
     if (!selectedNeed) return;
 
+    const val = parseInt(fulfillForm.quantity) || 0;
+    const remaining = selectedNeed.quantity - (selectedNeed.fulfilled_quantity || 0);
+
+    if (val <= 0) {
+      toast.error("Please enter a valid quantity to donate.");
+      return;
+    }
+
+    if (val > remaining) {
+      toast.error(`You cannot donate more than the remaining need (${remaining} ${selectedNeed.unit}).`);
+      return;
+    }
+
     setIsFulfilling(true);
     try {
-      const submitData = new FormData();
-      submitData.append("food_category", fulfillForm.foodCategory);
-      submitData.append("food_items", selectedNeed.item_name);
-      submitData.append("quantity", fulfillForm.quantity);
-      submitData.append("unit", selectedNeed.unit);
-      submitData.append(
-        "pickup_address",
-        fulfillForm.pickupAddress ||
-          "Pickup location to be shared via contact.",
-      );
-      submitData.append("contact_phone", fulfillForm.contactPhone);
-      submitData.append("related_need", selectedNeed.id.toString());
-      submitData.append("accepted_ngo", selectedNeed.ngo.toString());
-
       // Provide a default expiry time (48 hours from now) for simple fulfillment
       const defaultExpiry = new Date();
       defaultExpiry.setHours(defaultExpiry.getHours() + 48);
-      submitData.append("expiry_time", defaultExpiry.toISOString());
 
-      await donationService.createDonation(submitData);
-      toast.success("Support successfully pledged! The NGO will be notified.");
+      const input = {
+        foodType: selectedNeed.item_name,
+        category: fulfillForm.foodCategory,
+        dietaryType: "Veg", // Default dietary type
+        preparationType: "Restaurant", // Default preparation type
+        quantity: `${fulfillForm.quantity} ${selectedNeed.unit}`,
+        ngo: selectedNeed.ngo.toString(),
+        donor: user?.id || null,
+        date: new Date().toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }),
+        pickupAddress: fulfillForm.pickupAddress || "Pickup location to be shared via contact. Phone: " + fulfillForm.contactPhone,
+        description: `Fulfillment support for need: ${selectedNeed.item_name}. Contact: ${fulfillForm.contactPhone}`,
+        expiryTime: defaultExpiry.toISOString(),
+        image: getCategoryImage(fulfillForm.foodCategory),
+        relatedNeed: selectedNeed.id.toString()
+      };
+
+      await createDonation({ variables: { input } });
+
+      // Save phone number to auth store (persists to localStorage)
+      if (fulfillForm.contactPhone && user && !user.profile?.phone) {
+        useAuthStore.setState((state) => {
+          if (state.user) {
+            return {
+              user: {
+                ...state.user,
+                profile: {
+                  ...state.user.profile,
+                  phone: fulfillForm.contactPhone,
+                },
+              },
+            };
+          }
+          return {};
+        });
+      }
+
+      toast.success("Support successfully pledged through GraphQL! The NGO will be notified.");
       setIsFulfillModalOpen(false);
       fetchNeeds(); // Refresh list
-    } catch (error) {
-      toast.error("Failed to submit support. Please check your data.");
+    } catch (error: any) {
+      console.error("GraphQL submit error:", error);
+      toast.error(`Failed to submit support: ${error.message || "Please check your network and data."}`);
     } finally {
       setIsFulfilling(false);
     }
@@ -230,6 +251,10 @@ const NGOPosts = () => {
       if (numValue > remaining) {
         newValue = remaining.toString();
       }
+    }
+    if (name === "contactPhone") {
+      const digitsOnly = value.replace(/\D/g, "");
+      newValue = digitsOnly.slice(0, 10);
     }
     setFulfillForm((prev) => ({ ...prev, [name]: newValue }));
   };
@@ -576,7 +601,7 @@ const NGOPosts = () => {
                 {/* Image / Icon Header */}
                 <div className="relative h-48 overflow-hidden bg-[var(--bg-secondary)]">
                   <img
-                    src={need.image || `/donation_images/${["chicken_gravy.png", "packed_lunch.png", "packet_curry.png"][need.id % 3]}`}
+                    src={need.image || getCategoryImage(need.category)}
                     alt={need.item_name}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
@@ -807,6 +832,29 @@ const NGOPosts = () => {
                 "
               </p>
             </div>
+
+            {selectedNeed.supporters_details && selectedNeed.supporters_details.length > 0 && (
+              <div className="space-y-4">
+                <h4 className="text-[11px] font-black uppercase tracking-[0.2em] text-[var(--text-primary)] border-b border-[var(--border-color)] pb-2 flex items-center gap-2">
+                  <Heart size={12} fill="currentColor" className="text-red-500" /> Supporters ({selectedNeed.supporters_details.length})
+                </h4>
+                <div className="space-y-3">
+                  {selectedNeed.supporters_details.map((supporter, idx) => (
+                    <div
+                      key={supporter.id || idx}
+                      className="flex justify-between items-center bg-[var(--bg-secondary)] p-4 rounded-2xl border border-[var(--border-color)]"
+                    >
+                      <span className="text-[11px] font-bold text-[var(--text-muted)]">
+                        {supporter.name}
+                      </span>
+                      <span className="text-[11px] font-black text-emerald-500">
+                        {supporter.quantity}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </ResuableDrawer>
@@ -837,10 +885,10 @@ const NGOPosts = () => {
           {selectedNeed && (
             <div className="p-4 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-color)] flex items-center justify-between">
               <span className="text-[10px] font-black uppercase tracking-widest text-[var(--text-muted)]">
-                How much they need total
+                How much they need remaining
               </span>
               <span className="text-sm font-black text-emerald-500">
-                {selectedNeed.quantity} {selectedNeed.unit}
+                {selectedNeed.quantity - (selectedNeed.fulfilled_quantity || 0)} {selectedNeed.unit}
               </span>
             </div>
           )}
@@ -862,13 +910,13 @@ const NGOPosts = () => {
               value={fulfillForm.contactPhone}
               onChange={(val) => handleValueChange("contactPhone", val)}
               required
-              placeholder="+1 (000) 000-0000"
+              placeholder="9876543210"
             />
           </div>
 
           <div className="pt-4 flex justify-end gap-4 border-t border-[var(--border-color)]">
             <ResuableButton
-              variant="ghost"
+              variant="secondary"
               onClick={() => setIsFulfillModalOpen(false)}
               className="font-black text-[10px] uppercase tracking-widest"
             >

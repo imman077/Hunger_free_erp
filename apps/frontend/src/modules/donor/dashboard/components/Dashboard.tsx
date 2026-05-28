@@ -22,6 +22,7 @@ import { useDonorDashboard } from "../hooks/useDonorDashboard";
 import { type DonorStat, type RecentActivity } from "../../store/donor-schemas";
 import NGONeedsFeed from "./NGONeedsFeed";
 import WeeklyImpactBanner from "./WeeklyImpactBanner";
+import { getCategoryImage } from "../../../../global/constants/donation_config";
 
 const DonorDashboard = () => {
   const navigate = useNavigate();
@@ -362,7 +363,7 @@ const DonorDashboard = () => {
                         {/* Icon Box - Professional Image Assets */}
                         <div className="w-12 h-12 rounded-xl shrink-0 flex items-center justify-center transition-all duration-300 group-hover:scale-110 bg-slate-50 border border-slate-100 overflow-hidden shadow-sm">
                           <img 
-                            src={isCollected ? "/vegandfruits.png" : "/cookedfood.png"} 
+                            src={getCategoryImage(activity.category)} 
                             alt="Activity Icon" 
                             className="w-9 h-9 object-contain"
                           />

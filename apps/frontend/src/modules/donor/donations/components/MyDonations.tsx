@@ -41,20 +41,7 @@ import type { DonationDetail } from "../../store/donor-schemas";
 import { useDonorStore } from "../../store/donor-store";
 import { toast } from "sonner";
 import { LiveGPSMap } from "./LiveGPSMap";
-
-const categoryImageMap: Record<string, string> = {
-  "Fruits & Vegetables": "fruitsandvegetables.png",
-  "Cooked Meals": "cookedmeals.png",
-  "Rice, Grains & Pulses": "riceandgrains.png",
-  "Packaged Snacks": "packedsnacks.png",
-  "Bread & Bakery": "bakeryitems.png",
-  "Milk & Dairy": "milkanddairy.png",
-  "Meat & Eggs": "meatandeggs.png",
-  "Seafood": "seafood.png",
-  "Water & Drinks": "wateranddrinks.png",
-  "Frozen Food": "frozenfoods.png",
-  "Spices & Oils": "spicesandoils.png",
-};
+import { getCategoryImage } from "../../../../global/constants/donation_config";
 
 const MyDonations = () => {
   const navigate = useNavigate();
@@ -540,9 +527,7 @@ const MyDonations = () => {
                         <img
                           src={
                             donation.image || 
-                            (donation.category && categoryImageMap[donation.category] 
-                              ? `/donation_images/${categoryImageMap[donation.category]}` 
-                              : "/drawer_images/cooked_food.png")
+                            getCategoryImage(donation.category)
                           }
                           className={`w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-110 ${
                             donation.status === "DELIVERED" ? "saturate-[0.8] opacity-95" : 
@@ -894,7 +879,7 @@ const MyDonations = () => {
           <div className="space-y-5 p-6 bg-white">
             <div className="relative rounded-3xl overflow-hidden shadow-lg min-h-[220px] bg-slate-950">
               <img
-                src={selectedDonation.image || (selectedDonation.category && categoryImageMap[selectedDonation.category] ? `/donation_images/${categoryImageMap[selectedDonation.category]}` : "/drawer_images/cooked_food.png")}
+                src={selectedDonation.image || getCategoryImage(selectedDonation.category)}
                 className="absolute inset-0 w-full h-full object-cover"
                 alt={selectedDonation.foodType}
               />
@@ -972,7 +957,7 @@ const MyDonations = () => {
               <div className="space-y-5 p-6 bg-white">
                 <div className="relative rounded-3xl overflow-hidden shadow-lg min-h-[220px] bg-slate-950">
                   <img
-                    src={d.image || (d.category && categoryImageMap[d.category] ? `/donation_images/${categoryImageMap[d.category]}` : "/drawer_images/cooked_food.png")}
+                    src={d.image || getCategoryImage(d.category)}
                     className="absolute inset-0 w-full h-full object-cover"
                     alt={d.foodType}
                   />
@@ -1533,9 +1518,7 @@ const MyDonations = () => {
                     <img 
                       src={
                         redonateDonation?.image || 
-                        (redonateDonation?.category && categoryImageMap[redonateDonation.category] 
-                          ? `/donation_images/${categoryImageMap[redonateDonation.category]}` 
-                          : "/drawer_images/cooked_food.png")
+                        getCategoryImage(redonateDonation?.category)
                       }
                       className="w-full h-full object-cover"
                       alt="Food Bowl"
@@ -1778,9 +1761,7 @@ const MyDonations = () => {
                     <img 
                       src={
                         d.image || 
-                        (d.category && categoryImageMap[d.category] 
-                          ? `/donation_images/${categoryImageMap[d.category]}` 
-                          : "/drawer_images/cooked_food.png")
+                        getCategoryImage(d.category)
                       }
                       className="w-full h-full object-cover"
                       alt={d.foodType}

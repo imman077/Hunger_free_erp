@@ -9,6 +9,7 @@ export const DonationSchema = z.object({
   created_at: z.string().optional().nullable(),
   pickup_address: z.string().optional().nullable(),
   contact_phone: z.string().optional().nullable(),
+  isNgoNeed: z.boolean().optional().nullable(),
 }).passthrough();
 
 export type Donation = z.infer<typeof DonationSchema>;

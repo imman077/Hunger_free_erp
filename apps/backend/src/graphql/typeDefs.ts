@@ -135,6 +135,7 @@ export const typeDefs = `#graphql
     preparationType: String!
     quantity: String!
     ngo: String
+    donor: String
     date: String!
     status: String!
     pickupAddress: String
@@ -147,7 +148,14 @@ export const typeDefs = `#graphql
     deliveryCoords: Coordinates
     image: String
     timeline: [Timeline]
+    isNgoNeed: Boolean
     createdAt: String
+  }
+
+  type NeedSupporterInfo {
+    id: ID!
+    name: String!
+    quantity: String!
   }
 
   # ─── Need ─────────────────────────────────────────────────────────────────────
@@ -167,6 +175,8 @@ export const typeDefs = `#graphql
     status: String
     fulfilledQuantity: Int
     supporterIds: [String]
+    supporters: [User]
+    supportersDetails: [NeedSupporterInfo]
     createdAt: String
   }
 
@@ -356,12 +366,14 @@ export const typeDefs = `#graphql
     preparationType: String!
     quantity: String!
     ngo: String
+    donor: String
     date: String!
     pickupAddress: String!
     deliveryAddress: String
     description: String!
     expiryTime: String
     image: String
+    relatedNeed: String
   }
 
   input CreateNeedInput {

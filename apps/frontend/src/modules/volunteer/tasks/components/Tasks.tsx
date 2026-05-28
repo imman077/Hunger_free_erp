@@ -2,7 +2,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { volunteerTasksService } from "../api/tasks.api";
+import { volunteerTasksService } from "../api/tasks/tasks.api";
 import {
   Package,
   Truck,

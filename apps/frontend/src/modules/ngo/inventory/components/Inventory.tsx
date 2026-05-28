@@ -85,7 +85,7 @@ const NGOInventory = () => {
     try {
       const data = await ngoInventoryService.getInventory();
       // Ensure specific fields exist or set defaults
-      const mapped = (data.results || data).map((item: any) => ({
+      const mapped = (Array.isArray(data) ? data : []).map((item: any) => ({
         ...item,
         status: item.status || "Stored",
         urgency: item.urgency || "Normal"

@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 
 import type { NGONeed } from "../api/needs/needs.output";
+import { getCategoryImage } from "../../../../global/constants/donation_config";
 
 
 const NGONeedsFeed = () => {
@@ -73,7 +74,7 @@ const NGONeedsFeed = () => {
           bg: "bg-[#fff1f2]",
           text: "text-[#e11d48]",
           border: "border-[#fecdd3]",
-          dot: "bg-[#e11d48]",
+          dot: "bg-[#e11d48]",  
           iconBg: "bg-[#fff1f2]",
           iconColor: "#e11d48"
         };
@@ -163,7 +164,6 @@ const NGONeedsFeed = () => {
           <div className="grid grid-cols-1 gap-4">
             {needs.map((need: any) => {
               const styles = getUrgencyStyles(need.urgency);
-              const isPerishable = need.category === "Perishables";
               
               return (
                 <motion.div
@@ -182,7 +182,7 @@ const NGONeedsFeed = () => {
                         
                         <div className={`w-14 h-14 rounded-full flex items-center justify-center ${styles.iconBg} overflow-hidden border border-slate-50 shadow-sm transition-all duration-300 group-hover:scale-110`}>
                           <img 
-                            src={isPerishable ? "/vegandfruits.png" : "/cookedfood.png"} 
+                            src={getCategoryImage(need.category)} 
                             alt={need.category}
                             className="w-11 h-11 object-contain"
                           />

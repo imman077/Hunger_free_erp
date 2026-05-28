@@ -135,9 +135,22 @@ const AuthPage = () => {
           last_name: "",
           profile: {
             role: user.role as any,
-            phone: null,
+            phone: user.phone || null,
             address: null,
           },
+          donor_profile: user.role === "DONOR" && user.donorProfile
+            ? {
+                total_donations: 0,
+                reliability_score: 100,
+              }
+            : undefined,
+          ngo_profile: user.role === "NGO" && user.ngoProfile
+            ? {
+                name: user.ngoProfile.name || "",
+                registration_id: "",
+                contact_number: user.phone || "",
+              }
+            : undefined,
         },
         token,
         token

@@ -26,7 +26,7 @@ export const resolvers = {
         Donation.countDocuments({ status: 'PENDING' }),
         RewardClaim.countDocuments(),
         Enquiry.countDocuments(),
-        Need.countDocuments({ status: 'Open' }),
+        Need.countDocuments({ status: { $in: ['Open', 'Fulfilling'] } }),
       ]);
       return { totalDonors: donors, totalNGOs: ngos, totalVolunteers: volunteers, totalDonations: donations, pendingDonations: pending, totalRewardClaims: claims, totalEnquiries: enquiries, activeNeeds: needs };
     },
@@ -51,7 +51,13 @@ export const resolvers = {
     needs: async (_: any, { ngoId, status }: any) => {
       const q: any = {};
       if (ngoId) q.ngo = ngoId;
-      if (status) q.status = status;
+      if (status) {
+        if (status === 'Open') {
+          q.status = { $in: ['Open', 'Fulfilling'] };
+        } else {
+          q.status = status;
+        }
+      }
       return fmtAll(await Need.find(q));
     },
     needById: async (_: any, { id }: any) => fmt(await Need.findById(id)),
@@ -172,6 +178,33 @@ export const resolvers = {
         volunteerLocation: { lat: 19.0760, lng: 72.8777 },
         timeline: [{ status: 'Created', date: new Date().toLocaleDateString(), time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), completed: true }]
       });
+
+      if (input.relatedNeed) {
+        try {
+          const need = await Need.findById(input.relatedNeed);
+          if (need) {
+            const quantityNum = parseInt(input.quantity) || 0;
+            need.fulfilledQuantity = (need.fulfilledQuantity || 0) + quantityNum;
+            if (need.fulfilledQuantity >= need.quantity) {
+              need.status = 'Fulfilled';
+            } else {
+              need.status = 'Fulfilling';
+            }
+            if (input.donor) {
+              if (!need.supporterIds) {
+                need.supporterIds = [];
+              }
+              if (!need.supporterIds.includes(input.donor)) {
+                need.supporterIds.push(input.donor);
+              }
+            }
+            await need.save();
+          }
+        } catch (err) {
+          console.error("Error updating related need:", err);
+        }
+      }
+
       return fmt(d);
     },
 
@@ -361,6 +394,7 @@ export const resolvers = {
       // Seed Users
       const donor = await User.create({
         username: 'star_hotel', email: 'info@starhotel.com', role: 'DONOR', isVerified: true,
+        phone: '9876543210',
         donorProfile: { businessName: 'The Star Grand Hotel', businessType: 'Hotel', subCategory: '5-STAR HOTEL', verificationLevel: 'Level III', registrationId: 'REG-998877', profileCompleteness: 95 },
         gamification: { points: 1200, lifetimePoints: 3500 },
         paymentMethods: { bankAccounts: [{ bankName: 'HDFC Bank', accountHolder: 'Star Hotels Pvt Ltd', accountNumber: '50100111222333', ifscCode: 'HDFC0001111', isPrimary: true }], upiIds: [{ vpa: 'starhotel@okhdfc', label: 'Primary', isPrimary: true }] }
@@ -379,35 +413,37 @@ export const resolvers = {
         gamification: { points: 450, lifetimePoints: 900 }
       });
 
-      await User.create({ username: 'admin', email: 'admin@hungerfree.org', role: 'ADMIN', isVerified: true });      // Seed Donations
+      await User.create({ username: 'admin', email: 'admin@hungerfree.org', role: 'ADMIN', isVerified: true });
+
+      // Seed Donations
       await Donation.create([
         // 1. PENDING (Created, waiting for NGO)
         { foodType: 'Veg Biryani Surplus', category: 'Cooked Food', dietaryType: 'Veg', preparationType: 'Restaurant', quantity: '50 Meals', date: 'May 16, 2026', status: 'PENDING', pickupAddress: 'Star Grand Hotel, Lobby', description: 'Freshly prepared aromatic veg biryani with raita.', pickupCoords: { lat: 19.0760, lng: 72.8777 }, deliveryCoords: { lat: 19.1300, lng: 72.8900 }, volunteerLocation: { lat: 19.0760, lng: 72.8777 }, timeline: [{ status: 'Created', date: 'May 16, 2026', time: '11:00 AM', completed: true }] },
         
         // 2. ACCEPTED (NGO accepted, waiting for Volunteer)
-        { foodType: 'Fresh Ponni Rice', category: 'Rice, Grains & Pulses', dietaryType: 'Veg', preparationType: 'Store Bought', quantity: '20 kg', ngo: 'Helping Hands NGO', date: 'May 16, 2026', status: 'ACCEPTED', pickupAddress: 'Star Grand Hotel, Kitchen', deliveryAddress: 'Helping Hands Center, Mumbai', description: 'High quality Ponni rice for cooking.', pickupCoords: { lat: 19.0760, lng: 72.8777 }, deliveryCoords: { lat: 19.1300, lng: 72.8900 }, volunteerLocation: { lat: 19.0760, lng: 72.8777 }, timeline: [{ status: 'Created', date: 'May 16, 2026', time: '09:00 AM', completed: true }, { status: 'NGO Accepted', date: 'May 16, 2026', time: '09:30 AM', completed: true }] },
+        { foodType: 'Fresh Ponni Rice', category: 'Cooked Food', dietaryType: 'Veg', preparationType: 'Store Bought', quantity: '20 kg', ngo: 'Helping Hands NGO', date: 'May 16, 2026', status: 'ACCEPTED', pickupAddress: 'Star Grand Hotel, Kitchen', deliveryAddress: 'Helping Hands Center, Mumbai', description: 'High quality Ponni rice for cooking.', pickupCoords: { lat: 19.0760, lng: 72.8777 }, deliveryCoords: { lat: 19.1300, lng: 72.8900 }, volunteerLocation: { lat: 19.0760, lng: 72.8777 }, timeline: [{ status: 'Created', date: 'May 16, 2026', time: '09:00 AM', completed: true }, { status: 'NGO Accepted', date: 'May 16, 2026', time: '09:30 AM', completed: true }] },
  
         // 3. ASSIGNED (Volunteer assigned, waiting for Pickup)
-        { foodType: 'Banana Chips & Murukku', category: 'Packaged Snacks', dietaryType: 'Veg', preparationType: 'Store Bought', quantity: '100 Packets', ngo: 'Helping Hands NGO', date: 'May 16, 2026', status: 'ASSIGNED', pickupAddress: 'Star Grand Hotel, Storage', deliveryAddress: 'Helping Hands Center, Mumbai', description: 'Crispy local snacks and murukku.', volunteer: { name: 'John V', phone: '9876543210', rating: '4.8' }, pickupCoords: { lat: 19.0760, lng: 72.8777 }, deliveryCoords: { lat: 19.1300, lng: 72.8900 }, volunteerLocation: { lat: 19.0880, lng: 72.8820 }, timeline: [{ status: 'Created', date: 'May 16, 2026', time: '10:00 AM', completed: true }, { status: 'NGO Accepted', date: 'May 16, 2026', time: '10:15 AM', completed: true }, { status: 'Volunteer Assigned', date: 'May 16, 2026', time: '10:30 AM', completed: true }] },
+        { foodType: 'Banana Chips & Murukku', category: 'Cooked Food', dietaryType: 'Veg', preparationType: 'Store Bought', quantity: '100 Packets', ngo: 'Helping Hands NGO', date: 'May 16, 2026', status: 'ASSIGNED', pickupAddress: 'Star Grand Hotel, Storage', deliveryAddress: 'Helping Hands Center, Mumbai', description: 'Crispy local snacks and murukku.', volunteer: { name: 'John V', phone: '9876543210', rating: '4.8' }, pickupCoords: { lat: 19.0760, lng: 72.8777 }, deliveryCoords: { lat: 19.1300, lng: 72.8900 }, volunteerLocation: { lat: 19.0880, lng: 72.8820 }, timeline: [{ status: 'Created', date: 'May 16, 2026', time: '10:00 AM', completed: true }, { status: 'NGO Accepted', date: 'May 16, 2026', time: '10:15 AM', completed: true }, { status: 'Volunteer Assigned', date: 'May 16, 2026', time: '10:30 AM', completed: true }] },
  
         // 4. PICKED_UP (Volunteer picked up, in transit to NGO)
-        { foodType: 'Fresh Aavin Milk', category: 'Milk & Dairy', dietaryType: 'Veg', preparationType: 'Store Bought', quantity: '10 Litres', ngo: 'Helping Hands NGO', date: 'May 16, 2026', status: 'PICKED_UP', pickupAddress: 'Star Grand Hotel, Cold Storage', deliveryAddress: 'Helping Hands Center, Mumbai', description: 'Pure cow milk and fresh curd.', volunteer: { name: 'John V', phone: '9876543210', rating: '4.8' }, pickupCoords: { lat: 19.0760, lng: 72.8777 }, deliveryCoords: { lat: 19.1300, lng: 72.8900 }, volunteerLocation: { lat: 19.1100, lng: 72.8860 }, timeline: [{ status: 'Created', date: 'May 16, 2026', time: '07:00 AM', completed: true }, { status: 'NGO Accepted', date: 'May 16, 2026', time: '07:15 AM', completed: true }, { status: 'Volunteer Assigned', date: 'May 16, 2026', time: '07:30 AM', completed: true }, { status: 'Picked Up', date: 'May 16, 2026', time: '08:00 AM', completed: true }] },
+        { foodType: 'Fresh Aavin Milk', category: 'Water Bottle', dietaryType: 'Veg', preparationType: 'Store Bought', quantity: '10 Litres', ngo: 'Helping Hands NGO', date: 'May 16, 2026', status: 'PICKED_UP', pickupAddress: 'Star Grand Hotel, Cold Storage', deliveryAddress: 'Helping Hands Center, Mumbai', description: 'Pure cow milk and fresh curd.', volunteer: { name: 'John V', phone: '9876543210', rating: '4.8' }, pickupCoords: { lat: 19.0760, lng: 72.8777 }, deliveryCoords: { lat: 19.1300, lng: 72.8900 }, volunteerLocation: { lat: 19.1100, lng: 72.8860 }, timeline: [{ status: 'Created', date: 'May 16, 2026', time: '07:00 AM', completed: true }, { status: 'NGO Accepted', date: 'May 16, 2026', time: '07:15 AM', completed: true }, { status: 'Volunteer Assigned', date: 'May 16, 2026', time: '07:30 AM', completed: true }, { status: 'Picked Up', date: 'May 16, 2026', time: '08:00 AM', completed: true }] },
  
         // 5. DELIVERED (Successfully completed)
-        { foodType: 'Ooty Varkey & Biscuits', category: 'Bread & Bakery', dietaryType: 'Veg', preparationType: 'Store Bought', quantity: '80 Pieces', ngo: 'Helping Hands NGO', date: 'May 15, 2026', status: 'DELIVERED', pickupAddress: 'Star Grand Hotel, Bakery Section', deliveryAddress: 'Helping Hands Center, Mumbai', description: 'Fresh Ooty varkey and butter biscuits.', volunteer: { name: 'John V', phone: '9876543210', rating: '4.8' }, pickupCoords: { lat: 19.0760, lng: 72.8777 }, deliveryCoords: { lat: 19.1300, lng: 72.8900 }, volunteerLocation: { lat: 19.1300, lng: 72.8900 }, timeline: [{ status: 'Created', date: 'May 15, 2026', time: '8:00 PM', completed: true }, { status: 'NGO Accepted', date: 'May 15, 2026', time: '8:15 PM', completed: true }, { status: 'Volunteer Assigned', date: 'May 15, 2026', time: '8:45 PM', completed: true }, { status: 'Picked Up', date: 'May 15, 2026', time: '9:30 PM', completed: true }, { status: 'Delivered', date: 'May 15, 2026', time: '10:45 PM', completed: true }] },
+        { foodType: 'Ooty Varkey & Biscuits', category: 'Cooked Food', dietaryType: 'Veg', preparationType: 'Store Bought', quantity: '80 Pieces', ngo: 'Helping Hands NGO', date: 'May 15, 2026', status: 'DELIVERED', pickupAddress: 'Star Grand Hotel, Bakery Section', deliveryAddress: 'Helping Hands Center, Mumbai', description: 'Fresh Ooty varkey and butter biscuits.', volunteer: { name: 'John V', phone: '9876543210', rating: '4.8' }, pickupCoords: { lat: 19.0760, lng: 72.8777 }, deliveryCoords: { lat: 19.1300, lng: 72.8900 }, volunteerLocation: { lat: 19.1300, lng: 72.8900 }, timeline: [{ status: 'Created', date: 'May 15, 2026', time: '8:00 PM', completed: true }, { status: 'NGO Accepted', date: 'May 15, 2026', time: '8:15 PM', completed: true }, { status: 'Volunteer Assigned', date: 'May 15, 2026', time: '8:45 PM', completed: true }, { status: 'Picked Up', date: 'May 15, 2026', time: '9:30 PM', completed: true }, { status: 'Delivered', date: 'May 15, 2026', time: '10:45 PM', completed: true }] },
  
         // 6. CANCELLED (Cancelled by donor or admin)
         { foodType: 'Idli & Sambar Meals', category: 'Cooked Food', dietaryType: 'Veg', preparationType: 'Homemade', quantity: '20 Meals', date: 'May 15, 2026', status: 'CANCELLED', pickupAddress: 'Star Grand Hotel, Lobby', description: 'Breakfast meals got spoiled.', pickupCoords: { lat: 19.0760, lng: 72.8777 }, deliveryCoords: { lat: 19.1300, lng: 72.8900 }, volunteerLocation: { lat: 19.0760, lng: 72.8777 }, timeline: [{ status: 'Created', date: 'May 15, 2026', time: '02:00 PM', completed: true }, { status: 'Cancelled', date: 'May 15, 2026', time: '03:00 PM', completed: true }] }
       ]);
-
+ 
       // Seed Needs
       await Need.create([
-        { ngo: ngo._id, itemName: 'Rice Bags', category: 'Dry Grains', quantity: 10, unit: 'Bags (25kg)', urgency: 'High Priority', status: 'Open', description: 'Monthly rice supply for 200 families.' },
-        { ngo: ngo._id, itemName: 'Cooking Oil', category: 'Cooking Essentials', quantity: 20, unit: 'Litres', urgency: 'Medium Priority', status: 'Open' }
+        { ngo: ngo._id, itemName: 'Rice Bags', category: 'cooked_food', quantity: 10, unit: 'Bags (25kg)', urgency: 'High Priority', status: 'Open', description: 'Monthly rice supply for 200 families.' },
+        { ngo: ngo._id, itemName: 'Cooking Oil', category: 'cooked_food', quantity: 20, unit: 'Litres', urgency: 'Medium Priority', status: 'Open' }
       ]);
-
+ 
       // Seed Inventory
-      await Inventory.create({ ngo: ngo._id, itemName: 'Rice', category: 'Dry Grains', quantity: 150, unit: 'kg', itemCondition: 'Excellent', status: 'In Stock' });
+      await Inventory.create({ ngo: ngo._id, itemName: 'Rice', category: 'cooked_food', quantity: 150, unit: 'kg', itemCondition: 'Excellent', status: 'In Stock' });
 
       // Seed Rewards
       await Reward.create([
@@ -428,17 +464,9 @@ export const resolvers = {
 
       // Seed Config Items (dropdown options)
       const configSeeds = [
-        { key: 'foodCategories', name: 'Fruits & Vegetables', description: 'Fresh fruits and vegetables' },
-        { key: 'foodCategories', name: 'Cooked Food', description: 'Ready-to-eat cooked food' },
-        { key: 'foodCategories', name: 'Rice, Grains & Pulses', description: 'Dry grains, rice, and pulses' },
-        { key: 'foodCategories', name: 'Packaged Snacks', description: 'Biscuits, chips, and packaged snacks' },
-        { key: 'foodCategories', name: 'Bread & Bakery', description: 'Bread, cakes, pastries' },
-        { key: 'foodCategories', name: 'Milk & Dairy', description: 'Milk, curd, paneer, and dairy' },
-        { key: 'foodCategories', name: 'Meat & Eggs', description: 'Fresh or frozen meat and eggs' },
-        { key: 'foodCategories', name: 'Seafood', description: 'Fresh or frozen seafood' },
-        { key: 'foodCategories', name: 'Water & Drinks', description: 'Bottled water, juices, and drinks' },
-        { key: 'foodCategories', name: 'Frozen Food', description: 'Frozen meals and vegetables' },
-        { key: 'foodCategories', name: 'Spices & Oils', description: 'Cooking spices and oils' },
+        { key: 'foodCategories', name: 'Cooked Food', description: 'Cooked Food' },
+        { key: 'foodCategories', name: 'Water Bottle', description: 'Water Bottle' },
+        { key: 'foodCategories', name: 'Water Cane', description: 'Water Cane' },
 
         
         // Donation Units
@@ -476,20 +504,9 @@ export const resolvers = {
         { key: 'volunteerSkills', name: 'Logistics', description: 'Supply chain coordination' },
 
         // Need Categories
-        { key: 'needCategories', name: 'food', description: 'Food & Grains' },
-        { key: 'needCategories', name: 'water', description: 'Drinking Water' },
-        { key: 'needCategories', name: 'clothing', description: 'Clothing & Apparel' },
-        { key: 'needCategories', name: 'hygiene', description: 'Hygiene Kits' },
-        { key: 'needCategories', name: 'medical', description: 'Medical Supplies' },
-        { key: 'needCategories', name: 'education', description: 'Education Kits' },
-        { key: 'needCategories', name: 'bedding', description: 'Bedding & Blankets' },
-        { key: 'needCategories', name: 'kitchen', description: 'Kitchen & Home Items' },
-        { key: 'needCategories', name: 'baby', description: 'Baby Care' },
-        { key: 'needCategories', name: 'elderly', description: 'Elderly Care' },
-        { key: 'needCategories', name: 'technology', description: 'Computers & Tech' },
-        { key: 'needCategories', name: 'stationery', description: 'Books & Stationery' },
-        { key: 'needCategories', name: 'power', description: 'Solar & Power' },
-        { key: 'needCategories', name: 'other', description: 'Other' },
+        { key: 'needCategories', name: 'cooked_food', description: 'Cooked Food' },
+        { key: 'needCategories', name: 'water_bottle', description: 'Water Bottle' },
+        { key: 'needCategories', name: 'water_cane', description: 'Water Cane' },
 
         // Urgency Options
         { key: 'urgencyOptions', name: 'low', description: 'Low Priority' },
@@ -501,8 +518,8 @@ export const resolvers = {
 
       // Seed Category Suggestions
       await CategorySuggestion.create([
-        { name: 'Cooked Food', type: 'food' }, { name: 'Raw Vegetables', type: 'food' },
-        { name: 'Packaged Food', type: 'food' }, { name: 'Beverages', type: 'food' },
+        { name: 'Veg Meal', type: 'cooked_food' }, { name: 'Non-Veg Meal', type: 'cooked_food' },
+        { name: 'Bottled Mineral Water', type: 'water_bottle' }, { name: 'Canned Drinking Water', type: 'water_cane' },
         { name: 'Social Service', type: 'ngo' }, { name: 'Food Bank', type: 'ngo' },
         { name: 'Driving', type: 'volunteer_skill' }, { name: 'Cooking', type: 'volunteer_skill' }
       ]);
@@ -540,6 +557,50 @@ export const resolvers = {
     ngoName: async (need: any) => {
       const user = await User.findById(need.ngo);
       return user?.ngoProfile?.name || user?.username || 'Helping Hands NGO';
+    },
+    supporters: async (need: any) => {
+      if (!need.supporterIds || !need.supporterIds.length) return [];
+      const users = await User.find({ _id: { $in: need.supporterIds } });
+      return fmtAll(users);
+    },
+    supportersDetails: async (need: any) => {
+      const donations = await Donation.find({ relatedNeed: need._id.toString(), status: { $ne: 'CANCELLED' } });
+      const donorIds = donations.map(d => d.donor).filter(Boolean);
+      const users = await User.find({ _id: { $in: donorIds } });
+      const userMap = new Map(users.map(u => [u._id.toString(), u]));
+      
+      const groups: { [key: string]: { id: string; name: string; totalQuantity: number; unit: string } } = {};
+      
+      for (const d of donations) {
+        if (!d.donor) continue;
+        const donorId = d.donor;
+        const userObj = userMap.get(donorId);
+        const donorName = userObj?.donorProfile?.businessName || userObj?.username || 'Private Donor';
+        
+        const qtyNum = parseFloat(d.quantity) || 0;
+        const unit = d.quantity.split(' ').slice(1).join(' ') || need.unit || 'Units';
+        
+        if (!groups[donorId]) {
+          groups[donorId] = {
+            id: donorId,
+            name: donorName,
+            totalQuantity: 0,
+            unit: unit
+          };
+        }
+        groups[donorId].totalQuantity += qtyNum;
+      }
+      
+      return Object.values(groups).map(g => ({
+        id: g.id,
+        name: g.name,
+        quantity: `${g.totalQuantity} ${g.unit}`
+      }));
+    }
+  },
+  Donation: {
+    isNgoNeed: (donation: any) => {
+      return !!donation.relatedNeed;
     }
   }
 };

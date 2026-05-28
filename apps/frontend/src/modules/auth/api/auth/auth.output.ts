@@ -5,6 +5,19 @@ export const LoginUserSchema = z.object({
   username: z.string(),
   email: z.string().email(),
   role: z.string(),
+  phone: z.string().nullable().optional(),
+  donorProfile: z
+    .object({
+      businessName: z.string().nullable().optional(),
+    })
+    .nullable()
+    .optional(),
+  ngoProfile: z
+    .object({
+      name: z.string().nullable().optional(),
+    })
+    .nullable()
+    .optional(),
 });
 
 export const LoginResponseSchema = z.object({

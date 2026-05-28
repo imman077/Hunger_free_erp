@@ -8,10 +8,19 @@ export const ngoNeedsService = {
   /**
    * Posts a new NGO need.
    */
-  postNeed: async (needData: PostNeedInput): Promise<PostNeedResponse> => {
+  postNeed: async (needData: FormData | PostNeedInput): Promise<PostNeedResponse> => {
     try {
-      const validatedInput = PostNeedInputSchema.parse(needData);
-      const response = await axiosInstance.post("needs/", validatedInput);
+      let response;
+      if (needData instanceof FormData) {
+        response = await axiosInstance.post("needs/", needData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+      } else {
+        const validatedInput = PostNeedInputSchema.parse(needData);
+        response = await axiosInstance.post("needs/", validatedInput);
+      }
       return PostNeedResponseSchema.parse(response.data);
     } catch (error) {
       console.error("Error posting NGO need:", error);

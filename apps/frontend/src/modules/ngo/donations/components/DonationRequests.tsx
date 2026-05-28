@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ngoDonationsService } from "../api/donations/donations.api";
+import { ngoDonationsService } from "../api/donations/donations.api.ts";
 import { ngoNeedsService } from "../../needs/api/needs/needs.api";
 import { toast } from "sonner";
 import { useAuthStore } from "../../../../global/contexts/auth-store";
@@ -221,14 +221,14 @@ const DonationRequests = () => {
 
   const fetchDonations = useCallback(async () => {
     try {
-      let rawDonations = [];
-      let rawNeeds = [];
+      let rawDonations: any[] = [];
+      let rawNeeds: any[] = [];
 
       // Use try-catch blocks individually if needed, but here we'll handle the array results
       // Always fetch both for Community and My Records to ensure all resource types are visible
       if (activeTab === "marketplace") {
         const response = await ngoDonationsService.getMarketplaceDonations();
-        rawDonations = response?.results || (Array.isArray(response) ? response : []);
+        rawDonations = Array.isArray(response) ? response : [];
       } else if (activeTab === "community-requests") {
         const results = await Promise.allSettled([
           ngoDonationsService.getMarketplaceDonations(),
@@ -236,8 +236,8 @@ const DonationRequests = () => {
         ]);
         const donationsRes = results[0].status === 'fulfilled' ? results[0].value : [];
         const needsRes = results[1].status === 'fulfilled' ? results[1].value : [];
-        rawDonations = donationsRes?.results || (Array.isArray(donationsRes) ? donationsRes : []);
-        rawNeeds = needsRes?.results || (Array.isArray(needsRes) ? needsRes : []);
+        rawDonations = Array.isArray(donationsRes) ? donationsRes : [];
+        rawNeeds = Array.isArray(needsRes) ? needsRes : [];
       } else if (activeTab === "my-requests") {
         const results = await Promise.allSettled([
           ngoDonationsService.getMyRequests(),
@@ -248,8 +248,8 @@ const DonationRequests = () => {
         const d2 = results[1].status === 'fulfilled' ? results[1].value : [];
         const needsRes = results[2].status === 'fulfilled' ? results[2].value : [];
         
-        const res1 = d1?.results || (Array.isArray(d1) ? d1 : []);
-        const res2 = d2?.results || (Array.isArray(d2) ? d2 : []);
+        const res1 = Array.isArray(d1) ? d1 : [];
+        const res2 = Array.isArray(d2) ? d2 : [];
         const allDonations = [...res1, ...res2];
         
         // Deduplicate by ID
@@ -260,7 +260,7 @@ const DonationRequests = () => {
           return true;
         });
 
-        rawNeeds = needsRes?.results || (Array.isArray(needsRes) ? needsRes : []);
+        rawNeeds = Array.isArray(needsRes) ? needsRes : [];
       }
 
       // Map Donations
@@ -271,7 +271,7 @@ const DonationRequests = () => {
         // Check against BOTH the user ID and the NGO profile ID
         const matchesNGO = (val: any) => {
           const s = String(val);
-          return s === userId || (ngoProfileId && s === ngoProfileId);
+          return s === userId || !!(ngoProfileId && s === ngoProfileId);
         };
 
         // Robust ID matching for NGO Support — accepted_ngo_id in DB stores user ID
@@ -331,7 +331,7 @@ const DonationRequests = () => {
 
         const matchesNGO = (val: any) => {
           const s = String(val);
-          return s === userId || (ngoProfileId && s === ngoProfileId);
+          return s === userId || !!(ngoProfileId && s === ngoProfileId);
         };
         
         // Robust ID matching for NGO Support/Acceptance

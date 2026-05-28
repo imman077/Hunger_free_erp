@@ -1,6 +1,6 @@
 import axiosInstance from "../../../../../global/utils/axios-instance";
 import { AcceptDonationInputSchema, SupportNeedInputSchema, VerifyDeliveryInputSchema } from "./donations.input";
-import type { AcceptDonationInput, SupportNeedInput, VerifyDeliveryInput } from "./donations.input";
+import type { AcceptDonationInput } from "./donations.input";
 import {
   GetMarketplaceDonationsResponseSchema,
   GetAllDonationsResponseSchema,

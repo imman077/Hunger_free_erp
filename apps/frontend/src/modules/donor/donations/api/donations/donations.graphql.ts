@@ -40,6 +40,7 @@ export const GET_MY_DONATIONS = gql`
         completed
         description
       }
+      isNgoNeed
     }
     donationStats {
       totalDonations
