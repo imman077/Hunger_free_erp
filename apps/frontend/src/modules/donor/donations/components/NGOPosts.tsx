@@ -699,7 +699,6 @@ const NGOPosts = () => {
                         </>
                       ) : (
                         <>
-                          <img src="/giving.png" className="w-5 h-5 object-contain" alt="Giving" />
                           Support Need
                         </>
                       )}
